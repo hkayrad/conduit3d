@@ -81,7 +81,7 @@ services:
     container_name: buildings_service
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - BUILDINGS_POSTGRESQL_CONNECTION_STRING=Host=buildings_database;Database=${BUILDINGS_DB_NAME};Username=${BUILDINGS_DB_USER};Password=${BUILDINGS_DB_PASS}
+      - POSTGRESQL_CONNECTION_STRING=Host=buildings_database;Database=${BUILDINGS_DB_NAME};Username=${BUILDINGS_DB_USER};Password=${BUILDINGS_DB_PASS}
     depends_on:
       - buildings_database
     networks:
@@ -98,7 +98,7 @@ services:
     container_name: lines_service
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - LINES_POSTGRESQL_CONNECTION_STRING=Host=lines_database;Database=${LINES_DB_NAME};Username=${LINES_DB_USER};Password=${LINES_DB_PASS}
+      - POSTGRESQL_CONNECTION_STRING=Host=lines_database;Database=${LINES_DB_NAME};Username=${LINES_DB_USER};Password=${LINES_DB_PASS}
     depends_on:
       - lines_database
     networks:
@@ -115,7 +115,7 @@ services:
     container_name: poles_service
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - POLES_POSTGRESQL_CONNECTION_STRING=Host=poles_database;Database=${POLES_DB_NAME};Username=${POLES_DB_USER};Password=${POLES_DB_PASS}
+      - POSTGRESQL_CONNECTION_STRING=Host=poles_database;Database=${POLES_DB_NAME};Username=${POLES_DB_USER};Password=${POLES_DB_PASS}
     depends_on:
       - poles_database
     networks:
@@ -132,7 +132,7 @@ services:
     container_name: auth_service
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - AUTH_POSTGRESQL_CONNECTION_STRING=Host=auth_database;Database=${AUTH_DB_NAME};Username=${AUTH_DB_USER};Password=${AUTH_DB_PASS}
+      - POSTGRESQL_CONNECTION_STRING=Host=auth_database;Database=${AUTH_DB_NAME};Username=${AUTH_DB_USER};Password=${AUTH_DB_PASS}
     depends_on:
       - auth_database
     networks:

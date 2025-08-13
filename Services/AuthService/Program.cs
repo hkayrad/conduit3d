@@ -1,4 +1,8 @@
 using Asp.Versioning;
+using AuthService.Infrastructure;
+using AuthService.Infrastructure.Data;
+using AuthService.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,6 +37,13 @@ string? postgresqlConnectionString = Environment.GetEnvironmentVariable("POSTGRE
 
 if (string.IsNullOrEmpty(postgresqlConnectionString))
     throw new InvalidOperationException("POSTGRESQL_CONNECTION_STRING environment variable is not set.");
+
+builder.Services.AddDbContext<UsersContext>(options =>
+{
+    options.UseNpgsql(postgresqlConnectionString);
+});
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IUserService, PostgresqlUserService>();
 
 var app = builder.Build();
 
