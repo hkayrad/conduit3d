@@ -33,11 +33,11 @@ public class UsersContext(DbContextOptions options) : DbContext(options)
                 .HasColumnType("varchar(255)")
                 .HasColumnName("email");
 
-            entity.Property(e => e.UserType)
+            entity.Property(e => e.UserRole)
                 .IsRequired()
-                .HasMaxLength(1)
-                .HasColumnType("char")
-                .HasColumnName("user_type");
+                .HasMaxLength(10)
+                .HasColumnType("varchar(10)")
+                .HasColumnName("user_role");
 
             entity.Property(e => e.Name)
                 .IsRequired()
