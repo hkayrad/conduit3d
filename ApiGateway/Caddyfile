@@ -1,0 +1,29 @@
+localhost {
+    handle_path /api* {
+        handle /buildings* {
+            reverse_proxy buildings_service:8080
+        }
+
+		handle /poles* {
+			reverse_proxy poles_service:8080
+		}
+
+		handle /lines* {
+			reverse_proxy lines_service:8080
+		}
+
+		handle /auth* {
+			reverse_proxy auth_service:8080
+		}
+
+        handle {
+            respond "404 Not Found" 404
+        }
+    }
+
+    handle {
+        respond "404 Not Found" 404
+    }
+}
+
+# C3D-67: Integrate JWT authentication

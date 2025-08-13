@@ -1,0 +1,156 @@
+services:
+  auth_database:
+    image: postgres:17
+    container_name: auth_database
+    ports:
+      - "6000:5432"
+    environment:
+      - POSTGRES_DB=${AUTH_DB_NAME}
+      - POSTGRES_USER=${AUTH_DB_USER}
+      - POSTGRES_PASSWORD=${AUTH_DB_PASS}
+    volumes:
+      - auth_data:/var/lib/postgresql/data
+    networks:
+      - gis_db_connection
+    restart: unless-stopped
+
+  buildings_database:
+    image: postgis/postgis:17-master
+    container_name: buildings_database
+    ports:
+      - "6001:5432"
+    environment:
+      - POSTGRES_DB=${BUILDINGS_DB_NAME}
+      - POSTGRES_USER=${BUILDINGS_DB_USER}
+      - POSTGRES_PASSWORD=${BUILDINGS_DB_PASS}
+    volumes:
+      - buildings_data:/var/lib/postgresql/data
+    networks:
+      - gis_db_connection
+    restart: unless-stopped
+
+  poles_database:
+    image: postgis/postgis:17-master
+    container_name: poles_database
+    ports:
+      - "6002:5432"
+    environment:
+      - POSTGRES_DB=${POLES_DB_NAME}
+      - POSTGRES_USER=${POLES_DB_USER}
+      - POSTGRES_PASSWORD=${POLES_DB_PASS}
+    volumes:
+      - poles_data:/var/lib/postgresql/data
+    networks:
+      - gis_db_connection
+    restart: unless-stopped
+
+  lines_database:
+    image: postgis/postgis:17-master
+    container_name: lines_database
+    ports:
+      - "6003:5432"
+    environment:
+      - POSTGRES_DB=${LINES_DB_NAME}
+      - POSTGRES_USER=${LINES_DB_USER}
+      - POSTGRES_PASSWORD=${LINES_DB_PASS}
+    volumes:
+      - lines_data:/var/lib/postgresql/data
+    networks:
+      - gis_db_connection
+    restart: unless-stopped
+
+  api_gateway:
+    image: caddy_gateway:latest
+    container_name: api_gateway
+    networks:
+      - api_gateway_network
+    ports:
+      - "443:443"
+      - "80:80"
+    depends_on:
+      - buildings_service
+    volumes:
+      - ./CaddyGateway/Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+    restart: unless-stopped
+
+  buildings_service:
+    build:
+      context: .
+      dockerfile: Services/BuildingsService/Dockerfile
+    container_name: buildings_service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - BUILDINGS_POSTGRESQL_CONNECTION_STRING=Host=buildings_database;Database=${BUILDINGS_DB_NAME};Username=${BUILDINGS_DB_USER};Password=${BUILDINGS_DB_PASS}
+    depends_on:
+      - buildings_database
+    networks:
+      - gis_db_connection
+      - api_gateway_network
+    ports:
+      - "5001:8080"
+    restart: unless-stopped
+
+  lines_service:
+    build:
+      context: .
+      dockerfile: Services/LinesService/Dockerfile
+    container_name: lines_service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - LINES_POSTGRESQL_CONNECTION_STRING=Host=lines_database;Database=${LINES_DB_NAME};Username=${LINES_DB_USER};Password=${LINES_DB_PASS}
+    depends_on:
+      - lines_database
+    networks:
+      - gis_db_connection
+      - api_gateway_network
+    ports:
+      - "5001:8080"
+    restart: unless-stopped
+        
+  poles_service:
+    build:
+      context: .
+      dockerfile: Services/PolesService/Dockerfile
+    container_name: poles_service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - POLES_POSTGRESQL_CONNECTION_STRING=Host=poles_database;Database=${POLES_DB_NAME};Username=${POLES_DB_USER};Password=${POLES_DB_PASS}
+    depends_on:
+      - poles_database
+    networks:
+      - gis_db_connection
+      - api_gateway_network
+    ports:
+      - "5001:8080"
+    restart: unless-stopped
+
+  auth_service:
+    build:
+      context: .
+      dockerfile: Services/AuthService/Dockerfile
+    container_name: auth_service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - AUTH_POSTGRESQL_CONNECTION_STRING=Host=auth_database;Database=${AUTH_DB_NAME};Username=${AUTH_DB_USER};Password=${AUTH_DB_PASS}
+    depends_on:
+      - auth_database
+    networks:
+      - gis_db_connection
+      - api_gateway_network
+    ports:
+      - "5001:8080"
+    restart: unless-stopped
+
+networks:
+  gis_db_connection:
+    driver: bridge
+  api_gateway_network:
+    driver: bridge
+
+volumes:
+  buildings_data:
+  lines_data:
+  poles_data:
+  auth_data:
+  caddy_data:
