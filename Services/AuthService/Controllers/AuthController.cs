@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using AuthService.Domain;
+using AuthService.Infrastructure.DTOs;
 using AuthService.Infrastructure.Services;
 using Conduit3D.Common.Domain;
 using Microsoft.AspNetCore.Mvc;
@@ -15,20 +16,36 @@ namespace AuthService.Controllers
 
         [MapToApiVersion("1.0")]
         [HttpGet]
-        public async Task<Response<List<User>>> GetAll(CancellationToken cancellationToken = default,
+        public async Task<Response<List<User>>> GetAll(
             [FromQuery] int pageSize = 10,
             [FromQuery] int pageNumber = 1,
             [FromQuery] string sortBy = "Id",
-            [FromQuery] bool ascending = true)
+            [FromQuery] bool ascending = true,
+            CancellationToken cancellationToken = default)
         {
             try
             {
-                var users = await _userService.GetAllUsersAsync(cancellationToken, pageSize, pageNumber, sortBy, ascending);
+                var users = await _userService.GetAllUsersAsync(pageSize, pageNumber, sortBy, ascending, cancellationToken);
                 return Response<List<User>>.Success(users, "Users retrieved successfully.");
             }
             catch (Exception ex)
             {
                 return Response<List<User>>.Failure($"Error retrieving users: {ex.Message}");
+            }
+        }
+
+        [MapToApiVersion("1.0")]
+        [HttpPost]
+        public async Task<Response<User>> CreateAsync(AddUserDto addUserDto, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var user = await _userService.CreateAsync(addUserDto, cancellationToken);
+                return Response<User>.Success(user, "User created successfully.");
+            }
+            catch (Exception ex)
+            {
+                return Response<User>.Failure($"Error creating user: {ex.Message}");
             }
         }
     }
