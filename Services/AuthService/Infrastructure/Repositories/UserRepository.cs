@@ -2,21 +2,16 @@ using System;
 using AuthService.Domain;
 using AuthService.Infrastructure.Data;
 using AuthService.Infrastructure.DTOs;
+using AuthService.Infrastructure.Utilities;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
 namespace AuthService.Infrastructure.Repositories;
 
-public class UserRepository : IUserRepository
+public class UserRepository(UsersContext context) : IUserRepository
 {
-    private readonly UsersContext _context;
-    private readonly DbSet<User> _users;
-
-    public UserRepository(UsersContext context)
-    {
-        _context = context;
-        _users = context.Set<User>();
-    }
+    private readonly UsersContext _context = context;
+    private readonly DbSet<User> _users = context.Set<User>();
 
     public async Task<List<User>> GetAllAsync(int pageNumber,
                                             int pageSize,
@@ -39,11 +34,11 @@ public class UserRepository : IUserRepository
 
     public async Task<User> CreateAsync(AddUserDto addUserDto, CancellationToken cancellationToken)
     {
-        var sql = @"INSERT INTO users (username, email, user_type, name, password_hash)
+        var sql = @"INSERT INTO users (username, email, user_role, name, password_hash)
                 VALUES (
                     @Username, 
                     @Email, 
-                    @UserType, 
+                    @UserRole, 
                     @Name, 
                     crypt(@Password, gen_salt('bf'))
                 )
@@ -56,7 +51,7 @@ public class UserRepository : IUserRepository
         command.CommandText = sql;
         command.Parameters.Add(new NpgsqlParameter("@Username", addUserDto.Username));
         command.Parameters.Add(new NpgsqlParameter("@Email", addUserDto.Email));
-        command.Parameters.Add(new NpgsqlParameter("@UserType", addUserDto.UserType));
+        command.Parameters.Add(new NpgsqlParameter("@UserRole", addUserDto.UserRole));
         command.Parameters.Add(new NpgsqlParameter("@Name", addUserDto.Name));
         command.Parameters.Add(new NpgsqlParameter("@Password", addUserDto.Password));
 
@@ -71,12 +66,37 @@ public class UserRepository : IUserRepository
             Id = userId,
             Username = addUserDto.Username,
             Email = addUserDto.Email,
-            UserType = addUserDto.UserType,
+            UserRole = addUserDto.UserRole,
             Name = addUserDto.Name,
             CreatedAt = createdAt
         };
 
         return user;
+    }
+
+    public async Task<string> LoginAsync(LoginUserDto loginUserDto, CancellationToken cancellationToken)
+    {
+        var sql = @"SELECT username, email, user_role FROM users WHERE username = @Username AND password_hash = crypt(@Password, password_hash)";
+
+        await using var connection = _context.Database.GetDbConnection();
+        await connection.OpenAsync(cancellationToken);
+
+        await using var command = connection.CreateCommand();
+        command.CommandText = sql;
+        command.Parameters.Add(new NpgsqlParameter("@Username", loginUserDto.Username));
+        command.Parameters.Add(new NpgsqlParameter("@Password", loginUserDto.Password));
+
+        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+        if (await reader.ReadAsync(cancellationToken))
+        {
+            var username = reader.GetString(reader.GetOrdinal("username"));
+            var email = reader.GetString(reader.GetOrdinal("email"));
+            var userRole = reader.GetString(reader.GetOrdinal("user_role"));
+
+            return TokenProvider.GenerateToken(username, email, userRole);
+        }
+
+        return null!;
     }
 
 }

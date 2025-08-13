@@ -133,6 +133,10 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - POSTGRESQL_CONNECTION_STRING=Host=auth_database;Database=${AUTH_DB_NAME};Username=${AUTH_DB_USER};Password=${AUTH_DB_PASS}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_ISSUER=${JWT_ISSUER}
+      - JWT_AUDIENCE=${JWT_AUDIENCE}
+      - JWT_EXPIRATION_TIME_HRS=${JWT_EXPIRATION_TIME_HRS}
     depends_on:
       - auth_database
     networks:

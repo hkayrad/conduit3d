@@ -23,30 +23,21 @@ namespace AuthService.Controllers
             [FromQuery] bool ascending = true,
             CancellationToken cancellationToken = default)
         {
-            try
-            {
-                var users = await _userService.GetAllUsersAsync(pageSize, pageNumber, sortBy, ascending, cancellationToken);
-                return Response<List<User>>.Success(users, "Users retrieved successfully.");
-            }
-            catch (Exception ex)
-            {
-                return Response<List<User>>.Failure($"Error retrieving users: {ex.Message}");
-            }
+            return await _userService.GetAllUsersAsync(pageSize, pageNumber, sortBy, ascending, cancellationToken);
         }
 
         [MapToApiVersion("1.0")]
         [HttpPost]
         public async Task<Response<User>> CreateAsync(AddUserDto addUserDto, CancellationToken cancellationToken)
         {
-            try
-            {
-                var user = await _userService.CreateAsync(addUserDto, cancellationToken);
-                return Response<User>.Success(user, "User created successfully.");
-            }
-            catch (Exception ex)
-            {
-                return Response<User>.Failure($"Error creating user: {ex.Message}");
-            }
+            return await _userService.CreateAsync(addUserDto, cancellationToken);
+        }
+
+        [MapToApiVersion("1.0")]
+        [HttpPost("login")]
+        public async Task<Response<string>> LoginAsync(LoginUserDto loginUserDto, CancellationToken cancellationToken)
+        {
+            return await _userService.LoginAsync(loginUserDto, cancellationToken);
         }
     }
 }
