@@ -35,7 +35,7 @@ public class PostgresqlUserService(IUnitOfWork unitOfWork) : IUserService
     }
 
     public async Task<Response<List<User>>> GetAllUsersAsync(int pageSize,
-                                                            int pageNumber,
+                                                        int pageNumber,
                                                             string sortBy,
                                                             bool ascending,
                                                             CancellationToken cancellationToken)
@@ -84,11 +84,33 @@ public class PostgresqlUserService(IUnitOfWork unitOfWork) : IUserService
         }
     }
 
-    public async Task<Response<object>> UpdateAsync(int id,
+    public async Task<Response<User>> UpdateAsync(int id,
                                                     UpdateUserDto updateUserDto,
                                                     CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        if (id < 0)
+            return Response<User>.ValidationError(AuthResources.GetString("invalidUserId"));
+
+        if (updateUserDto == null)
+            return Response<User>.ValidationError(AuthResources.GetString("invalidUserData"));
+
+        try
+        {
+            var user = await _unitOfWork.UserRepository.UpdateAsync(id, updateUserDto, cancellationToken);
+            if (user == null)
+                return Response<User>.NotFound(AuthResources.GetString("noUserFound"));
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            return Response<User>.Success(user, AuthResources.GetString("userUpdated"), HttpStatusCode.OK);
+        }
+        catch (NpgsqlException ex)
+        {
+            return Response<User>.DatabaseError(AuthResources.GetString("userUpdateFailed", ex.Message));
+        }
+        catch (Exception ex)
+        {
+            return Response<User>.UnhandledError(AuthResources.GetString("userUpdateFailed", ex.Message));
+        }
     }
 
     public async Task<Response<object>> DeleteAsync(int id, CancellationToken cancellationToken)
@@ -112,12 +134,10 @@ public class PostgresqlUserService(IUnitOfWork unitOfWork) : IUserService
         }
         catch (NpgsqlException ex)
         {
-            await _unitOfWork.RollbackTransactionAsync(cancellationToken);
             return Response<object>.DatabaseError(AuthResources.GetString("userDeletionFailed", ex.Message));
         }
         catch (Exception ex)
         {
-            await _unitOfWork.RollbackTransactionAsync(cancellationToken);
             return Response<object>.UnhandledError(AuthResources.GetString("userDeletionFailed", ex.Message));
         }
     }

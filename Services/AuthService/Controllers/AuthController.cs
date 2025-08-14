@@ -43,9 +43,9 @@ namespace AuthService.Controllers
 
         [MapToApiVersion("1.0")]
         [HttpPut("{id}")]
-        public async Task<Response<bool>> UpdateAsync(int id, UpdateUserDto updateUserDto, CancellationToken cancellationToken)
+        public async Task<Response<User>> UpdateAsync(int id, UpdateUserDto updateUserDto, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException("Update operation is not implemented yet.");
+            return await _userService.UpdateAsync(id, updateUserDto, cancellationToken);
         }
 
         [MapToApiVersion("1.0")]

@@ -79,9 +79,49 @@ public class UserRepository(UsersContext context) : IUserRepository
         return await _users.FindAsync([id], cancellationToken: cancellationToken);
     }
 
-    public async Task<object> UpdateAsync(int id, UpdateUserDto updateUserDto, CancellationToken cancellationToken)
+    public async Task<User?> UpdateAsync(int id, UpdateUserDto updateUserDto, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var user = await _users.FindAsync([id], cancellationToken: cancellationToken);
+
+        if (user == null)
+            return null!;
+
+        var sql = @"UPDATE users
+                    SET username = @Username,
+                        email = @Email,
+                        name = @Name,
+                        user_role = @UserRole,
+                        password_hash = crypt(@Password, gen_salt('bf'))
+                    WHERE id = @Id
+                    RETURNING id;";
+
+        await using var connection = _context.Database.GetDbConnection();
+        await connection.OpenAsync(cancellationToken);
+
+        await using var command = connection.CreateCommand();
+        command.CommandText = sql;
+        command.Parameters.Add(new NpgsqlParameter("@Id", id));
+        command.Parameters.Add(new NpgsqlParameter("@Username", updateUserDto.Username ?? user.Username));
+        command.Parameters.Add(new NpgsqlParameter("@Email", updateUserDto.Email ?? user.Email));
+        command.Parameters.Add(new NpgsqlParameter("@Name", updateUserDto.Name ?? user.Name));
+        command.Parameters.Add(new NpgsqlParameter("@UserRole", updateUserDto.UserRole ?? user.UserRole));
+        command.Parameters.Add(new NpgsqlParameter("@Password", updateUserDto.Password));
+
+        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+        await reader.ReadAsync(cancellationToken);
+
+        var updatedUserId = reader.GetInt32(0);
+
+        var updatedUser = new User
+        {
+            Id = updatedUserId,
+            Username = updateUserDto.Username ?? user.Username,
+            Email = updateUserDto.Email ?? user.Email,
+            Name = updateUserDto.Name ?? user.Name,
+            UserRole = updateUserDto.UserRole ?? user.UserRole
+        };
+
+        return updatedUser;
     }
 
     public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
