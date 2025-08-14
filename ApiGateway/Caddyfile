@@ -1,24 +1,28 @@
 localhost {
-    handle_path /api* {
-        handle /buildings* {
-            reverse_proxy buildings_service:8080
-        }
+    handle_path /docs/auth* {
+        reverse_proxy auth_service:8080
+    }
+    handle_path /docs/buildings* {
+        reverse_proxy buildings_service:8080
+    }
+    handle_path /docs/poles* {
+        reverse_proxy poles_service:8080
+    }
+    handle_path /docs/lines* {
+        reverse_proxy lines_service:8080
+    }
 
-		handle /poles* {
-			reverse_proxy poles_service:8080
-		}
-
-		handle /lines* {
-			reverse_proxy lines_service:8080
-		}
-
-		handle /auth* {
-			reverse_proxy auth_service:8080
-		}
-
-        handle {
-            respond "404 Not Found" 404
-        }
+    handle /api/v1/auth* {
+        reverse_proxy auth_service:8080
+    }
+    handle /api/v1/buildings* {
+        reverse_proxy buildings_service:8080
+    }
+    handle /api/v1/poles* {
+        reverse_proxy poles_service:8080
+    }
+    handle /api/v1/lines* {
+        reverse_proxy lines_service:8080
     }
 
     handle {

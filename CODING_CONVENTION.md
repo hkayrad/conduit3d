@@ -10,7 +10,6 @@
 - **Private Fields:** `_camelCase` with underscore prefix (e.g., `_userRepository`)
 
 ## 2. File & Folder Structure
-- Organize by feature or layer (e.g., `Controllers`, `Services`, `Repositories`, `Models`)
 - One class/interface per file
 - File name matches class/interface name
 
@@ -25,7 +24,6 @@
 - Avoid redundant comments
 
 ## 5. Error Handling
-- Use exceptions for error cases, not return codes
 - Catch only specific exceptions
 - Log errors with context
 
@@ -36,11 +34,6 @@
 ## 7. Async/Await
 - Use async methods for I/O operations
 - Suffix async methods with `Async` (e.g., `GetUserAsync`)
-
-<!-- ## 8. Unit Testing
-- Place tests in a separate project (e.g., `AuthService.Tests`)
-- Use xUnit or NUnit
-- Name test methods as `MethodName_State_ExpectedBehavior` -->
 
 ## 8. API Design
 - Use RESTful conventions for controllers
