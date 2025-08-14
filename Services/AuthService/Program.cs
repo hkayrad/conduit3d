@@ -46,7 +46,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
             IsSuccess = false,
             Message = AuthResources.GetString("oneOrMoreValidationError"),
             Data = errors,
-            StatusCode = HttpStatusCode. BadRequest
+            StatusCode = HttpStatusCode.BadRequest
         };
 
         return new BadRequestObjectResult(response);
@@ -84,6 +84,22 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
+app.Use(async (context, next) =>
+{
+    var path = context.Request.Path.Value?.ToLower();
+    if (path != null && !path.Contains("/api/v1/auth/login"))
+    {
+        var userRole = context.Request.Headers["Role"].FirstOrDefault();
+        if (string.IsNullOrEmpty(userRole) || userRole != "admin")
+        {
+            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+            await context.Response.WriteAsJsonAsync(Response<object>.Unauthorized("Admins only"));
+            return;
+        }
+    }
+    await next();
+});
 
 app.UseAuthorization();
 
