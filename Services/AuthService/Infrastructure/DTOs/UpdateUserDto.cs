@@ -16,9 +16,7 @@ public class UpdateUserDto : IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        if (string.IsNullOrWhiteSpace(Username))
-            yield return new ValidationResult(AuthResources.GetString("usernameNull"), [nameof(Username)]);
-        else
+        if (!string.IsNullOrWhiteSpace(Username))
         {
             if (Username.Length > 100)
                 yield return new ValidationResult(AuthResources.GetString("usernameTooLong"), [nameof(Username)]);
@@ -28,23 +26,20 @@ public class UpdateUserDto : IValidatableObject
                 yield return new ValidationResult(AuthResources.GetString("usernameInvalid"), [nameof(Username)]);
         }
 
-        if (string.IsNullOrWhiteSpace(Email))
-            yield return new ValidationResult(AuthResources.GetString("emailNull"), [nameof(Email)]);
-        else if (!Regex.IsMatch(Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
-            yield return new ValidationResult(AuthResources.GetString("emailInvalid"), [nameof(Email)]);
+        if (!string.IsNullOrWhiteSpace(Email))
+        {
+            if (!Regex.IsMatch(Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+                yield return new ValidationResult(AuthResources.GetString("emailInvalid"), [nameof(Email)]);
+        }
 
-        if (string.IsNullOrWhiteSpace(UserRole))
-            yield return new ValidationResult(AuthResources.GetString("userRoleNull"), [nameof(UserRole)]);
-        else
+        if (!string.IsNullOrWhiteSpace(UserRole))
         {
             var allowedRoles = new[] { "admin", "user", "test" };
             if (!Array.Exists(allowedRoles, r => r.Equals(UserRole, StringComparison.OrdinalIgnoreCase)))
                 yield return new ValidationResult(AuthResources.GetString("userRoleInvalid"), [nameof(UserRole)]);
         }
 
-        if (string.IsNullOrWhiteSpace(Name))
-            yield return new ValidationResult(AuthResources.GetString("nameNull"), [nameof(Name)]);
-        else
+        if (!string.IsNullOrWhiteSpace(Name))
         {
             if (Name.Length > 255)
                 yield return new ValidationResult(AuthResources.GetString("nameTooLong"), [nameof(Name)]);
@@ -54,9 +49,10 @@ public class UpdateUserDto : IValidatableObject
                 yield return new ValidationResult(AuthResources.GetString("nameInvalid"), [nameof(Name)]);
         }
 
-        if (string.IsNullOrWhiteSpace(Password))
-            yield return new ValidationResult(AuthResources.GetString("passwordNull"), [nameof(Password)]);
-        else if (!Regex.IsMatch(Password, @"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"))
-            yield return new ValidationResult(AuthResources.GetString("passwordInvalid"), [nameof(Password)]);
+        if (!string.IsNullOrWhiteSpace(Password))
+        {
+            if (!Regex.IsMatch(Password, @"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"))
+                yield return new ValidationResult(AuthResources.GetString("passwordInvalid"), [nameof(Password)]);
+        }
     }
 }
