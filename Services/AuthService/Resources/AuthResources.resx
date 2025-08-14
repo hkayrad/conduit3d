@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="metadata">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                            </xsd:sequence>
+                            <xsd:attribute name="name" use="required" type="xsd:string" />
+                            <xsd:attribute name="type" type="xsd:string" />
+                            <xsd:attribute name="mimetype" type="xsd:string" />
+                            <xsd:attribute ref="xml:space" />
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="assembly">
+                        <xsd:complexType>
+                            <xsd:attribute name="alias" type="xsd:string" />
+                            <xsd:attribute name="name" type="xsd:string" />
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0"
+                                    msdata:Ordinal="1" />
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0"
+                                    msdata:Ordinal="2" />
+                            </xsd:sequence>
+                            <xsd:attribute name="name" use="required" type="xsd:string" />
+                            <xsd:attribute name="type" type="xsd:string" />
+                            <xsd:attribute name="mimetype" type="xsd:string" />
+                            <xsd:attribute ref="xml:space" />
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="resheader">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0"
+                                    msdata:Ordinal="1" />
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" />
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0,
+            Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
+            Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+
+    <!-- Dto Validation Failure Messages -->
+    <data name="usernameNull" xml:space="preserve">
+        <value>Username is required.</value>
+    </data>
+    <data name="usernameTooLong" xml:space="preserve">
+        <value>Username cannot be longer than 100 characters.</value>
+    </data>
+    <data name="usernameTooShort" xml:space="preserve">
+        <value>Username cannot be shorter than 3 characters.</value>
+    </data>
+
+    <data name="emailNull" xml:space="preserve">
+        <value>Email is required.</value>
+    </data>
+    <data name="emailInvalid" xml:space="preserve">
+        <value>Email is not valid.</value>
+    </data>
+
+    <data name="userRoleNull" xml:space="preserve">
+        <value>User role is required.</value>
+    </data>
+    <data name="userRoleInvalid" xml:space="preserve">
+        <value>User role is not valid.</value>
+    </data>
+
+    <data name="passwordNull" xml:space="preserve">
+        <value>Password is required.</value>
+    </data>
+    <data name="passwordInvalid" xml:space="preserve">
+        <value>Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number.</value>
+    </data>
+
+    <!-- API Success Messages -->
+    <data name="usersRetrieved" xml:space="preserve">
+        <value>Users retrieved successfully.</value>
+    </data>
+    <data name="userCreated" xml:space="preserve">
+        <value>User created successfully.</value>
+    </data>
+    <data name="loginSuccessful" xml:space="preserve">
+        <value>Login successful.</value>
+    </data>
+
+    <!-- API Failure Messages -->
+    <data name="noUserFound" xml:space="preserve">
+        <value>No user found.</value>
+    </data>
+    <data name="invalidUserData" xml:space="preserve">
+        <value>Invalid user data.</value>
+    </data>
+    <data name="invalidLoginData" xml:space="preserve">
+        <value>Invalid user data.</value>
+    </data>
+    <data name="wrongLoginData" xml:space="preserve">
+        <value>Invalid email or password.</value>
+    </data>
+
+</root>

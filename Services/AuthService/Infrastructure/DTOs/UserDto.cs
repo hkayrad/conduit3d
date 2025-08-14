@@ -1,15 +1,13 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
+using AuthService.Resources;
 
 namespace AuthService.Infrastructure.DTOs;
 
-public class UserDto
+public class UserDto : IValidatableObject
 {
-    [Required]
-    [MaxLength(100)]
     public required string Username { get; set; }
-    [Required]
-    [MaxLength(255)]
     public required string Email { get; set; }
     [Required]
     [MaxLength(10)]
@@ -17,4 +15,32 @@ public class UserDto
     [Required]
     [MaxLength(255)]
     public required string Name { get; set; }
+
+    public virtual IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (string.IsNullOrWhiteSpace(Username))
+            yield return new ValidationResult(AuthResources.GetString("usernameNull"), [nameof(Username)]);
+        else
+        {
+            if (Username.Length > 100)
+                yield return new ValidationResult(AuthResources.GetString("usernameTooLong"), [nameof(Username)]);
+
+            if (Username.Length < 3)
+                yield return new ValidationResult(AuthResources.GetString("usernameTooShort"), [nameof(Username)]);
+        }
+
+        if (string.IsNullOrWhiteSpace(Email))
+            yield return new ValidationResult(AuthResources.GetString("emailNull"), [nameof(Email)]);
+        else if (!Regex.IsMatch(Email, @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"))
+            yield return new ValidationResult(AuthResources.GetString("emailInvalid"), [nameof(Email)]);
+
+        if (string.IsNullOrWhiteSpace(UserRole))
+            yield return new ValidationResult(AuthResources.GetString("userRoleNull"), [nameof(UserRole)]);
+        else
+        {
+            var allowedRoles = new[] { "admin", "user", "test" };
+            if (!Array.Exists(allowedRoles, r => r.Equals(UserRole, StringComparison.OrdinalIgnoreCase)))
+                yield return new ValidationResult(AuthResources.GetString("userRoleInvalid"), [nameof(UserRole)]);
+        }
+    }
 }

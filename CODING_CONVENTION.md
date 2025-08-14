@@ -18,6 +18,7 @@
 - Braces: Allman style (braces on new line)
 - Max line length: 120 characters
 - Use regions sparingly, only for large files
+- Use collection expressions where applicable
 
 ## 4. Comments & Documentation
 - Inline comments for complex logic
