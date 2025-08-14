@@ -31,4 +31,16 @@ public class Response<T>
             Data = default!
         };
     }
+
+    public static Response<T> DatabaseError(string message) => Failure(message, HttpStatusCode.InternalServerError);
+
+    public static Response<T> NotFound(string message) => Failure(message, HttpStatusCode.NotFound);
+
+    public static Response<T> Unauthorized(string message) => Failure(message, HttpStatusCode.Unauthorized);
+
+    public static Response<T> Forbidden(string message) => Failure(message, HttpStatusCode.Forbidden);
+
+    public static Response<T> UnhandledError(string message) => Failure(message, HttpStatusCode.InternalServerError);
+
+    public static Response<T> ValidationError(string message) => Failure(message, HttpStatusCode.BadRequest);
 }
