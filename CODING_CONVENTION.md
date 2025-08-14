@@ -25,7 +25,7 @@
 - Avoid redundant comments
 
 ## 5. Error Handling
-- Catch only specific exceptions
+- Return exceptions to the user as Response<T>.Failure
 - Log errors with context
 
 ## 6. Dependency Injection
