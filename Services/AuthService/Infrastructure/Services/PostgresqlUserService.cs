@@ -84,6 +84,23 @@ public class PostgresqlUserService(IUnitOfWork unitOfWork) : IUserService
         }
     }
 
+    public async Task<Response<int>> GetCountAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            var count = await _unitOfWork.UserRepository.GetCountAsync(cancellationToken);
+            return Response<int>.Success(count, AuthResources.GetString("userCountRetrieved"));
+        }
+        catch (NpgsqlException ex)
+        {
+            return Response<int>.DatabaseError(AuthResources.GetString("userCountRetrievalFailed", ex.Message));
+        }
+        catch (Exception ex)
+        {
+            return Response<int>.UnhandledError(AuthResources.GetString("userCountRetrievalFailed", ex.Message));
+        }
+    }
+
     public async Task<Response<User>> UpdateAsync(int id,
                                                     UpdateUserDto updateUserDto,
                                                     CancellationToken cancellationToken)
