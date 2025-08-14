@@ -48,6 +48,8 @@ public class UserDto : IValidatableObject
                 yield return new ValidationResult(AuthResources.GetString("nameTooLong"), [nameof(Name)]);
             if (Name.Length < 3)
                 yield return new ValidationResult(AuthResources.GetString("nameTooShort"), [nameof(Name)]);
+            if (!Regex.IsMatch(Name, @"^[a-zA-Z\s]+$"))
+                yield return new ValidationResult(AuthResources.GetString("nameInvalid"), [nameof(Name)]);
         }
     }
 }

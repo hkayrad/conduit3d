@@ -113,6 +113,9 @@
     <data name="nameTooShort" xml:space="preserve">
         <value>Name cannot be shorter than 3 characters.</value>
     </data>
+    <data name="nameInvalid" xml:space="preserve">
+        <value>Name can only contain letters and spaces.</value>
+    </data>
 
     <!-- API Success Messages -->
     <data name="usersRetrieved" xml:space="preserve">
@@ -120,6 +123,9 @@
     </data>
     <data name="userRetrieved" xml:space="preserve">
         <value>User retrieved successfully.</value>
+    </data>
+    <data name="userCountRetrieved" xml:space="preserve">
+        <value>User count retrieved successfully.</value>
     </data>
     <data name="userCreated" xml:space="preserve">
         <value>User created successfully.</value>
@@ -162,6 +168,9 @@
     </data>
     <data name="userDeletionFailed" xml:space="preserve">
         <value>User deletion failed: {0}</value>
+    </data>
+    <data name="userCountRetrievalFailed" xml:space="preserve">
+        <value>User count retrieval failed: {0}</value>
     </data>
     <data name="loginFailed" xml:space="preserve">
         <value>User login failed: {0}</value>
