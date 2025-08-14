@@ -14,6 +14,7 @@ localhost {
 
     handle /api/v1/auth* {
         reverse_proxy auth_service:8080
+        # Login disinda butun auth urllerine admin kontrolu koy.
     }
     handle /api/v1/buildings* {
         reverse_proxy buildings_service:8080

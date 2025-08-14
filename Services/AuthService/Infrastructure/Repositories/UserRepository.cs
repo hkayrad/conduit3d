@@ -13,25 +13,6 @@ public class UserRepository(UsersContext context) : IUserRepository
     private readonly UsersContext _context = context;
     private readonly DbSet<User> _users = context.Set<User>();
 
-    public async Task<List<User>> GetAllAsync(int pageNumber,
-                                            int pageSize,
-                                            string sortBy,
-                                            bool ascending,
-                                            CancellationToken cancellationToken)
-    {
-        var query = _users.AsQueryable();
-
-        if (ascending)
-            query = query.OrderBy(u => EF.Property<object>(u, sortBy));
-        else
-            query = query.OrderByDescending(u => EF.Property<object>(u, sortBy));
-
-        query = query.Skip((pageNumber - 1) * pageSize)
-                     .Take(pageSize);
-
-        return await query.ToListAsync(cancellationToken);
-    }
-
     public async Task<User> CreateAsync(AddUserDto addUserDto, CancellationToken cancellationToken)
     {
         var sql = @"INSERT INTO users (username, email, user_role, name, password_hash)
@@ -74,9 +55,53 @@ public class UserRepository(UsersContext context) : IUserRepository
         return user;
     }
 
+    public async Task<List<User>> GetAllAsync(int pageNumber,
+                                            int pageSize,
+                                            string sortBy,
+                                            bool ascending,
+                                            CancellationToken cancellationToken)
+    {
+        var query = _users.AsQueryable();
+
+        if (ascending)
+            query = query.OrderBy(u => EF.Property<object>(u, sortBy));
+        else
+            query = query.OrderByDescending(u => EF.Property<object>(u, sortBy));
+
+        query = query.Skip((pageNumber - 1) * pageSize)
+                     .Take(pageSize);
+
+        return await query.ToListAsync(cancellationToken);
+    }
+
+    public async Task<User?> GetByIdAsync(int id, CancellationToken cancellationToken)
+    {
+        return await _users.FindAsync([id], cancellationToken: cancellationToken);
+    }
+
+    public async Task<object> UpdateAsync(int id, UpdateUserDto updateUserDto, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
+    {
+        var user = await _users.FindAsync([id], cancellationToken: cancellationToken);
+
+        if (user == null)
+            return false;
+
+        _users.Remove(user);
+
+        return true;
+    }
+
     public async Task<string> LoginAsync(LoginUserDto loginUserDto, CancellationToken cancellationToken)
     {
-        var sql = @"SELECT username, email, user_role FROM users WHERE username = @Username AND password_hash = crypt(@Password, password_hash)";
+        var sql = @"SELECT username, email, user_role 
+                    FROM users 
+                    WHERE username = @Username 
+                        AND password_hash = crypt(@Password, password_hash)";
 
         await using var connection = _context.Database.GetDbConnection();
         await connection.OpenAsync(cancellationToken);

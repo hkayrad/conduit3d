@@ -36,23 +36,23 @@ namespace AuthService.Controllers
 
         [MapToApiVersion("1.0")]
         [HttpGet("{id}")]
-        public async Task<Response<User>> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<Response<User>> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException("GetById operation is not implemented yet.");
+            return await _userService.GetByIdAsync(id, cancellationToken);
         }
 
         [MapToApiVersion("1.0")]
         [HttpPut("{id}")]
-        public async Task<Response<bool>> UpdateAsync(Guid id, UpdateUserDto updateUserDto, CancellationToken cancellationToken)
+        public async Task<Response<bool>> UpdateAsync(int id, UpdateUserDto updateUserDto, CancellationToken cancellationToken)
         {
             throw new NotImplementedException("Update operation is not implemented yet.");
         }
 
         [MapToApiVersion("1.0")]
         [HttpDelete("{id}")]
-        public async Task<Response<bool>> DeleteAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<Response<object>> DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException("Delete operation is not implemented yet.");
+            return await _userService.DeleteAsync(id, cancellationToken);
         }
 
         [MapToApiVersion("1.0")]

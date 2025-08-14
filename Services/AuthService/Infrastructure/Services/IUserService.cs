@@ -7,7 +7,10 @@ namespace AuthService.Infrastructure.Services;
 
 public interface IUserService
 {
-    Task<Response<List<User>>> GetAllUsersAsync(int pageSize, int pageNumber, string sortBy, bool ascending, CancellationToken cancellationToken);
     Task<Response<User>> CreateAsync(AddUserDto addUserDto, CancellationToken cancellationToken);
+    Task<Response<List<User>>> GetAllUsersAsync(int pageSize, int pageNumber, string sortBy, bool ascending, CancellationToken cancellationToken);
+    Task<Response<User>> GetByIdAsync(int id, CancellationToken cancellationToken);
+    Task<Response<object>> UpdateAsync(int id, UpdateUserDto updateUserDto, CancellationToken cancellationToken);
+    Task<Response<object>> DeleteAsync(int id, CancellationToken cancellationToken);
     Task<Response<string>> LoginAsync(LoginUserDto loginUserDto, CancellationToken cancellationToken);
 }

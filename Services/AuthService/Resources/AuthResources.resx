@@ -118,8 +118,17 @@
     <data name="usersRetrieved" xml:space="preserve">
         <value>Users retrieved successfully.</value>
     </data>
+    <data name="userRetrieved" xml:space="preserve">
+        <value>User retrieved successfully.</value>
+    </data>
     <data name="userCreated" xml:space="preserve">
         <value>User created successfully.</value>
+    </data>
+    <data name="userUpdated" xml:space="preserve">
+        <value>User updated successfully.</value>
+    </data>
+    <data name="userDeleted" xml:space="preserve">
+        <value>User deleted successfully.</value>
     </data>
     <data name="loginSuccessful" xml:space="preserve">
         <value>Login successful.</value>
@@ -133,10 +142,29 @@
         <value>Invalid user data.</value>
     </data>
     <data name="invalidLoginData" xml:space="preserve">
-        <value>Invalid user data.</value>
+        <value>No user found with given credentials.</value>
     </data>
     <data name="wrongLoginData" xml:space="preserve">
         <value>Invalid email or password.</value>
+    </data>
+    <data name="invalidUserId" xml:space="preserve">
+        <value>Invalid user ID.</value>
+    </data>
+
+    <data name="userRetrievalFailed" xml:space="preserve">
+        <value>User retrieval failed: {0}</value>
+    </data>
+    <data name="userCreationFailed" xml:space="preserve">
+        <value>User creation failed: {0}</value>
+    </data>
+    <data name="userUpdateFailed" xml:space="preserve">
+        <value>User update failed: {0}</value>
+    </data>
+    <data name="userDeletionFailed" xml:space="preserve">
+        <value>User deletion failed: {0}</value>
+    </data>
+    <data name="loginFailed" xml:space="preserve">
+        <value>User login failed: {0}</value>
     </data>
 
 </root>
