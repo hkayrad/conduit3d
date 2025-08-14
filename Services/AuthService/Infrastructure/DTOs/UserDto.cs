@@ -9,11 +9,7 @@ public class UserDto : IValidatableObject
 {
     public required string Username { get; set; }
     public required string Email { get; set; }
-    [Required]
-    [MaxLength(10)]
     public required string UserRole { get; set; }
-    [Required]
-    [MaxLength(255)]
     public required string Name { get; set; }
 
     public virtual IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
@@ -24,9 +20,10 @@ public class UserDto : IValidatableObject
         {
             if (Username.Length > 100)
                 yield return new ValidationResult(AuthResources.GetString("usernameTooLong"), [nameof(Username)]);
-
             if (Username.Length < 3)
                 yield return new ValidationResult(AuthResources.GetString("usernameTooShort"), [nameof(Username)]);
+            if (!Regex.IsMatch(Username, @"^[a-zA-Z0-9_]+$"))
+                yield return new ValidationResult(AuthResources.GetString("usernameInvalid"), [nameof(Username)]);
         }
 
         if (string.IsNullOrWhiteSpace(Email))
@@ -41,6 +38,16 @@ public class UserDto : IValidatableObject
             var allowedRoles = new[] { "admin", "user", "test" };
             if (!Array.Exists(allowedRoles, r => r.Equals(UserRole, StringComparison.OrdinalIgnoreCase)))
                 yield return new ValidationResult(AuthResources.GetString("userRoleInvalid"), [nameof(UserRole)]);
+        }
+
+        if (string.IsNullOrWhiteSpace(Name))
+            yield return new ValidationResult(AuthResources.GetString("nameNull"), [nameof(Name)]);
+        else
+        {
+            if (Name.Length > 255)
+                yield return new ValidationResult(AuthResources.GetString("nameTooLong"), [nameof(Name)]);
+            if (Name.Length < 3)
+                yield return new ValidationResult(AuthResources.GetString("nameTooShort"), [nameof(Name)]);
         }
     }
 }

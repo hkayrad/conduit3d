@@ -1,7 +1,11 @@
+using System.Net;
 using Asp.Versioning;
 using AuthService.Infrastructure;
 using AuthService.Infrastructure.Data;
 using AuthService.Infrastructure.Services;
+using AuthService.Resources;
+using Conduit3D.Common.Domain;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -24,6 +28,29 @@ builder.Services.AddApiVersioning(options =>
 {
     options.GroupNameFormat = "'v'VVV";
     options.SubstituteApiVersionInUrl = true;
+});
+
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        var errors = context.ModelState
+            .Where(x => x.Value?.Errors.Count > 0)
+            .ToDictionary(
+                x => x.Key,
+                x => x.Value!.Errors.Select(e => e.ErrorMessage).ToArray()
+            );
+
+        var response = new Response<object>
+        {
+            IsSuccess = false,
+            Message = AuthResources.GetString("oneOrMoreValidationError"),
+            Data = errors,
+            StatusCode = HttpStatusCode. BadRequest
+        };
+
+        return new BadRequestObjectResult(response);
+    };
 });
 
 builder.Services.AddCors();

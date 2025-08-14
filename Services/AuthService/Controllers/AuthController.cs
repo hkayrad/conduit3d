@@ -14,6 +14,14 @@ namespace AuthService.Controllers
     {
         private readonly IUserService _userService = userService ?? throw new ArgumentNullException(nameof(userService));
 
+
+        [MapToApiVersion("1.0")]
+        [HttpPost]
+        public async Task<Response<User>> CreateAsync(AddUserDto addUserDto, CancellationToken cancellationToken)
+        {
+            return await _userService.CreateAsync(addUserDto, cancellationToken);
+        }
+
         [MapToApiVersion("1.0")]
         [HttpGet]
         public async Task<Response<List<User>>> GetAll(
@@ -27,10 +35,24 @@ namespace AuthService.Controllers
         }
 
         [MapToApiVersion("1.0")]
-        [HttpPost]
-        public async Task<Response<User>> CreateAsync(AddUserDto addUserDto, CancellationToken cancellationToken)
+        [HttpGet("{id}")]
+        public async Task<Response<User>> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            return await _userService.CreateAsync(addUserDto, cancellationToken);
+            throw new NotImplementedException("GetById operation is not implemented yet.");
+        }
+
+        [MapToApiVersion("1.0")]
+        [HttpPut("{id}")]
+        public async Task<Response<bool>> UpdateAsync(Guid id, UpdateUserDto updateUserDto, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException("Update operation is not implemented yet.");
+        }
+
+        [MapToApiVersion("1.0")]
+        [HttpDelete("{id}")]
+        public async Task<Response<bool>> DeleteAsync(Guid id, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException("Delete operation is not implemented yet.");
         }
 
         [MapToApiVersion("1.0")]

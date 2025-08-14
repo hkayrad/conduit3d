@@ -21,14 +21,13 @@ public class LoginUserDto : IValidatableObject
         {
             if (Username.Length > 100)
                 yield return new ValidationResult(AuthResources.GetString("usernameTooLong"), [nameof(Username)]);
-
             if (Username.Length < 3)
                 yield return new ValidationResult(AuthResources.GetString("usernameTooShort"), [nameof(Username)]);
+            if (!Regex.IsMatch(Username, @"^[a-zA-Z0-9_]+$"))
+                yield return new ValidationResult(AuthResources.GetString("usernameInvalid"), [nameof(Username)]);
         }
 
         if (string.IsNullOrWhiteSpace(Password))
             yield return new ValidationResult(AuthResources.GetString("passwordNull"), [nameof(Password)]);
-        else if (!Regex.IsMatch(Password, @"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"))
-            yield return new ValidationResult(AuthResources.GetString("passwordInvalid"), [nameof(Password)]);
     }
 }
