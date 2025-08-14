@@ -12,7 +12,8 @@ namespace AuthService.Controllers
     [ApiVersion("1.0")]
     public class AuthController(IUserService userService) : ControllerBase
     {
-        private readonly IUserService _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+        private readonly IUserService _userService = userService ?? throw new ArgumentNullException(
+            nameof(userService));
 
 
         [MapToApiVersion("1.0")]
@@ -36,28 +37,44 @@ namespace AuthService.Controllers
 
         [MapToApiVersion("1.0")]
         [HttpGet("{id}")]
-        public async Task<Response<User>> GetByIdAsync(int id, CancellationToken cancellationToken)
+        public async Task<Response<User>> GetByIdAsync(
+            int id,
+            CancellationToken cancellationToken = default)
         {
             return await _userService.GetByIdAsync(id, cancellationToken);
         }
 
         [MapToApiVersion("1.0")]
+        [HttpGet("count")]
+        public async Task<Response<int>> GetCountAsync(CancellationToken cancellationToken = default)
+        {
+            return await _userService.GetCountAsync(cancellationToken);
+        }
+
+        [MapToApiVersion("1.0")]
         [HttpPut("{id}")]
-        public async Task<Response<User>> UpdateAsync(int id, UpdateUserDto updateUserDto, CancellationToken cancellationToken)
+        public async Task<Response<User>> UpdateAsync(
+            int id,
+            UpdateUserDto updateUserDto,
+            CancellationToken cancellationToken = default)
         {
             return await _userService.UpdateAsync(id, updateUserDto, cancellationToken);
         }
 
         [MapToApiVersion("1.0")]
         [HttpDelete("{id}")]
-        public async Task<Response<object>> DeleteAsync(int id, CancellationToken cancellationToken)
+        public async Task<Response<object>> DeleteAsync(
+            int id,
+            CancellationToken cancellationToken = default)
         {
             return await _userService.DeleteAsync(id, cancellationToken);
         }
 
         [MapToApiVersion("1.0")]
         [HttpPost("login")]
-        public async Task<Response<string>> LoginAsync(LoginUserDto loginUserDto, CancellationToken cancellationToken)
+        public async Task<Response<string>> LoginAsync(
+            LoginUserDto loginUserDto,
+            CancellationToken cancellationToken = default)
         {
             return await _userService.LoginAsync(loginUserDto, cancellationToken);
         }

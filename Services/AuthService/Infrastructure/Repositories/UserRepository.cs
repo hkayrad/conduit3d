@@ -79,6 +79,11 @@ public class UserRepository(UsersContext context) : IUserRepository
         return await _users.FindAsync([id], cancellationToken: cancellationToken);
     }
 
+    public async Task<int> GetCountAsync(CancellationToken cancellationToken)
+    {
+        return await _users.CountAsync(cancellationToken);
+    }
+
     public async Task<User?> UpdateAsync(int id, UpdateUserDto updateUserDto, CancellationToken cancellationToken)
     {
         var user = await _users.FindAsync([id], cancellationToken: cancellationToken);
