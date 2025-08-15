@@ -62,6 +62,11 @@ services:
   api_gateway:
     image: caddy_gateway:latest
     container_name: api_gateway
+    environment:
+      - JWT_SECRET_BASE64=${JWT_SECRET_BASE64}
+      - JWT_ISSUER=${JWT_ISSUER}
+      - JWT_AUDIENCE=${JWT_AUDIENCE}
+      - JWT_EXPIRATION_TIME_HRS=${JWT_EXPIRATION_TIME_HRS}
     networks:
       - api_gateway_network
     ports:
@@ -81,14 +86,14 @@ services:
     container_name: buildings_service
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - BUILDINGS_POSTGRESQL_CONNECTION_STRING=Host=buildings_database;Database=${BUILDINGS_DB_NAME};Username=${BUILDINGS_DB_USER};Password=${BUILDINGS_DB_PASS}
+      - POSTGRESQL_CONNECTION_STRING=Host=buildings_database;Database=${BUILDINGS_DB_NAME};Username=${BUILDINGS_DB_USER};Password=${BUILDINGS_DB_PASS}
     depends_on:
       - buildings_database
     networks:
       - gis_db_connection
       - api_gateway_network
-    ports:
-      - "5001:8080"
+    # ports:
+    #   - "5001:8080"
     restart: unless-stopped
 
   lines_service:
@@ -98,14 +103,14 @@ services:
     container_name: lines_service
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - LINES_POSTGRESQL_CONNECTION_STRING=Host=lines_database;Database=${LINES_DB_NAME};Username=${LINES_DB_USER};Password=${LINES_DB_PASS}
+      - POSTGRESQL_CONNECTION_STRING=Host=lines_database;Database=${LINES_DB_NAME};Username=${LINES_DB_USER};Password=${LINES_DB_PASS}
     depends_on:
       - lines_database
     networks:
       - gis_db_connection
       - api_gateway_network
-    ports:
-      - "5002:8080"
+    # ports:
+    #   - "5002:8080"
     restart: unless-stopped
         
   poles_service:
@@ -115,14 +120,14 @@ services:
     container_name: poles_service
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - POLES_POSTGRESQL_CONNECTION_STRING=Host=poles_database;Database=${POLES_DB_NAME};Username=${POLES_DB_USER};Password=${POLES_DB_PASS}
+      - POSTGRESQL_CONNECTION_STRING=Host=poles_database;Database=${POLES_DB_NAME};Username=${POLES_DB_USER};Password=${POLES_DB_PASS}
     depends_on:
       - poles_database
     networks:
       - gis_db_connection
       - api_gateway_network
-    ports:
-      - "5003:8080"
+    # ports:
+    #   - "5003:8080"
     restart: unless-stopped
 
   auth_service:
@@ -132,14 +137,18 @@ services:
     container_name: auth_service
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - AUTH_POSTGRESQL_CONNECTION_STRING=Host=auth_database;Database=${AUTH_DB_NAME};Username=${AUTH_DB_USER};Password=${AUTH_DB_PASS}
+      - POSTGRESQL_CONNECTION_STRING=Host=auth_database;Database=${AUTH_DB_NAME};Username=${AUTH_DB_USER};Password=${AUTH_DB_PASS}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_ISSUER=${JWT_ISSUER}
+      - JWT_AUDIENCE=${JWT_AUDIENCE}
+      - JWT_EXPIRATION_TIME_HRS=${JWT_EXPIRATION_TIME_HRS}
     depends_on:
       - auth_database
     networks:
       - gis_db_connection
       - api_gateway_network
-    ports:
-      - "5000:8080"
+    # ports:
+    #   - "5000:8080"
     restart: unless-stopped
 
 networks:
