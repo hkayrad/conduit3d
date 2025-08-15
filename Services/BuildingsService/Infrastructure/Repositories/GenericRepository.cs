@@ -32,11 +32,18 @@ public class GenericRepository<T>(DbContext context) : IGenericRepository<T> whe
 
     public async Task<T?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var query = _dbSet.FromSql($@"SELECT id, name, type, ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson
+                    FROM buildings
+                    WHERE id = {id}");
+        return await query.FirstOrDefaultAsync(cancellationToken);
     }
 
     public async Task<int> GetCountAsync(Extent extent, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var query = _dbSet.FromSql($@"SELECT *
+                    FROM buildings
+                    WHERE ST_Transform(geometry, 4326) @ ST_MakeEnvelope({extent.MinX}, {extent.MinY}, {extent.MaxX}, {extent.MaxY}, 4326)");
+
+        return await query.CountAsync(cancellationToken);
     }
 }

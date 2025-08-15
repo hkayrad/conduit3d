@@ -32,5 +32,22 @@ namespace BuildingsService.Controllers
                                                     extent,
                                                     cancellationToken);
         }
+
+        [MapToApiVersion("1.0")]
+        [HttpGet("{id}")]
+        public async Task<Response<Building?>> GetByIdAsync(int id, CancellationToken cancellationToken)
+        {
+            return await _buildingsService.GetByIdAsync(id, cancellationToken);
+        }
+
+        [MapToApiVersion("1.0")]
+        [HttpGet("count")]
+        public async Task<Response<int>> GetCountAsync(
+            [FromQuery] Extent? extent = null,
+            CancellationToken cancellationToken = default
+        )
+        {
+            return await _buildingsService.GetCountAsync(extent, cancellationToken);
+        }
     }
 }
