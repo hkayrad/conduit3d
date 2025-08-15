@@ -23,6 +23,10 @@ public class PostgresqlBuildingsService(IUnitOfWork unitOfWork) : IBuildingsServ
         if (pageNumber < 1)
             return Response<List<Building>>.ValidationError(BuildingsResources.GetString("invalidPageNumber"));
 
+        var allowedSortColumns = new[] { "Id", "Name", "FloorCount", "Type", "GeoJson" };
+        if (!allowedSortColumns.Contains(sortBy))
+            return Response<List<Building>>.ValidationError(BuildingsResources.GetString("invalidSortBy"));
+
         extent ??= new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
 
         if (extent.MinX == 0 && extent.MinY == 0 && extent.MaxX == 0 && extent.MaxY == 0)

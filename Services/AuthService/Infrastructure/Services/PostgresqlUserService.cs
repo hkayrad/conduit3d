@@ -46,6 +46,10 @@ public class PostgresqlUserService(IUnitOfWork unitOfWork) : IUserService
         if (pageNumber < 1)
             return Response<List<User>>.ValidationError(AuthResources.GetString("invalidPageNumber"));
 
+        var allowedSortColumns = new[] { "Id", "Username", "Email", "UserRole", "Name", "CreatedAt" };
+        if (!allowedSortColumns.Contains(sortBy))
+            return Response<List<User>>.ValidationError(AuthResources.GetString("invalidSortBy"));
+
         try
         {
             var users = await _unitOfWork.UserRepository.GetAllAsync(pageNumber,
