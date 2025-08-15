@@ -1,8 +1,8 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
-using AuthService.Domain;
 using AuthService.Resources;
+using Conduit3D.Common.Domain;
 
 namespace AuthService.Infrastructure.DTOs;
 

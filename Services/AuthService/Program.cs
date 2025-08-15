@@ -1,6 +1,5 @@
 using System.Net;
 using Asp.Versioning;
-using AuthService.Domain;
 using AuthService.Infrastructure;
 using AuthService.Infrastructure.Data;
 using AuthService.Infrastructure.Services;

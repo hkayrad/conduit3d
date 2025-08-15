@@ -1,6 +1,6 @@
 using System;
 
-namespace AuthService.Domain;
+namespace Conduit3D.Common.Domain;
 
 public static class Roles
 {
