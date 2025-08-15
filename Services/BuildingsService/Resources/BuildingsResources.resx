@@ -109,5 +109,8 @@
     <data name="invalidPageNumber" xml:space="preserve">
         <value>Page number must be greater than 0</value>
     </data>
+    <data name="invalidSortBy" xml:space="preserve">
+        <value>Sort by must be either Id, Name, FloorCount, Type, or GeoJson.</value>
+    </data>
 
 </root>

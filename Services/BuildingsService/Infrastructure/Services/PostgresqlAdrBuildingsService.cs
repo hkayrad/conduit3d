@@ -19,9 +19,13 @@ public class PostgresqlAdrBuildingsService(IUnitOfWork unitOfWork) : IAdrBuildin
     {
         if (pageSize < 1 || pageSize > 100000)
             return Response<List<AdrBuilding>>.ValidationError(BuildingsResources.GetString("invalidPageSize"));
-            
+
         if (pageNumber < 1)
             return Response<List<AdrBuilding>>.ValidationError(BuildingsResources.GetString("invalidPageNumber"));
+
+        var allowedSortColumns = new[] { "Id", "Name", "FloorCount", "Type", "GeoJson" };
+        if (!allowedSortColumns.Contains(sortBy))
+            return Response<List<AdrBuilding>>.ValidationError(BuildingsResources.GetString("invalidSortBy"));
 
         extent ??= new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
 
