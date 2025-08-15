@@ -40,6 +40,12 @@ public class PostgresqlUserService(IUnitOfWork unitOfWork) : IUserService
                                                             bool ascending,
                                                             CancellationToken cancellationToken)
     {
+        if (pageSize < 1 || pageSize > 100000)
+            return Response<List<User>>.ValidationError(AuthResources.GetString("invalidPageSize"));
+
+        if (pageNumber < 1)
+            return Response<List<User>>.ValidationError(AuthResources.GetString("invalidPageNumber"));
+
         try
         {
             var users = await _unitOfWork.UserRepository.GetAllAsync(pageNumber,
