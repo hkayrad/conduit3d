@@ -181,4 +181,11 @@
         <value>User login failed: {0}</value>
     </data>
 
+    <data name="invalidPageSize" xml:space="preserve">
+        <value>Page size must be between 1 and 100000</value>
+    </data>
+    <data name="invalidPageNumber" xml:space="preserve">
+        <value>Page number must be greater than 0</value>
+    </data>
+
 </root>

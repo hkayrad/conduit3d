@@ -17,6 +17,12 @@ public class PostgresqlBuildingsService(IUnitOfWork unitOfWork) : IBuildingsServ
                                             Extent? extent,
                                             CancellationToken cancellationToken)
     {
+        if (pageSize < 1 || pageSize > 100000)
+            return Response<List<Building>>.ValidationError(BuildingsResources.GetString("invalidPageSize"));
+
+        if (pageNumber < 1)
+            return Response<List<Building>>.ValidationError(BuildingsResources.GetString("invalidPageNumber"));
+
         extent ??= new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
 
         if (extent.MinX == 0 && extent.MinY == 0 && extent.MaxX == 0 && extent.MaxY == 0)
