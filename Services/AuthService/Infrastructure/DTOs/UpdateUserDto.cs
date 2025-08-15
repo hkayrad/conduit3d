@@ -34,7 +34,7 @@ public class UpdateUserDto : IValidatableObject
 
         if (!string.IsNullOrWhiteSpace(UserRole))
         {
-            var allowedRoles = new[] { "admin", "user", "test" };
+            var allowedRoles = Roles.AllowedRoles;
             if (!Array.Exists(allowedRoles, r => r.Equals(UserRole, StringComparison.OrdinalIgnoreCase)))
                 yield return new ValidationResult(AuthResources.GetString("userRoleInvalid"), [nameof(UserRole)]);
         }

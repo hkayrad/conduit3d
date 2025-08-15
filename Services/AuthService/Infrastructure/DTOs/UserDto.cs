@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
+using AuthService.Domain;
 using AuthService.Resources;
 
 namespace AuthService.Infrastructure.DTOs;
@@ -35,7 +36,7 @@ public class UserDto : IValidatableObject
             yield return new ValidationResult(AuthResources.GetString("userRoleNull"), [nameof(UserRole)]);
         else
         {
-            var allowedRoles = new[] { "admin", "user", "test" };
+            var allowedRoles = Roles.AllowedRoles;
             if (!Array.Exists(allowedRoles, r => r.Equals(UserRole, StringComparison.OrdinalIgnoreCase)))
                 yield return new ValidationResult(AuthResources.GetString("userRoleInvalid"), [nameof(UserRole)]);
         }
