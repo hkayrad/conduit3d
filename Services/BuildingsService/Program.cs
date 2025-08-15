@@ -71,6 +71,7 @@ builder.Services.AddDbContext<BuildingsContext>(options =>
 });
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IBuildingsService, PostgresqlBuildingsService>();
+builder.Services.AddScoped<IAdrBuildingsService, PostgresqlAdrBuildingsService>();
 
 var app = builder.Build();
 
