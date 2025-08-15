@@ -49,4 +49,13 @@ public class UnitOfWork(UsersContext context) : IUnitOfWork
     {
         await _context.SaveChangesAsync(cancellationToken);
     }
+
+    public void Dispose()
+    {
+        if (!_disposed)
+        {
+            _context.Dispose();
+            _disposed = true;
+        }
+    }
 }

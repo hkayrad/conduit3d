@@ -88,6 +88,17 @@ app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.Use(async (context, next) =>
 {
     var path = context.Request.Path.Value?.ToLower();
+
+    if (app.Environment.IsDevelopment())
+    {
+        Console.WriteLine($"--- HEADERS ---");
+        foreach (var header in context.Request.Headers)
+        {
+            Console.WriteLine($"{header.Key}: {header.Value}");
+        }
+        Console.WriteLine($"--- END HEADERS ---");
+    }
+
     if (path != null && !path.Contains("/api/v1/auth/login") && !path.Contains("/swagger"))
     {
         var userRole = context.Request.Headers["Role"].FirstOrDefault();
