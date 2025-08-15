@@ -10,7 +10,7 @@ public interface IBuildingsService
                                             int pageSize,
                                             string sortBy,
                                             bool ascending,
-                                            Extent extent,
+                                            Extent? extent,
                                             CancellationToken cancellationToken);
 
     Task<Response<Building?>> GetByIdAsync(int id, CancellationToken cancellationToken);

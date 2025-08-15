@@ -67,7 +67,7 @@
 
     <!-- Authorization Error -->
     <data name="unauthorizedAccess" xml:space="preserve">
-        <value>Unauthorized access. Admins only.</value>
+        <value>Unauthorized access.</value>
     </data>
 
     <data name="oneOrMoreValidationError" xml:space="preserve">
@@ -98,6 +98,10 @@
     </data>
     <data name="buildingCountRetrievalFailed" xml:space="preserve">
         <value>Building count retrieval failed: {0}</value>
+    </data>
+
+    <data name="invalidExtent" xml:space="preserve">
+        <value>Invalid extent.</value>
     </data>
 
 </root>

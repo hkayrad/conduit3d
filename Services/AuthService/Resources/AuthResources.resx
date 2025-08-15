@@ -67,7 +67,7 @@
 
     <!-- Authorization Error -->
     <data name="unauthorizedAccess" xml:space="preserve">
-        <value>Unauthorized access. Admins only.</value>
+        <value>Unauthorized access.</value>
     </data>
 
     <data name="oneOrMoreValidationError" xml:space="preserve">

@@ -1,6 +1,8 @@
 using System;
 using BuildingsService.Domain;
+using BuildingsService.Resources;
 using Conduit3D.Common.Domain;
+using Npgsql;
 
 namespace BuildingsService.Infrastructure.Services;
 
@@ -12,10 +14,41 @@ public class PostgresqlBuildingsService(IUnitOfWork unitOfWork) : IBuildingsServ
                                             int pageSize,
                                             string sortBy,
                                             bool ascending,
-                                            Extent extent,
+                                            Extent? extent,
                                             CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        extent ??= new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
+
+        if (extent.MinX == 0 && extent.MinY == 0 && extent.MaxX == 0 && extent.MaxY == 0)
+        {
+            extent = new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
+        }
+
+        if (!extent.IsValid())
+            return Response<List<Building>>.ValidationError(BuildingsResources.GetString("invalidExtent"));
+
+        try
+            {
+                var buildings = await _unitOfWork.BuildingsRepository.GetAllAsync(pageNumber,
+                                                                        pageSize,
+                                                                        sortBy,
+                                                                        ascending,
+                                                                        extent,
+                                                                        cancellationToken);
+
+                if (buildings == null || buildings.Count == 0)
+                    return Response<List<Building>>.NotFound(BuildingsResources.GetString("noBuildingFound"));
+
+                return Response<List<Building>>.Success(buildings, BuildingsResources.GetString("buildingsRetrieved"));
+            }
+            catch (NpgsqlException ex)
+            {
+                return Response<List<Building>>.DatabaseError(BuildingsResources.GetString("buildingRetrievalFailed", ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return Response<List<Building>>.UnhandledError(BuildingsResources.GetString("buildingRetrievalFailed", ex.Message));
+            }
     }
 
     public async Task<Response<Building?>> GetByIdAsync(int id, CancellationToken cancellationToken)
