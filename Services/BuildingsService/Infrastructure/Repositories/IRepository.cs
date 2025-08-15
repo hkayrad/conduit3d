@@ -4,7 +4,7 @@ using Conduit3D.Common.Domain;
 
 namespace BuildingsService.Infrastructure.Repositories;
 
-public interface IGenericRepository<T> where T : class
+public interface IRepository<T> where T : class
 {
     public Task<List<T>> GetAllAsync(int pageNumber,
                                             int pageSize,

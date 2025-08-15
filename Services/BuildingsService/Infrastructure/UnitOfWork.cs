@@ -10,6 +10,7 @@ public class UnitOfWork(BuildingsContext context) : IUnitOfWork
 {
     private readonly BuildingsContext _context = context ?? throw new ArgumentNullException(nameof(context));
     private BuildingsRepository? _buildingsRepository;
+    private AdrBuildingsRepository? _adrBuildingsRepository;
     private IDbContextTransaction? _transaction;
     private bool _disposed = false;
 
@@ -18,6 +19,14 @@ public class UnitOfWork(BuildingsContext context) : IUnitOfWork
         get
         {
             return _buildingsRepository ??= new BuildingsRepository(_context);
+        }
+    }
+
+    public AdrBuildingsRepository AdrBuildingsRepository
+    {
+        get
+        {
+            return _adrBuildingsRepository ??= new AdrBuildingsRepository(_context);
         }
     }
 

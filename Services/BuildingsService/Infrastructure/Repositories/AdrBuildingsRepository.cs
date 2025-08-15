@@ -6,12 +6,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BuildingsService.Infrastructure.Repositories;
 
-public class BuildingsRepository(BuildingsContext context) : IRepository<Building>
+public class AdrBuildingsRepository(BuildingsContext context) : IRepository<AdrBuilding>
 {
     private readonly BuildingsContext _context = context;
-    private readonly DbSet<Building> _dbSet = context.Set<Building>();
+    private readonly DbSet<AdrBuilding> _dbSet = context.Set<AdrBuilding>();
 
-    public async Task<List<Building>> GetAllAsync(int pageNumber,
+    public async Task<List<AdrBuilding>> GetAllAsync(int pageNumber,
                                             int pageSize,
                                             string sortBy,
                                             bool ascending,
@@ -20,11 +20,11 @@ public class BuildingsRepository(BuildingsContext context) : IRepository<Buildin
     {
         var query = _dbSet.FromSql($@"SELECT 
                                         id, 
-                                        name, 
-                                        type,
-                                        floor_count,
+                                        adi, 
+                                        COALESCE(NULLIF(bina_kat_sayisi, 0), 5) as ""bina_kat_sayisi"",
+                                        'residential' as type,
                                         ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson
-                                    FROM buildings
+                                    FROM ""ADR_BINA""
                                     WHERE ST_Transform(geometry, 4326) @ ST_MakeEnvelope(
                                         {extent.MinX}, 
                                         {extent.MinY}, 
@@ -43,15 +43,15 @@ public class BuildingsRepository(BuildingsContext context) : IRepository<Buildin
         return await query.ToListAsync(cancellationToken);
     }
 
-    public async Task<Building?> GetByIdAsync(int id, CancellationToken cancellationToken)
+    public async Task<AdrBuilding?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         var query = _dbSet.FromSql($@"SELECT 
                                         id, 
-                                        name, 
-                                        type, 
-                                        floor_count,
+                                        adi, 
+                                        COALESCE(NULLIF(bina_kat_sayisi, 0), 5) as ""bina_kat_sayisi"",
+                                        'residential' as type,
                                         ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson
-                                    FROM buildings
+                                    FROM ""ADR_BINA""
                                     WHERE id = {id}");
         return await query.FirstOrDefaultAsync(cancellationToken);
     }
@@ -59,7 +59,7 @@ public class BuildingsRepository(BuildingsContext context) : IRepository<Buildin
     public async Task<int> GetCountAsync(Extent extent, CancellationToken cancellationToken)
     {
         var query = _dbSet.FromSql($@"SELECT *
-                    FROM buildings
+                    FROM ""ADR_BINA""
                     WHERE ST_Transform(geometry, 4326) @ ST_MakeEnvelope({extent.MinX}, {extent.MinY}, {extent.MaxX}, {extent.MaxY}, 4326)");
 
         return await query.CountAsync(cancellationToken);
