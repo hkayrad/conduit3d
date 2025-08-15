@@ -102,7 +102,7 @@ app.Use(async (context, next) =>
     if (path != null && !path.Contains("/api/v1/auth/login") && !path.Contains("/swagger"))
     {
         var userRole = context.Request.Headers["Role"].FirstOrDefault();
-        if (string.IsNullOrEmpty(userRole) || userRole != Roles.Admin)
+        if (string.IsNullOrEmpty(userRole) || !Roles.AllowedRoles.Contains(userRole))
         {
             context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
             await context.Response.WriteAsJsonAsync(Response<object>.Unauthorized(

@@ -16,7 +16,18 @@ public class GenericRepository<T>(DbContext context) : IGenericRepository<T> whe
                                             Extent extent,
                                             CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var query = _dbSet.FromSql($@"SELECT id, name, type, ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson
+                    FROM buildings
+                    WHERE ST_Transform(geometry, 4326) @ ST_MakeEnvelope({extent.MinX}, {extent.MinY}, {extent.MaxX}, {extent.MaxY}, 4326)");
+
+        if (ascending)
+            query = query.OrderBy(x => EF.Property<object>(x, sortBy));
+        else
+            query = query.OrderByDescending(x => EF.Property<object>(x, sortBy));
+
+        query = query.Skip((pageNumber - 1) * pageSize).Take(pageSize);
+
+        return await query.ToListAsync(cancellationToken);
     }
 
     public async Task<T?> GetByIdAsync(int id, CancellationToken cancellationToken)

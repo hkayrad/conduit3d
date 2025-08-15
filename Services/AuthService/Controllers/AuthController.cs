@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace AuthService.Controllers
 {
     [Route("api/v{version:apiVersion}/[controller]")]
-    [ApiController]
     [ApiVersion("1.0")]
+    [ApiController]
     public class AuthController(IUserService userService) : ControllerBase
     {
         private readonly IUserService _userService = userService ?? throw new ArgumentNullException(
