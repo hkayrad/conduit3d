@@ -1,5 +1,6 @@
 using System.Net;
 using Asp.Versioning;
+using AuthService.Domain;
 using AuthService.Infrastructure;
 using AuthService.Infrastructure.Data;
 using AuthService.Infrastructure.Services;
@@ -88,13 +89,14 @@ app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.Use(async (context, next) =>
 {
     var path = context.Request.Path.Value?.ToLower();
-    if (path != null && !path.Contains("/api/v1/auth/login"))
+    if (path != null && !path.Contains("/api/v1/auth/login") && !path.Contains("/swagger"))
     {
         var userRole = context.Request.Headers["Role"].FirstOrDefault();
-        if (string.IsNullOrEmpty(userRole) || userRole != "admin")
+        if (string.IsNullOrEmpty(userRole) || userRole != Roles.Admin)
         {
             context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-            await context.Response.WriteAsJsonAsync(Response<object>.Unauthorized("Admins only"));
+            await context.Response.WriteAsJsonAsync(Response<object>.Unauthorized(
+                AuthResources.GetString("unauthorizedAccess")));
             return;
         }
     }
