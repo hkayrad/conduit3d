@@ -35,7 +35,7 @@ public class PostgresqlUserService(IUnitOfWork unitOfWork) : IUserService
     }
 
     public async Task<Response<List<User>>> GetAllUsersAsync(int pageSize,
-                                                        int pageNumber,
+                                                            int pageNumber,
                                                             string sortBy,
                                                             bool ascending,
                                                             CancellationToken cancellationToken)
@@ -86,6 +86,10 @@ public class PostgresqlUserService(IUnitOfWork unitOfWork) : IUserService
                 return Response<User>.NotFound(AuthResources.GetString("noUserFound"));
 
             return Response<User>.Success(user, AuthResources.GetString("userRetrieved"));
+        }
+        catch (NpgsqlException ex)
+        {
+            return Response<User>.DatabaseError(AuthResources.GetString("userRetrievalFailed", ex.Message));
         }
         catch (Exception ex)
         {

@@ -61,27 +61,27 @@ public class PostgresqlAdrBuildingsService(IUnitOfWork unitOfWork) : IAdrBuildin
         }
     }
 
-    public async Task<Response<AdrBuilding?>> GetByIdAsync(int id, CancellationToken cancellationToken)
+    public async Task<Response<AdrBuilding>> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         if (id <= 0)
-            return Response<AdrBuilding?>.ValidationError(BuildingsResources.GetString("invalidId"));
+            return Response<AdrBuilding>.ValidationError(BuildingsResources.GetString("invalidId"));
 
         try
         {
             var building = await _unitOfWork.AdrBuildingsRepository.GetByIdAsync(id, cancellationToken);
 
             if (building == null)
-                return Response<AdrBuilding?>.NotFound(BuildingsResources.GetString("noBuildingFound", id));
+                return Response<AdrBuilding>.NotFound(BuildingsResources.GetString("noBuildingFound", id));
 
-            return Response<AdrBuilding?>.Success(building, BuildingsResources.GetString("buildingRetrieved"));
+            return Response<AdrBuilding>.Success(building, BuildingsResources.GetString("buildingRetrieved"));
         }
         catch (NpgsqlException ex)
         {
-            return Response<AdrBuilding?>.DatabaseError(BuildingsResources.GetString("buildingRetrievalFailed", ex.Message));
+            return Response<AdrBuilding>.DatabaseError(BuildingsResources.GetString("buildingRetrievalFailed", ex.Message));
         }
         catch (Exception ex)
         {
-            return Response<AdrBuilding?>.UnhandledError(BuildingsResources.GetString("buildingRetrievalFailed", ex.Message));
+            return Response<AdrBuilding>.UnhandledError(BuildingsResources.GetString("buildingRetrievalFailed", ex.Message));
         }
     }
 

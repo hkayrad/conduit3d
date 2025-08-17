@@ -11,11 +11,11 @@ public class PostgresqlBuildingsService(IUnitOfWork unitOfWork) : IBuildingsServ
     private readonly IUnitOfWork _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 
     public async Task<Response<List<Building>>> GetAllAsync(int pageNumber,
-                                            int pageSize,
-                                            string sortBy,
-                                            bool ascending,
-                                            Extent? extent,
-                                            CancellationToken cancellationToken)
+                                                            int pageSize,
+                                                            string sortBy,
+                                                            bool ascending,
+                                                            Extent? extent,
+                                                            CancellationToken cancellationToken)
     {
         if (pageSize < 1 || pageSize > 100000)
             return Response<List<Building>>.ValidationError(BuildingsResources.GetString("invalidPageSize"));
@@ -40,11 +40,11 @@ public class PostgresqlBuildingsService(IUnitOfWork unitOfWork) : IBuildingsServ
         try
         {
             var buildings = await _unitOfWork.BuildingsRepository.GetAllAsync(pageNumber,
-                                                                    pageSize,
-                                                                    sortBy,
-                                                                    ascending,
-                                                                    extent,
-                                                                    cancellationToken);
+                                                                            pageSize,
+                                                                            sortBy,
+                                                                            ascending,
+                                                                            extent,
+                                                                            cancellationToken);
 
             if (buildings == null || buildings.Count == 0)
                 return Response<List<Building>>.NotFound(BuildingsResources.GetString("noBuildingFound"));
@@ -61,27 +61,27 @@ public class PostgresqlBuildingsService(IUnitOfWork unitOfWork) : IBuildingsServ
         }
     }
 
-    public async Task<Response<Building?>> GetByIdAsync(int id, CancellationToken cancellationToken)
+    public async Task<Response<Building>> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         if (id <= 0)
-            return Response<Building?>.ValidationError(BuildingsResources.GetString("invalidId"));
+            return Response<Building>.ValidationError(BuildingsResources.GetString("invalidId"));
 
         try
         {
             var building = await _unitOfWork.BuildingsRepository.GetByIdAsync(id, cancellationToken);
 
             if (building == null)
-                return Response<Building?>.NotFound(BuildingsResources.GetString("buildingNotFound", id));
+                return Response<Building>.NotFound(BuildingsResources.GetString("buildingNotFound", id));
 
-            return Response<Building?>.Success(building, BuildingsResources.GetString("buildingRetrieved"));
+            return Response<Building>.Success(building, BuildingsResources.GetString("buildingRetrieved"));
         }
         catch (NpgsqlException ex)
         {
-            return Response<Building?>.DatabaseError(BuildingsResources.GetString("buildingRetrievalFailed", ex.Message));
+            return Response<Building>.DatabaseError(BuildingsResources.GetString("buildingRetrievalFailed", ex.Message));
         }
         catch (Exception ex)
         {
-            return Response<Building?>.UnhandledError(BuildingsResources.GetString("buildingRetrievalFailed", ex.Message));
+            return Response<Building>.UnhandledError(BuildingsResources.GetString("buildingRetrievalFailed", ex.Message));
         }
     }
 

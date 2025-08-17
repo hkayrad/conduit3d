@@ -13,7 +13,7 @@ public interface IAdrBuildingsService
                                                 Extent? extent,
                                                 CancellationToken cancellationToken);
 
-    Task<Response<AdrBuilding?>> GetByIdAsync(int id, CancellationToken cancellationToken);
+    Task<Response<AdrBuilding>> GetByIdAsync(int id, CancellationToken cancellationToken);
 
     Task<Response<int>> GetCountAsync(Extent? extent, CancellationToken cancellationToken);
 }
