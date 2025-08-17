@@ -39,19 +39,25 @@ Conduit3D is a modular .NET solution for managing geospatial infrastructure data
 2. **Set environment variables:**
    - Copy `.env.example` to `.env` and fill in secrets (DB credentials, JWT secrets, etc).
 
-3. **Start all services with Docker Compose:**
+3. **Build the Caddy API Server Image:**
+   ```sh
+   cd ApiGateway
+   docker build -t caddy_gateway .
+   ```
+
+4. **Start all services with Docker Compose:**
     ```sh
-    docker-compose up --build
+    docker compose --build -d
     ```
 
-4. **Access APIs:**
-   - API Gateway: [http://localhost](http://localhost)
+5. **Access APIs:**
+   - API Gateway: [https://localhost](https://localhost)
    - AuthService: `/api/v1/auth`
    - BuildingsService: `/api/v1/buildings`
    - LinesService: `/api/v1/lines`
    - PolesService: `/api/v1/poles`
 
-5. **Access Swagger Documentation:**
+6. **Access Swagger Documentation:**
    - AuthService: `/docs/auth/swagger`
    - BuildingsService: `/docs/buildings/swagger`
    - PolesService: `/docs/poles/swagger`
