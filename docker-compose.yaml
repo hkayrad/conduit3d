@@ -76,6 +76,8 @@ services:
       - buildings_service
     volumes:
       - ./ApiGateway/Caddyfile:/etc/caddy/Caddyfile
+      - ./ApiGateway/grug.png:/usr/share/caddy/grug.png
+      - ./ApiGateway/default.html:/usr/share/caddy/default.html
       - caddy_data:/data
     restart: unless-stopped
 

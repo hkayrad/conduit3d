@@ -86,7 +86,9 @@ localhost {
     }
 
     handle {
-        respond "404 Not Found" 404
+        root * /usr/share/caddy
+        try_files {path} default.html
+        file_server
     }
 }
 
