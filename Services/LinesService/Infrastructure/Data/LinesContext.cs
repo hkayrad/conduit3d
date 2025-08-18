@@ -54,5 +54,22 @@ public class LinesContext(DbContextOptions options) : DbContext(options)
                 .HasColumnName("geojson");
         });
 
+        modelBuilder.Entity<Rekortman>(entity =>
+        {
+
+            entity.ToTable("SBK_rEKORTMAN");
+            entity.Property(e => e.Id)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("id");
+            entity.Property(e => e.Kesit)
+                .HasMaxLength(40)
+                .HasColumnName("kesit");
+            entity.Property(e => e.Tipi)
+                .HasMaxLength(20)
+                .HasColumnName("tipi");
+            entity.Property(e => e.GeoJson)
+                .HasComputedColumnSql("ST_AsGeoJSON(ST_Transform(geometry, 4326))")
+                .HasColumnName("geojson");
+        });
     }
 }

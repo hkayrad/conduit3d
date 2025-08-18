@@ -72,6 +72,7 @@ builder.Services.AddDbContext<LinesContext>(options =>
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAgHatService, PostgresqlAgHatService>();
 builder.Services.AddScoped<IOgHatService, PostgresqlOgHatService>();
+builder.Services.AddScoped<IRekortmanService, PostgresqlRekortmanService>();
 
 var app = builder.Build();
 
