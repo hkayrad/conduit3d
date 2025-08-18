@@ -2,6 +2,7 @@ using Asp.Versioning;
 using AuthService.Domain;
 using AuthService.Infrastructure.DTOs;
 using AuthService.Infrastructure.Services;
+using AuthService.Resources;
 using Conduit3D.Common.Domain;
 using Microsoft.AspNetCore.Mvc;
 
@@ -72,11 +73,23 @@ namespace AuthService.Controllers
 
         [MapToApiVersion("1.0")]
         [HttpPost("login")]
-        public async Task<Response<string>> LoginAsync(
+        public async Task<Response<object>> LoginAsync(
             LoginUserDto loginUserDto,
             CancellationToken cancellationToken = default)
         {
-            return await _userService.LoginAsync(loginUserDto, cancellationToken);
+            var response = await _userService.LoginAsync(loginUserDto, cancellationToken);
+
+            Response.Cookies.Append("user_session", response.Data, new CookieOptions
+            {
+                HttpOnly = true,      // Not accessible via JavaScript
+                Secure = true,        // Only sent over HTTPS
+                SameSite = SameSiteMode.Strict, // Prevent CSRF
+                Expires = DateTimeOffset.UtcNow.AddHours(8)
+            });
+
+            return response.IsSuccess
+                ? Response<object>.Success(null!, AuthResources.GetString("loginSuccessful"))
+                : Response<object>.Failure(AuthResources.GetString("loginFailed"), response.StatusCode);
         }
     }
 }
