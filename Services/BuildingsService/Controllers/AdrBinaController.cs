@@ -10,13 +10,13 @@ namespace BuildingsService.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
-    public class AdrBuildingsController(IAdrBuildingsService adrBuildingsService) : ControllerBase
+    public class AdrBinaController(IAdrBinaService adrBuildingsService) : ControllerBase
     {
-        private readonly IAdrBuildingsService _adrBuildingsService = adrBuildingsService ?? throw new ArgumentNullException(nameof(adrBuildingsService));
+        private readonly IAdrBinaService _adrBuildingsService = adrBuildingsService ?? throw new ArgumentNullException(nameof(adrBuildingsService));
 
         [MapToApiVersion("1.0")]
         [HttpGet]
-        public async Task<Response<List<AdrBuilding>>> GetAllAdrBuildingsAsync(
+        public async Task<Response<List<AdrBina>>> GetAllAdrBuildingsAsync(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 100000,
             [FromQuery] string sortBy = "Id",
@@ -35,7 +35,7 @@ namespace BuildingsService.Controllers
 
         [MapToApiVersion("1.0")]
         [HttpGet("{id}")]
-        public async Task<Response<AdrBuilding>> GetByIdAdrBuildingsAsync(int id, CancellationToken cancellationToken)
+        public async Task<Response<AdrBina>> GetByIdAdrBuildingsAsync(int id, CancellationToken cancellationToken)
         {
             return await _adrBuildingsService.GetByIdAsync(id, cancellationToken);
         }

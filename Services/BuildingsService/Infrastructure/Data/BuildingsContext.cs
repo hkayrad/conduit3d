@@ -7,7 +7,7 @@ namespace BuildingsService.Infrastructure.Data;
 public class BuildingsContext(DbContextOptions options) : DbContext(options)
 {
     public DbSet<Building> Buildings { get; set; }
-    public DbSet<AdrBuilding> AdrBuildings { get; set; }
+    public DbSet<AdrBina> AdrBuildings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -31,9 +31,9 @@ public class BuildingsContext(DbContextOptions options) : DbContext(options)
                 .HasColumnName("geojson");
         });
 
-        modelBuilder.Entity<AdrBuilding>(entity =>
+        modelBuilder.Entity<AdrBina>(entity =>
         {
-            entity.ToTable("adr_bina");
+            entity.ToTable("ADR_BINA");
             entity.Property(e => e.Id)
                 .ValueGeneratedOnAdd()
                 .HasColumnName("id");
