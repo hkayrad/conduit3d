@@ -16,7 +16,7 @@ namespace LinesService.Controllers
 
         [MapToApiVersion("1.0")]
         [HttpGet]
-        public async Task<Response<List<Rekortman>>> GetAllOgHatAsync(
+        public async Task<Response<List<Rekortman>>> GetAllAsync(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 100000,
             [FromQuery] string sortBy = "Id",
@@ -35,14 +35,14 @@ namespace LinesService.Controllers
 
         [MapToApiVersion("1.0")]
         [HttpGet("{id}")]
-        public async Task<Response<Rekortman>> GetByIdAgHatAsync(int id, CancellationToken cancellationToken)
+        public async Task<Response<Rekortman>> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
             return await _rekortmanService.GetByIdAsync(id, cancellationToken);
         }
 
         [MapToApiVersion("1.0")]
         [HttpGet("count")]
-        public async Task<Response<int>> GetCountAgHatAsync(
+        public async Task<Response<int>> GetCountAsync(
             [FromQuery] Extent? extent = null,
             CancellationToken cancellationToken = default
         )

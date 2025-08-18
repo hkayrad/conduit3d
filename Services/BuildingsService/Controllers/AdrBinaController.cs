@@ -16,7 +16,7 @@ namespace BuildingsService.Controllers
 
         [MapToApiVersion("1.0")]
         [HttpGet]
-        public async Task<Response<List<AdrBina>>> GetAllAdrBuildingsAsync(
+        public async Task<Response<List<AdrBina>>> GetAllAsync(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 100000,
             [FromQuery] string sortBy = "Id",
@@ -35,14 +35,14 @@ namespace BuildingsService.Controllers
 
         [MapToApiVersion("1.0")]
         [HttpGet("{id}")]
-        public async Task<Response<AdrBina>> GetByIdAdrBuildingsAsync(int id, CancellationToken cancellationToken)
+        public async Task<Response<AdrBina>> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
             return await _adrBuildingsService.GetByIdAsync(id, cancellationToken);
         }
 
         [MapToApiVersion("1.0")]
         [HttpGet("count")]
-        public async Task<Response<int>> GetCountAdrBuildingsAsync(
+        public async Task<Response<int>> GetCountAsync(
             [FromQuery] Extent? extent = null,
             CancellationToken cancellationToken = default
         )

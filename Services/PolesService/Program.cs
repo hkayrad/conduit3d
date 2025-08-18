@@ -72,6 +72,7 @@ builder.Services.AddDbContext<PolesContext>(options =>
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAgDirekService, PostgresqlAgDirekService>();
 builder.Services.AddScoped<IAydDirekService, PostgresqlAydDirekService>();
+builder.Services.AddScoped<IOgMusDirekService, PostgresqlOgMusDirekService>();
 
 var app = builder.Build();
 

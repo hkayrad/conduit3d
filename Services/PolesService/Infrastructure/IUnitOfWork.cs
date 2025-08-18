@@ -7,6 +7,7 @@ public interface IUnitOfWork
 {
     AgDirekRepository AgDirekRepository { get; }
     AydDirekRepository AydDirekRepository { get; }
+    OgMusDirekRepository OgMusDirekRepository { get; }
 
     Task SaveChangesAsync(CancellationToken cancellationToken);
     Task BeginTransactionAsync(CancellationToken cancellationToken);

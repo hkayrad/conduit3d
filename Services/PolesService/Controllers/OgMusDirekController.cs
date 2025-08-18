@@ -10,13 +10,13 @@ namespace PolesService.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
-    public class AgDirekController(IAgDirekService agDirekService) : ControllerBase
+    public class OgMusDirekController(IOgMusDirekService ogMusDirekService) : ControllerBase
     {
-        private readonly IAgDirekService _agDirekService = agDirekService ?? throw new ArgumentNullException(nameof(agDirekService));
+        private readonly IOgMusDirekService _ogMusDirekService = ogMusDirekService ?? throw new ArgumentNullException(nameof(ogMusDirekService));
 
         [MapToApiVersion("1.0")]
         [HttpGet]
-        public async Task<Response<List<AgDirek>>> GetAllAsync(
+        public async Task<Response<List<OgMusDirek>>> GetAllAsync(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 100000,
             [FromQuery] string sortBy = "Id",
@@ -25,7 +25,7 @@ namespace PolesService.Controllers
             CancellationToken cancellationToken = default
         )
         {
-            return await _agDirekService.GetAllAsync(pageNumber,
+            return await _ogMusDirekService.GetAllAsync(pageNumber,
                                                     pageSize,
                                                     sortBy,
                                                     ascending,
@@ -35,9 +35,9 @@ namespace PolesService.Controllers
 
         [MapToApiVersion("1.0")]
         [HttpGet("{id}")]
-        public async Task<Response<AgDirek>> GetByIdAsync(int id, CancellationToken cancellationToken)
+        public async Task<Response<OgMusDirek>> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
-            return await _agDirekService.GetByIdAsync(id, cancellationToken);
+            return await _ogMusDirekService.GetByIdAsync(id, cancellationToken);
         }
 
         [MapToApiVersion("1.0")]
@@ -47,7 +47,7 @@ namespace PolesService.Controllers
             CancellationToken cancellationToken = default
         )
         {
-            return await _agDirekService.GetCountAsync(extent, cancellationToken);
+            return await _ogMusDirekService.GetCountAsync(extent, cancellationToken);
         }
     }
 }
