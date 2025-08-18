@@ -1,32 +1,41 @@
 using System;
-using BuildingsService.Infrastructure;
-using BuildingsService.Infrastructure.Data;
-using BuildingsService.Infrastructure.Repositories;
+using LinesService.Infrastructure;
+using LinesService.Infrastructure.Data;
+using LinesService.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace BuildingsService.Infrastructure;
+namespace LinesService.Infrastructure;
 
-public class UnitOfWork(BuildingsContext context) : IUnitOfWork
+public class UnitOfWork(LinesContext context) : IUnitOfWork
 {
-    private readonly BuildingsContext _context = context ?? throw new ArgumentNullException(nameof(context));
-    private BuildingsRepository? _buildingsRepository;
-    private AdrBinaRepository? _adrBuildingsRepository;
+    private readonly LinesContext _context = context ?? throw new ArgumentNullException(nameof(context));
+    private AgHatRepository? _agHatRepository;
+    private OgHatRepository? _ogHatRepository;
+    private RekortmanRepository? _rekortmanRepository;
     private IDbContextTransaction? _transaction;
     private bool _disposed = false;
 
-    public BuildingsRepository BuildingsRepository
+    public AgHatRepository AgHatRepository
     {
         get
         {
-            return _buildingsRepository ??= new BuildingsRepository(_context);
+            return _agHatRepository ??= new AgHatRepository(_context);
         }
     }
 
-    public AdrBinaRepository AdrBuildingsRepository
+    public OgHatRepository OgHatRepository
     {
         get
         {
-            return _adrBuildingsRepository ??= new AdrBinaRepository(_context);
+            return _ogHatRepository ??= new OgHatRepository(_context);
+        }
+    }
+
+    public RekortmanRepository RekortmanRepository
+    {
+        get
+        {
+            return _rekortmanRepository ??= new RekortmanRepository(_context);
         }
     }
 

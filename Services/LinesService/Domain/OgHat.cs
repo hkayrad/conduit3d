@@ -3,10 +3,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LinesService.Domain;
 
-public class SbkRekortman
+public class OgHat
 {
     [Required]
     public required int Id { get; set; }
+    [Required]
+    public required string Cinsi { get; set; }
     [Required]
     public required string Tipi { get; set; }
     [Required]

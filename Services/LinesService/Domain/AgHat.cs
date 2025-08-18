@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LinesService.Domain;
 
-public class SbkOgHat
+public class AgHat
 {
     [Required]
     public required int Id { get; set; }

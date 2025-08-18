@@ -1,30 +1,30 @@
 using System;
-using BuildingsService.Domain;
-using BuildingsService.Infrastructure.Data;
 using Conduit3D.Common.Domain;
+using LinesService.Domain;
+using LinesService.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace BuildingsService.Infrastructure.Repositories;
+namespace LinesService.Infrastructure.Repositories;
 
-public class AdrBuildingsRepository(BuildingsContext context) : IRepository<AdrBuilding>
+public class AgHatRepository(LinesContext context) : IRepository<AgHat>
 {
-    private readonly BuildingsContext _context = context;
-    private readonly DbSet<AdrBuilding> _dbSet = context.Set<AdrBuilding>();
-
-    public async Task<List<AdrBuilding>> GetAllAsync(int pageNumber,
-                                            int pageSize,
-                                            string sortBy,
-                                            bool ascending,
-                                            Extent extent,
-                                            CancellationToken cancellationToken)
+    private readonly LinesContext _context = context;
+    private readonly DbSet<AgHat> _dbSet = context.Set<AgHat>();
+    
+    public async Task<List<AgHat>> GetAllAsync(int pageNumber,
+                                        int pageSize,
+                                        string sortBy,
+                                        bool ascending,
+                                        Extent extent,
+                                        CancellationToken cancellationToken)
     {
         var query = _dbSet.FromSql($@"SELECT 
                                         id, 
-                                        adi, 
-                                        COALESCE(NULLIF(bina_kat_sayisi, 0), 5) as ""bina_kat_sayisi"",
-                                        'residential' as type,
+                                        cinsi, 
+                                        tipi,
+                                        kesit,
                                         ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson
-                                    FROM ""ADR_BINA""
+                                    FROM ""SBK_AGHAT""
                                     WHERE ST_Transform(geometry, 4326) @ ST_MakeEnvelope(
                                         {extent.MinX}, 
                                         {extent.MinY}, 
@@ -43,15 +43,15 @@ public class AdrBuildingsRepository(BuildingsContext context) : IRepository<AdrB
         return await query.ToListAsync(cancellationToken);
     }
 
-    public async Task<AdrBuilding?> GetByIdAsync(int id, CancellationToken cancellationToken)
+    public async Task<AgHat?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         var query = _dbSet.FromSql($@"SELECT 
                                         id, 
-                                        adi, 
-                                        COALESCE(NULLIF(bina_kat_sayisi, 0), 5) as ""bina_kat_sayisi"",
-                                        'residential' as type,
+                                        cinsi, 
+                                        tipi,
+                                        kesit,
                                         ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson
-                                    FROM ""ADR_BINA""
+                                    FROM ""SBK_AGHAT""
                                     WHERE id = {id}");
         return await query.FirstOrDefaultAsync(cancellationToken);
     }
@@ -59,7 +59,7 @@ public class AdrBuildingsRepository(BuildingsContext context) : IRepository<AdrB
     public async Task<int> GetCountAsync(Extent extent, CancellationToken cancellationToken)
     {
         var query = _dbSet.FromSql($@"SELECT *
-                    FROM ""ADR_BINA""
+                    FROM ""SBK_AGHAT""
                     WHERE ST_Transform(geometry, 4326) @ ST_MakeEnvelope({extent.MinX}, {extent.MinY}, {extent.MaxX}, {extent.MaxY}, 4326)");
 
         return await query.CountAsync(cancellationToken);

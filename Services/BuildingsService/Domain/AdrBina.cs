@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BuildingsService.Domain;
 
-public class AdrBuilding
+public class AdrBina
 {
     [Key]
     [Required]
