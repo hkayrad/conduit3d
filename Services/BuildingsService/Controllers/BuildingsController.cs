@@ -37,7 +37,7 @@ namespace BuildingsService.Controllers
 
         [MapToApiVersion("1.0")]
         [HttpGet("buildings/{id}")]
-        public async Task<Response<Building?>> GetByIdBuildingsAsync(int id, CancellationToken cancellationToken)
+        public async Task<Response<Building>> GetByIdBuildingsAsync(int id, CancellationToken cancellationToken)
         {
             return await _buildingsService.GetByIdAsync(id, cancellationToken);
         }
@@ -73,7 +73,7 @@ namespace BuildingsService.Controllers
 
         [MapToApiVersion("1.0")]
         [HttpGet("adrBuildings/{id}")]
-        public async Task<Response<AdrBuilding?>> GetByIdAdrBuildingsAsync(int id, CancellationToken cancellationToken)
+        public async Task<Response<AdrBuilding>> GetByIdAdrBuildingsAsync(int id, CancellationToken cancellationToken)
         {
             return await _adrBuildingsService.GetByIdAsync(id, cancellationToken);
         }
