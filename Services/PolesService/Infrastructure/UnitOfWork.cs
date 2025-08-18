@@ -9,6 +9,7 @@ public class UnitOfWork(PolesContext context) : IUnitOfWork
 {
     private readonly PolesContext _context = context ?? throw new ArgumentNullException(nameof(context));
     private AgDirekRepository? _agDirekRepository;
+    private AydDirekRepository? _aydDirekRepository;
     private IDbContextTransaction? _transaction;
     private bool _disposed = false;
 
@@ -17,6 +18,14 @@ public class UnitOfWork(PolesContext context) : IUnitOfWork
         get
         {
             return _agDirekRepository ??= new AgDirekRepository(_context);
+        }
+    }
+
+    public AydDirekRepository AydDirekRepository
+    {
+        get
+        {
+            return _aydDirekRepository ??= new AydDirekRepository(_context);
         }
     }
 

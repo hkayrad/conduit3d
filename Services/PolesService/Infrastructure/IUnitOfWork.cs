@@ -6,6 +6,7 @@ namespace PolesService.Infrastructure;
 public interface IUnitOfWork
 {
     AgDirekRepository AgDirekRepository { get; }
+    AydDirekRepository AydDirekRepository { get; }
 
     Task SaveChangesAsync(CancellationToken cancellationToken);
     Task BeginTransactionAsync(CancellationToken cancellationToken);

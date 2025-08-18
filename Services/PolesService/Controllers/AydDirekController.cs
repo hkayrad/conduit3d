@@ -10,13 +10,13 @@ namespace PolesService.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
-    public class AgDirekController(IAgDirekService agDirekService) : ControllerBase
+    public class AydDirekController(IAydDirekService aydDirekService) : ControllerBase
     {
-        private readonly IAgDirekService _agDirekService = agDirekService ?? throw new ArgumentNullException(nameof(agDirekService));
+        private readonly IAydDirekService _aydDirekService = aydDirekService ?? throw new ArgumentNullException(nameof(aydDirekService));
 
         [MapToApiVersion("1.0")]
         [HttpGet]
-        public async Task<Response<List<AgDirek>>> GetAllAgDirekAsync(
+        public async Task<Response<List<AydDirek>>> GetAllAydDirekAsync(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 100000,
             [FromQuery] string sortBy = "Id",
@@ -25,7 +25,7 @@ namespace PolesService.Controllers
             CancellationToken cancellationToken = default
         )
         {
-            return await _agDirekService.GetAllAsync(pageNumber,
+            return await _aydDirekService.GetAllAsync(pageNumber,
                                                     pageSize,
                                                     sortBy,
                                                     ascending,
@@ -35,19 +35,19 @@ namespace PolesService.Controllers
 
         [MapToApiVersion("1.0")]
         [HttpGet("{id}")]
-        public async Task<Response<AgDirek>> GetByIdAgDirekAsync(int id, CancellationToken cancellationToken)
+        public async Task<Response<AydDirek>> GetByIdAgHatAsync(int id, CancellationToken cancellationToken)
         {
-            return await _agDirekService.GetByIdAsync(id, cancellationToken);
+            return await _aydDirekService.GetByIdAsync(id, cancellationToken);
         }
 
         [MapToApiVersion("1.0")]
         [HttpGet("count")]
-        public async Task<Response<int>> GetCountAgDirekAsync(
+        public async Task<Response<int>> GetCountAgHatAsync(
             [FromQuery] Extent? extent = null,
             CancellationToken cancellationToken = default
         )
         {
-            return await _agDirekService.GetCountAsync(extent, cancellationToken);
+            return await _aydDirekService.GetCountAsync(extent, cancellationToken);
         }
     }
 }
