@@ -17,7 +17,7 @@ public class PostgresqlAdrBuildingsService(IUnitOfWork unitOfWork) : IAdrBuildin
                                             Extent? extent,
                                             CancellationToken cancellationToken)
     {
-        if (pageSize < 1 || pageSize > 100000)
+        if (pageSize < 1 || pageSize > 200000)
             return Response<List<AdrBuilding>>.ValidationError(BuildingsResources.GetString("invalidPageSize"));
 
         if (pageNumber < 1)
