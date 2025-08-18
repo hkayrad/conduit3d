@@ -59,77 +59,6 @@ services:
       - gis_db_connection
     restart: unless-stopped
 
-  api_gateway:
-    image: caddy_gateway:latest
-    container_name: api_gateway
-    environment:
-      - JWT_SECRET_BASE64=${JWT_SECRET_BASE64}
-      - JWT_ISSUER=${JWT_ISSUER}
-      - JWT_AUDIENCE=${JWT_AUDIENCE}
-      - JWT_EXPIRATION_TIME_HRS=${JWT_EXPIRATION_TIME_HRS}
-    networks:
-      - api_gateway_network
-    ports:
-      - "443:443"
-      - "80:80"
-    depends_on:
-      - buildings_service
-    volumes:
-      - ./ApiGateway/Caddyfile:/etc/caddy/Caddyfile
-      - caddy_data:/data
-    restart: unless-stopped
-
-  buildings_service:
-    build:
-      context: .
-      dockerfile: Services/BuildingsService/Dockerfile
-    container_name: buildings_service
-    environment:
-      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - POSTGRESQL_CONNECTION_STRING=Host=buildings_database;Database=${BUILDINGS_DB_NAME};Username=${BUILDINGS_DB_USER};Password=${BUILDINGS_DB_PASS}
-    depends_on:
-      - buildings_database
-    networks:
-      - gis_db_connection
-      - api_gateway_network
-    # ports:
-    #   - "5001:8080"
-    restart: unless-stopped
-
-  lines_service:
-    build:
-      context: .
-      dockerfile: Services/LinesService/Dockerfile
-    container_name: lines_service
-    environment:
-      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - POSTGRESQL_CONNECTION_STRING=Host=lines_database;Database=${LINES_DB_NAME};Username=${LINES_DB_USER};Password=${LINES_DB_PASS}
-    depends_on:
-      - lines_database
-    networks:
-      - gis_db_connection
-      - api_gateway_network
-    # ports:
-    #   - "5002:8080"
-    restart: unless-stopped
-        
-  poles_service:
-    build:
-      context: .
-      dockerfile: Services/PolesService/Dockerfile
-    container_name: poles_service
-    environment:
-      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - POSTGRESQL_CONNECTION_STRING=Host=poles_database;Database=${POLES_DB_NAME};Username=${POLES_DB_USER};Password=${POLES_DB_PASS}
-    depends_on:
-      - poles_database
-    networks:
-      - gis_db_connection
-      - api_gateway_network
-    # ports:
-    #   - "5003:8080"
-    restart: unless-stopped
-
   auth_service:
     build:
       context: .
@@ -149,6 +78,82 @@ services:
       - api_gateway_network
     # ports:
     #   - "5000:8080"
+    restart: unless-stopped
+
+  buildings_service:
+    build:
+      context: .
+      dockerfile: Services/BuildingsService/Dockerfile
+    container_name: buildings_service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - POSTGRESQL_CONNECTION_STRING=Host=buildings_database;Database=${BUILDINGS_DB_NAME};Username=${BUILDINGS_DB_USER};Password=${BUILDINGS_DB_PASS}
+    depends_on:
+      - buildings_database
+    networks:
+      - gis_db_connection
+      - api_gateway_network
+    # ports:
+    #   - "5001:8080"
+    restart: unless-stopped
+        
+  poles_service:
+    build:
+      context: .
+      dockerfile: Services/PolesService/Dockerfile
+    container_name: poles_service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - POSTGRESQL_CONNECTION_STRING=Host=poles_database;Database=${POLES_DB_NAME};Username=${POLES_DB_USER};Password=${POLES_DB_PASS}
+    depends_on:
+      - poles_database
+    networks:
+      - gis_db_connection
+      - api_gateway_network
+    # ports:
+    #   - "5003:8080"
+    restart: unless-stopped
+
+  lines_service:
+    build:
+      context: .
+      dockerfile: Services/LinesService/Dockerfile
+    container_name: lines_service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - POSTGRESQL_CONNECTION_STRING=Host=lines_database;Database=${LINES_DB_NAME};Username=${LINES_DB_USER};Password=${LINES_DB_PASS}
+    depends_on:
+      - lines_database
+    networks:
+      - gis_db_connection
+      - api_gateway_network
+    # ports:
+    #   - "5002:8080"
+    restart: unless-stopped
+
+  api_gateway:
+    image: caddy_gateway:latest
+    container_name: api_gateway
+    environment:
+      - JWT_SECRET_BASE64=${JWT_SECRET_BASE64}
+      - JWT_ISSUER=${JWT_ISSUER}
+      - JWT_AUDIENCE=${JWT_AUDIENCE}
+      - JWT_EXPIRATION_TIME_HRS=${JWT_EXPIRATION_TIME_HRS}
+    networks:
+      - api_gateway_network
+    ports:
+      - "443:443"
+      - "80:80"
+    depends_on:
+      - buildings_service
+      - auth_service
+      - lines_service
+      - poles_service
+    volumes:
+      - ./ApiGateway/Caddyfile:/etc/caddy/Caddyfile
+      - ./ApiGateway/grug.png:/usr/share/caddy/grug.png
+      - ./ApiGateway/default.html:/usr/share/caddy/default.html
+      - caddy_data:/data
     restart: unless-stopped
 
 networks:

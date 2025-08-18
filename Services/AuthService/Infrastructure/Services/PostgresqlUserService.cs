@@ -35,11 +35,21 @@ public class PostgresqlUserService(IUnitOfWork unitOfWork) : IUserService
     }
 
     public async Task<Response<List<User>>> GetAllUsersAsync(int pageSize,
-                                                        int pageNumber,
+                                                            int pageNumber,
                                                             string sortBy,
                                                             bool ascending,
                                                             CancellationToken cancellationToken)
     {
+        if (pageSize < 1 || pageSize > 100000)
+            return Response<List<User>>.ValidationError(AuthResources.GetString("invalidPageSize"));
+
+        if (pageNumber < 1)
+            return Response<List<User>>.ValidationError(AuthResources.GetString("invalidPageNumber"));
+
+        var allowedSortColumns = new[] { "Id", "Username", "Email", "UserRole", "Name", "CreatedAt" };
+        if (!allowedSortColumns.Contains(sortBy))
+            return Response<List<User>>.ValidationError(AuthResources.GetString("invalidSortBy"));
+
         try
         {
             var users = await _unitOfWork.UserRepository.GetAllAsync(pageNumber,
@@ -76,6 +86,10 @@ public class PostgresqlUserService(IUnitOfWork unitOfWork) : IUserService
                 return Response<User>.NotFound(AuthResources.GetString("noUserFound"));
 
             return Response<User>.Success(user, AuthResources.GetString("userRetrieved"));
+        }
+        catch (NpgsqlException ex)
+        {
+            return Response<User>.DatabaseError(AuthResources.GetString("userRetrievalFailed", ex.Message));
         }
         catch (Exception ex)
         {

@@ -25,7 +25,7 @@
 - Avoid redundant comments
 
 ## 5. Error Handling
-- Return exceptions to the user as Response<T>.Failure
+- Return exceptions to the user as Response<T>.Failure()
 - Log errors with context
 
 ## 6. Dependency Injection
@@ -39,7 +39,7 @@
 ## 8. API Design
 - Use RESTful conventions for controllers
 - Validate input models
-- Return appropriate HTTP status codes
+- Return appropriate HTTP status codes in the Response entity.
 
 ## 9. Security
 - Never store secrets in code

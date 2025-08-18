@@ -74,113 +74,35 @@
         <value>One or more validation errors occurred.</value>
     </data>
 
-    <!-- Dto Validation Failure Messages -->
-    <data name="usernameNull" xml:space="preserve">
-        <value>Username is required.</value>
-    </data>
-    <data name="usernameTooLong" xml:space="preserve">
-        <value>Username cannot be longer than 100 characters.</value>
-    </data>
-    <data name="usernameTooShort" xml:space="preserve">
-        <value>Username cannot be shorter than 3 characters.</value>
-    </data>
-    <data name="usernameInvalid" xml:space="preserve">
-        <value>Username can only contain letters, numbers, and underscores.</value>
-    </data>
-
-    <data name="emailNull" xml:space="preserve">
-        <value>Email is required.</value>
-    </data>
-    <data name="emailInvalid" xml:space="preserve">
-        <value>Email is not valid.</value>
-    </data>
-
-    <data name="userRoleNull" xml:space="preserve">
-        <value>User role is required.</value>
-    </data>
-    <data name="userRoleInvalid" xml:space="preserve">
-        <value>User role is not valid.</value>
-    </data>
-
-    <data name="passwordNull" xml:space="preserve">
-        <value>Password is required.</value>
-    </data>
-    <data name="passwordInvalid" xml:space="preserve">
-        <value>Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number.</value>
-    </data>
-
-    <data name="nameNull" xml:space="preserve">
-        <value>Name is required.</value>
-    </data>
-    <data name="nameTooLong" xml:space="preserve">
-        <value>Name cannot be longer than 255 characters.</value>
-    </data>
-    <data name="nameTooShort" xml:space="preserve">
-        <value>Name cannot be shorter than 3 characters.</value>
-    </data>
-    <data name="nameInvalid" xml:space="preserve">
-        <value>Name can only contain letters and spaces.</value>
-    </data>
-
     <!-- API Success Messages -->
-    <data name="usersRetrieved" xml:space="preserve">
-        <value>Users retrieved successfully.</value>
+    <data name="buildingsRetrieved" xml:space="preserve">
+        <value>Buildings retrieved successfully.</value>
     </data>
-    <data name="userRetrieved" xml:space="preserve">
-        <value>User retrieved successfully.</value>
+    <data name="buildingRetrieved" xml:space="preserve">
+        <value>Building retrieved successfully.</value>
     </data>
-    <data name="userCountRetrieved" xml:space="preserve">
-        <value>User count retrieved successfully.</value>
-    </data>
-    <data name="userCreated" xml:space="preserve">
-        <value>User created successfully.</value>
-    </data>
-    <data name="userUpdated" xml:space="preserve">
-        <value>User updated successfully.</value>
-    </data>
-    <data name="userDeleted" xml:space="preserve">
-        <value>User deleted successfully.</value>
-    </data>
-    <data name="loginSuccessful" xml:space="preserve">
-        <value>Login successful.</value>
+    <data name="buildingCountRetrieved" xml:space="preserve">
+        <value>Building count retrieved successfully.</value>
     </data>
 
     <!-- API Failure Messages -->
-    <data name="noUserFound" xml:space="preserve">
-        <value>No user found.</value>
+    <data name="noBuildingFound" xml:space="preserve">
+        <value>No building found.</value>
     </data>
-    <data name="invalidUserData" xml:space="preserve">
-        <value>Invalid user data.</value>
-    </data>
-    <data name="invalidLoginData" xml:space="preserve">
-        <value>No user found with given credentials.</value>
-    </data>
-    <data name="wrongLoginData" xml:space="preserve">
-        <value>Invalid email or password.</value>
-    </data>
-    <data name="invalidUserId" xml:space="preserve">
-        <value>Invalid user ID.</value>
+    <data name="invalidBuildingId" xml:space="preserve">
+        <value>Invalid building ID.</value>
     </data>
 
-    <data name="userRetrievalFailed" xml:space="preserve">
-        <value>User retrieval failed: {0}</value>
+    <data name="buildingRetrievalFailed" xml:space="preserve">
+        <value>Building retrieval failed: {0}</value>
     </data>
-    <data name="userCreationFailed" xml:space="preserve">
-        <value>User creation failed: {0}</value>
-    </data>
-    <data name="userUpdateFailed" xml:space="preserve">
-        <value>User update failed: {0}</value>
-    </data>
-    <data name="userDeletionFailed" xml:space="preserve">
-        <value>User deletion failed: {0}</value>
-    </data>
-    <data name="userCountRetrievalFailed" xml:space="preserve">
-        <value>User count retrieval failed: {0}</value>
-    </data>
-    <data name="loginFailed" xml:space="preserve">
-        <value>User login failed: {0}</value>
+    <data name="buildingCountRetrievalFailed" xml:space="preserve">
+        <value>Building count retrieval failed: {0}</value>
     </data>
 
+    <data name="invalidExtent" xml:space="preserve">
+        <value>Invalid extent.</value>
+    </data>
     <data name="invalidPageSize" xml:space="preserve">
         <value>Page size must be between 1 and 100000</value>
     </data>
@@ -188,7 +110,7 @@
         <value>Page number must be greater than 0</value>
     </data>
     <data name="invalidSortBy" xml:space="preserve">
-        <value>Sort by must be either Id, Username, Email, UserRole, Name, CreatedAt</value>
+        <value>Sort by must be either Id, Name, FloorCount, Type, or GeoJson.</value>
     </data>
 
 </root>

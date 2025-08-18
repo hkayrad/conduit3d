@@ -1,11 +1,13 @@
 using System;
-using AuthService.Infrastructure.Repositories;
+using BuildingsService.Infrastructure.Repositories;
 
-namespace AuthService.Infrastructure;
+namespace BuildingsService.Infrastructure;
 
 public interface IUnitOfWork : IDisposable
 {
-    IUserRepository UserRepository { get; }
+    BuildingsRepository BuildingsRepository { get; }
+
+    AdrBuildingsRepository AdrBuildingsRepository { get; }
 
     Task SaveChangesAsync(CancellationToken cancellationToken);
     Task BeginTransactionAsync(CancellationToken cancellationToken);
