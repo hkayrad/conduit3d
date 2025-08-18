@@ -3,17 +3,25 @@
 }
 
 localhost {
-    handle_path /docs/auth* {
-        reverse_proxy auth_service:8080
-    }
-    handle_path /docs/buildings* {
-        reverse_proxy buildings_service:8080
-    }
-    handle_path /docs/poles* {
-        reverse_proxy poles_service:8080
-    }
-    handle_path /docs/lines* {
-        reverse_proxy lines_service:8080
+    handle_path /docs* {
+        handle_path /auth* {
+            reverse_proxy auth_service:8080
+        }
+        handle_path /buildings* {
+            reverse_proxy buildings_service:8080
+        }
+        handle_path /poles* {
+            reverse_proxy poles_service:8080
+        }
+        handle_path /lines* {
+            reverse_proxy lines_service:8080
+        }
+
+        handle {
+            root * /usr/share/caddy
+            try_files {path} docs.html
+            file_server
+        }
     }
 
     handle /api/v1/auth/login {
