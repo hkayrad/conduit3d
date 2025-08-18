@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="metadata">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                            </xsd:sequence>
+                            <xsd:attribute name="name" use="required" type="xsd:string" />
+                            <xsd:attribute name="type" type="xsd:string" />
+                            <xsd:attribute name="mimetype" type="xsd:string" />
+                            <xsd:attribute ref="xml:space" />
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="assembly">
+                        <xsd:complexType>
+                            <xsd:attribute name="alias" type="xsd:string" />
+                            <xsd:attribute name="name" type="xsd:string" />
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0"
+                                    msdata:Ordinal="1" />
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0"
+                                    msdata:Ordinal="2" />
+                            </xsd:sequence>
+                            <xsd:attribute name="name" use="required" type="xsd:string" />
+                            <xsd:attribute name="type" type="xsd:string" />
+                            <xsd:attribute name="mimetype" type="xsd:string" />
+                            <xsd:attribute ref="xml:space" />
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="resheader">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0"
+                                    msdata:Ordinal="1" />
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" />
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0,
+            Culture=neutral, PublicKeyToken=b77a5c561934~e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
+            Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+
+    <!-- Authorization Error -->
+    <data name="unauthorizedAccess" xml:space="preserve">
+        <value>Unauthorized access.</value>
+    </data>
+
+    <data name="oneOrMoreValidationError" xml:space="preserve">
+        <value>One or more validation errors occurred.</value>
+    </data>
+
+    <!-- API Success Messages -->
+    <data name="polesRetrieved" xml:space="preserve">
+        <value>Poles retrieved successfully.</value>
+    </data>
+    <data name="poleRetrieved" xml:space="preserve">
+        <value>Pole retrieved successfully.</value>
+    </data>
+    <data name="poleCountRetrieved" xml:space="preserve">
+        <value>Pole count retrieved successfully.</value>
+    </data>
+
+    <!-- API Failure Messages -->
+    <data name="noPoleFound" xml:space="preserve">
+        <value>No pole found.</value>
+    </data>
+    <data name="invalidPoleId" xml:space="preserve">
+        <value>Invalid pole ID.</value>
+    </data>
+
+    <data name="poleRetrievalFailed" xml:space="preserve">
+        <value>pole retrieval failed: {0}</value>
+    </data>
+    <data name="poleCountRetrievalFailed" xml:space="preserve">
+        <value>pole count retrieval failed: {0}</value>
+    </data>
+
+    <data name="invalidExtent" xml:space="preserve">
+        <value>Invalid extent.</value>
+    </data>
+    <data name="invalidPageSize" xml:space="preserve">
+        <value>Page size must be between 1 and 100000</value>
+    </data>
+    <data name="invalidPageNumber" xml:space="preserve">
+        <value>Page number must be greater than 0</value>
+    </data>
+    <data name="invalidSortBy" xml:space="preserve">
+        <value>Sort by must be either Id, Name, FloorCount, Type, or GeoJson.</value>
+    </data>
+
+</root>

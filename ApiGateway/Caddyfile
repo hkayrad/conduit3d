@@ -71,23 +71,6 @@ localhost {
         reverse_proxy buildings_service:8080
     }
 
-    handle /api/v1/poles* {
-        jwtauth {
-	    	sign_key {$JWT_SECRET_BASE64}
-	    	sign_alg HS256
-	    	from_header X-Api-Token
-	    	from_cookies user_session
-	    	issuer_whitelist {$JWT_ISSUER}
-	    	audience_whitelist {$JWT_AUDIENCE}
-	    	user_claims sub email user_role aud iss exp iat nbf
-            meta_claims "user_role -> role"
-	    }
-
-        request_header Role {http.auth.user.role}
-
-        reverse_proxy poles_service:8080
-    }
-
     handle /api/v1/agHat* {
         jwtauth {
 	    	sign_key {$JWT_SECRET_BASE64}
@@ -137,6 +120,58 @@ localhost {
         request_header Role {http.auth.user.role}
         
         reverse_proxy lines_service:8080
+    }
+
+
+    handle /api/v1/agDirek* {
+        jwtauth {
+	    	sign_key {$JWT_SECRET_BASE64}
+	    	sign_alg HS256
+	    	from_header X-Api-Token
+	    	from_cookies user_session
+	    	issuer_whitelist {$JWT_ISSUER}
+	    	audience_whitelist {$JWT_AUDIENCE}
+	    	user_claims sub email user_role aud iss exp iat nbf
+            meta_claims "user_role -> role"
+	    }
+
+        request_header Role {http.auth.user.role}
+
+        reverse_proxy poles_service:8080
+    }
+
+    handle /api/v1/aydDirek* {
+        jwtauth {
+	    	sign_key {$JWT_SECRET_BASE64}
+	    	sign_alg HS256
+	    	from_header X-Api-Token
+	    	from_cookies user_session
+	    	issuer_whitelist {$JWT_ISSUER}
+	    	audience_whitelist {$JWT_AUDIENCE}
+	    	user_claims sub email user_role aud iss exp iat nbf
+            meta_claims "user_role -> role"
+	    }
+
+        request_header Role {http.auth.user.role}
+
+        reverse_proxy poles_service:8080
+    }
+
+    handle /api/v1/ogMusDirek* {
+        jwtauth {
+	    	sign_key {$JWT_SECRET_BASE64}
+	    	sign_alg HS256
+	    	from_header X-Api-Token
+	    	from_cookies user_session
+	    	issuer_whitelist {$JWT_ISSUER}
+	    	audience_whitelist {$JWT_AUDIENCE}
+	    	user_claims sub email user_role aud iss exp iat nbf
+            meta_claims "user_role -> role"
+	    }
+
+        request_header Role {http.auth.user.role}
+
+        reverse_proxy poles_service:8080
     }
 
     handle {

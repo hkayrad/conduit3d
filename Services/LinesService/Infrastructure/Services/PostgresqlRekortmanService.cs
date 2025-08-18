@@ -8,7 +8,7 @@ namespace LinesService.Infrastructure.Services;
 
 public class PostgresqlRekortmanService(IUnitOfWork unitOfWork) : IRekortmanService
 {
-private readonly IUnitOfWork _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+    private readonly IUnitOfWork _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 
     public async Task<Response<List<Rekortman>>> GetAllAsync(int pageNumber, int pageSize, string sortBy, bool ascending, Extent? extent, CancellationToken cancellationToken)
     {
