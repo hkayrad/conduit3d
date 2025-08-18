@@ -1,8 +1,23 @@
 {
 	order jwtauth before basicauth
 }
-
 localhost {
+    tls /usr/share/caddy/localhost.pem /usr/share/caddy/localhost-key.pem
+
+	header {
+        Access-Control-Allow-Origin "https://localhost:3000"
+        Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        Access-Control-Allow-Headers "Accept, Content-Type, Authorization, Credentials"
+        Access-Control-Allow-Credentials "true"
+    }
+
+	@options {
+        method OPTIONS
+    }
+    handle @options {
+        respond "" 204
+    }
+    
     handle_path /docs* {
         handle_path /auth* {
             reverse_proxy auth_service:8080
@@ -25,6 +40,9 @@ localhost {
     }
 
     handle /api/v1/auth/login {
+        reverse_proxy auth_service:8080
+    }
+    handle /api/v1/auth/logout {
         reverse_proxy auth_service:8080
     }
 

@@ -154,6 +154,8 @@ services:
       - ./ApiGateway/grug.png:/usr/share/caddy/grug.png
       - ./ApiGateway/default.html:/usr/share/caddy/default.html
       - ./ApiGateway/docs.html:/usr/share/caddy/docs.html
+      - ./ApiGateway/localhost.pem:/usr/share/caddy/localhost.pem
+      - ./ApiGateway/localhost-key.pem:/usr/share/caddy/localhost-key.pem
       - caddy_data:/data
     restart: unless-stopped
 

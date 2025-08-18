@@ -484,3 +484,6 @@ $RECYCLE.BIN/
 *.swp
 
 NOTES.md
+
+localhost.pem
+localhost-key.pem

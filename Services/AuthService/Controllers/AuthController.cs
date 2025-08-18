@@ -79,17 +79,32 @@ namespace AuthService.Controllers
         {
             var response = await _userService.LoginAsync(loginUserDto, cancellationToken);
 
-            Response.Cookies.Append("user_session", response.Data, new CookieOptions
+            if (response.IsSuccess && response.Data != null)
             {
-                HttpOnly = true,      // Not accessible via JavaScript
-                Secure = true,        // Only sent over HTTPS
-                SameSite = SameSiteMode.Strict, // Prevent CSRF
-                Expires = DateTimeOffset.UtcNow.AddHours(8)
-            });
+                Response.Cookies.Append("user_session", response.Data, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTimeOffset.UtcNow.AddHours(Convert.ToDouble(Environment.GetEnvironmentVariable("JWT_EXPIRATION_TIME_HRS")))
+                });
 
-            return response.IsSuccess
-                ? Response<object>.Success(null!, AuthResources.GetString("loginSuccessful"))
-                : Response<object>.Failure(AuthResources.GetString("loginFailed"), response.StatusCode);
+                return Response<object>.Success(null!, AuthResources.GetString("loginSuccessful"));
+            }
+            else
+            {
+                Response.Cookies.Delete("user_session");
+                return Response<object>.Failure(AuthResources.GetString("loginFailed"), response.StatusCode);
+            }
+        }
+
+        [MapToApiVersion("1.0")]
+        [HttpPost("logout")]
+        public Response<object> Logout()
+        {
+            Response.Cookies.Delete("user_session");
+
+            return Response<object>.Success(null!, AuthResources.GetString("logoutSuccessful"));
         }
     }
 }

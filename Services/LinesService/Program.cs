@@ -53,7 +53,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
     };
 });
 
-builder.Services.AddCors();
+// builder.Services.AddCors();
 
 builder.Services.AddSwaggerGen(config =>
 {
@@ -85,7 +85,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+// app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 app.Use(async (context, next) =>
 {
@@ -101,7 +101,7 @@ app.Use(async (context, next) =>
         Console.WriteLine($"--- END HEADERS ---");
     }
 
-    if (path != null && !path.Contains("/api/v1/auth/login") && !path.Contains("/swagger"))
+    if (path != null && !path.Contains("/swagger"))
     {
         var userRole = context.Request.Headers["Role"].FirstOrDefault();
         if (string.IsNullOrEmpty(userRole) || !Roles.AllowedRoles.Contains(userRole))
