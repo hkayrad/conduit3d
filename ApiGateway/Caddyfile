@@ -36,6 +36,7 @@ localhost {
 
         reverse_proxy auth_service:8080
     }
+    
     handle /api/v1/buildings* {
         jwtauth {
 	    	sign_key {$JWT_SECRET_BASE64}
@@ -52,6 +53,24 @@ localhost {
 
         reverse_proxy buildings_service:8080
     }
+
+    handle /api/v1/adrBuildings* {
+        jwtauth {
+	    	sign_key {$JWT_SECRET_BASE64}
+	    	sign_alg HS256
+	    	from_header X-Api-Token
+	    	from_cookies user_session
+	    	issuer_whitelist {$JWT_ISSUER}
+	    	audience_whitelist {$JWT_AUDIENCE}
+	    	user_claims sub email user_role aud iss exp iat nbf
+            meta_claims "user_role -> role"
+	    }
+
+        request_header Role {http.auth.user.role}
+
+        reverse_proxy buildings_service:8080
+    }
+
     handle /api/v1/poles* {
         jwtauth {
 	    	sign_key {$JWT_SECRET_BASE64}
@@ -68,6 +87,7 @@ localhost {
 
         reverse_proxy poles_service:8080
     }
+
     handle /api/v1/lines* {
         jwtauth {
 	    	sign_key {$JWT_SECRET_BASE64}
