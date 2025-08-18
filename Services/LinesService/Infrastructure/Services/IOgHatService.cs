@@ -3,7 +3,7 @@ using LinesService.Domain;
 
 namespace LinesService.Infrastructure.Services;
 
-public interface IOgHatService : IGenericRepository<OgHat>
+public interface IOgHatService : IGenericService<OgHat>
 {
 
 }

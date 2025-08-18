@@ -4,7 +4,7 @@ using LinesService.Domain;
 
 namespace LinesService.Infrastructure.Services;
 
-public interface IAgHatService : IGenericRepository<AgHat>
+public interface IAgHatService : IGenericService<AgHat>
 {
 }
 

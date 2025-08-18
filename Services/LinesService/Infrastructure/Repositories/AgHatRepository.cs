@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LinesService.Infrastructure.Repositories;
 
-public class AgHatRepository(LinesContext context) : IRepository<AgHat>
+public class AgHatRepository(LinesContext context) : IGenericRepository<AgHat>
 {
     private readonly LinesContext _context = context;
     private readonly DbSet<AgHat> _dbSet = context.Set<AgHat>();

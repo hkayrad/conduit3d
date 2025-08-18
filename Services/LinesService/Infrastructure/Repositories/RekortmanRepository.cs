@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LinesService.Infrastructure.Repositories;
 
-public class RekortmanRepository(LinesContext context) : IRepository<Rekortman>
+public class RekortmanRepository(LinesContext context) : IGenericRepository<Rekortman>
 {
     private readonly LinesContext _context = context;
     private readonly DbSet<Rekortman> _dbSet = context.Set<Rekortman>();

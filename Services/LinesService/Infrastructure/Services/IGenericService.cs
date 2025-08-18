@@ -3,7 +3,7 @@ using Conduit3D.Common.Domain;
 
 namespace LinesService.Infrastructure.Services;
 
-public interface IGenericRepository<T> where T : class
+public interface IGenericService<T> where T : class
 {
     Task<Response<List<T>>> GetAllAsync(int pageNumber,
                                             int pageSize,
