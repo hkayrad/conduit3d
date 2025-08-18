@@ -10,13 +10,13 @@ namespace BuildingsService.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
-    public class BuildingsController(IBuildingsService buildingsService) : ControllerBase
+    public class AdrBuildingsController(IAdrBuildingsService adrBuildingsService) : ControllerBase
     {
-        private readonly IBuildingsService _buildingsService = buildingsService ?? throw new ArgumentNullException(nameof(buildingsService));
+        private readonly IAdrBuildingsService _adrBuildingsService = adrBuildingsService ?? throw new ArgumentNullException(nameof(adrBuildingsService));
 
         [MapToApiVersion("1.0")]
         [HttpGet]
-        public async Task<Response<List<Building>>> GetAllBuildingsAsync(
+        public async Task<Response<List<AdrBuilding>>> GetAllAdrBuildingsAsync(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 100000,
             [FromQuery] string sortBy = "Id",
@@ -25,7 +25,7 @@ namespace BuildingsService.Controllers
             CancellationToken cancellationToken = default
         )
         {
-            return await _buildingsService.GetAllAsync(pageNumber,
+            return await _adrBuildingsService.GetAllAsync(pageNumber,
                                                     pageSize,
                                                     sortBy,
                                                     ascending,
@@ -35,18 +35,19 @@ namespace BuildingsService.Controllers
 
         [MapToApiVersion("1.0")]
         [HttpGet("{id}")]
-        public async Task<Response<Building>> GetByIdBuildingsAsync(int id, CancellationToken cancellationToken)
+        public async Task<Response<AdrBuilding>> GetByIdAdrBuildingsAsync(int id, CancellationToken cancellationToken)
         {
-            return await _buildingsService.GetByIdAsync(id, cancellationToken);
+            return await _adrBuildingsService.GetByIdAsync(id, cancellationToken);
         }
 
         [MapToApiVersion("1.0")]
         [HttpGet("count")]
-        public async Task<Response<int>> GetCountBuildingsAsync(
-                                                        [FromQuery] Extent? extent = null,
-                                                        CancellationToken cancellationToken = default)
+        public async Task<Response<int>> GetCountAdrBuildingsAsync(
+            [FromQuery] Extent? extent = null,
+            CancellationToken cancellationToken = default
+        )
         {
-            return await _buildingsService.GetCountAsync(extent, cancellationToken);
+            return await _adrBuildingsService.GetCountAsync(extent, cancellationToken);
         }
     }
 }
