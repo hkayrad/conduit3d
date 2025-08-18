@@ -71,6 +71,7 @@ builder.Services.AddDbContext<LinesContext>(options =>
 });
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAgHatService, PostgresqlAgHatService>();
+builder.Services.AddScoped<IOgHatService, PostgresqlOgHatService>();
 
 var app = builder.Build();
 
