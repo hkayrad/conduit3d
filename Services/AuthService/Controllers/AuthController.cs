@@ -83,7 +83,7 @@ namespace AuthService.Controllers
             {
                 Response.Cookies.Append("user_session", response.Data, new CookieOptions
                 {
-                    HttpOnly = true,
+                    HttpOnly = false,
                     Secure = true,
                     SameSite = SameSiteMode.Strict,
                     Expires = DateTimeOffset.UtcNow.AddHours(Convert.ToDouble(Environment.GetEnvironmentVariable("JWT_EXPIRATION_TIME_HRS")))
@@ -96,15 +96,6 @@ namespace AuthService.Controllers
                 Response.Cookies.Delete("user_session");
                 return Response<object>.Failure(AuthResources.GetString("loginFailed"), response.StatusCode);
             }
-        }
-
-        [MapToApiVersion("1.0")]
-        [HttpPost("logout")]
-        public Response<object> Logout()
-        {
-            Response.Cookies.Delete("user_session");
-
-            return Response<object>.Success(null!, AuthResources.GetString("logoutSuccessful"));
         }
     }
 }
