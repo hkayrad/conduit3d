@@ -11,6 +11,7 @@ public class UnitOfWork(BuildingsContext context) : IUnitOfWork
     private readonly BuildingsContext _context = context ?? throw new ArgumentNullException(nameof(context));
     private BuildingsRepository? _buildingsRepository;
     private AdrBinaRepository? _adrBuildingsRepository;
+    private TrafoBinaRepository? _trafoBuildingsRepository;
     private IDbContextTransaction? _transaction;
     private bool _disposed = false;
 
@@ -27,6 +28,14 @@ public class UnitOfWork(BuildingsContext context) : IUnitOfWork
         get
         {
             return _adrBuildingsRepository ??= new AdrBinaRepository(_context);
+        }
+    }
+
+    public TrafoBinaRepository TrafoBuildingsRepository
+    {
+        get
+        {
+            return _trafoBuildingsRepository ??= new TrafoBinaRepository(_context);
         }
     }
 

@@ -8,6 +8,7 @@ public interface IUnitOfWork : IDisposable
     BuildingsRepository BuildingsRepository { get; }
 
     AdrBinaRepository AdrBuildingsRepository { get; }
+    TrafoBinaRepository TrafoBuildingsRepository { get; }
 
     Task SaveChangesAsync(CancellationToken cancellationToken);
     Task BeginTransactionAsync(CancellationToken cancellationToken);

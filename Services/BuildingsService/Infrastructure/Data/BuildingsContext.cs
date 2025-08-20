@@ -8,6 +8,7 @@ public class BuildingsContext(DbContextOptions options) : DbContext(options)
 {
     public DbSet<Building> Buildings { get; set; }
     public DbSet<AdrBina> AdrBuildings { get; set; }
+    public DbSet<TrafoBina> TrafoBuildings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -46,6 +47,23 @@ public class BuildingsContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.FloorCount)
                 .HasComputedColumnSql("COALESCE(NULLIF(bina_kat_sayisi, 0), 5)")
                 .HasColumnName("bina_kat_sayisi");
+            entity.Property(e => e.GeoJson)
+                .HasComputedColumnSql("ST_AsGeoJSON(ST_Transform(geometry, 4326))")
+                .HasColumnName("geojson");
+        });
+
+        modelBuilder.Entity<TrafoBina>(entity =>
+        {
+            entity.ToTable("SBK_TRAFOBINATIP");
+            entity.Property(e => e.Id)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("id");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .HasColumnName("adi");
+            entity.Property(e => e.Kodu)
+                .HasMaxLength(20)
+                .HasColumnName("kodu");
             entity.Property(e => e.GeoJson)
                 .HasComputedColumnSql("ST_AsGeoJSON(ST_Transform(geometry, 4326))")
                 .HasColumnName("geojson");

@@ -4,7 +4,7 @@ using Conduit3D.Common.Domain;
 
 namespace BuildingsService.Infrastructure.Services;
 
-public interface IBuildingsService: IGenericRepository<Building>
+public interface IBuildingsService: IGenericService<Building>
 {
     
 }
