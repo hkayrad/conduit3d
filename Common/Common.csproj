@@ -7,4 +7,9 @@
     <RootNamespace>Conduit3D.Common</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Infrastructure/" />
+    <Folder Include="Infrastructure/Services/" />
+  </ItemGroup>
+
 </Project>

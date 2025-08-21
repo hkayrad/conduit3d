@@ -1,7 +1,7 @@
 using System;
 using Conduit3D.Common.Domain;
 
-namespace PolesService.Infrastructure.Services;
+namespace Conduit3D.Common.Infrastructure.Services;
 
 public interface IGenericService<T> where T : class
 {
