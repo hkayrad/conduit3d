@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LinesService.Infrastructure.Repositories;
 
-public class AgHatRepository(LinesContext context) : IGenericRepository<AgHat>
+public class AgHatRepository(LinesContext context) : IAgHatRepository
 {
     private readonly LinesContext _context = context;
     private readonly DbSet<AgHat> _dbSet = context.Set<AgHat>();
-    
+
     public async Task<List<AgHat>> GetAllAsync(int pageNumber,
                                         int pageSize,
                                         string sortBy,

@@ -15,6 +15,7 @@ public class PostgresqlBuildingsService(IUnitOfWork unitOfWork) : IBuildingsServ
                                                             string sortBy,
                                                             bool ascending,
                                                             Extent? extent,
+                                                            string? query,
                                                             CancellationToken cancellationToken)
     {
         if (pageSize < 1 || pageSize > 200000)

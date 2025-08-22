@@ -10,6 +10,7 @@ public interface IGenericService<T> where T : class
                                             string sortBy,
                                             bool ascending,
                                             Extent? extent,
+                                            string? query,
                                             CancellationToken cancellationToken);
 
     Task<Response<T>> GetByIdAsync(int id, CancellationToken cancellationToken);

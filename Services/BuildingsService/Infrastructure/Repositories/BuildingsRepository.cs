@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BuildingsService.Infrastructure.Repositories;
 
-public class BuildingsRepository(BuildingsContext context) : IRepository<Building>
+public class BuildingsRepository(BuildingsContext context) : IBuildingsRepository
 {
     private readonly BuildingsContext _context = context;
     private readonly DbSet<Building> _dbSet = context.Set<Building>();

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LinesService.Infrastructure.Repositories;
 
-public class OgHatRepository(LinesContext context) : IGenericRepository<OgHat>
+public class OgHatRepository(LinesContext context) : IOgHatRepository
 {
     private readonly LinesContext _context = context;
     private readonly DbSet<OgHat> _dbSet = context.Set<OgHat>();

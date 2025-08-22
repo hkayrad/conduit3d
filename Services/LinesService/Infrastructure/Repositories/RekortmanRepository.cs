@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LinesService.Infrastructure.Repositories;
 
-public class RekortmanRepository(LinesContext context) : IGenericRepository<Rekortman>
+public class RekortmanRepository(LinesContext context) : IRekortmanRepository
 {
     private readonly LinesContext _context = context;
     private readonly DbSet<Rekortman> _dbSet = context.Set<Rekortman>();
-    
+
     public async Task<List<Rekortman>> GetAllAsync(int pageNumber,
                                         int pageSize,
                                         string sortBy,

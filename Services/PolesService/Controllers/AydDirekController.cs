@@ -22,6 +22,7 @@ namespace PolesService.Controllers
             [FromQuery] string sortBy = "Id",
             [FromQuery] bool ascending = true,
             [FromQuery] Extent? extent = null,
+            [FromQuery] string? query = null,
             CancellationToken cancellationToken = default
         )
         {
@@ -30,6 +31,7 @@ namespace PolesService.Controllers
                                                     sortBy,
                                                     ascending,
                                                     extent,
+                                                    query,
                                                     cancellationToken);
         }
 

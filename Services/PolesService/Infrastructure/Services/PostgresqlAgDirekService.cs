@@ -10,7 +10,13 @@ public class PostgresqlAgDirekService(IUnitOfWork unitOfWork) : IAgDirekService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 
-    public async Task<Response<List<AgDirek>>> GetAllAsync(int pageNumber, int pageSize, string sortBy, bool ascending, Extent? extent, CancellationToken cancellationToken)
+    public async Task<Response<List<AgDirek>>> GetAllAsync(int pageNumber,
+                                                        int pageSize,
+                                                        string sortBy,
+                                                        bool ascending,
+                                                        Extent? extent,
+                                                        string? query,
+                                                        CancellationToken cancellationToken)
     {
         if (pageSize < 1 || pageSize > 200000)
             return Response<List<AgDirek>>.ValidationError(PolesResources.GetString("invalidPageSize"));

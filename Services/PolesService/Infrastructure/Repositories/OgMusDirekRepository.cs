@@ -6,7 +6,7 @@ using PolesService.Infrastructure.Data;
 
 namespace PolesService.Infrastructure.Repositories;
 
-public class OgMusDirekRepository(PolesContext context) : IGenericRepository<OgMusDirek>
+public class OgMusDirekRepository(PolesContext context) : IOgMusDirekRepository
 {
     private readonly PolesContext _context = context;
     private readonly DbSet<OgMusDirek> _dbSet = context.Set<OgMusDirek>();

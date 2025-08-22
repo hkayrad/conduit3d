@@ -1,8 +1,7 @@
 using System;
-using PolesService.Domain;
 using Conduit3D.Common.Domain;
 
-namespace PolesService.Infrastructure.Repositories;
+namespace Conduit3D.Common.Infrastructure.Repositories;
 
 public interface IGenericRepository<T> where T : class
 {

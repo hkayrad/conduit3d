@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BuildingsService.Infrastructure.Repositories;
 
-public class AdrBinaRepository(BuildingsContext context) : IRepository<AdrBina>
+public class AdrBinaRepository(BuildingsContext context) : IAdrBinaRepository
 {
     private readonly BuildingsContext _context = context;
     private readonly DbSet<AdrBina> _dbSet = context.Set<AdrBina>();

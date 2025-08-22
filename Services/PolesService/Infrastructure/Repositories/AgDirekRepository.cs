@@ -6,7 +6,7 @@ using PolesService.Infrastructure.Data;
 
 namespace PolesService.Infrastructure.Repositories;
 
-public class AgDirekRepository(PolesContext context) : IGenericRepository<AgDirek>
+public class AgDirekRepository(PolesContext context) : IAgDirekRepository
 {
     private readonly PolesContext _context = context;
     private readonly DbSet<AgDirek> _dbSet = context.Set<AgDirek>();

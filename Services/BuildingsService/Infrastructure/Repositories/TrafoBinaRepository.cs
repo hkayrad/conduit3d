@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BuildingsService.Infrastructure.Repositories;
 
-public class TrafoBinaRepository(BuildingsContext context) : IRepository<TrafoBina>
+public class TrafoBinaRepository(BuildingsContext context) : ITrafoBinaRepository
 {
     private readonly BuildingsContext _context = context;
     private readonly DbSet<TrafoBina> _dbSet = context.Set<TrafoBina>();
