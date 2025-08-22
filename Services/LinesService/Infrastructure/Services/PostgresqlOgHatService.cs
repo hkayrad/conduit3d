@@ -45,6 +45,7 @@ public class PostgresqlOgHatService(IUnitOfWork unitOfWork) : IOgHatService
                                                                             sortBy,
                                                                             ascending,
                                                                             extent,
+                                                                            query,
                                                                             cancellationToken);
 
             if (ogHatlar == null || ogHatlar.Count == 0)

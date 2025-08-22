@@ -45,6 +45,7 @@ public class PostgresqlAydDirekService(IUnitOfWork unitOfWork) : IAydDirekServic
                                                                             sortBy,
                                                                             ascending,
                                                                             extent,
+                                                                            query,
                                                                             cancellationToken);
 
             if (aydDirekler == null || aydDirekler.Count == 0)

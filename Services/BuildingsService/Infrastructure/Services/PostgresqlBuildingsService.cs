@@ -45,6 +45,7 @@ public class PostgresqlBuildingsService(IUnitOfWork unitOfWork) : IBuildingsServ
                                                                             sortBy,
                                                                             ascending,
                                                                             extent,
+                                                                            query,
                                                                             cancellationToken);
 
             if (buildings == null || buildings.Count == 0)

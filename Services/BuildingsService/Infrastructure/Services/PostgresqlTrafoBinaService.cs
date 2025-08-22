@@ -45,6 +45,7 @@ private readonly IUnitOfWork _unitOfWork = unitOfWork ?? throw new ArgumentNullE
                                                                     sortBy,
                                                                     ascending,
                                                                     extent,
+                                                                    query,
                                                                     cancellationToken);
 
             if (trafo == null || trafo.Count == 0)

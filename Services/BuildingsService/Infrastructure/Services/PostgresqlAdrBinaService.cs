@@ -45,6 +45,7 @@ public class PostgresqlAdrBinaService(IUnitOfWork unitOfWork) : IAdrBinaService
                                                                     sortBy,
                                                                     ascending,
                                                                     extent,
+                                                                    query,
                                                                     cancellationToken);
 
             if (buildings == null || buildings.Count == 0)

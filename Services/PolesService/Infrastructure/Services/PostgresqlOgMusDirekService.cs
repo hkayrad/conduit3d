@@ -45,6 +45,7 @@ public class PostgresqlOgMusDirekService(IUnitOfWork unitOfWork) : IOgMusDirekSe
                                                                             sortBy,
                                                                             ascending,
                                                                             extent,
+                                                                            query,
                                                                             cancellationToken);
 
             if (ogMusDirekler == null || ogMusDirekler.Count == 0)

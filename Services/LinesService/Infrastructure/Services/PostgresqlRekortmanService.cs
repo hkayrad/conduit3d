@@ -45,6 +45,7 @@ public class PostgresqlRekortmanService(IUnitOfWork unitOfWork) : IRekortmanServ
                                                                             sortBy,
                                                                             ascending,
                                                                             extent,
+                                                                            query,
                                                                             cancellationToken);
 
             if (rekortmanlar == null || rekortmanlar.Count == 0)

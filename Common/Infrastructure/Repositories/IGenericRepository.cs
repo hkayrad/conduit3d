@@ -10,6 +10,7 @@ public interface IGenericRepository<T> where T : class
                                             string sortBy,
                                             bool ascending,
                                             Extent extent,
+                                            string? query,
                                             CancellationToken cancellationToken);
 
     public Task<T?> GetByIdAsync(int id, CancellationToken cancellationToken);

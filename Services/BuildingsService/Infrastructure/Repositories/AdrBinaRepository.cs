@@ -16,9 +16,10 @@ public class AdrBinaRepository(BuildingsContext context) : IAdrBinaRepository
                                             string sortBy,
                                             bool ascending,
                                             Extent extent,
+                                            string? query,
                                             CancellationToken cancellationToken)
     {
-        var query = _dbSet.FromSql($@"SELECT 
+        var sqlQuery = _dbSet.FromSql($@"SELECT 
                                         id, 
                                         adi, 
                                         COALESCE(NULLIF(bina_kat_sayisi, 0), 5) as ""bina_kat_sayisi"",
@@ -34,18 +35,18 @@ public class AdrBinaRepository(BuildingsContext context) : IAdrBinaRepository
                                     )");
 
         if (ascending)
-            query = query.OrderBy(x => EF.Property<object>(x, sortBy));
+            sqlQuery = sqlQuery.OrderBy(x => EF.Property<object>(x, sortBy));
         else
-            query = query.OrderByDescending(x => EF.Property<object>(x, sortBy));
+            sqlQuery = sqlQuery.OrderByDescending(x => EF.Property<object>(x, sortBy));
 
-        query = query.Skip((pageNumber - 1) * pageSize).Take(pageSize);
+        sqlQuery = sqlQuery.Skip((pageNumber - 1) * pageSize).Take(pageSize);
 
-        return await query.ToListAsync(cancellationToken);
+        return await sqlQuery.ToListAsync(cancellationToken);
     }
 
     public async Task<AdrBina?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
-        var query = _dbSet.FromSql($@"SELECT 
+        var sqlQuery = _dbSet.FromSql($@"SELECT 
                                         id, 
                                         adi, 
                                         COALESCE(NULLIF(bina_kat_sayisi, 0), 5) as ""bina_kat_sayisi"",
@@ -53,15 +54,15 @@ public class AdrBinaRepository(BuildingsContext context) : IAdrBinaRepository
                                         ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson
                                     FROM ""ADR_BINA""
                                     WHERE id = {id}");
-        return await query.FirstOrDefaultAsync(cancellationToken);
+        return await sqlQuery.FirstOrDefaultAsync(cancellationToken);
     }
 
     public async Task<int> GetCountAsync(Extent extent, CancellationToken cancellationToken)
     {
-        var query = _dbSet.FromSql($@"SELECT *
+        var sqlQuery = _dbSet.FromSql($@"SELECT *
                     FROM ""ADR_BINA""
                     WHERE ST_Transform(geometry, 4326) @ ST_MakeEnvelope({extent.MinX}, {extent.MinY}, {extent.MaxX}, {extent.MaxY}, 4326)");
 
-        return await query.CountAsync(cancellationToken);
+        return await sqlQuery.CountAsync(cancellationToken);
     }
 }

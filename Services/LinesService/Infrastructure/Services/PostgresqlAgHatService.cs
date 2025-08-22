@@ -45,6 +45,7 @@ public class PostgresqlAgHatService(IUnitOfWork unitOfWork) : IAgHatService
                                                                             sortBy,
                                                                             ascending,
                                                                             extent,
+                                                                            query,
                                                                             cancellationToken);
 
             if (agHatlar == null || agHatlar.Count == 0)

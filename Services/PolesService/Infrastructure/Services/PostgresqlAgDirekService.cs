@@ -45,6 +45,7 @@ public class PostgresqlAgDirekService(IUnitOfWork unitOfWork) : IAgDirekService
                                                                             sortBy,
                                                                             ascending,
                                                                             extent,
+                                                                            query,
                                                                             cancellationToken);
 
             if (agDirekler == null || agDirekler.Count == 0)
