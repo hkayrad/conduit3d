@@ -19,3 +19,46 @@
  - Interleaved Binary Data's can be used to render poles to increase efficiency by doing every calculation on the GPU. (Cannot be used for buildings beacuse of their different shapes and varying point amounts.) (It can be used for lines if broken in to singular line segments before creating the lines.) (**MUST** find a way to bind the strings to the line, they cannot be sent to he ArrayBuffer [Can get them using the original list])
  - *Natively using the GPU currently does not work for creating column layers.*
  - Divide the lines before using in a layer, it causes **MAJOR** performance problems.
+
+
+### Possible Search Terms
+
+Implement it using tsvector column for the best searchability.
+
+ - Create the tsvector column using what you want to be searchable.
+ - Create an index using GIN on the tsvector column to make the search operations faster.
+ - To perform the search, first use to_tsquery function convert the query to a tsvector searchable format and then compare it to the tsvector column using @@ operator.
+ 
+##### Buildings
+ - id
+ - geometry
+ - site_adi
+ - adi
+ - bina_kat_sayisi
+
+##### Trafo Bina 
+ - id
+ - geometry
+ - adi
+ - kodu
+
+##### AG/OG Hatlar
+ - id
+ - geometry
+ - cinsi
+ - kesit
+ - tipi
+
+##### Rekortman
+ - id
+ - geometry
+ - kesit
+ - tipi
+
+##### AG/OGMUS/AYD Direk
+ - id
+ - geometry
+ - cinsi
+ - tipi
+ - direk_no
+ - boy_ozellik
