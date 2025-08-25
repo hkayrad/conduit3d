@@ -12,12 +12,15 @@ import { useEffect, useState } from "react";
 import { Layer, type MapViewState } from "@deck.gl/core";
 import { selectTrafoBina } from "./trafoBina/trafoBinaSlice";
 import { selectAdrBina } from "./adrBina/adrBinaSlice";
-import { selectMapState, type MapState } from "./mapSlice";
-import { useDispatch } from "react-redux";
+import { selectMapState } from "./mapSlice";
 import LayerControl from "./layerControl/LayerControl";
 
 const MAP_STYLE = "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
+// const MAP_STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
+// const MAP_STYLE = "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+// const MAP_STYLE = "https://tiles.openfreemap.org/styles/positron"
 // const MAP_STYLE = "https://tiles.openfreemap.org/styles/bright"
+// const MAP_STYLE = "https://tiles.openfreemap.org/styles/liberty"
 
 const INITIAL_VIEW_STATE = {
     longitude: 41.287,
@@ -30,15 +33,22 @@ const INITIAL_VIEW_STATE = {
 
 export default function DeckglMap() {
     const [mapViewState, setMapViewState] = useState<MapViewState>(INITIAL_VIEW_STATE);
+    //@ts-ignore
     const [layers, setLayers] = useState<Layer[]>([]);
 
     const mapState = useAppSelector(selectMapState);
+    //@ts-ignore
     const trafoBina = useAppSelector(selectTrafoBina);
+    //@ts-ignore
     const adrBina = useAppSelector(selectAdrBina);
 
     const handleViewStateChange = (viewState: MapViewState) => {
         setMapViewState(viewState);
     }
+
+    useEffect(() => {
+        console.table(mapState.visibility);
+    }, [mapState.visibility]);
 
     return (
         <div id="map-page">
