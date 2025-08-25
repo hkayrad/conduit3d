@@ -1,5 +1,4 @@
 import axios, { type AxiosResponse } from "axios";
-import type { ApiResponse } from "./types";
 
 const instance = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
@@ -10,7 +9,7 @@ const instance = axios.create({
     withCredentials: true,
 })
 
-instance.interceptors.response.use((response: AxiosResponse<ApiResponse>) => {
+instance.interceptors.response.use((response: AxiosResponse) => {
     if (!response.data.isSuccess) {
         console.error("API Error:", response.data.message || "Unknown error");
         return Promise.reject(new Error(response.data.message || "API Error"));

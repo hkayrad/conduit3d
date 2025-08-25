@@ -29,8 +29,18 @@
                 color: rgba(global.$primary, .6)
             }
 
+            &:hover {
+                background: rgba(global.$primary, .1);
+            }
+
             &:focus {
+                background: global.$primary;
+                color: global.$white;
                 border-color: global.$primary;
+
+                &::placeholder {
+                    color: global.$white;
+                }
             }
         }
     }
@@ -43,5 +53,11 @@
         color: global.$primary;
         padding: 8px 8px;
         border-radius: 4px;
+        transition: all ease .2s;
+
+        &:hover {
+            cursor: pointer;
+            background: rgba(global.$primary, .1);
+        }
     }
 }

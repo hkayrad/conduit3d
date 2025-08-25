@@ -58,8 +58,19 @@
 .auth-input-container .auth-input input::placeholder {
   color: rgba(43, 45, 66, 0.6);
 }
+.auth-input-container .auth-input input:hover {
+  background: rgba(43, 45, 66, 0.1);
+}
 .auth-input-container .auth-input input:focus {
+  background: #2B2D42;
+  color: #FFFFFF;
   border-color: #2B2D42;
+}
+.auth-input-container .auth-input input:focus::-moz-placeholder {
+  color: #FFFFFF;
+}
+.auth-input-container .auth-input input:focus::placeholder {
+  color: #FFFFFF;
 }
 .auth-input-container #toggle-password {
   display: flex;
@@ -69,4 +80,9 @@
   color: #2B2D42;
   padding: 8px 8px;
   border-radius: 4px;
+  transition: all ease 0.2s;
+}
+.auth-input-container #toggle-password:hover {
+  cursor: pointer;
+  background: rgba(43, 45, 66, 0.1);
 }/*# sourceMappingURL=input.css.map */

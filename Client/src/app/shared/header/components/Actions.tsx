@@ -1,13 +1,13 @@
 import { List, LogOut, Map, ShieldUser } from "lucide-react";
 import { NavLink, useNavigate } from "react-router";
-import Auth from "../../../../lib/api/auth";
+import AuthApi from "../../../../lib/api/auth";
 
 export default function Actions() {
     const navigate = useNavigate();
 
     const handleLogout = async () => {
         try {
-            Auth.logout();
+            AuthApi.logout();
             navigate("/login", { replace: true });
         } catch (error) {
             console.error("Logout failed:", error);

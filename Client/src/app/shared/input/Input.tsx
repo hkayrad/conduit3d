@@ -13,7 +13,7 @@ type Props = {
     setState: React.Dispatch<React.SetStateAction<string>>
 }
 
-export default function AuthInput(props: Props) {
+export default function Input(props: Props) {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     const { type, id, name, label, required, placeholder, state, setState } = props;
@@ -21,7 +21,7 @@ export default function AuthInput(props: Props) {
     return (
         <div className="auth-input-container">
             <label className="auth-input">
-                <p>{label}{required && <span className="error">*</span>}</p>
+                {label && <p>{label}{required && <span className="error">*</span>}</p>}
                 <input
                     type={type ? type === "password" && isPasswordVisible ? "text" : type : "text"}
                     id={id}

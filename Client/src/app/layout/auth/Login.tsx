@@ -1,9 +1,9 @@
 import "./style/login.css"
 
 import { useNavigate } from "react-router";
-import Auth from "../../../lib/api/auth";
+import AuthApi from "../../../lib/api/auth";
 import Logo from "../../shared/header/components/Logo";
-import AuthInput from "../../shared/authInput/AuthInput";
+import Input from "../../shared/input/Input";
 import { useState } from "react";
 import type { LoginUserDto } from "../../../lib/types";
 import { LogIn, ShieldX } from "lucide-react";
@@ -23,7 +23,7 @@ export default function Login() {
         }
 
         try {
-            await Auth.login(user);
+            await AuthApi.login(user);
             navigate("/", { replace: true });
         } catch (error) {
             setLoginError("Invalid username or password");
@@ -39,14 +39,14 @@ export default function Login() {
             <h2 id="welcome">Welcome</h2>
             <p id="instructions">Use credentials given by your system administrator</p>
             <div id="login-form">
-                <AuthInput
+                <Input
                     id="username"
                     label="Username"
                     placeholder="john_doe"
                     state={username}
                     setState={setUsername}
                     required />
-                <AuthInput
+                <Input
                     id="password"
                     label="Password"
                     placeholder="your_password"

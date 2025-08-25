@@ -1,8 +1,15 @@
-export type ApiResponse = {
+export type ApiResponse<T> = {
     isSuccess: boolean,
     message: string,
     statusCode: number,
-    data: any
+    data: T
+}
+
+export type Extent = {
+    minX: number,
+    minY: number,
+    maxX: number,
+    maxY: number
 }
 
 export type User = {

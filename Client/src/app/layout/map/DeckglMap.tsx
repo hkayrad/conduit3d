@@ -4,6 +4,8 @@ import "maplibre-gl/dist/maplibre-gl.css"
 
 import { DeckGL } from "@deck.gl/react"
 import { Map as MapLibre } from 'react-map-gl/maplibre';
+import TrafoBina from "./trafoBina/TrafoBina";
+import AdrBina from "./adrBina/AdrBina";
 
 const MAP_STYLE = "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
 // const MAP_STYLE = "https://tiles.openfreemap.org/styles/bright"
@@ -23,6 +25,8 @@ export default function DeckglMap() {
             controller
             initialViewState={INITIAL_VIEW_STATE}
         >
+            <AdrBina />
+            <TrafoBina />
             <MapLibre
                 reuseMaps
                 mapStyle={MAP_STYLE}
