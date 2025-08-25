@@ -28,14 +28,12 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-.layer-control {
+#layer-control-toggle {
   position: absolute;
   top: 80px;
   right: 16px;
   z-index: 1;
   transition: all 0.3s ease;
-}
-.layer-control #layer-control-toggle {
   border: none;
   border-radius: 8px;
   background-color: #2B2D42;
@@ -45,7 +43,10 @@
   align-items: center;
   outline: none;
 }
-.layer-control.open {
+#layer-control-toggle:hover {
+  cursor: pointer;
+}
+#layer-control-toggle.open {
   right: 320px;
 }
 

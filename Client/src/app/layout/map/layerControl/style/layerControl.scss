@@ -1,25 +1,26 @@
 @use "../../../../../global.scss";
 
-.layer-control {
+#layer-control-toggle {
     position: absolute;
     top: 80px;
     right: 16px;
     z-index: 1;
     transition: all .3s ease;
-    
-    #layer-control-toggle {
-        border: none;
-        border-radius: 8px;
-        background-color: global.$primary;
-        color: global.$white;
-        padding: 12px;
-        display: flex;
-        align-items: center;
-        outline: none;
+    border: none;
+    border-radius: 8px;
+    background-color: global.$primary;
+    color: global.$white;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    outline: none;
+
+    &:hover {
+        cursor: pointer;
     }
-    
+
     &.open {
-        right: 320px
+        right: 320px;
     }
 }
 
@@ -34,7 +35,7 @@
     padding: 16px 12px 16px 16px;
     border-radius: 8px 0 0 8px;
     color: global.$white;
-    
+
     &.open {
         right: 0px;
     }
