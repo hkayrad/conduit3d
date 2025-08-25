@@ -13,6 +13,7 @@ import { selectTrafoBina } from "./trafoBina/trafoBinaSlice";
 import { selectAdrBina } from "./adrBina/adrBinaSlice";
 import { selectMapState, type MapState } from "./mapSlice";
 import { useDispatch } from "react-redux";
+import LayerControl from "./layerControl/LayerControl";
 
 const MAP_STYLE = "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
 // const MAP_STYLE = "https://tiles.openfreemap.org/styles/bright"
@@ -46,19 +47,13 @@ export default function DeckglMap() {
 
     return (
         <>
-            <div style={{ position: "absolute", top: '64px', left: 0, zIndex: 1, display: "flex", flexDirection: "column" }}>
-                {Object.keys(mapState).map((layer) => (
-                    <button key={layer} onClick={() => handleLayerToggle(layer as keyof MapState)}>
-                        Toggle {layer}
-                    </button>
-                ))}
-            </div>
             <DeckGL
                 controller
                 viewState={mapViewState}
                 onViewStateChange={(e) => handleViewStateChange(e.viewState as MapViewState)}
                 layers={layers}
             >
+                <LayerControl />
                 <AdrBina />
                 <TrafoBina />
                 <MapLibre

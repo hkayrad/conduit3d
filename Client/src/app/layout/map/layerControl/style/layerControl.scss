@@ -1,0 +1,19 @@
+@use "../../../../../global.scss";
+
+.layer-control {
+    position: absolute;
+    top: 80px;
+    right: 16px;
+    z-index: 1;
+
+    #layer-control-toggle {
+        border: none;
+        border-radius: 8px;
+        background-color: global.$primary;
+        color: global.$white;
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        outline: none;
+    }
+}
