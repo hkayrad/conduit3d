@@ -6,29 +6,43 @@ import Logo from "../../shared/header/components/Logo";
 import Input from "../../shared/input/Input";
 import { useState } from "react";
 import type { LoginUserDto } from "../../../lib/types";
-import { Info, LogIn, ShieldX } from "lucide-react";
+import { Info, Loader, LogIn, ShieldX } from "lucide-react";
 
 export default function Login() {
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [loginError, setLoginError] = useState<string | null>("");
     const [isInfoHovered, setIsInfoHovered] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const navigate = useNavigate();
 
     const handleLogin = async () => {
+        setLoading(true);
         const user: LoginUserDto = { username, password };
-        if (!user.username || !user.password) {
-            console.error("Username and password are required");
-            return;
-        }
 
-        try {
-            await AuthApi.login(user);
-            navigate("/", { replace: true });
-        } catch (error) {
-            setLoginError("Invalid username or password");
-        }
+        setTimeout(async () => {
+            if (!user.username || !user.password) {
+                setLoginError("Please fill in all fields");
+                setLoading(false);
+                return;
+            }
+
+            if (user.password.length < 8) {
+                setLoginError("Password must be at least 8 characters long");
+                setLoading(false);
+                return;
+            }
+
+            try {
+                await AuthApi.login(user);
+                setLoading(false);
+                navigate("/", { replace: true });
+            } catch (error) {
+                setLoading(false);
+                setLoginError("Invalid username or password");
+            }
+        }, 500);
     }
 
     return <div id="login">
@@ -59,17 +73,15 @@ export default function Login() {
                     state={password}
                     setState={setPassword}
                     required />
-                <button className="shadow" id="login-button" onClick={handleLogin}>
-                    <LogIn />
-                    Login
+                <button className="shadow" id="login-button" onClick={handleLogin} disabled={loading}>
+                    {loading ? <Loader id="loader" /> : <LogIn />}
+                    {loading ? "Loading..." : "Login"}
                 </button>
-                {
-                    loginError && <p className="shadow" id="login-error">
-                        <ShieldX />
-                        {loginError}
-                    </p>
-                }
             </div>
+            <p className={`shadow ${loginError ? "visible" : ""}`} id="login-error">
+                <ShieldX />
+                {loginError}
+            </p>
         </div>
     </div>
 }

@@ -34,6 +34,7 @@
         align-items: center;
         justify-content: center;
         gap: 32px;
+        padding: 0 250px;
 
         #info-box {
             position: absolute;
@@ -89,6 +90,7 @@
             flex-direction: column;
             gap: 24px;
             justify-content: center;
+            width: 100%;
 
             .input {
                 margin: auto;
@@ -108,27 +110,49 @@
                 color: global.$white;
                 border: none;
                 border-radius: 8px;
+                transition: all ease .2s;
+
+                #loader {
+                    animation: spin 2s linear infinite;
+                }
 
                 &:hover {
+                    background-color: global.$primary-light;
                     cursor: pointer;
+                }
+
+                &:disabled {
+                    background: rgba(global.$primary, .6);
                 }
             }
         }
 
         #login-error {
-            position: absolute;
-            bottom: -56px;
-            left: 0;
-            right: 0;
             background-color: global.$error;
             color: global.$white;
             width: fit-content;
-            margin: auto;
+            height: fit-content;
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px;
+            width: fit-content;
+            gap: 16px;
+            padding: 8px 16px;
             border-radius: 8px;
+            visibility: hidden;
+
+            &.visible {
+                visibility: visible;
+            }
         }
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
     }
 }

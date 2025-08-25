@@ -60,6 +60,7 @@
   align-items: center;
   justify-content: center;
   gap: 32px;
+  padding: 0 250px;
 }
 #login #right #info-box {
   position: absolute;
@@ -108,6 +109,7 @@
   flex-direction: column;
   gap: 24px;
   justify-content: center;
+  width: 100%;
 }
 #login #right #login-form .input {
   margin: auto;
@@ -127,23 +129,42 @@
   color: #FFFFFF;
   border: none;
   border-radius: 8px;
+  transition: all ease 0.2s;
+}
+#login #right #login-form #login-button #loader {
+  animation: spin 2s linear infinite;
 }
 #login #right #login-form #login-button:hover {
+  background-color: #3B3E5A;
   cursor: pointer;
 }
+#login #right #login-form #login-button:disabled {
+  background: rgba(43, 45, 66, 0.6);
+}
 #login #right #login-error {
-  position: absolute;
-  bottom: -56px;
-  left: 0;
-  right: 0;
   background-color: #D32F2F;
   color: #FFFFFF;
   width: -moz-fit-content;
   width: fit-content;
-  margin: auto;
+  height: -moz-fit-content;
+  height: fit-content;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px;
+  width: fit-content;
+  gap: 16px;
+  padding: 8px 16px;
   border-radius: 8px;
+  visibility: hidden;
+}
+#login #right #login-error.visible {
+  visibility: visible;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }/*# sourceMappingURL=login.css.map */
