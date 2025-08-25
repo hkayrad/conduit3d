@@ -15,9 +15,9 @@ export default function Actions() {
     }
     return (
         <div id="actions">
-            <NavLink id="action-button" to="/"><Map /> Map</NavLink>
-            <NavLink id="action-button" to="/list"><List /> List</NavLink>
-            <NavLink id="action-button" to="/admin"><ShieldUser /> Admin</NavLink>
+            <NavLink id="action-button" className={({ isActive }) => (isActive ? "active" : "")} to="/"><Map /> Map</NavLink>
+            <NavLink id="action-button" className={({ isActive }) => (isActive ? "active" : "")} to="/list"><List /> List</NavLink>
+            <NavLink id="action-button" className={({ isActive }) => (isActive ? "active" : "")} to="/admin"><ShieldUser /> Admin</NavLink>
             <button className="error" id="action-button" onClick={handleLogout}><LogOut /> Logout</button>
         </div>
     )
