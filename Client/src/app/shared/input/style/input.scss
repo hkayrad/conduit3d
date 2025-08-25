@@ -29,11 +29,12 @@
                 color: rgba(global.$primary, .6)
             }
 
-            &:hover {
+            &:hover,
+            &:focus {
                 background: rgba(global.$primary, .1);
             }
 
-            &:focus {
+            /* &:focus {
                 background: global.$primary;
                 color: global.$white;
                 border-color: global.$primary;
@@ -41,7 +42,7 @@
                 &::placeholder {
                     color: global.$white;
                 }
-            }
+            } */
         }
     }
 
