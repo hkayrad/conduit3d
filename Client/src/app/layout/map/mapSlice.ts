@@ -3,27 +3,31 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../../lib/store";
 
 export interface MapState {
-    isBasemapVisible: boolean;
-    isAdrBinaVisible: boolean;
-    isTrafoBinaVisible: boolean;
-    isAgDirekVisible: boolean;
-    isOgMusDirekVisible: boolean;
-    isAydDirekVisible: boolean;
-    isAgHatVisible: boolean;
-    isOgHatVisible: boolean;
-    isRekortmanVisible: boolean;
+    visibility: {
+        basemap: boolean,
+        adrBina: boolean,
+        trafoBina: boolean,
+        agDirek: boolean,
+        ogMusDirek: boolean,
+        aydDirek: boolean,
+        agHat: boolean,
+        ogHat: boolean,
+        rekortman: boolean
+    }
 }
 
 const initialState: MapState = {
-    isBasemapVisible: true,
-    isAdrBinaVisible: true,
-    isTrafoBinaVisible: true,
-    isAgDirekVisible: true,
-    isOgMusDirekVisible: true,
-    isAydDirekVisible: true,
-    isAgHatVisible: true,
-    isOgHatVisible: true,
-    isRekortmanVisible: true
+    visibility: {
+        basemap: true,
+        adrBina: true,
+        trafoBina: true,
+        agDirek: true,
+        ogMusDirek: true,
+        aydDirek: true,
+        agHat: true,
+        ogHat: true,
+        rekortman: true
+    }
 };
 
 export const mapSlice = createSlice({
@@ -32,8 +36,8 @@ export const mapSlice = createSlice({
     reducers: {
         setMapLayerVisibility: (state, action: PayloadAction<{ layer: keyof MapState; visible: boolean }>) => {
             const { layer, visible } = action.payload;
-            if (layer in state) {
-                state[layer] = visible;
+            if (layer in state.visibility) {
+                state.visibility[layer] = visible;
             }
         }
     }

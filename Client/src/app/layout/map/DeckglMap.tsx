@@ -32,18 +32,12 @@ export default function DeckglMap() {
     const [mapViewState, setMapViewState] = useState<MapViewState>(INITIAL_VIEW_STATE);
     const [layers, setLayers] = useState<Layer[]>([]);
 
-    const dispatch = useDispatch();
     const mapState = useAppSelector(selectMapState);
     const trafoBina = useAppSelector(selectTrafoBina);
     const adrBina = useAppSelector(selectAdrBina);
 
     const handleViewStateChange = (viewState: MapViewState) => {
         setMapViewState(viewState);
-    }
-
-    const handleLayerToggle = (layer: keyof MapState) => {
-        const isVisible = mapState[layer];
-        dispatch({ type: "map/setMapLayerVisibility", payload: { layer, visible: !isVisible } });
     }
 
     return (
@@ -59,7 +53,7 @@ export default function DeckglMap() {
                 <TrafoBina />
                 <MapLibre
                     reuseMaps
-                    mapStyle={mapState.isBasemapVisible ? MAP_STYLE : undefined}
+                    mapStyle={mapState.visibility.basemap ? MAP_STYLE : undefined}
                     projection={"globe"}
                     attributionControl={false}
                     maxZoom={25}
