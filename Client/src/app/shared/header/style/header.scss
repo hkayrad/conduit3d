@@ -1,0 +1,44 @@
+@use "../../../../global.scss";
+
+#header {
+    width: 100vw;
+    height: 64px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    #logo {
+        background-color: global.$white;
+        border-radius: 0 0 12px 0;
+    }
+
+    #actions {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 16px;
+        padding: 8px 14px;
+        background: global.$white;
+        border-radius: 0 0 0 12px;
+
+        #action-button {
+            color: global.$primary;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            outline: none;
+            border: none;
+            background: none;
+            padding: 8px;
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+    }
+}

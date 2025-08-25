@@ -1,0 +1,117 @@
+@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Lexend", sans-serif;
+  font-size: 16px;
+}
+
+.lucide {
+  width: 16px;
+  height: 16px;
+}
+
+.error {
+  color: #D32F2F !important;
+}
+
+.warning {
+  color: #FFC107 !important;
+}
+
+.success {
+  color: #4CAF50 !important;
+}
+
+.shadow {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+#login {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100svh;
+  width: 100svw;
+  overflow: hidden;
+}
+#login #left {
+  height: 100vh;
+  background-color: #2B2D42;
+  position: relative;
+  display: grid;
+  align-items: center;
+  justify-items: center;
+}
+#login #left #logo {
+  position: fixed;
+  z-index: 2;
+}
+#login #left #bg {
+  height: 100%;
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  opacity: 0.1;
+}
+#login #right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+}
+#login #right #welcome {
+  color: #2B2D42;
+  font-size: 48px;
+  font-weight: bold;
+}
+#login #right #instructions {
+  color: #808080;
+  font-weight: normal;
+}
+#login #right #login-form {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  justify-content: center;
+}
+#login #right #login-form .input {
+  margin: auto;
+  min-width: 300px;
+  width: 20vw;
+}
+#login #right #login-form #login-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: -moz-fit-content;
+  width: fit-content;
+  padding: 8px 12px;
+  margin: auto;
+  gap: 8px;
+  background-color: #2B2D42;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+}
+#login #right #login-form #login-button:hover {
+  cursor: pointer;
+}
+#login #right #login-error {
+  position: absolute;
+  bottom: -56px;
+  left: 0;
+  right: 0;
+  background-color: #D32F2F;
+  color: #FFFFFF;
+  width: -moz-fit-content;
+  width: fit-content;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 8px;
+}/*# sourceMappingURL=login.css.map */

@@ -1,23 +1,70 @@
+import "./style/login.css"
+
 import { useNavigate } from "react-router";
 import Auth from "../../../lib/api/auth";
+import Logo from "../../shared/header/components/Logo";
+import AuthInput from "../../shared/authInput/AuthInput";
+import { useState } from "react";
+import type { LoginUserDto } from "../../../lib/types";
+import { LogIn, ShieldX } from "lucide-react";
 
 export default function Login() {
+    const [username, setUsername] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [loginError, setLoginError] = useState<string | null>("");
+
     const navigate = useNavigate();
 
     const handleLogin = async () => {
-        const user = {
-            username: 'test',
-            password: 'Test1234'
-        };
+        const user: LoginUserDto = { username, password };
+        if (!user.username || !user.password) {
+            console.error("Username and password are required");
+            return;
+        }
+
         try {
             await Auth.login(user);
             navigate("/", { replace: true });
         } catch (error) {
-            console.error("Login failed:", error);
+            setLoginError("Invalid username or password");
         }
     }
 
-    return <>
-        <button onClick={handleLogin}>Login</button>
-    </>
+    return <div id="login">
+        <div id="left">
+            <Logo color="White" size="Big" />
+            <img id="bg" src="/login/bg.png" alt="Conduit3D Logo" />
+        </div>
+        <div id="right">
+            <h2 id="welcome">Welcome</h2>
+            <p id="instructions">Use credentials given by your system administrator</p>
+            <div id="login-form">
+                <AuthInput
+                    id="username"
+                    label="Username"
+                    placeholder="john_doe"
+                    state={username}
+                    setState={setUsername}
+                    required />
+                <AuthInput
+                    id="password"
+                    label="Password"
+                    placeholder="your_password"
+                    type="password"
+                    state={password}
+                    setState={setPassword}
+                    required />
+                <button className="shadow" id="login-button" onClick={handleLogin}>
+                    <LogIn />
+                    Login
+                </button>
+                {
+                    loginError && <p className="shadow" id="login-error">
+                        <ShieldX />
+                        {loginError}
+                    </p>
+                }
+            </div>
+        </div>
+    </div>
 }

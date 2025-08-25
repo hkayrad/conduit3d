@@ -1,0 +1,97 @@
+@use "../../../../global.scss";
+
+#login {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 100svh;
+    width: 100svw;
+    overflow: hidden;
+
+    #left {
+        height: 100vh;
+        background-color: global.$primary;
+        position: relative;
+        display: grid;
+        align-items: center;
+        justify-items: center;
+
+        #logo {
+            position: fixed;
+            z-index: 2;
+        }
+
+        #bg {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+            opacity: .1;
+        }
+    }
+
+    #right {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 32px;
+
+        #welcome {
+            color: global.$primary;
+            font-size: 48px;
+            font-weight: bold;
+        }
+
+        #instructions {
+            color: #808080;
+            font-weight: normal;
+        }
+
+        #login-form {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            justify-content: center;
+
+            .input {
+                margin: auto;
+                min-width: 300px;
+                width: 20vw;
+            }
+
+            #login-button {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: fit-content;
+                padding: 8px 12px;
+                margin: auto;
+                gap: 8px;
+                background-color: global.$primary;
+                color: global.$white;
+                border: none;
+                border-radius: 8px;
+
+                &:hover {
+                    cursor: pointer;
+                }
+            }
+        }
+
+        #login-error {
+            position: absolute;
+            bottom: -56px;
+            left: 0;
+            right: 0;
+            background-color: global.$error;
+            color: global.$white;
+            width: fit-content;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            border-radius: 8px;
+        }
+    }
+}
