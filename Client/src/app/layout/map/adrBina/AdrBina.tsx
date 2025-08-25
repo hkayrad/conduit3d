@@ -1,10 +1,9 @@
 import { useEffect } from "react";
 import AdrBinaApi from "../../../../lib/api/adrBina";
-import { useAppSelector, useAppDispatch } from "../../../../lib/hooks"
+import { useAppDispatch } from "../../../../lib/hooks"
 
 export default function AdrBina() {
     const dispatch = useAppDispatch();
-    const adrBina = useAppSelector((state) => state.adrBina.value);
 
     const handleFetchAdrBina = async () => {
         try {
@@ -20,10 +19,6 @@ export default function AdrBina() {
     useEffect(() => {
         handleFetchAdrBina();
     }, [])
-
-    useEffect(() => {
-        console.log("adrBina updated:", adrBina);
-    }, [adrBina]);
 
     return null;
 }

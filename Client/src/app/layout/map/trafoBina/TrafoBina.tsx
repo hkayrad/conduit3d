@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import TrafoBinaApi from "../../../../lib/api/trafoBina";
-import { useAppSelector, useAppDispatch } from "../../../../lib/hooks"
+import { useAppDispatch } from "../../../../lib/hooks"
+
 
 export default function TrafoBina() {
     const dispatch = useAppDispatch();
-    const trafoBina = useAppSelector((state) => state.trafoBina.value);
 
     const handleFetchTrafoBina = async () => {
         try {
@@ -20,10 +20,6 @@ export default function TrafoBina() {
     useEffect(() => {
         handleFetchTrafoBina();
     }, [])
-
-    useEffect(() => {
-        console.log("trafoBina updated:", trafoBina);
-    }, [trafoBina]);
 
     return null;
 }
