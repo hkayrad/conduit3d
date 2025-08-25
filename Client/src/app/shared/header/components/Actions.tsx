@@ -1,18 +1,22 @@
 import { List, LogOut, Map, ShieldUser } from "lucide-react";
 import { NavLink, useNavigate } from "react-router";
 import AuthApi from "../../../../lib/api/auth";
+import { useDispatch } from "react-redux";
 
 export default function Actions() {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const handleLogout = async () => {
         try {
             AuthApi.logout();
+            dispatch({ type: 'user/clearUser' });
             navigate("/login", { replace: true });
         } catch (error) {
             console.error("Logout failed:", error);
         }
     }
+
     return (
         <div id="actions" className="shadow">
             <NavLink id="action-button" className={({ isActive }) => (isActive ? "active" : "")} to="/"><Map /> Map</NavLink>

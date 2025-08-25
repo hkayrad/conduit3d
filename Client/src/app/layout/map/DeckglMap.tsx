@@ -46,9 +46,9 @@ export default function DeckglMap() {
         setMapViewState(viewState);
     }
 
-    useEffect(() => {
-        console.table(mapState.visibility);
-    }, [mapState.visibility]);
+    // useEffect(() => {
+    //     console.table(mapState.visibility);
+    // }, [mapState.visibility]);
 
     return (
         <div id="map-page">

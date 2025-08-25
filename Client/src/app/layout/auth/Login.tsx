@@ -7,6 +7,7 @@ import Input from "../../shared/input/Input";
 import { useState } from "react";
 import type { LoginUserDto } from "../../../lib/types";
 import { Info, Loader, LogIn, ShieldX } from "lucide-react";
+import { useDispatch } from "react-redux";
 
 export default function Login() {
     const [username, setUsername] = useState<string>("");
@@ -16,6 +17,7 @@ export default function Login() {
     const [loading, setLoading] = useState<boolean>(false);
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleLogin = async () => {
         setLoading(true);
@@ -35,12 +37,18 @@ export default function Login() {
             }
 
             try {
-                await AuthApi.login(user);
-                setLoading(false);
-                navigate("/", { replace: true });
+                const response = await AuthApi.login(user);
+                if (response.isSuccess) {
+                    // dispatch({ type: 'user/setUser', payload: response.data });
+                    setLoading(false);
+                    navigate("/", { replace: true });
+                } else {
+                    setLoading(false);
+                    setLoginError("Invalid username or password");
+                }
             } catch (error) {
                 setLoading(false);
-                setLoginError("Invalid username or password");
+                setLoginError("An error occurred while trying to log in");
             }
         }, 500);
     }
