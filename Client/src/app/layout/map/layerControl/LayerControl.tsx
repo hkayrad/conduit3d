@@ -20,11 +20,11 @@ export default function LayerControl() {
         <>
             <button
                 id="layer-control-toggle"
-                className={isControlsOpen ? "open" : "closed"}
+                className={`shadow ${isControlsOpen ? "open" : "closed"}`}
                 onClick={() => setIsControlsOpen(!isControlsOpen)}>
                 {isControlsOpen ? <ChevronRight /> : <Layers2 />}
             </button>
-            <div className={`layer-control-content ${isControlsOpen ? "open" : "closed"}`}>
+            <div className={`layer-control-content shadow ${isControlsOpen ? "open" : "closed"}`}>
                 {
                     Object.keys(mapState.visibility).map((layer) => (
                         <div key={layer} className="layer-control-item">

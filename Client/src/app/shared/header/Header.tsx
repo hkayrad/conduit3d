@@ -6,7 +6,7 @@ import { NavLink } from "react-router";
 export default function Header() {
     return (
         <div id="header">
-            <NavLink to="/">
+            <NavLink to="/" id="logo-container" className="shadow">
                 <Logo />
             </NavLink>
             <Actions />

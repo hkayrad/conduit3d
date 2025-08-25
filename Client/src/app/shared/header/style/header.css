@@ -39,7 +39,7 @@
   flex-direction: row;
   justify-content: space-between;
 }
-#header #logo {
+#header #logo-container {
   background-color: #FFFFFF;
   border-radius: 0 0 12px 0;
 }
