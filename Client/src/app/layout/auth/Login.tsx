@@ -6,12 +6,13 @@ import Logo from "../../shared/header/components/Logo";
 import Input from "../../shared/input/Input";
 import { useState } from "react";
 import type { LoginUserDto } from "../../../lib/types";
-import { LogIn, ShieldX } from "lucide-react";
+import { Info, LogIn, ShieldX } from "lucide-react";
 
 export default function Login() {
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [loginError, setLoginError] = useState<string | null>("");
+    const [isInfoHovered, setIsInfoHovered] = useState<boolean>(false);
 
     const navigate = useNavigate();
 
@@ -36,6 +37,10 @@ export default function Login() {
             <img id="bg" src="/login/bg.png" alt="Conduit3D Logo" />
         </div>
         <div id="right">
+            <div id="info-box">
+                <p id="info-hover" onMouseEnter={() => setIsInfoHovered(true)} onMouseLeave={() => setIsInfoHovered(false)}><Info /></p>
+                <p className={`${isInfoHovered ? "visible" : ""}`} id="info-text">If you forgot your password, please contact the system administrator.</p>
+            </div>
             <h2 id="welcome">Welcome</h2>
             <p id="instructions">Use credentials given by your system administrator</p>
             <div id="login-form">

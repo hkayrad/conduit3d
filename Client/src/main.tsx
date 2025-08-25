@@ -8,6 +8,8 @@ import { RequireAuth, RequireNoAuth } from './app/layout/auth/Auth'
 import DeckglMap from './app/layout/map/DeckglMap'
 import { Provider } from "react-redux"
 import { store } from "./lib/store"
+import Admin from "./app/layout/admin/Admin"
+import List from "./app/layout/list/List"
 
 createRoot(document.getElementById('root')!).render(
   <Provider store={store}>
@@ -19,6 +21,8 @@ createRoot(document.getElementById('root')!).render(
           </RequireAuth>
         }>
           <Route index element={<DeckglMap />} />
+          <Route path='/admin' element={<Admin />} />
+          <Route path='/list' element={<List />} />
         </Route>
         <Route path='/login' element={
           <RequireNoAuth>

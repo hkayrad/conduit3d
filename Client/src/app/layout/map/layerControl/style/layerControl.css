@@ -33,6 +33,7 @@
   top: 80px;
   right: 16px;
   z-index: 1;
+  transition: all 0.3s ease;
 }
 .layer-control #layer-control-toggle {
   border: none;
@@ -43,4 +44,23 @@
   display: flex;
   align-items: center;
   outline: none;
+}
+.layer-control.open {
+  right: 320px;
+}
+
+.layer-control-content {
+  z-index: 1;
+  position: absolute;
+  top: 80px;
+  right: -320px;
+  width: 304px;
+  transition: all 0.3s ease;
+  background: #2B2D42;
+  padding: 16px 12px 16px 16px;
+  border-radius: 8px 0 0 8px;
+  color: #FFFFFF;
+}
+.layer-control-content.open {
+  right: 0px;
 }/*# sourceMappingURL=layerControl.css.map */

@@ -1,6 +1,7 @@
 import "@deck.gl/widgets/stylesheet.css"
 import "deck.gl/stylesheet.css"
 import "maplibre-gl/dist/maplibre-gl.css"
+import "./style/deckglMap.css"
 
 import { DeckGL } from "@deck.gl/react"
 import { Map as MapLibre } from 'react-map-gl/maplibre';
@@ -46,14 +47,14 @@ export default function DeckglMap() {
     }
 
     return (
-        <>
+        <div id="map-page">
+            <LayerControl />
             <DeckGL
                 controller
                 viewState={mapViewState}
                 onViewStateChange={(e) => handleViewStateChange(e.viewState as MapViewState)}
                 layers={layers}
             >
-                <LayerControl />
                 <AdrBina />
                 <TrafoBina />
                 <MapLibre
@@ -65,6 +66,6 @@ export default function DeckglMap() {
                     boxZoom={false}
                 />
             </DeckGL>
-        </>
+        </div>
     );
 }
