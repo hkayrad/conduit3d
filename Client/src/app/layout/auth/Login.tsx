@@ -7,7 +7,6 @@ import Input from "../../shared/input/Input";
 import { useState } from "react";
 import type { LoginUserDto } from "../../../lib/types";
 import { Info, Loader, LogIn, ShieldX } from "lucide-react";
-import { useDispatch } from "react-redux";
 
 export default function Login() {
     const [username, setUsername] = useState<string>("");
@@ -17,7 +16,6 @@ export default function Login() {
     const [loading, setLoading] = useState<boolean>(false);
 
     const navigate = useNavigate();
-    const dispatch = useDispatch();
 
     const handleLogin = async () => {
         setLoading(true);

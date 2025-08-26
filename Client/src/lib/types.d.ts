@@ -34,7 +34,7 @@ export type AdrBina = {
     geoJson: string
 }
 
-export type Trafo = {
+export type TrafoBina = {
     id: number,
     name: string | null,
     kodu: string | null,
