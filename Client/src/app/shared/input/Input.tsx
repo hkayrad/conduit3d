@@ -29,6 +29,7 @@ export default function Input(props: Props) {
                     required={required}
                     placeholder={placeholder}
                     value={state}
+                    autoComplete={name === "password" ? "current-password" : name === "username" ? "username" : "off"}
                     onChange={(e) => setState(e.target.value)}
                 />
             </label>

@@ -30,15 +30,15 @@ export type AdrBina = {
     id: number,
     name: string | null,
     type: string | null,
-    floorCount: number | null,
-    geoJson: GeoJSON.Feature
+    floorCount: number,
+    geoJson: string
 }
 
 export type Trafo = {
     id: number,
     name: string | null,
     kodu: string | null,
-    geoJson: GeoJSON.Feature
+    geoJson: string
 }
 
 export type Hat = {
@@ -46,14 +46,14 @@ export type Hat = {
     cinsi: string,
     tipi: string,
     kesit: string,
-    geoJson: GeoJSON.Feature
+    geoJson: string
 }
 
 export type Rekortman = {
     id: number,
     tipi: string,
     kesit: string,
-    geoJson: GeoJSON.Feature
+    geoJson: string
 }
 
 export type Direk = {
@@ -62,5 +62,5 @@ export type Direk = {
     tipi: string,
     boyOzellik: string,
     direkNo: string,
-    geoJson: GeoJSON.Feature
+    geoJson: string
 }

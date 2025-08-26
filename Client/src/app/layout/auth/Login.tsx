@@ -2,7 +2,7 @@ import "./style/login.css"
 
 import { useNavigate } from "react-router";
 import AuthApi from "../../../lib/api/auth";
-import Logo from "../../shared/header/components/Logo";
+import Logo from "../../shared/logo/Logo";
 import Input from "../../shared/input/Input";
 import { useState } from "react";
 import type { LoginUserDto } from "../../../lib/types";
@@ -70,6 +70,7 @@ export default function Login() {
                     id="username"
                     label="Username"
                     placeholder="john_doe"
+                    name="username"
                     state={username}
                     setState={setUsername}
                     required />
@@ -78,6 +79,7 @@ export default function Login() {
                     label="Password"
                     placeholder="your_password"
                     type="password"
+                    name="password"
                     state={password}
                     setState={setPassword}
                     required />
