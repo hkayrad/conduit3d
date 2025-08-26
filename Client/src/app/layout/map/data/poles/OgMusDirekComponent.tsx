@@ -1,16 +1,16 @@
 import { useEffect } from "react";
-import { AydDirekApi } from "../../../../lib/api/poles";
-import type { Direk } from "../../../../lib/types";
+import { OgMusDirekApi } from "../../../../../lib/api/poles";
+import type { Direk } from "../../../../../lib/types";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>
 }
 
-export default function AydDirekComponent(props: Props) {
+export default function OgMusDirekComponent(props: Props) {
     const { setData } = props;
 
-    const handleAydDirekFetch = async () => {
-        const response = await AydDirekApi.fetchAll();
+    const handleOgMusDirekFetch = async () => {
+        const response = await OgMusDirekApi.fetchAll();
 
         if (response.isSuccess) {
             var dataList: GeoJSON.FeatureCollection = {
@@ -40,7 +40,7 @@ export default function AydDirekComponent(props: Props) {
     }
 
     useEffect(() => {
-        handleAydDirekFetch();
+        handleOgMusDirekFetch();
     }, [])
 
     return null;

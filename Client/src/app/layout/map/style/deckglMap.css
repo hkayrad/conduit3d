@@ -33,4 +33,30 @@
   height: 100vh;
   position: relative;
   overflow: hidden;
+}
+#map-page .top-left {
+  top: 80px !important;
+  left: 16px !important;
+}
+#map-page .top-left .deck-widget {
+  margin-top: 0px !important;
+  margin-left: 0px !important;
+  background: none !important;
+  border: none !important;
+}
+#map-page .top-left .deck-widget .deck-widget-button-group {
+  gap: 0px;
+  background: none !important;
+}
+#map-page .top-left .deck-widget .deck-widget-button-group .deck-widget-icon-button {
+  background: #2B2D42 !important;
+}
+#map-page .top-left .deck-widget .deck-widget-button-group .deck-widget-icon-button .deck-widget-icon {
+  background: #FFFFFF !important;
+}
+#map-page .top-left .deck-widget.deck-widget-compass .deck-widget-button {
+  background: none !important;
+}
+#map-page .top-left .deck-widget.deck-widget-compass .deck-widget-button button {
+  background: #2B2D42 !important;
 }/*# sourceMappingURL=deckglMap.css.map */

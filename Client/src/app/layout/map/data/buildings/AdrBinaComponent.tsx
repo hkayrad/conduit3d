@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import type { AdrBina } from "../../../../lib/types"
-import { AdrBinaApi } from "../../../../lib/api/buildings";
+import type { AdrBina } from "../../../../../lib/types"
+import { AdrBinaApi } from "../../../../../lib/api/buildings";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>
