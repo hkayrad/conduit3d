@@ -1,0 +1,19 @@
+@use "../../../../../global.scss";
+
+#mouse-position {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    z-index: 1;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: global.$primary;
+    color: global.$white;
+    width: 170px;
+    display: flex;
+    justify-content: space-between;
+
+    #number {
+        width: 45%;
+    }
+}

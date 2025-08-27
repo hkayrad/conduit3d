@@ -7,7 +7,7 @@ import { DeckGL } from "@deck.gl/react"
 import { CompassWidget, ZoomWidget } from "@deck.gl/widgets";
 import { Map as MapLibre } from 'react-map-gl/maplibre';
 import { useAppSelector } from "../../../lib/hooks/reduxHooks"
-import { useCallback, useState } from "react";
+import { use, useCallback, useState } from "react";
 import { Layer, MapView, type MapViewState, type PickingInfo } from "@deck.gl/core";
 import { selectMapState } from "./mapSlice";
 import LayerControl from "./layerControl/LayerControl";
@@ -17,6 +17,7 @@ import { COLORS } from "../../../lib/colors"
 import DataComponent from "./data/DataComponent"
 import { useHat } from "../../../lib/hooks/useHat"
 import useDirek from "../../../lib/hooks/useDirek"
+import MousePosition from "./mousePosition/MousePosition"
 
 // const MAP_STYLE = "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
 // const MAP_STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
@@ -50,6 +51,8 @@ export default function DeckglMap() {
     const [rekortman, setRekortman] = useState<GeoJSON.FeatureCollection>(null!);
 
     const [hoveredFeature, setHoveredFeature] = useState<GeoJSON.Feature | null>(null);
+
+    const [mouseLonLat, setMouseLonLat] = useState<number[]>([0, 0]);
 
     const { hatLayerData } = useHat(agHat, ogHat, rekortman, mapState);
     const { direkLayerData, allPoles } = useDirek(agDirek, ogMusDirek, aydDirek, mapState);
@@ -109,6 +112,11 @@ export default function DeckglMap() {
         setLineWidth(Number(Math.max((23.5 - viewState.zoom) / 10, 0.01).toFixed(4)));
     }
 
+    const handleMouseMove = (info: PickingInfo) => {
+        setHoveredFeature(info.object);
+        setMouseLonLat(info.coordinate ? info.coordinate : [0, 0]);
+    }
+
     const onClick = useCallback((info: PickingInfo, event: any) => {
         console.log('Clicked:', info, event);
     }, []);
@@ -128,6 +136,7 @@ export default function DeckglMap() {
             />
             <div id="map-page">
                 <LayerControl />
+                <MousePosition mouseLonLat={mouseLonLat} />
                 <DeckGL
                     controller
                     views={new MapView()}
@@ -136,7 +145,7 @@ export default function DeckglMap() {
                     layers={layers}
                     widgets={[new ZoomWidget(), new CompassWidget({})]}
                     onClick={onClick}
-                    onHover={info => setHoveredFeature(info.object)}
+                    onHover={info => handleMouseMove(info)}
                 >
                     <MapLibre
                         reuseMaps
