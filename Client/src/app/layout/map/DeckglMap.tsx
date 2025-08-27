@@ -7,7 +7,7 @@ import { DeckGL } from "@deck.gl/react"
 import { CompassWidget, ZoomWidget } from "@deck.gl/widgets";
 import { Map as MapLibre } from 'react-map-gl/maplibre';
 import { useAppSelector } from "../../../lib/hooks/reduxHooks"
-import { use, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Layer, MapView, type MapViewState, type PickingInfo } from "@deck.gl/core";
 import { selectMapState } from "./mapSlice";
 import LayerControl from "./layerControl/LayerControl";
@@ -31,16 +31,15 @@ import { useSearchParams } from "react-router"
 export default function DeckglMap() {
     var [searchParams, setSearchParams] = useSearchParams();
 
-    const INITIAL_VIEW_STATE = {
+    const [mapViewState, setMapViewState] = useState<MapViewState>({
         longitude: searchParams.get("lon") ? parseFloat(searchParams.get("lon")!) : 41.287,
         latitude: searchParams.get("lat") ? parseFloat(searchParams.get("lat")!) : 39.9,
         zoom: searchParams.get("z") ? parseFloat(searchParams.get("z")!) : 15,
         maxZoom: 25,
         pitch: searchParams.get("p") ? parseFloat(searchParams.get("p")!) : 60,
         bearing: searchParams.get("b") ? parseFloat(searchParams.get("b")!) : 0
-    }
+    });
 
-    const [mapViewState, setMapViewState] = useState<MapViewState>(INITIAL_VIEW_STATE);
     const [lineWidth, setLineWidth] = useState<number>(1);
     const mapState = useAppSelector(selectMapState);
 
@@ -111,15 +110,15 @@ export default function DeckglMap() {
         })
     ]
 
-    const handleViewStateChange = (viewState: MapViewState) => {
+    const handleViewStateChange = useCallback((viewState: MapViewState) => {
         setMapViewState(viewState);
         setLineWidth(Number(Math.max((23.5 - viewState.zoom) / 10, 0.01).toFixed(4)));
-    }
+    }, []);
 
-    const handleMouseMove = (info: PickingInfo) => {
+    const handleMouseMove = useCallback((info: PickingInfo) => {
         setHoveredFeature(info.object);
         setMouseLonLat(info.coordinate ? info.coordinate : [0, 0]);
-    }
+    }, []);
 
     const onClick = useCallback((info: PickingInfo, event: any) => {
         console.log('Clicked:', info, event);
@@ -127,13 +126,19 @@ export default function DeckglMap() {
 
     useEffect(() => {
         const handler = setTimeout(() => {
-            setSearchParams({
-                lon: mapViewState.longitude.toString(),
-                lat: mapViewState.latitude.toString(),
-                z: mapViewState.zoom.toFixed(2),
-                p: mapViewState.pitch!.toFixed(2),
-                b: mapViewState.bearing!.toFixed(2),
-            });
+            setSearchParams(
+                {
+                    lon: mapViewState.longitude.toString(),
+                    lat: mapViewState.latitude.toString(),
+                    z: mapViewState.zoom.toFixed(2),
+                    p: mapViewState.pitch!.toFixed(2),
+                    b: mapViewState.bearing!.toFixed(2),
+                },
+                {
+                    preventScrollReset: true,
+                    replace: true
+                }
+            );
         }, 300); // 300ms debounce
 
         return () => clearTimeout(handler);
