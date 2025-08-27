@@ -10,15 +10,17 @@
     align-items: center;
     justify-content: center;
     border-radius: 8px;
+    left: 308px;
+    top: 16px;
+    transition: all .5s ease;
+    pointer-events: none;
 
     &.visible {
         opacity: 1;
-        pointer-events: auto;
     }
 
     &:not(.visible) {
         opacity: 0;
-        pointer-events: none;
     }
 
     #loader-icon {
