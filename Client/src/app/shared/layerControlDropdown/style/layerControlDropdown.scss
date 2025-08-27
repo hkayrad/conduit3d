@@ -1,51 +1,77 @@
 @use "../../../../global.scss";
 
 .layer-control-dropdown {
-    width: 100%;
-    height: fit-content;
-    background-color: global.$primary-light;
-    padding: 12px 16px;
-    border-radius: 8px;
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
 
-    .left {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        cursor: default;
-        user-select: none;
+    &.closed {
+        margin-bottom: 0px;
     }
 
-    .right {
+    &.open {
+        margin-bottom: 8px;
+    }
+    
+    .controller {
+        width: 100%;
+        height: fit-content;
+        background-color: global.$primary-light;
+        padding: 12px 16px;
+        border-radius: 8px;
         display: flex;
+        flex-direction: row;
+        justify-content: space-between;
         align-items: center;
-        gap: 16px;
+        overflow: hidden;
 
-        button {
-            background: none;
-            border: none;
+        .left {
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: global.$white;
-            padding: 4px;
-            border-radius: 4px;
-
-            &:hover {
-                background: global.$primary-lighter;
-                cursor: pointer;
-            }
+            gap: 12px;
+            cursor: default;
+            user-select: none;
         }
 
-        svg {
-            transition: all 0.3s ease;
+        .right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
 
-            &.open {
-                transform: rotate(180deg);
+            button {
+                background: none;
+                border: none;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: global.$white;
+                padding: 4px;
+                border-radius: 4px;
+
+                &:hover {
+                    background: global.$primary-lighter;
+                    cursor: pointer;
+                }
             }
+
+            svg {
+                transition: all 0.3s ease;
+
+                &.open {
+                    transform: rotate(180deg);
+                }
+            }
+        }
+    }
+
+    .content {
+        height: 0px;
+        background: global.$primary-lighter;
+        transition: all 0.3s ease;
+        border-radius: 8px;
+
+        &.open {
+            margin-top: 8px;
+            height: 200px;
         }
     }
 }

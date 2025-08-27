@@ -64,6 +64,17 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  max-height: 740px;
+  overflow-y: scroll;
+}
+.layer-control-content::-webkit-scrollbar {
+  width: 6px;
+}
+.layer-control-content::-webkit-scrollbar-track {
+  background: none;
+}
+.layer-control-content::-webkit-scrollbar-thumb {
+  background: #4B4E73;
 }
 .layer-control-content.open {
   right: 0px;
