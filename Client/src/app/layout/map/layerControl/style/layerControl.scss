@@ -35,6 +35,9 @@
     padding: 16px 12px 16px 16px;
     border-radius: 8px 0 0 8px;
     color: global.$white;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 
     &.open {
         right: 0px;

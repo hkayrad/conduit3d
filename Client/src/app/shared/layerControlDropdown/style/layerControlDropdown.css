@@ -1,0 +1,76 @@
+@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Lexend", sans-serif;
+  font-size: 16px;
+}
+
+.lucide {
+  width: 16px;
+  height: 16px;
+}
+
+.error {
+  color: #D32F2F !important;
+}
+
+.warning {
+  color: #FFC107 !important;
+}
+
+.success {
+  color: #4CAF50 !important;
+}
+
+.shadow {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.layer-control-dropdown {
+  width: 100%;
+  height: -moz-fit-content;
+  height: fit-content;
+  background-color: #3B3E5A;
+  padding: 12px 16px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.layer-control-dropdown .left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: default;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+.layer-control-dropdown .right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.layer-control-dropdown .right button {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  padding: 4px;
+  border-radius: 4px;
+}
+.layer-control-dropdown .right button:hover {
+  background: #4B4E73;
+  cursor: pointer;
+}
+.layer-control-dropdown .right svg {
+  transition: all 0.3s ease;
+}
+.layer-control-dropdown .right svg.open {
+  transform: rotate(180deg);
+}/*# sourceMappingURL=layerControlDropdown.css.map */

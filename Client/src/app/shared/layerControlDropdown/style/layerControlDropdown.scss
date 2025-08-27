@@ -1,0 +1,51 @@
+@use "../../../../global.scss";
+
+.layer-control-dropdown {
+    width: 100%;
+    height: fit-content;
+    background-color: global.$primary-light;
+    padding: 12px 16px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    .left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: default;
+        user-select: none;
+    }
+
+    .right {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        button {
+            background: none;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: global.$white;
+            padding: 4px;
+            border-radius: 4px;
+
+            &:hover {
+                background: global.$primary-lighter;
+                cursor: pointer;
+            }
+        }
+
+        svg {
+            transition: all 0.3s ease;
+
+            &.open {
+                transform: rotate(180deg);
+            }
+        }
+    }
+}

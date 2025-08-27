@@ -61,6 +61,9 @@
   padding: 16px 12px 16px 16px;
   border-radius: 8px 0 0 8px;
   color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 .layer-control-content.open {
   right: 0px;
