@@ -40,6 +40,7 @@ export default function DataComponent(props: Props) {
             <TrafoBinaComponent
                 setData={setTrafoBina}
             />
+
             <AgDirekComponent
                 setData={setAgDirek}
             />
@@ -49,6 +50,7 @@ export default function DataComponent(props: Props) {
             <AydDirekComponent
                 setData={setAydDirek}
             />
+
             <AgHatComponent
                 setData={setAgHat}
                 allPoles={allPoles}

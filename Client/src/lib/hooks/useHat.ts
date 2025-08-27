@@ -4,7 +4,7 @@ import { HatCinsi } from "../enums";
 import { filterHat } from "../utils/filterFeature";
 import type { MapState } from "../../app/layout/map/mapSlice";
 
-export function useHatLayers(
+export function useHat(
     agHat: GeoJSON.FeatureCollection,
     ogHat: GeoJSON.FeatureCollection,
     rekortman: GeoJSON.FeatureCollection,
@@ -79,5 +79,5 @@ export function useHatLayers(
         }
     }, [rekortman, mapState.visibility.rekortman]);
 
-    return [agHatHavai, ogHatHavai, rekortmanHavai, agHatBara, ogHatBara, agHatYeralti, ogHatYeralti, rekortmanYeralti];
+    return { hatLayerData: [agHatHavai, ogHatHavai, rekortmanHavai, agHatBara, ogHatBara, agHatYeralti, ogHatYeralti, rekortmanYeralti] };
 }

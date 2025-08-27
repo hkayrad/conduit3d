@@ -2,7 +2,7 @@ import { useMemo } from "react"
 import { COLORS } from "../colors"
 import type { MapState } from "../../app/layout/map/mapSlice"
 
-export default function useDirekLayers(
+export default function useDirek(
     agDirek: GeoJSON.FeatureCollection,
     ogMusDirek: GeoJSON.FeatureCollection,
     aydDirek: GeoJSON.FeatureCollection,
@@ -32,5 +32,14 @@ export default function useDirekLayers(
         }
     }, [aydDirek, mapState.visibility.aydDirek]);
 
-    return [agDirekFormatted, ogMusDirekFormatted, aydDirekFormatted];
+    const allPoles: GeoJSON.Feature[] = useMemo(() => {
+        if (agDirek && ogMusDirek && aydDirek)
+            return [...agDirek.features, ...ogMusDirek.features, ...aydDirek.features]
+        else return [];
+    }, [agDirek, ogMusDirek, aydDirek])
+
+    return {
+        direkLayerData: [agDirekFormatted, ogMusDirekFormatted, aydDirekFormatted],
+        allPoles
+    };
 }

@@ -15,9 +15,8 @@ import { ColumnLayer, GeoJsonLayer } from "deck.gl"
 import { CreateLayer } from "../../../lib/utils/createLayer"
 import { COLORS } from "../../../lib/colors"
 import DataComponent from "./data/DataComponent"
-import { useHatLayers } from "../../../lib/hooks/useHatLayers"
-import { usePoles } from "../../../lib/hooks/usePoles"
-import useDirekLayers from "../../../lib/hooks/useDirekLayers"
+import { useHat } from "../../../lib/hooks/useHat"
+import useDirek from "../../../lib/hooks/useDirek"
 
 // const MAP_STYLE = "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
 // const MAP_STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
@@ -52,10 +51,8 @@ export default function DeckglMap() {
 
     const [hoveredFeature, setHoveredFeature] = useState<GeoJSON.Feature | null>(null);
 
-    const { allPoles } = usePoles(agDirek, ogMusDirek, aydDirek);
-
-    const hatLayerData = useHatLayers(agHat, ogHat, rekortman, mapState);
-    const direkLayerData = useDirekLayers(agDirek, ogMusDirek, aydDirek, mapState);
+    const { hatLayerData } = useHat(agHat, ogHat, rekortman, mapState);
+    const { direkLayerData, allPoles } = useDirek(agDirek, ogMusDirek, aydDirek, mapState);
 
     const layers: Layer[] = [
         ...CreateLayer.LocalTiles(mapState.visibility.basemap),
