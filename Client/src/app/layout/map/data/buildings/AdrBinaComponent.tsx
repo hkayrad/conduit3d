@@ -1,16 +1,17 @@
 import { useEffect } from "react";
-import type { AdrBina } from "../../../../../lib/types"
+import type { AdrBina, Extent } from "../../../../../lib/types"
 import { AdrBinaApi } from "../../../../../lib/api/buildings";
 
 type Props = {
-    setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>
+    setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
+    extent: Extent
 }
 
 export default function AdrBinaComponent(props: Props) {
-    const { setData } = props;
+    const { setData, extent } = props;
 
     const handleAdrBinaFetch = async () => {
-        const response = await AdrBinaApi.fetchAll();
+        const response = await AdrBinaApi.fetchAll(extent);
 
         if (response.isSuccess) {
             var dataList: GeoJSON.FeatureCollection = {
@@ -42,7 +43,7 @@ export default function AdrBinaComponent(props: Props) {
 
     useEffect(() => {
         handleAdrBinaFetch();
-    }, [])
+    }, [extent])
 
     return null;
 } 

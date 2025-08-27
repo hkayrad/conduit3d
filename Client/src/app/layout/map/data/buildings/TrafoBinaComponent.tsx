@@ -1,16 +1,17 @@
 import { useEffect } from "react";
 import { TrafoBinaApi } from "../../../../../lib/api/buildings";
-import type { TrafoBina } from "../../../../../lib/types";
+import type { Extent, TrafoBina } from "../../../../../lib/types";
 
 type Props = {
-    setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>
+    setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
+    extent: Extent
 }
 
 export default function TrafoBinaComponent(props: Props) {
-    const { setData } = props;
+    const { setData, extent } = props;
 
     const handleTrafoBinaFetch = async () => {
-        const response = await TrafoBinaApi.fetchAll();
+        const response = await TrafoBinaApi.fetchAll(extent);
 
         if (response.isSuccess) {
             var dataList: GeoJSON.FeatureCollection = {
@@ -39,7 +40,7 @@ export default function TrafoBinaComponent(props: Props) {
 
     useEffect(() => {
         handleTrafoBinaFetch();
-    }, [])
+    }, [extent])
 
     return null;
 } 

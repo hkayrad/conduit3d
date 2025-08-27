@@ -1,16 +1,24 @@
 import instance from "../instance";
-import type { AdrBina, ApiResponse, TrafoBina } from "../types";
+import type { AdrBina, ApiResponse, Extent, TrafoBina } from "../types";
 
 export class AdrBinaApi {
-    static async fetchAll() {
-        const response = await instance.get<ApiResponse<AdrBina[]>>("adrBina");
+    static async fetchAll(extent: Extent) {
+        const response = await instance.get<ApiResponse<AdrBina[]>>("adrBina", {
+            params: {
+                ...extent
+            }
+        });
         return response.data;
     }
 }
 
 export class TrafoBinaApi {
-    static async fetchAll() {
-        const response = await instance.get<ApiResponse<TrafoBina[]>>("trafoBina");
+    static async fetchAll(extent: Extent) {
+        const response = await instance.get<ApiResponse<TrafoBina[]>>("trafoBina", {
+            params: {
+                ...extent
+            }
+        });
         return response.data;
     }
 }

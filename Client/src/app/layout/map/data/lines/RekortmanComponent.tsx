@@ -1,18 +1,19 @@
 import { useEffect } from "react";
 import { RekortmanApi } from "../../../../../lib/api/lines";
-import type { Rekortman } from "../../../../../lib/types";
+import type { Extent, Rekortman } from "../../../../../lib/types";
 import { lineStringToSegments } from "../../../../../lib/utils/lineStringToSegments";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
-    allPoles: GeoJSON.Feature[]
+    allPoles: GeoJSON.Feature[],
+    extent: Extent
 }
 
 export default function RekortmanComponent(props: Props) {
-    const { setData, allPoles } = props;
+    const { setData, allPoles, extent } = props;
 
     const handleRekortmanFetch = async () => {
-        const response = await RekortmanApi.fetchAll();
+        const response = await RekortmanApi.fetchAll(extent);
 
         if (response.isSuccess) {
             var dataList: GeoJSON.FeatureCollection = {
@@ -41,7 +42,7 @@ export default function RekortmanComponent(props: Props) {
     useEffect(() => {
         if (allPoles.length > 0)
             handleRekortmanFetch();
-    }, [allPoles]);
+    }, [allPoles, extent]);
 
     return null;
 }

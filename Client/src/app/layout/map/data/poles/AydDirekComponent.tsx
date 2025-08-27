@@ -1,16 +1,17 @@
 import { useEffect } from "react";
 import { AydDirekApi } from "../../../../../lib/api/poles";
-import type { Direk } from "../../../../../lib/types";
+import type { Direk, Extent } from "../../../../../lib/types";
 
 type Props = {
-    setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>
+    setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
+    extent: Extent
 }
 
 export default function AydDirekComponent(props: Props) {
-    const { setData } = props;
+    const { setData, extent } = props;
 
     const handleAydDirekFetch = async () => {
-        const response = await AydDirekApi.fetchAll();
+        const response = await AydDirekApi.fetchAll(extent);
 
         if (response.isSuccess) {
             var dataList: GeoJSON.FeatureCollection = {
@@ -41,7 +42,7 @@ export default function AydDirekComponent(props: Props) {
 
     useEffect(() => {
         handleAydDirekFetch();
-    }, [])
+    }, [extent])
 
     return null;
 }

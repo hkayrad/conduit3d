@@ -25,6 +25,12 @@ export interface MapState {
         aydDirek: {
             tipi: AydDirekTipi[]
         }
+    },
+    extent: {
+        minX: number,
+        minY: number,
+        maxX: number,
+        maxY: number
     }
 }
 
@@ -50,6 +56,12 @@ const initialState: MapState = {
         aydDirek: {
             tipi: []
         }
+    },
+    extent: {
+        minX: 26,
+        minY: 36,
+        maxX: 45,
+        maxY: 42
     }
 };
 
@@ -80,15 +92,23 @@ export const mapSlice = createSlice({
             if (filter in state.filters) {
                 state.filters[filter].tipi = tipi as any[];
             }
+        },
+        setExtent: (
+            state,
+            action: PayloadAction<{ extent: MapState["extent"] }>
+        ) => {
+            const { extent } = action.payload;
+            state.extent = extent;
         }
     }
 });
 
-export const { setMapLayerVisibility } = mapSlice.actions;
+export const { setMapLayerVisibility, setFilter, setExtent } = mapSlice.actions;
 
 export const selectMapState = (state: RootState) => state.map;
 
 export const selectVisibility = (state: RootState) => state.map.visibility;
 export const selectFilters = (state: RootState) => state.map.filters;
+export const selectExtent = (state: RootState) => state.map.extent;
 
 export default mapSlice.reducer;

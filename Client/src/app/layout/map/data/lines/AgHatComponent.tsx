@@ -1,18 +1,19 @@
 import { useEffect } from "react";
 import { AgHatApi } from "../../../../../lib/api/lines";
-import type { Hat } from "../../../../../lib/types";
+import type { Extent, Hat } from "../../../../../lib/types";
 import { lineStringToSegments } from "../../../../../lib/utils/lineStringToSegments";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>
     allPoles: GeoJSON.Feature[],
+    extent: Extent
 }
 
 export default function AgHatComponent(props: Props) {
-    const { setData, allPoles/* agDirek, ogMusDirek, aydDirek */ } = props;
+    const { setData, allPoles, extent } = props;
 
     const handleAgHatFetch = async () => {
-        const response = await AgHatApi.fetchAll();
+        const response = await AgHatApi.fetchAll(extent);
 
         if (response.isSuccess) {
             var dataList: GeoJSON.FeatureCollection = {
@@ -43,7 +44,7 @@ export default function AgHatComponent(props: Props) {
     useEffect(() => {
         if (allPoles.length > 0)
             handleAgHatFetch();
-    }, [allPoles]);
+    }, [allPoles, extent]);
 
     return null;
 }

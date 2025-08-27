@@ -1,3 +1,5 @@
+import { useAppSelector } from "../../../../lib/hooks/reduxHooks";
+import { selectExtent } from "../mapSlice";
 import AdrBinaComponent from "./buildings/AdrBinaComponent";
 import TrafoBinaComponent from "./buildings/TrafoBinaComponent";
 import AgHatComponent from "./lines/AgHatComponent";
@@ -32,36 +34,46 @@ export default function DataComponent(props: Props) {
         setRekortman
     } = props;
 
+    const extent = useAppSelector(selectExtent);
+
     return (
         <>
             <AdrBinaComponent
                 setData={setAdrBina}
+                extent={extent}
             />
             <TrafoBinaComponent
                 setData={setTrafoBina}
+                extent={extent}
             />
 
             <AgDirekComponent
                 setData={setAgDirek}
+                extent={extent}
             />
             <OgMusDirekComponent
                 setData={setOgMusDirek}
+                extent={extent}
             />
             <AydDirekComponent
                 setData={setAydDirek}
+                extent={extent}
             />
 
             <AgHatComponent
                 setData={setAgHat}
                 allPoles={allPoles}
+                extent={extent}
             />
             <OgHatComponent
                 setData={setOgHat}
                 allPoles={allPoles}
+                extent={extent}
             />
             <RekortmanComponent
                 setData={setRekortman}
                 allPoles={allPoles}
+                extent={extent}
             />
         </>
     )

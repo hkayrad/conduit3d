@@ -7,8 +7,8 @@ import { DeckGL } from "@deck.gl/react"
 import { CompassWidget, ZoomWidget } from "@deck.gl/widgets";
 import { Map as MapLibre } from 'react-map-gl/maplibre';
 import { useAppSelector } from "../../../lib/hooks/reduxHooks"
-import { useCallback, useEffect, useState } from "react";
-import { Layer, MapView, type MapViewState, type PickingInfo } from "@deck.gl/core";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Layer, MapView, WebMercatorViewport, type MapViewState, type PickingInfo } from "@deck.gl/core";
 import { selectMapState } from "./mapSlice";
 import LayerControl from "./layerControl/LayerControl";
 import { ColumnLayer, GeoJsonLayer } from "deck.gl"
@@ -20,6 +20,7 @@ import useDirek from "../../../lib/hooks/useDirek"
 import MousePosition from "./mousePosition/MousePosition"
 import Attribution from "./attribution/Attribution"
 import { useSearchParams } from "react-router"
+import { useDispatch } from "react-redux"
 
 // const MAP_STYLE = "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
 // const MAP_STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
@@ -28,7 +29,11 @@ import { useSearchParams } from "react-router"
 // const MAP_STYLE = "https://tiles.openfreemap.org/styles/bright"
 // const MAP_STYLE = "https://tiles.openfreemap.org/styles/liberty"
 
+const DEBOUNCE_TIME_MS = 500;
+
 export default function DeckglMap() {
+    const dispatch = useDispatch();
+
     var [searchParams, setSearchParams] = useSearchParams();
 
     const [mapViewState, setMapViewState] = useState<MapViewState>({
@@ -42,6 +47,7 @@ export default function DeckglMap() {
 
     const [lineWidth, setLineWidth] = useState<number>(1);
     const mapState = useAppSelector(selectMapState);
+
 
     // Map data
     const [adrBina, setAdrBina] = useState<GeoJSON.FeatureCollection>(null!);
@@ -60,7 +66,7 @@ export default function DeckglMap() {
     const { hatLayerData } = useHat(agHat, ogHat, rekortman, mapState);
     const { direkLayerData, allPoles } = useDirek(agDirek, ogMusDirek, aydDirek, mapState);
 
-    const layers: Layer[] = [
+    const layers: Layer[] = useMemo(() => [
         ...CreateLayer.LocalTiles(mapState.visibility.basemap),
         ...hatLayerData.map(hat =>
             CreateLayer.Hat(
@@ -108,7 +114,7 @@ export default function DeckglMap() {
             diskResolution: 4,
             visible: mapState.visibility.trafoBina,
         })
-    ]
+    ], [mapState.visibility, adrBina, trafoBina, agDirek, ogMusDirek, aydDirek, agHat, ogHat, rekortman, lineWidth]);
 
     const handleViewStateChange = useCallback((viewState: MapViewState) => {
         setMapViewState(viewState);
@@ -126,6 +132,16 @@ export default function DeckglMap() {
 
     useEffect(() => {
         const handler = setTimeout(() => {
+            const viewport = new WebMercatorViewport({
+                longitude: mapViewState.longitude,
+                latitude: mapViewState.latitude,
+                zoom: mapViewState.zoom,
+                pitch: mapViewState.pitch,
+                bearing: mapViewState.bearing,
+                width: window.innerWidth,
+                height: window.innerHeight
+            })
+
             setSearchParams(
                 {
                     lon: mapViewState.longitude.toString(),
@@ -139,7 +155,22 @@ export default function DeckglMap() {
                     replace: true
                 }
             );
-        }, 300); // 300ms debounce
+
+            const bounds = { ...viewport.getBounds() };
+
+            dispatch({
+                type: "map/setExtent",
+                payload: {
+                    extent: {
+                        // Adjust the extent for better visibility
+                        minX: bounds[0] - .1,
+                        minY: bounds[1] - .1,
+                        maxX: bounds[2] + .1,
+                        maxY: bounds[3] + .1
+                    }
+                }
+            });
+        }, DEBOUNCE_TIME_MS);
 
         return () => clearTimeout(handler);
     }, [mapViewState])

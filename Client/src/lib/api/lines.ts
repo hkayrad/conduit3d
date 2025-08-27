@@ -1,23 +1,53 @@
 import instance from "../instance";
-import type { ApiResponse, Hat, Rekortman } from "../types";
+import type { ApiResponse, Extent, Hat, Rekortman } from "../types";
 
 export class AgHatApi {
-    static async fetchAll() {
-        const response = await instance.get<ApiResponse<Hat[]>>("agHat");
+    static async fetchAll(extent: Extent) {
+        const response = await instance.get<ApiResponse<Hat[]>>(
+            "agHat",
+            {
+                params: {
+                    minX: extent.minX,
+                    minY: extent.minY,
+                    maxX: extent.maxX,
+                    maxY: extent.maxY
+                }
+            }
+        );
         return response.data;
     }
 }
 
 export class OgHatApi {
-    static async fetchAll() {
-        const response = await instance.get<ApiResponse<Hat[]>>("ogHat");
+    static async fetchAll(extent: Extent) {
+        const response = await instance.get<ApiResponse<Hat[]>>(
+            "ogHat",
+            {
+                params: {
+                    minX: extent.minX,
+                    minY: extent.minY,
+                    maxX: extent.maxX,
+                    maxY: extent.maxY
+                }
+            });
+
         return response.data;
     }
 }
 
 export class RekortmanApi {
-    static async fetchAll() {
-        const response = await instance.get<ApiResponse<Rekortman[]>>("rekortman");
+    static async fetchAll(extent: Extent) {
+        const response = await instance.get<ApiResponse<Rekortman[]>>(
+            "rekortman",
+            {
+                params: {
+                    minX: extent.minX,
+                    minY: extent.minY,
+                    maxX: extent.maxX,
+                    maxY: extent.maxY
+                }
+            }
+        );
         return response.data;
     }
 }
