@@ -141,9 +141,9 @@ public class UserRepository(UsersContext context) : IUserRepository
         return true;
     }
 
-    public async Task<string> LoginAsync(LoginUserDto loginUserDto, CancellationToken cancellationToken)
+    public async Task<UserWithToken> LoginAsync(LoginUserDto loginUserDto, CancellationToken cancellationToken)
     {
-        var sql = @"SELECT username, email, user_role 
+        var sql = @"SELECT id, username, email, user_role, name
                     FROM users 
                     WHERE username = @Username 
                         AND password_hash = crypt(@Password, password_hash)";
@@ -159,11 +159,20 @@ public class UserRepository(UsersContext context) : IUserRepository
         await using var reader = await command.ExecuteReaderAsync(cancellationToken);
         if (await reader.ReadAsync(cancellationToken))
         {
-            var username = reader.GetString(reader.GetOrdinal("username"));
-            var email = reader.GetString(reader.GetOrdinal("email"));
-            var userRole = reader.GetString(reader.GetOrdinal("user_role"));
+            var user = new User
+            {
+                Id = reader.GetInt32(reader.GetOrdinal("id")),
+                Username = reader.GetString(reader.GetOrdinal("username")),
+                Email = reader.GetString(reader.GetOrdinal("email")),
+                UserRole = reader.GetString(reader.GetOrdinal("user_role")),
+                Name = reader.GetString(reader.GetOrdinal("name"))
+            };
 
-            return TokenProvider.GenerateToken(username, email, userRole);
+            return new UserWithToken
+            {
+                User = user,
+                Token = TokenProvider.GenerateToken(user)
+            };
         }
 
         return null!;

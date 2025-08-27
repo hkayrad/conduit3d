@@ -12,5 +12,5 @@ public interface IUserRepository
    public Task<int> GetCountAsync(CancellationToken cancellationToken);
    public Task<User?> UpdateAsync(int id, UpdateUserDto updateUserDto, CancellationToken cancellationToken);
    public Task<bool> DeleteAsync(int id, CancellationToken cancellationToken);
-   public Task<string> LoginAsync(LoginUserDto loginUserDto, CancellationToken cancellationToken);
+   public Task<UserWithToken> LoginAsync(LoginUserDto loginUserDto, CancellationToken cancellationToken);
 }

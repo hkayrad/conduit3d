@@ -13,5 +13,5 @@ public interface IUserService
     Task<Response<int>> GetCountAsync(CancellationToken cancellationToken);
     Task<Response<User>> UpdateAsync(int id, UpdateUserDto updateUserDto, CancellationToken cancellationToken);
     Task<Response<object>> DeleteAsync(int id, CancellationToken cancellationToken);
-    Task<Response<string>> LoginAsync(LoginUserDto loginUserDto, CancellationToken cancellationToken);
+    Task<Response<UserWithToken>> LoginAsync(LoginUserDto loginUserDto, CancellationToken cancellationToken);
 }

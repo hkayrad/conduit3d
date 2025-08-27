@@ -73,7 +73,7 @@ namespace AuthService.Controllers
 
         [MapToApiVersion("1.0")]
         [HttpPost("login")]
-        public async Task<Response<object>> LoginAsync(
+        public async Task<Response<User>> LoginAsync(
             LoginUserDto loginUserDto,
             CancellationToken cancellationToken = default)
         {
@@ -81,7 +81,7 @@ namespace AuthService.Controllers
 
             if (response.IsSuccess && response.Data != null)
             {
-                Response.Cookies.Append("user_session", response.Data, new CookieOptions
+                Response.Cookies.Append("user_session", response.Data.Token, new CookieOptions
                 {
                     HttpOnly = false,
                     Secure = true,
@@ -89,12 +89,12 @@ namespace AuthService.Controllers
                     Expires = DateTimeOffset.UtcNow.AddHours(Convert.ToDouble(Environment.GetEnvironmentVariable("JWT_EXPIRATION_TIME_HRS")))
                 });
 
-                return Response<object>.Success(null!, AuthResources.GetString("loginSuccessful"));
+                return Response<User>.Success(response.Data.User, AuthResources.GetString("loginSuccessful"));
             }
             else
             {
                 Response.Cookies.Delete("user_session");
-                return Response<object>.Failure(AuthResources.GetString("loginFailed"), response.StatusCode);
+                return Response<User>.Failure(AuthResources.GetString("loginFailed", response.Message), response.StatusCode);
             }
         }
     }

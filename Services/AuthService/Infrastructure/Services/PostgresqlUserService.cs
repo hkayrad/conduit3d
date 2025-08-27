@@ -173,27 +173,27 @@ public class PostgresqlUserService(IUnitOfWork unitOfWork) : IUserService
         }
     }
 
-    public async Task<Response<string>> LoginAsync(LoginUserDto loginUserDto, CancellationToken cancellationToken)
+    public async Task<Response<UserWithToken>> LoginAsync(LoginUserDto loginUserDto, CancellationToken cancellationToken)
     {
         if (loginUserDto == null)
-            return Response<string>.ValidationError(AuthResources.GetString("invalidLoginData"));
+            return Response<UserWithToken>.ValidationError(AuthResources.GetString("invalidLoginData"));
 
         try
         {
-            var token = await _unitOfWork.UserRepository.LoginAsync(loginUserDto, cancellationToken);
+            var response = await _unitOfWork.UserRepository.LoginAsync(loginUserDto, cancellationToken);
 
-            if (token == null)
-                return Response<string>.ValidationError(AuthResources.GetString("invalidLoginData"));
+            if (response == null)
+                return Response<UserWithToken>.ValidationError(AuthResources.GetString("invalidLoginData"));
 
-            return Response<string>.Success(token, AuthResources.GetString("loginSuccessful"), HttpStatusCode.OK);
+            return Response<UserWithToken>.Success(response, AuthResources.GetString("loginSuccessful"), HttpStatusCode.OK);
         }
         catch (NpgsqlException ex)
         {
-            return Response<string>.DatabaseError(AuthResources.GetString("loginFailed", ex.Message));
+            return Response<UserWithToken>.DatabaseError(AuthResources.GetString("loginFailed", ex.Message));
         }
         catch (Exception ex)
         {
-            return Response<string>.UnhandledError(AuthResources.GetString("loginFailed", ex.Message));
+            return Response<UserWithToken>.UnhandledError(AuthResources.GetString("loginFailed", ex.Message));
         }
     }
 }
