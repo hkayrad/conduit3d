@@ -4,6 +4,7 @@ import type { RootState } from "../../../lib/store";
 import type { AgDirekTipi, AydDirekTipi, OgMusDirekTipi } from "../../../lib/enums";
 
 export interface MapState {
+    isDataLoading: boolean,
     visibility: {
         basemap: boolean,
         adrBina: boolean,
@@ -35,6 +36,7 @@ export interface MapState {
 }
 
 const initialState: MapState = {
+    isDataLoading: false,
     visibility: {
         basemap: true,
         adrBina: true,
@@ -69,6 +71,9 @@ export const mapSlice = createSlice({
     name: 'map',
     initialState,
     reducers: {
+        setIsDataLoading: (state, action: PayloadAction<boolean>) => {
+            state.isDataLoading = action.payload;
+        },
         setMapLayerVisibility: (
             state,
             action: PayloadAction<{
@@ -103,10 +108,11 @@ export const mapSlice = createSlice({
     }
 });
 
-export const { setMapLayerVisibility, setFilter, setExtent } = mapSlice.actions;
+export const { setIsDataLoading, setMapLayerVisibility, setFilter, setExtent } = mapSlice.actions;
 
 export const selectMapState = (state: RootState) => state.map;
 
+export const selectIsDataLoading = (state: RootState) => state.map.isDataLoading;
 export const selectVisibility = (state: RootState) => state.map.visibility;
 export const selectFilters = (state: RootState) => state.map.filters;
 export const selectExtent = (state: RootState) => state.map.extent;

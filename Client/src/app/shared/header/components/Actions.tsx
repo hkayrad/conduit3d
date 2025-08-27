@@ -2,7 +2,7 @@ import { List, LogOut, Map, ShieldUser } from "lucide-react";
 import { NavLink, useNavigate } from "react-router";
 import AuthApi from "../../../../lib/api/auth";
 import { useDispatch, useSelector } from "react-redux";
-import { selectUserState } from "../../../layout/auth/authSlice";
+import { clearUser, selectUserState } from "../../../layout/auth/authSlice";
 import { UserRoles } from "../../../../lib/enums";
 
 export default function Actions() {
@@ -14,7 +14,7 @@ export default function Actions() {
     const handleLogout = async () => {
         try {
             AuthApi.logout();
-            dispatch({ type: 'auth/clearUser' });
+            dispatch(clearUser());
             navigate("/login", { replace: true });
         } catch (error) {
             console.error("Logout failed:", error);

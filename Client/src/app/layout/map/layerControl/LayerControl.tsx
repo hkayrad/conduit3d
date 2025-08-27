@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./style/layerControl.css"
 import { Building, ChevronRight, Layers2, PlugZap, UtilityPole, Zap } from "lucide-react";
-import { selectMapState, type MapState } from "../mapSlice";
+import { selectMapState, setMapLayerVisibility, type MapState } from "../mapSlice";
 import { useAppSelector } from "../../../../lib/hooks/reduxHooks";
 import { useDispatch } from "react-redux";
 import LayerControlSection from "../../../shared/layerControlSection/LayerControlSection";
@@ -15,7 +15,7 @@ export default function LayerControl() {
 
     const handleLayerToggle = (layer: keyof MapState["visibility"]) => {
         const isVisible = mapState.visibility[layer];
-        dispatch({ type: "map/setMapLayerVisibility", payload: { layer, visible: !isVisible } });
+        dispatch(setMapLayerVisibility({ layer, visible: !isVisible }));
     }
 
     return (

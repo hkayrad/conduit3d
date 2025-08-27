@@ -9,7 +9,7 @@ import { Map as MapLibre } from 'react-map-gl/maplibre';
 import { useAppSelector } from "../../../lib/hooks/reduxHooks"
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Layer, MapView, WebMercatorViewport, type MapViewState, type PickingInfo } from "@deck.gl/core";
-import { selectMapState } from "./mapSlice";
+import { selectMapState, setExtent } from "./mapSlice";
 import LayerControl from "./layerControl/LayerControl";
 import { ColumnLayer, GeoJsonLayer } from "deck.gl"
 import { CreateLayer } from "../../../lib/utils/createLayer"
@@ -158,18 +158,15 @@ export default function DeckglMap() {
 
             const bounds = { ...viewport.getBounds() };
 
-            dispatch({
-                type: "map/setExtent",
-                payload: {
-                    extent: {
-                        // Adjust the extent for better visibility
-                        minX: bounds[0] - .1,
-                        minY: bounds[1] - .1,
-                        maxX: bounds[2] + .1,
-                        maxY: bounds[3] + .1
-                    }
+            dispatch(setExtent({
+                extent: {
+                    minX: bounds[0] - .1,
+                    minY: bounds[1] - .1,
+                    maxX: bounds[2] + .1,
+                    maxY: bounds[3] + .1
                 }
-            });
+            }
+            ));
         }, DEBOUNCE_TIME_MS);
 
         return () => clearTimeout(handler);

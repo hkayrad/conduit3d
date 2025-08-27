@@ -8,6 +8,7 @@ import { useState } from "react";
 import type { LoginUserDto } from "../../../lib/types";
 import { Info, Loader, LogIn, ShieldX } from "lucide-react";
 import { useDispatch } from "react-redux";
+import { clearUser, setUser } from "./authSlice";
 
 export default function Login() {
     const [username, setUsername] = useState<string>("");
@@ -40,16 +41,16 @@ export default function Login() {
             try {
                 const response = await AuthApi.login(user);
                 if (response.isSuccess) {
-                    dispatch({ type: 'auth/setUser', payload: response.data });
+                    dispatch(setUser(response.data));
                     setLoading(false);
                     navigate("/", { replace: true });
                 } else {
-                    dispatch({ type: 'auth/clearUser' });
+                    dispatch(clearUser());
                     setLoading(false);
                     setLoginError("Invalid username or password");
                 }
             } catch (error) {
-                dispatch({ type: 'auth/clearUser' });
+                dispatch(clearUser());
                 setLoading(false);
                 setLoginError("An error occurred while trying to log in");
             }
