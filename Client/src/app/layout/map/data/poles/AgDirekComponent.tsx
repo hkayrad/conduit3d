@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { AgDirekApi } from "../../../../../lib/api/poles";
 import type { Direk, Extent } from "../../../../../lib/types";
 
@@ -10,7 +10,7 @@ type Props = {
 export default function AgDirekComponent(props: Props) {
     const { setData, extent } = props;
 
-    const handleAgDirekFetch = async () => {
+    const handleAgDirekFetch = useCallback(async () => {
         const response = await AgDirekApi.fetchAll(extent);
 
         if (response.isSuccess) {
@@ -37,8 +37,7 @@ export default function AgDirekComponent(props: Props) {
 
             setData(dataList);
         }
-
-    }
+    }, [extent]);
 
     useEffect(() => {
         handleAgDirekFetch();

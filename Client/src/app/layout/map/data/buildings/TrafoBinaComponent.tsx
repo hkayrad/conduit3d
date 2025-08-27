@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { TrafoBinaApi } from "../../../../../lib/api/buildings";
 import type { Extent, TrafoBina } from "../../../../../lib/types";
 
@@ -10,7 +10,7 @@ type Props = {
 export default function TrafoBinaComponent(props: Props) {
     const { setData, extent } = props;
 
-    const handleTrafoBinaFetch = async () => {
+    const handleTrafoBinaFetch = useCallback(async () => {
         const response = await TrafoBinaApi.fetchAll(extent);
 
         if (response.isSuccess) {
@@ -35,8 +35,7 @@ export default function TrafoBinaComponent(props: Props) {
 
             setData(dataList);
         }
-
-    }
+    }, [extent]);
 
     useEffect(() => {
         handleTrafoBinaFetch();

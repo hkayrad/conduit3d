@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { OgHatApi } from "../../../../../lib/api/lines";
 import type { Extent, Hat } from "../../../../../lib/types";
 import { lineStringToSegments } from "../../../../../lib/utils/lineStringToSegments";
@@ -12,7 +12,7 @@ type Props = {
 export default function OgHatComponent(props: Props) {
     const { setData, allPoles, extent } = props;
 
-    const handleOgHatFetch = async () => {
+    const handleOgHatFetch = useCallback(async () => {
         const response = await OgHatApi.fetchAll(extent);
 
         if (response.isSuccess) {
@@ -20,7 +20,6 @@ export default function OgHatComponent(props: Props) {
                 type: "FeatureCollection",
                 features: []
             };
-
 
             response.data.forEach((rawData: Hat) => {
                 const feature = {
@@ -39,7 +38,7 @@ export default function OgHatComponent(props: Props) {
 
             setData(dataList);
         }
-    }
+    }, [extent]);
 
     useEffect(() => {
         if (allPoles.length > 0)

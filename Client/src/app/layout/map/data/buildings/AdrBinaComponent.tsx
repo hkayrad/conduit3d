@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import type { AdrBina, Extent } from "../../../../../lib/types"
 import { AdrBinaApi } from "../../../../../lib/api/buildings";
 
@@ -10,7 +10,7 @@ type Props = {
 export default function AdrBinaComponent(props: Props) {
     const { setData, extent } = props;
 
-    const handleAdrBinaFetch = async () => {
+    const handleAdrBinaFetch = useCallback(async () => {
         const response = await AdrBinaApi.fetchAll(extent);
 
         if (response.isSuccess) {
@@ -38,11 +38,10 @@ export default function AdrBinaComponent(props: Props) {
 
             setData(dataList);
         }
-
-    }
+    }, [extent]);
 
     useEffect(() => {
-        handleAdrBinaFetch();
+        handleAdrBinaFetch()
     }, [extent])
 
     return null;

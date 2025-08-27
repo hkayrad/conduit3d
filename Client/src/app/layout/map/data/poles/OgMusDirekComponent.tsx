@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { OgMusDirekApi } from "../../../../../lib/api/poles";
 import type { Direk, Extent } from "../../../../../lib/types";
 
@@ -10,7 +10,7 @@ type Props = {
 export default function OgMusDirekComponent(props: Props) {
     const { setData, extent } = props;
 
-    const handleOgMusDirekFetch = async () => {
+    const handleOgMusDirekFetch = useCallback(async () => {
         const response = await OgMusDirekApi.fetchAll(extent);
 
         if (response.isSuccess) {
@@ -37,8 +37,7 @@ export default function OgMusDirekComponent(props: Props) {
 
             setData(dataList);
         }
-
-    }
+    }, [extent]);
 
     useEffect(() => {
         handleOgMusDirekFetch();

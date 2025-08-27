@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { RekortmanApi } from "../../../../../lib/api/lines";
 import type { Extent, Rekortman } from "../../../../../lib/types";
 import { lineStringToSegments } from "../../../../../lib/utils/lineStringToSegments";
@@ -12,7 +12,7 @@ type Props = {
 export default function RekortmanComponent(props: Props) {
     const { setData, allPoles, extent } = props;
 
-    const handleRekortmanFetch = async () => {
+    const handleRekortmanFetch = useCallback(async () => {
         const response = await RekortmanApi.fetchAll(extent);
 
         if (response.isSuccess) {
@@ -37,7 +37,7 @@ export default function RekortmanComponent(props: Props) {
 
             setData(dataList);
         }
-    }
+    }, [extent]);
 
     useEffect(() => {
         if (allPoles.length > 0)

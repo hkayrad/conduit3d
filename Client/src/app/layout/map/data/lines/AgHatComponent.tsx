@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { AgHatApi } from "../../../../../lib/api/lines";
 import type { Extent, Hat } from "../../../../../lib/types";
 import { lineStringToSegments } from "../../../../../lib/utils/lineStringToSegments";
@@ -12,7 +12,7 @@ type Props = {
 export default function AgHatComponent(props: Props) {
     const { setData, allPoles, extent } = props;
 
-    const handleAgHatFetch = async () => {
+    const handleAgHatFetch = useCallback(async () => {
         const response = await AgHatApi.fetchAll(extent);
 
         if (response.isSuccess) {
@@ -39,7 +39,7 @@ export default function AgHatComponent(props: Props) {
 
             setData(dataList);
         }
-    }
+    }, [extent]);
 
     useEffect(() => {
         if (allPoles.length > 0)
