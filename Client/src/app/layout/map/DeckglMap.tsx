@@ -7,7 +7,7 @@ import { DeckGL } from "@deck.gl/react"
 import { CompassWidget, ZoomWidget } from "@deck.gl/widgets";
 import { Map as MapLibre } from 'react-map-gl/maplibre';
 import { useAppSelector } from "../../../lib/hooks/reduxHooks"
-import { use, useCallback, useState } from "react";
+import { use, useCallback, useEffect, useState } from "react";
 import { Layer, MapView, type MapViewState, type PickingInfo } from "@deck.gl/core";
 import { selectMapState } from "./mapSlice";
 import LayerControl from "./layerControl/LayerControl";
@@ -19,6 +19,7 @@ import { useHat } from "../../../lib/hooks/useHat"
 import useDirek from "../../../lib/hooks/useDirek"
 import MousePosition from "./mousePosition/MousePosition"
 import Attribution from "./attribution/Attribution"
+import { useSearchParams } from "react-router"
 
 // const MAP_STYLE = "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
 // const MAP_STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
@@ -27,16 +28,18 @@ import Attribution from "./attribution/Attribution"
 // const MAP_STYLE = "https://tiles.openfreemap.org/styles/bright"
 // const MAP_STYLE = "https://tiles.openfreemap.org/styles/liberty"
 
-const INITIAL_VIEW_STATE = {
-    longitude: 41.287,
-    latitude: 39.8999,
-    zoom: 15,
-    maxZoom: 25,
-    pitch: 60,
-    bearing: 0
-}
-
 export default function DeckglMap() {
+    var [searchParams, setSearchParams] = useSearchParams();
+
+    const INITIAL_VIEW_STATE = {
+        longitude: searchParams.get("lon") ? parseFloat(searchParams.get("lon")!) : 41.287,
+        latitude: searchParams.get("lat") ? parseFloat(searchParams.get("lat")!) : 39.9,
+        zoom: searchParams.get("z") ? parseFloat(searchParams.get("z")!) : 15,
+        maxZoom: 25,
+        pitch: searchParams.get("p") ? parseFloat(searchParams.get("p")!) : 60,
+        bearing: searchParams.get("b") ? parseFloat(searchParams.get("b")!) : 0
+    }
+
     const [mapViewState, setMapViewState] = useState<MapViewState>(INITIAL_VIEW_STATE);
     const [lineWidth, setLineWidth] = useState<number>(1);
     const mapState = useAppSelector(selectMapState);
@@ -122,6 +125,20 @@ export default function DeckglMap() {
         console.log('Clicked:', info, event);
     }, []);
 
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setSearchParams({
+                lon: mapViewState.longitude.toString(),
+                lat: mapViewState.latitude.toString(),
+                z: mapViewState.zoom.toFixed(2),
+                p: mapViewState.pitch!.toFixed(2),
+                b: mapViewState.bearing!.toFixed(2),
+            });
+        }, 300); // 300ms debounce
+
+        return () => clearTimeout(handler);
+    }, [mapViewState])
+
     return (
         <>
             <DataComponent
@@ -152,7 +169,6 @@ export default function DeckglMap() {
                     <MapLibre
                         reuseMaps
                         // mapStyle={mapState.visibility.basemap ? MAP_STYLE : undefined}
-                        projection={"globe"}
                         attributionControl={false}
                         maxZoom={25}
                         boxZoom={false}
