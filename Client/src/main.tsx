@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Route, Routes } from "react-router"
 import App from "./app/App"
 import Login from './app/layout/auth/Login'
-import { RequireAuth, RequireNoAuth } from './app/layout/auth/Auth'
+import { RequireAdmin, RequireAuth, RequireNoAuth } from './app/layout/auth/Auth'
 import DeckglMap from './app/layout/map/DeckglMap'
 import { Provider } from "react-redux"
 import { store } from "./lib/store"
@@ -21,7 +21,11 @@ createRoot(document.getElementById('root')!).render(
           </RequireAuth>
         }>
           <Route index element={<DeckglMap />} />
-          <Route path='/admin' element={<Admin />} />
+          <Route path='/admin' element={
+            <RequireAdmin>
+              <Admin />
+            </RequireAdmin>
+          } />
           <Route path='/list' element={<List />} />
         </Route>
         <Route path='/login' element={

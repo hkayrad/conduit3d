@@ -1,3 +1,8 @@
+enum UserRoles {
+    ADMIN = "admin",
+    USER = "user",
+}
+
 enum AgDirekTipi {
     BETON = "BETON",
     AGAC = "AGAC",
@@ -21,4 +26,4 @@ enum HatCinsi {
     YERALTI = "YERALTI"
 }
 
-export { AgDirekTipi, OgMusDirekTipi, AydDirekTipi, HatCinsi }
+export { UserRoles, AgDirekTipi, OgMusDirekTipi, AydDirekTipi, HatCinsi }

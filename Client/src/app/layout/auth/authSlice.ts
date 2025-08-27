@@ -3,16 +3,16 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../../lib/store";
 import type { User } from "../../../lib/types";
 
-export interface MapState {
+export interface UserState {
     user: User | null;
 }
 
-const initialState: MapState = {
+const initialState: UserState = {
     user: null
 };
 
-export const userSlice = createSlice({
-    name: 'user',
+export const authSlice = createSlice({
+    name: 'auth',
     initialState,
     reducers: {
         setUser: (state, action: PayloadAction<User>) => {
@@ -24,8 +24,8 @@ export const userSlice = createSlice({
     }
 });
 
-export const { setUser, clearUser } = userSlice.actions;
+export const { setUser, clearUser } = authSlice.actions;
 
-export const selectUserState = (state: RootState) => state.user;
+export const selectUserState = (state: RootState) => state.auth.user;
 
-export default userSlice.reducer;
+export default authSlice.reducer;
