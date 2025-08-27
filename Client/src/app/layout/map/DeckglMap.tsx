@@ -6,22 +6,20 @@ import "./style/deckglMap.css"
 import { DeckGL } from "@deck.gl/react"
 import { CompassWidget, ZoomWidget } from "@deck.gl/widgets";
 import { Map as MapLibre } from 'react-map-gl/maplibre';
-import { useAppSelector } from "../../../lib/hooks"
-import { useCallback, useMemo, useState } from "react";
+import { useAppSelector } from "../../../lib/hooks/reduxHooks"
+import { useCallback, useState } from "react";
 import { Layer, MapView, type MapViewState, type PickingInfo } from "@deck.gl/core";
 import { selectMapState } from "./mapSlice";
 import LayerControl from "./layerControl/LayerControl";
-import { ColumnLayer, GeoJsonLayer, PathLayer } from "deck.gl"
-import AdrBinaComponent from "./data/buildings/AdrBinaComponent"
-import TrafoBinaComponent from "./data/buildings/TrafoBinaComponent"
-import AgDirekComponent from "./data/poles/AgDirekComponent"
-import OgMusDirekComponent from "./data/poles/OgMusDirekComponent"
-import AydDirekComponent from "./data/poles/AydDirekComponent"
-import AgHatComponent from "./data/lines/AgHatComponent"
-import OgHatComponent from "./data/lines/OgHatComponent"
-import { PathStyleExtension } from "@deck.gl/extensions"
+import { ColumnLayer, GeoJsonLayer } from "deck.gl"
+import { CreateLayer } from "../../../lib/utils/createLayer"
+import { COLORS } from "../../../lib/colors"
+import DataComponent from "./data/DataComponent"
+import { useHatLayers } from "../../../lib/hooks/useHatLayers"
+import { usePoles } from "../../../lib/hooks/usePoles"
+import useDirekLayers from "../../../lib/hooks/useDirekLayers"
 
-const MAP_STYLE = "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
+// const MAP_STYLE = "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
 // const MAP_STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
 // const MAP_STYLE = "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
 // const MAP_STYLE = "https://tiles.openfreemap.org/styles/positron"
@@ -37,21 +35,9 @@ const INITIAL_VIEW_STATE = {
     bearing: 0
 }
 
-const COLORS: { [name: string]: [number, number, number, number] } = {
-    HOVER: [222, 98, 27, 128],
-    ADR_BINA: [200, 200, 200, 255],
-    TRAFO_BINA: [200, 200, 200, 128],
-    AG_DIREK: [100, 100, 255, 255],
-    AYD_DIREK: [100, 255, 100, 255],
-    OG_MUS_DIREK: [255, 100, 100, 255],
-    AG_HAT: [255, 200, 100, 255],
-    OG_HAT: [200, 100, 255, 255],
-    REKORTMAN: [255, 100, 200, 255],
-}
-
 export default function DeckglMap() {
     const [mapViewState, setMapViewState] = useState<MapViewState>(INITIAL_VIEW_STATE);
-    const [lineWidth, setLineWidth] = useState<number>(.5);
+    const [lineWidth, setLineWidth] = useState<number>(1);
     const mapState = useAppSelector(selectMapState);
 
     // Map data
@@ -62,164 +48,40 @@ export default function DeckglMap() {
     const [aydDirek, setAydDirek] = useState<GeoJSON.FeatureCollection>(null!);
     const [agHat, setAgHat] = useState<GeoJSON.FeatureCollection>(null!);
     const [ogHat, setOgHat] = useState<GeoJSON.FeatureCollection>(null!);
+    const [rekortman, setRekortman] = useState<GeoJSON.FeatureCollection>(null!);
 
-    const handleViewStateChange = (viewState: MapViewState) => {
-        setMapViewState(viewState);
-        setLineWidth(Number(Math.max((23 - viewState.zoom) / 10, 0.01).toFixed(4)));
-    }
+    const [hoveredFeature, setHoveredFeature] = useState<GeoJSON.Feature | null>(null);
 
-    const agHatHavai = useMemo(() => {
-        return agHat && agHat.features.filter(f => f.properties && f.properties.cinsi === "HAVAİ");
-    }, [agHat]);
+    const { allPoles } = usePoles(agDirek, ogMusDirek, aydDirek);
 
-    const agHatBara = useMemo(() => {
-        return agHat && agHat.features.filter(f => f.properties && f.properties.cinsi === "BARA");
-    }, [agHat]);
-
-    const agHatYeralti = useMemo(() => {
-        return agHat && agHat.features.filter(f => f.properties && f.properties.cinsi === "YERALTI");
-    }, [agHat]);
-
-    const ogHatHavai = useMemo(() => {
-        return ogHat && ogHat.features.filter(f => f.properties && f.properties.cinsi === "HAVAİ");
-    }, [ogHat]);
-
-    const ogHatBara = useMemo(() => {
-        return ogHat && ogHat.features.filter(f => f.properties && f.properties.cinsi === "BARA");
-    }, [ogHat]);
-
-    const ogHatYeralti = useMemo(() => {
-        return ogHat && ogHat.features.filter(f => f.properties && f.properties.cinsi === "YERALTI");
-    }, [ogHat]);
+    const hatLayerData = useHatLayers(agHat, ogHat, rekortman, mapState);
+    const direkLayerData = useDirekLayers(agDirek, ogMusDirek, aydDirek, mapState);
 
     const layers: Layer[] = [
+        ...CreateLayer.LocalTiles(mapState.visibility.basemap),
+        ...hatLayerData.map(hat =>
+            CreateLayer.Hat(
+                `${hat.id}-layer`,
+                hat.data,
+                hat.color,
+                lineWidth,
+                hat.visibility,
+                hat.cinsi
+            )
+        ),
+        ...direkLayerData.map(direk =>
+            CreateLayer.Direk(
+                `${direk.id}-layer`,
+                direk.data,
+                direk.color,
+                direk.visibility
+            )
+        ),
 
-        new PathLayer({
-            id: "ag-hat-havai-layer",
-            data: agHatHavai ? agHatHavai : [],
-            getPath: d => d.geometry.coordinates,
-            getColor: COLORS.AG_HAT,
-            getWidth: lineWidth,
-            pickable: true,
-            billboard: true,
-            autoHighlight: true,
-            highlightColor: COLORS.HOVER,
-            visible: mapState.visibility.agHat,
-        }),
-        new PathLayer({
-            id: "ag-hat-bara-layer",
-            data: agHatBara ? agHatBara : [],
-            getPath: d => d.geometry.coordinates,
-            getColor: COLORS.AG_HAT,
-            getWidth: lineWidth,
-            pickable: true,
-            billboard: false,
-            autoHighlight: true,
-            highlightColor: COLORS.HOVER,
-            visible: mapState.visibility.agHat,
-            extensions: [new PathStyleExtension({ dash: true })],
-            getDashArray: [4, 2]
-        }),
-        new PathLayer({
-            id: "ag-hat-yeralti-layer",
-            data: agHatYeralti ? agHatYeralti : [],
-            getPath: d => d.geometry.coordinates,
-            getColor: COLORS.AG_HAT,
-            getWidth: lineWidth,
-            pickable: true,
-            billboard: false,
-            autoHighlight: true,
-            highlightColor: COLORS.HOVER,
-            visible: mapState.visibility.agHat,
-            extensions: [new PathStyleExtension({ dash: true })],
-            getDashArray: [4, 2]
-        }),
-        new PathLayer({
-            id: "og-hat-havai-layer",
-            data: ogHatHavai ? ogHatHavai : [],
-            getPath: d => d.geometry.coordinates,
-            getColor: COLORS.OG_HAT,
-            getWidth: lineWidth,
-            pickable: true,
-            billboard: true,
-            autoHighlight: true,
-            highlightColor: COLORS.HOVER,
-            visible: mapState.visibility.agHat,
-        }),
-        new PathLayer({
-            id: "og-hat-bara-layer",
-            data: ogHatBara ? ogHatBara : [],
-            getPath: d => d.geometry.coordinates,
-            getColor: COLORS.OG_HAT,
-            getWidth: lineWidth,
-            pickable: true,
-            billboard: false,
-            autoHighlight: true,
-            highlightColor: COLORS.HOVER,
-            visible: mapState.visibility.agHat,
-            extensions: [new PathStyleExtension({ dash: true })],
-            getDashArray: [4, 2]
-        }),
-        new PathLayer({
-            id: "og-hat-yeralti-layer",
-            data: ogHatYeralti ? ogHatYeralti : [],
-            getPath: d => d.geometry.coordinates,
-            getColor: COLORS.OG_HAT,
-            getWidth: lineWidth,
-            pickable: true,
-            billboard: false,
-            autoHighlight: true,
-            highlightColor: COLORS.HOVER,
-            visible: mapState.visibility.agHat,
-            extensions: [new PathStyleExtension({ dash: true })],
-            getDashArray: [4, 2]
-        }),
-        new ColumnLayer({
-            id: "ag-direk-layer",
-            data: agDirek ? agDirek.features : [],
-            getPosition: d => d.geometry.coordinates,
-            getElevation: d => d.properties.height,
-            getFillColor: COLORS.AG_DIREK,
-            extruded: true,
-            pickable: true,
-            autoHighlight: true,
-            highlightColor: COLORS.HOVER,
-            elevationScale: 1,
-            radius: .5,
-            visible: mapState.visibility.agDirek,
-        }),
-        new ColumnLayer({
-            id: "og-mus-direk-layer",
-            data: ogMusDirek ? ogMusDirek.features : [],
-            getPosition: d => d.geometry.coordinates,
-            getElevation: d => d.properties.height,
-            getFillColor: COLORS.OG_MUS_DIREK,
-            extruded: true,
-            pickable: true,
-            autoHighlight: true,
-            highlightColor: COLORS.HOVER,
-            radius: .5,
-            elevationScale: 1,
-            visible: mapState.visibility.ogMusDirek,
-        }),
-        new ColumnLayer({
-            id: "ayd-direk-layer",
-            data: aydDirek ? aydDirek.features : [],
-            getPosition: d => d.geometry.coordinates,
-            getElevation: d => d.properties.height,
-            getFillColor: COLORS.AYD_DIREK,
-            extruded: true,
-            pickable: true,
-            autoHighlight: true,
-            highlightColor: COLORS.HOVER,
-            radius: .5,
-            elevationScale: 1,
-            visible: mapState.visibility.aydDirek,
-        }),
         new GeoJsonLayer({
             id: "adr-bina-layer",
-            data: adrBina,
-            getElevation: d => d.properties.height,
+            data: adrBina ?? { type: "FeatureCollection", features: [] },
+            getElevation: (d) => d.properties.height,
             getFillColor: COLORS.ADR_BINA,
             filled: true,
             extruded: true,
@@ -245,38 +107,27 @@ export default function DeckglMap() {
         })
     ]
 
+    const handleViewStateChange = (viewState: MapViewState) => {
+        setMapViewState(viewState);
+        setLineWidth(Number(Math.max((23.5 - viewState.zoom) / 10, 0.01).toFixed(4)));
+    }
+
     const onClick = useCallback((info: PickingInfo, event: any) => {
         console.log('Clicked:', info, event);
     }, []);
 
     return (
         <>
-            <AdrBinaComponent
-                setData={setAdrBina}
-            />
-            <TrafoBinaComponent
-                setData={setTrafoBina}
-            />
-            <AgDirekComponent
-                setData={setAgDirek}
-            />
-            <OgMusDirekComponent
-                setData={setOgMusDirek}
-            />
-            <AydDirekComponent
-                setData={setAydDirek}
-            />
-            <AgHatComponent
-                setData={setAgHat}
-                agDirek={agDirek}
-                ogMusDirek={ogMusDirek}
-                aydDirek={aydDirek}
-            />
-            <OgHatComponent
-                setData={setOgHat}
-                agDirek={agDirek}
-                ogMusDirek={ogMusDirek}
-                aydDirek={aydDirek}
+            <DataComponent
+                allPoles={allPoles}
+                setAdrBina={setAdrBina}
+                setTrafoBina={setTrafoBina}
+                setAgDirek={setAgDirek}
+                setOgMusDirek={setOgMusDirek}
+                setAydDirek={setAydDirek}
+                setAgHat={setAgHat}
+                setOgHat={setOgHat}
+                setRekortman={setRekortman}
             />
             <div id="map-page">
                 <LayerControl />
@@ -288,14 +139,16 @@ export default function DeckglMap() {
                     layers={layers}
                     widgets={[new ZoomWidget(), new CompassWidget({})]}
                     onClick={onClick}
+                    onHover={info => setHoveredFeature(info.object)}
                 >
                     <MapLibre
                         reuseMaps
-                        mapStyle={mapState.visibility.basemap ? MAP_STYLE : undefined}
+                        // mapStyle={mapState.visibility.basemap ? MAP_STYLE : undefined}
                         projection={"globe"}
                         attributionControl={false}
                         maxZoom={25}
                         boxZoom={false}
+                        cursor={hoveredFeature ? "pointer" : "default"}
                     />
                 </DeckGL>
             </div>
