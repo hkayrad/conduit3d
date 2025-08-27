@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./style/layerControl.css"
 import { ChevronRight, Layers2 } from "lucide-react";
 import { selectMapState, type MapState } from "../mapSlice";
-import { useAppSelector } from "../../../../lib/hooks";
+import { useAppSelector } from "../../../../lib/hooks/reduxHooks";
 import { useDispatch } from "react-redux";
 
 export default function LayerControl() {
