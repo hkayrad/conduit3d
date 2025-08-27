@@ -1,5 +1,5 @@
 import instance from "../instance";
-import type { ApiResponse, Hat } from "../types";
+import type { ApiResponse, Hat, Rekortman } from "../types";
 
 export class AgHatApi {
     static async fetchAll() {
@@ -15,7 +15,7 @@ export class OgHatApi {
     }
 }
 
-export class Rekortman {
+export class RekortmanApi {
     static async fetchAll() {
         const response = await instance.get<ApiResponse<Rekortman[]>>("rekortman");
         return response.data;
