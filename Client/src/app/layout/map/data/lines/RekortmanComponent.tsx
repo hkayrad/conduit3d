@@ -1,18 +1,18 @@
 import { useEffect } from "react";
-import { AgHatApi } from "../../../../../lib/api/lines";
-import type { Hat } from "../../../../../lib/types";
+import { RekortmanApi } from "../../../../../lib/api/lines";
+import type { Rekortman } from "../../../../../lib/types";
 import { lineStringToSegments } from "../../../../../lib/utils/lineStringToSegments";
 
 type Props = {
-    setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>
-    allPoles: GeoJSON.Feature[],
+    setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
+    allPoles: GeoJSON.Feature[]
 }
 
-export default function AgHatComponent(props: Props) {
-    const { setData, allPoles/* agDirek, ogMusDirek, aydDirek */ } = props;
+export default function RekortmanComponent(props: Props) {
+    const { setData, allPoles } = props;
 
-    const handleAgHatFetch = async () => {
-        const response = await AgHatApi.fetchAll();
+    const handleRekortmanFetch = async () => {
+        const response = await RekortmanApi.fetchAll();
 
         if (response.isSuccess) {
             var dataList: GeoJSON.FeatureCollection = {
@@ -20,19 +20,17 @@ export default function AgHatComponent(props: Props) {
                 features: []
             };
 
-
-            response.data.forEach((rawData: Hat) => {
+            response.data.forEach((rawData: Rekortman) => {
                 const feature = {
                     type: "Feature",
                     geometry: JSON.parse(rawData.geoJson),
                     properties: {
                         id: rawData.id,
-                        cinsi: rawData.cinsi,
                         tipi: rawData.tipi,
                         kesit: rawData.kesit
                     }
                 } as GeoJSON.Feature;
-                const segments = lineStringToSegments(feature, rawData.cinsi, allPoles, -1);
+                const segments = lineStringToSegments(feature, rawData.tipi, allPoles, -.1);
                 dataList.features.push(...segments);
             })
 
@@ -42,7 +40,7 @@ export default function AgHatComponent(props: Props) {
 
     useEffect(() => {
         if (allPoles.length > 0)
-            handleAgHatFetch();
+            handleRekortmanFetch();
     }, [allPoles]);
 
     return null;

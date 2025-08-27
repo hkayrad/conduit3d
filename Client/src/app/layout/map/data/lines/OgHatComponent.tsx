@@ -4,18 +4,15 @@ import type { Hat } from "../../../../../lib/types";
 import { lineStringToSegments } from "../../../../../lib/utils/lineStringToSegments";
 
 type Props = {
-    setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>
-    agDirek: GeoJSON.FeatureCollection,
-    ogMusDirek: GeoJSON.FeatureCollection,
-    aydDirek: GeoJSON.FeatureCollection,
+    setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
+    allPoles: GeoJSON.Feature[],
 }
 
 export default function OgHatComponent(props: Props) {
-    const { setData, agDirek, ogMusDirek, aydDirek } = props;
+    const { setData, allPoles } = props;
 
     const handleOgHatFetch = async () => {
         const response = await OgHatApi.fetchAll();
-        const allPoles = [...agDirek.features, ...ogMusDirek.features, ...aydDirek.features];
 
         if (response.isSuccess) {
             var dataList: GeoJSON.FeatureCollection = {
@@ -44,10 +41,9 @@ export default function OgHatComponent(props: Props) {
     }
 
     useEffect(() => {
-        if (agDirek && ogMusDirek && aydDirek) {
+        if (allPoles.length > 0)
             handleOgHatFetch();
-        }
-    }, [agDirek, ogMusDirek, aydDirek]);
+    }, [allPoles]);
 
     return null;
 }
