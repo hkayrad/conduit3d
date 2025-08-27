@@ -5,15 +5,19 @@
     bottom: 16px;
     left: 16px;
     z-index: 1;
-    padding: 6px 10px;
-    border-radius: 8px;
+    padding: 4.5px 10px;
+    border-radius: 12px;
     background: global.$primary;
     color: global.$white;
-    width: 170px;
+    width: 136px;
     display: flex;
     justify-content: space-between;
 
-    #number {
-        width: 45%;
+    span {
+        font-size: 12px;
+
+        &#number {
+            width: 45%;
+        }
     }
 }

@@ -18,6 +18,7 @@ import DataComponent from "./data/DataComponent"
 import { useHat } from "../../../lib/hooks/useHat"
 import useDirek from "../../../lib/hooks/useDirek"
 import MousePosition from "./mousePosition/MousePosition"
+import Attribution from "./attribution/Attribution"
 
 // const MAP_STYLE = "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
 // const MAP_STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
@@ -137,6 +138,7 @@ export default function DeckglMap() {
             <div id="map-page">
                 <LayerControl />
                 <MousePosition mouseLonLat={mouseLonLat} />
+                <Attribution />
                 <DeckGL
                     controller
                     views={new MapView()}

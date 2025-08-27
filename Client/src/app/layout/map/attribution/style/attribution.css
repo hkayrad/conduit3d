@@ -28,22 +28,20 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-#mouse-position {
+#attribution {
   position: absolute;
   bottom: 16px;
-  left: 16px;
-  z-index: 1;
-  padding: 4.5px 10px;
-  border-radius: 12px;
+  right: 16px;
   background: #2B2D42;
   color: #FFFFFF;
-  width: 136px;
+  z-index: 1;
   display: flex;
-  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 4px 4px 8px;
+  border-radius: 12px;
 }
-#mouse-position span {
+#attribution span {
   font-size: 12px;
-}
-#mouse-position span#number {
-  width: 45%;
-}/*# sourceMappingURL=mousePosition.css.map */
+}/*# sourceMappingURL=attribution.css.map */
