@@ -4,12 +4,14 @@ import AuthApi from "../../../../lib/api/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { clearUser, selectUserState } from "../../../layout/auth/authSlice";
 import { UserRoles } from "../../../../lib/enums";
+import { selectViewState } from "../../../layout/map/mapSlice";
 
 export default function Actions() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const user = useSelector(selectUserState);
+    const { lon, lat, z, p, b } = useSelector(selectViewState);
 
     const handleLogout = async () => {
         try {
@@ -23,7 +25,13 @@ export default function Actions() {
 
     return (
         <div id="actions" className="shadow">
-            <NavLink id="action-button" className={({ isActive }) => (isActive ? "active" : "")} to="/"><Map /> Map</NavLink>
+            <NavLink
+                id="action-button"
+                className={({ isActive }) => (isActive ? "active" : "")}
+                to={`/?lon=${lon}&lat=${lat}&z=${z}&p=${p}&b=${b}`}
+            >
+                <Map /> Map
+            </NavLink>
             <NavLink id="action-button" className={({ isActive }) => (isActive ? "active" : "")} to="/list"><List /> List</NavLink>
             {
                 user?.userRole === UserRoles.ADMIN && (

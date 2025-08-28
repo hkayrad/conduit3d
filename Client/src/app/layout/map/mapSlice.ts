@@ -27,11 +27,18 @@ export interface MapState {
             tipi: AydDirekTipi[]
         }
     },
+    viewState: {
+        lon: number,
+        lat: number,
+        z: number,
+        p: number,
+        b: number
+    },
     extent: {
         minX: number,
         minY: number,
         maxX: number,
-        maxY: number
+        maxY: number,
     }
 }
 
@@ -59,11 +66,18 @@ const initialState: MapState = {
             tipi: []
         }
     },
+    viewState: {
+        lon: 41.287,
+        lat: 39.9,
+        z: 15,
+        p: 60,
+        b: 0
+    },
     extent: {
         minX: 26,
         minY: 36,
         maxX: 45,
-        maxY: 42
+        maxY: 42,
     }
 };
 
@@ -98,6 +112,13 @@ export const mapSlice = createSlice({
                 state.filters[filter].tipi = tipi as any[];
             }
         },
+        setViewState: (
+            state,
+            action: PayloadAction<{ viewState: MapState["viewState"] }>
+        ) => {
+            const { viewState } = action.payload;
+            state.viewState = viewState;
+        },
         setExtent: (
             state,
             action: PayloadAction<{ extent: MapState["extent"] }>
@@ -108,13 +129,14 @@ export const mapSlice = createSlice({
     }
 });
 
-export const { setIsDataLoading, setMapLayerVisibility, setFilter, setExtent } = mapSlice.actions;
+export const { setIsDataLoading, setMapLayerVisibility, setFilter, setViewState, setExtent } = mapSlice.actions;
 
 export const selectMapState = (state: RootState) => state.map;
 
 export const selectIsDataLoading = (state: RootState) => state.map.isDataLoading;
 export const selectVisibility = (state: RootState) => state.map.visibility;
 export const selectFilters = (state: RootState) => state.map.filters;
+export const selectViewState = (state: RootState) => state.map.viewState;
 export const selectExtent = (state: RootState) => state.map.extent;
 
 export default mapSlice.reducer;
