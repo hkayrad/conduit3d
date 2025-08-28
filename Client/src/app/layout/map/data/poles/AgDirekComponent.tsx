@@ -2,7 +2,7 @@ import { useCallback, useEffect } from "react";
 import { AgDirekApi } from "../../../../../lib/api/poles";
 import type { Direk, Extent } from "../../../../../lib/types";
 import { useDispatch } from "react-redux";
-import { setFilter, setType } from "../../mapSlice";
+import { setType } from "../../mapSlice";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
@@ -48,7 +48,7 @@ export default function AgDirekComponent(props: Props) {
 
         if (response.isSuccess) {
             dispatch(setType({ key: "agDirek", types: response.data }));
-            dispatch(setFilter({ filter: "agDirek", tipi: response.data }));
+            // dispatch(setFilter({ filter: "agDirek", tipi: response.data }));
         }
     }, []);
 

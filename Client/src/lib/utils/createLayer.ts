@@ -36,9 +36,9 @@ export class CreateLayer {
         color: [number, number, number, number],
         lineWidth: number,
         visibility: boolean,
-        type: HatCinsi) {
-        const dashArray = type === HatCinsi.BARA ? [4, 2] : [10, 2];
-        if (type === HatCinsi.HAVAI)
+        type: string) {
+        const dashArray = type == "BARA" ? [4, 2] : [10, 2];
+        if (type == "HAVAİ")
             return new PathLayer({
                 id: id,
                 data: data ? data : [],

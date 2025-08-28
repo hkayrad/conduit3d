@@ -48,7 +48,6 @@ export default function DeckglMap() {
     const [lineWidth, setLineWidth] = useState<number>(1);
     const { visibility, filters, types } = useAppSelector(selectMapState);
 
-
     // Map data
     const [adrBina, setAdrBina] = useState<GeoJSON.FeatureCollection>(null!);
     const [trafoBina, setTrafoBina] = useState<GeoJSON.FeatureCollection>(null!);
@@ -63,7 +62,14 @@ export default function DeckglMap() {
 
     const [mouseLonLat, setMouseLonLat] = useState<number[]>([0, 0]);
 
-    const { hatLayerData } = useHat(agHat, ogHat, rekortman, visibility);
+    const { hatLayerData } = useHat(
+        agHat,
+        ogHat,
+        rekortman,
+        types,
+        filters,
+        visibility);
+
     const { direkLayerData, allPoles } = useDirek(
         agDirek,
         ogMusDirek,
@@ -75,14 +81,16 @@ export default function DeckglMap() {
     const layers: Layer[] = useMemo(() => [
         ...CreateLayer.LocalTiles(visibility.basemap),
 
-        ...hatLayerData.map(hat =>
-            CreateLayer.Hat(
-                `${hat.id}-layer`,
-                hat.data,
-                hat.color,
-                lineWidth,
-                hat.visibility,
-                hat.cinsi
+        ...hatLayerData.flatMap(filteredHat =>
+            filteredHat.map(hat =>
+                CreateLayer.Hat(
+                    `${hat.id}-layer`,
+                    hat.data,
+                    hat.color,
+                    lineWidth,
+                    hat.visibility,
+                    hat.cinsi
+                )
             )
         ),
 

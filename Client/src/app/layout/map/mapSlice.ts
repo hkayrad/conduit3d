@@ -24,12 +24,24 @@ export interface MapState {
         },
         aydDirek: {
             tipi: string[]
+        },
+        agHat: {
+            tipi: string[]
+        },
+        ogHat: {
+            tipi: string[]
+        },
+        rekortman: {
+            tipi: string[]
         }
     },
     types: {
         agDirek: string[],
         ogMusDirek: string[],
-        aydDirek: string[]
+        aydDirek: string[],
+        agHat: string[],
+        ogHat: string[],
+        rekortman: string[]
     },
     viewState: {
         lon: number,
@@ -68,13 +80,24 @@ const initialState: MapState = {
         },
         aydDirek: {
             tipi: []
+        },
+        agHat: {
+            tipi: []
+        },
+        ogHat: {
+            tipi: []
+        },
+        rekortman: {
+            tipi: []
         }
     },
     types: {
         agDirek: [],
         ogMusDirek: [],
         aydDirek: [],
-
+        agHat: [],
+        ogHat: [],
+        rekortman: []
     },
     viewState: {
         lon: 41.287,

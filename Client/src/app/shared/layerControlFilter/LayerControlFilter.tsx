@@ -1,3 +1,4 @@
+import { Circle, CircleCheck } from "lucide-react";
 import type { MapState } from "../../layout/map/mapSlice";
 import "./style/layerControlFilter.css"
 
@@ -19,7 +20,7 @@ export default function LayerControlFilter(props: Props) {
                 {typeList.map((type) => (
                     <button
                         key={type}
-                        className={`filter-button ${filters.includes(type) ? 'active' : ''}`}
+                        className={`filter-button ${filters.includes(type) || filters.length === 0 ? 'active' : ''}`}
                         onClick={() =>
                             setFilters(
                                 filters.includes(type) ?
@@ -29,7 +30,8 @@ export default function LayerControlFilter(props: Props) {
                             )
                         }
                     >
-                        {type}
+                        {filters.includes(type) ? <CircleCheck /> : <Circle />}
+                        <p>{type}</p>
                     </button>
                 ))}
             </div>

@@ -2,6 +2,8 @@ import { useCallback, useEffect } from "react";
 import { OgHatApi } from "../../../../../lib/api/lines";
 import type { Extent, Hat } from "../../../../../lib/types";
 import { lineStringToSegments } from "../../../../../lib/utils/lineStringToSegments";
+import { useDispatch } from "react-redux";
+import { setType } from "../../mapSlice";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
@@ -11,6 +13,8 @@ type Props = {
 
 export default function OgHatComponent(props: Props) {
     const { setData, allPoles, extent } = props;
+
+    const dispatch = useDispatch();
 
     const handleOgHatFetch = useCallback(async () => {
         const response = await OgHatApi.fetchAll(extent);
@@ -40,10 +44,23 @@ export default function OgHatComponent(props: Props) {
         }
     }, [extent]);
 
+    const handleOgHatTypesFetch = useCallback(async () => {
+        const response = await OgHatApi.fetchTypes();
+
+        if (response.isSuccess) {
+            dispatch(setType({ key: "ogHat", types: response.data }));
+            // dispatch(setFilter({ filter: "ogHat", tipi: response.data }));
+        }
+    }, []);
+
     useEffect(() => {
         if (allPoles.length > 0)
             handleOgHatFetch();
     }, [allPoles, extent]);
+
+    useEffect(() => {
+        handleOgHatTypesFetch();
+    }, []);
 
     return null;
 }

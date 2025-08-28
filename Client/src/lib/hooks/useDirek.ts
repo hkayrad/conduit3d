@@ -1,6 +1,7 @@
 import { useMemo } from "react"
 import { COLORS } from "../colors"
 import type { MapState } from "../../app/layout/map/mapSlice"
+import { filterFeature } from "../utils/filterFeature";
 
 export default function useDirek(
     agDirek: GeoJSON.FeatureCollection,
@@ -15,11 +16,11 @@ export default function useDirek(
             return types.agDirek.map(type => {
                 return {
                     id: `ag-direk-${type}`,
-                    data: agDirek.features.filter(f => f.properties!.tipi === type),
+                    data: filterFeature(agDirek, "tipi", type),
                     color: COLORS.AG_DIREK,
                     visibility:
                         visibility.agDirek &&
-                        (filters.agDirek.tipi.includes(type)/*  || filters.agDirek.tipi.length === 0 */),
+                        (filters.agDirek.tipi.includes(type) || filters.agDirek.tipi.length === 0),
                 }
             });
         else
@@ -30,11 +31,11 @@ export default function useDirek(
             return types.ogMusDirek.map(type => {
                 return {
                     id: `og-mus-direk-${type}`,
-                    data: ogMusDirek.features.filter(f => f.properties!.tipi === type),
+                    data: filterFeature(ogMusDirek, "tipi", type),
                     color: COLORS.OG_MUS_DIREK,
                     visibility:
                         visibility.ogMusDirek &&
-                        (filters.ogMusDirek.tipi.includes(type)/*  || filters.ogMusDirek.tipi.length === 0 */),
+                        (filters.ogMusDirek.tipi.includes(type) || filters.ogMusDirek.tipi.length === 0),
                 }
             });
         else
@@ -45,11 +46,11 @@ export default function useDirek(
             return types.aydDirek.map(type => {
                 return {
                     id: `ayd-direk-${type}`,
-                    data: aydDirek.features.filter(f => f.properties!.tipi === type),
+                    data: filterFeature(aydDirek, "tipi", type),
                     color: COLORS.AYD_DIREK,
                     visibility:
                         visibility.aydDirek &&
-                        (filters.aydDirek.tipi.includes(type)/*  || filters.aydDirek.tipi.length === 0 */),
+                        (filters.aydDirek.tipi.includes(type) || filters.aydDirek.tipi.length === 0),
                 }
             });
         else

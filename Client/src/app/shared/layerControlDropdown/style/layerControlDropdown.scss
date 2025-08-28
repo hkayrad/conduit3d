@@ -46,6 +46,7 @@
                 color: global.$white;
                 padding: 4px;
                 border-radius: 4px;
+                transition: all 0.2s ease;
 
                 &:hover {
                     background: global.$primary-lighter;
@@ -73,7 +74,7 @@
         user-select: none;
 
         &.open {
-            max-height: 200px;
+            max-height: 120px;
             margin-top: 8px;
         }
 

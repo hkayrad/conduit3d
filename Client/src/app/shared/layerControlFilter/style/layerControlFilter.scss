@@ -28,11 +28,25 @@
             padding: 6px 10px;
             font-size: 14px;
             text-decoration: line-through;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 4px;
+            transition: all .2s ease;
+
+
+            &:hover {
+                background: rgba(global.$white, .7);
+            }
 
             &.active {
                 background: global.$primary;
                 color: global.$white;
                 text-decoration: none;
+
+                &:hover {
+                    background: global.$primary-light;
+                }
             }
         }
     }

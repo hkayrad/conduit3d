@@ -16,7 +16,11 @@ export default function LayerControlDropdown(props: Props) {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <div className={`layer-control-dropdown ${isOpen && children ? "open" : "closed"}`} onClick={() => setIsOpen(!isOpen)}>
+        <div
+            className={`layer-control-dropdown ${isOpen && children ? "open" : "closed"}`}
+            onClick={() => {
+                children ? setIsOpen(!isOpen) : toggleLayer();
+            }}>
             <div className="controller">
                 <div className="left">
                     {icon}

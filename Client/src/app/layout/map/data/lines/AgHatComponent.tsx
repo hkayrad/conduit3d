@@ -1,7 +1,9 @@
 import { useCallback, useEffect } from "react";
-import { AgHatApi } from "../../../../../lib/api/lines";
 import type { Extent, Hat } from "../../../../../lib/types";
 import { lineStringToSegments } from "../../../../../lib/utils/lineStringToSegments";
+import { setType } from "../../mapSlice";
+import { useDispatch } from "react-redux";
+import { AgHatApi } from "../../../../../lib/api/lines";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>
@@ -11,6 +13,8 @@ type Props = {
 
 export default function AgHatComponent(props: Props) {
     const { setData, allPoles, extent } = props;
+
+    const dispatch = useDispatch();
 
     const handleAgHatFetch = useCallback(async () => {
         const response = await AgHatApi.fetchAll(extent);
@@ -41,10 +45,23 @@ export default function AgHatComponent(props: Props) {
         }
     }, [extent]);
 
+    const handleAgHatTypesFetch = useCallback(async () => {
+        const response = await AgHatApi.fetchTypes();
+
+        if (response.isSuccess) {
+            dispatch(setType({ key: "agHat", types: response.data }));
+            // dispatch(setFilter({ filter: "agHat", tipi: response.data }));
+        }
+    }, []);
+
     useEffect(() => {
         if (allPoles.length > 0)
             handleAgHatFetch();
     }, [allPoles, extent]);
+
+    useEffect(() => {
+        handleAgHatTypesFetch();
+    }, []);
 
     return null;
 }

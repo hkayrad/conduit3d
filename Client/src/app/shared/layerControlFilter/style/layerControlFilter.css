@@ -59,9 +59,20 @@
   padding: 6px 10px;
   font-size: 14px;
   text-decoration: line-through;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+.layer-control-filter .control-buttons .filter-button:hover {
+  background: rgba(255, 255, 255, 0.7);
 }
 .layer-control-filter .control-buttons .filter-button.active {
   background: #2B2D42;
   color: #FFFFFF;
   text-decoration: none;
+}
+.layer-control-filter .control-buttons .filter-button.active:hover {
+  background: #3B3E5A;
 }/*# sourceMappingURL=layerControlFilter.css.map */

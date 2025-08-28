@@ -16,6 +16,13 @@ export class AgHatApi {
         );
         return response.data;
     }
+
+    static async fetchTypes() {
+        const response = await instance.get<ApiResponse<string[]>>(
+            "agHat/types"
+        );
+        return response.data;
+    }
 }
 
 export class OgHatApi {
@@ -33,6 +40,13 @@ export class OgHatApi {
 
         return response.data;
     }
+
+    static async fetchTypes() {
+        const response = await instance.get<ApiResponse<string[]>>(
+            "ogHat/types"
+        );
+        return response.data;
+    }
 }
 
 export class RekortmanApi {
@@ -47,6 +61,13 @@ export class RekortmanApi {
                     maxY: extent.maxY
                 }
             }
+        );
+        return response.data;
+    }
+
+    static async fetchTypes() {
+        const response = await instance.get<ApiResponse<string[]>>(
+            "rekortman/types"
         );
         return response.data;
     }

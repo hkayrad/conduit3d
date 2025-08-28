@@ -2,6 +2,8 @@ import { useCallback, useEffect } from "react";
 import { RekortmanApi } from "../../../../../lib/api/lines";
 import type { Extent, Rekortman } from "../../../../../lib/types";
 import { lineStringToSegments } from "../../../../../lib/utils/lineStringToSegments";
+import { useDispatch } from "react-redux";
+import { setType } from "../../mapSlice";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
@@ -11,6 +13,8 @@ type Props = {
 
 export default function RekortmanComponent(props: Props) {
     const { setData, allPoles, extent } = props;
+
+    const dispatch = useDispatch();
 
     const handleRekortmanFetch = useCallback(async () => {
         const response = await RekortmanApi.fetchAll(extent);
@@ -39,10 +43,23 @@ export default function RekortmanComponent(props: Props) {
         }
     }, [extent]);
 
+    const handleRekortmanTypesFetch = useCallback(async () => {
+        const response = await RekortmanApi.fetchTypes();
+
+        if (response.isSuccess) {
+            dispatch(setType({ key: "rekortman", types: response.data }));
+            // dispatch(setFilter({ filter: "rekortman", tipi: response.data }));
+        }
+    }, []);
+
     useEffect(() => {
         if (allPoles.length > 0)
             handleRekortmanFetch();
     }, [allPoles, extent]);
+
+    useEffect(() => {
+        handleRekortmanTypesFetch();
+    }, []);
 
     return null;
 }

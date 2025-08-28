@@ -1,9 +1,7 @@
-import type { HatCinsi } from "../enums";
-
-export function filterHat(
+export function filterFeature(
     collection: GeoJSON.FeatureCollection | null,
     property: string,
-    value: HatCinsi
+    value: string
 ) {
     return collection?.features.filter(f => f.properties?.[property] === value) ?? [];
 }

@@ -97,19 +97,43 @@ export default function LayerControl() {
                         name="Ag Hat"
                         isLayerVisible={visibility.agHat}
                         toggleLayer={() => handleLayerToggle("agHat")}
-                    />
+                    >
+                        <LayerControlFilter
+                            label="Type"
+                            typeList={types.agHat}
+                            filters={filters.agHat.tipi}
+                            filterKey="agHat"
+                            setFilters={handleFilterToggle}
+                        />
+                    </LayerControlDropdown>
                     <LayerControlDropdown
                         icon={<PlugZap />}
                         name="Og Hat"
                         isLayerVisible={visibility.ogHat}
                         toggleLayer={() => handleLayerToggle("ogHat")}
-                    />
+                    >
+                        <LayerControlFilter
+                            label="Type"
+                            typeList={types.ogHat}
+                            filters={filters.ogHat.tipi}
+                            filterKey="ogHat"
+                            setFilters={handleFilterToggle}
+                        />
+                    </LayerControlDropdown>
                     <LayerControlDropdown
                         icon={<PlugZap />}
                         name="Rekortman"
                         isLayerVisible={visibility.rekortman}
                         toggleLayer={() => handleLayerToggle("rekortman")}
-                    />
+                    >
+                        <LayerControlFilter
+                            label="Type"
+                            typeList={types.rekortman}
+                            filters={filters.rekortman.tipi}
+                            filterKey="rekortman"
+                            setFilters={handleFilterToggle}
+                        />
+                    </LayerControlDropdown>
                 </LayerControlSection>
             </div>
         </>
