@@ -6,5 +6,6 @@ namespace PolesService.Infrastructure.Repositories;
 
 public interface IOgMusDirekRepository : IGenericRepository<OgMusDirek>
 {
+    public Task<List<string>> GetTipListAsync(CancellationToken cancellationToken);
 
 }

@@ -51,5 +51,12 @@ namespace PolesService.Controllers
         {
             return await _ogMusDirekService.GetCountAsync(extent, cancellationToken);
         }
+
+        [MapToApiVersion("1.0")]
+        [HttpGet("types")]
+        public async Task<Response<List<string>>> GetTipListAsync(CancellationToken cancellationToken)
+        {
+            return await _ogMusDirekService.GetTipListAsync(cancellationToken);
+        }
     }
 }

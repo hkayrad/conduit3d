@@ -67,4 +67,9 @@ public class OgMusDirekRepository(PolesContext context) : IOgMusDirekRepository
 
         return await sqlQuery.CountAsync(cancellationToken);
     }
+
+    public async Task<List<string>> GetTipListAsync(CancellationToken cancellationToken)
+    {
+        return await _dbSet.Select(x => x.Tipi).Distinct().ToListAsync(cancellationToken);
+    }
 }

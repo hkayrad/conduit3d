@@ -113,4 +113,24 @@ public class PostgresqlOgMusDirekService(IUnitOfWork unitOfWork) : IOgMusDirekSe
             return Response<int>.UnhandledError(PolesResources.GetString("poleCountRetrievalFailed", ex.Message));
         }
     }
+
+    public async Task<Response<List<string>>> GetTipListAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            var tipList = await _unitOfWork.OgMusDirekRepository.GetTipListAsync(cancellationToken);
+            if (tipList == null || tipList.Count == 0)
+                return Response<List<string>>.NotFound(PolesResources.GetString("noTipFound"));
+
+            return Response<List<string>>.Success(tipList, PolesResources.GetString("tipListRetrieved"));
+        }
+        catch (NpgsqlException ex)
+        {
+            return Response<List<string>>.DatabaseError(PolesResources.GetString("tipListRetrievalFailed", ex.Message));
+        }
+        catch (Exception ex)
+        {
+            return Response<List<string>>.UnhandledError(PolesResources.GetString("tipListRetrievalFailed", ex.Message));
+        }
+    }
 }

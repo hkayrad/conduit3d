@@ -4,7 +4,7 @@ using PolesService.Domain;
 
 namespace PolesService.Infrastructure.Repositories;
 
-public interface IAgDirekRepository: IGenericRepository<AgDirek>
+public interface IAgDirekRepository : IGenericRepository<AgDirek>
 {
-
+    public Task<List<string>> GetTipListAsync(CancellationToken cancellationToken);
 }
