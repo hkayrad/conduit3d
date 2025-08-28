@@ -6,31 +6,49 @@ export default function useDirek(
     agDirek: GeoJSON.FeatureCollection,
     ogMusDirek: GeoJSON.FeatureCollection,
     aydDirek: GeoJSON.FeatureCollection,
-    mapState: MapState) {
+    types: MapState["types"],
+    filters: MapState["filters"],
+    visibility: MapState["visibility"]
+) {
     const agDirekFormatted = useMemo(() => {
-        return {
-            id: "ag-direk",
-            data: agDirek,
-            color: COLORS.AG_DIREK,
-            visibility: mapState.visibility.agDirek,
-        }
-    }, [agDirek, mapState.visibility.agDirek]);
+        if (agDirek)
+            return types.agDirek.map(type => {
+                return {
+                    id: `ag-direk-${type}`,
+                    data: agDirek.features.filter(f => f.properties!.tipi === type),
+                    color: COLORS.AG_DIREK,
+                    visibility: visibility.agDirek && filters.agDirek.tipi.includes(type),
+                }
+            });
+        else
+            return [];
+    }, [agDirek, visibility.agDirek, filters.agDirek.tipi]);
     const ogMusDirekFormatted = useMemo(() => {
-        return {
-            id: "og-mus-direk",
-            data: ogMusDirek,
-            color: COLORS.OG_MUS_DIREK,
-            visibility: mapState.visibility.ogMusDirek,
-        }
-    }, [ogMusDirek, mapState.visibility.ogMusDirek]);
+        if (ogMusDirek)
+            return types.ogMusDirek.map(type => {
+                return {
+                    id: `og-mus-direk-${type}`,
+                    data: ogMusDirek.features.filter(f => f.properties!.tipi === type),
+                    color: COLORS.OG_MUS_DIREK,
+                    visibility: visibility.ogMusDirek && filters.ogMusDirek.tipi.includes(type),
+                }
+            });
+        else
+            return [];
+    }, [ogMusDirek, visibility.ogMusDirek, filters.ogMusDirek.tipi]);
     const aydDirekFormatted = useMemo(() => {
-        return {
-            id: "ayd-direk",
-            data: aydDirek,
-            color: COLORS.AYD_DIREK,
-            visibility: mapState.visibility.aydDirek,
-        }
-    }, [aydDirek, mapState.visibility.aydDirek]);
+        if (aydDirek)
+            return types.aydDirek.map(type => {
+                return {
+                    id: `ayd-direk-${type}`,
+                    data: aydDirek.features.filter(f => f.properties!.tipi === type),
+                    color: COLORS.AYD_DIREK,
+                    visibility: visibility.aydDirek && filters.aydDirek.tipi.includes(type),
+                }
+            });
+        else
+            return [];
+    }, [aydDirek, visibility.aydDirek, filters.aydDirek.tipi]);
 
     const allPoles: GeoJSON.Feature[] = useMemo(() => {
         if (agDirek && ogMusDirek && aydDirek)
