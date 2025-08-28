@@ -1,6 +1,8 @@
 import { useCallback, useEffect } from "react";
 import { AgDirekApi } from "../../../../../lib/api/poles";
 import type { Direk, Extent } from "../../../../../lib/types";
+import { useDispatch } from "react-redux";
+import { setFilter, setType } from "../../mapSlice";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
@@ -9,6 +11,8 @@ type Props = {
 
 export default function AgDirekComponent(props: Props) {
     const { setData, extent } = props;
+
+    const dispatch = useDispatch();
 
     const handleAgDirekFetch = useCallback(async () => {
         const response = await AgDirekApi.fetchAll(extent);
@@ -39,9 +43,22 @@ export default function AgDirekComponent(props: Props) {
         }
     }, [extent]);
 
+    const handleAgDirekTypesFetch = useCallback(async () => {
+        const response = await AgDirekApi.fetchTypes();
+
+        if (response.isSuccess) {
+            dispatch(setType({ key: "agDirek", types: response.data }));
+            dispatch(setFilter({ filter: "agDirek", tipi: response.data }));
+        }
+    }, []);
+
     useEffect(() => {
         handleAgDirekFetch();
-    }, [extent])
+    }, [extent]);
+
+    useEffect(() => {
+        handleAgDirekTypesFetch();
+    }, []);
 
     return null;
 }

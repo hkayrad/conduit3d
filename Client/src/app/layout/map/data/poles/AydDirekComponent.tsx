@@ -1,6 +1,8 @@
 import { useCallback, useEffect } from "react";
 import { AydDirekApi } from "../../../../../lib/api/poles";
 import type { Direk, Extent } from "../../../../../lib/types";
+import { useDispatch } from "react-redux";
+import { setFilter, setType } from "../../mapSlice";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
@@ -9,6 +11,8 @@ type Props = {
 
 export default function AydDirekComponent(props: Props) {
     const { setData, extent } = props;
+
+    const dispatch = useDispatch();
 
     const handleAydDirekFetch = useCallback(async () => {
         const response = await AydDirekApi.fetchAll(extent);
@@ -39,9 +43,22 @@ export default function AydDirekComponent(props: Props) {
         }
     }, [extent]);
 
+    const handleAydDirekTypesFetch = useCallback(async () => {
+        const response = await AydDirekApi.fetchTypes();
+
+        if (response.isSuccess) {
+            dispatch(setType({ key: "aydDirek", types: response.data }));
+            dispatch(setFilter({ filter: "aydDirek", tipi: response.data }));
+        }
+    }, []);
+
     useEffect(() => {
         handleAydDirekFetch();
-    }, [extent])
+    }, [extent]);
+
+    useEffect(() => {
+        handleAydDirekTypesFetch();
+    }, []);
 
     return null;
 }
