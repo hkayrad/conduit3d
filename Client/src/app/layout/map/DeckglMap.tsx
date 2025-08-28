@@ -46,7 +46,7 @@ export default function DeckglMap() {
     });
 
     const [lineWidth, setLineWidth] = useState<number>(1);
-    const mapState = useAppSelector(selectMapState);
+    const { visibility, filters, types } = useAppSelector(selectMapState);
 
 
     // Map data
@@ -63,11 +63,17 @@ export default function DeckglMap() {
 
     const [mouseLonLat, setMouseLonLat] = useState<number[]>([0, 0]);
 
-    const { hatLayerData } = useHat(agHat, ogHat, rekortman, mapState);
-    const { direkLayerData, allPoles } = useDirek(agDirek, ogMusDirek, aydDirek, mapState);
+    const { hatLayerData } = useHat(agHat, ogHat, rekortman, visibility);
+    const { direkLayerData, allPoles } = useDirek(
+        agDirek,
+        ogMusDirek,
+        aydDirek,
+        types,
+        filters,
+        visibility);
 
     const layers: Layer[] = useMemo(() => [
-        ...CreateLayer.LocalTiles(mapState.visibility.basemap),
+        ...CreateLayer.LocalTiles(visibility.basemap),
         ...hatLayerData.map(hat =>
             CreateLayer.Hat(
                 `${hat.id}-layer`,
@@ -78,12 +84,15 @@ export default function DeckglMap() {
                 hat.cinsi
             )
         ),
-        ...direkLayerData.map(direk =>
-            CreateLayer.Direk(
-                `${direk.id}-layer`,
-                direk.data,
-                direk.color,
-                direk.visibility
+
+        ...direkLayerData.flatMap(filteredData =>
+            filteredData.map(direk =>
+                CreateLayer.Direk(
+                    `${direk.id}-layer`,
+                    direk.data,
+                    direk.color,
+                    direk.visibility
+                )
             )
         ),
 
@@ -97,7 +106,7 @@ export default function DeckglMap() {
             pickable: true,
             autoHighlight: true,
             highlightColor: COLORS.HOVER,
-            visible: mapState.visibility.adrBina,
+            visible: visibility.adrBina,
         }),
         new ColumnLayer({
             id: "trafo-bina-layer",
@@ -112,9 +121,9 @@ export default function DeckglMap() {
             radius: 1,
             elevationScale: 1,
             diskResolution: 4,
-            visible: mapState.visibility.trafoBina,
+            visible: visibility.trafoBina,
         })
-    ], [mapState.visibility, adrBina, trafoBina, agDirek, ogMusDirek, aydDirek, agHat, ogHat, rekortman, lineWidth]);
+    ], [visibility, adrBina, trafoBina, agDirek, ogMusDirek, aydDirek, agHat, ogHat, rekortman, lineWidth]);
 
     const handleViewStateChange = useCallback((viewState: MapViewState) => {
         setMapViewState(viewState);
