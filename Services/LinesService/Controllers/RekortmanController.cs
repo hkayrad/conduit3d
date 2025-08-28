@@ -51,5 +51,12 @@ namespace LinesService.Controllers
         {
             return await _rekortmanService.GetCountAsync(extent, cancellationToken);
         }
+
+        [MapToApiVersion("1.0")]
+        [HttpGet("types")]
+        public async Task<Response<List<string>>> GetTipListAsync(CancellationToken cancellationToken)
+        {
+            return await _rekortmanService.GetTipListAsync(cancellationToken);
+        }
     }
 }

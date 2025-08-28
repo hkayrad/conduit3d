@@ -92,7 +92,7 @@
     <data name="noPoleFound" xml:space="preserve">
         <value>No pole found.</value>
     </data>
-    <data name="noPoleFound" xml:space="preserve">
+    <data name="noTipFound" xml:space="preserve">
         <value>No tip found.</value>
     </data>
     <data name="invalidPoleId" xml:space="preserve">
@@ -100,13 +100,13 @@
     </data>
 
     <data name="poleRetrievalFailed" xml:space="preserve">
-        <value>pole retrieval failed: {0}</value>
+        <value>Pole retrieval failed: {0}</value>
     </data>
     <data name="tipListRetrievalFailed" xml:space="preserve">
-        <value>tip retrieval failed: {0}</value>
+        <value>Tip retrieval failed: {0}</value>
     </data>
     <data name="poleCountRetrievalFailed" xml:space="preserve">
-        <value>pole count retrieval failed: {0}</value>
+        <value>Pole count retrieval failed: {0}</value>
     </data>
 
     <data name="invalidExtent" xml:space="preserve">

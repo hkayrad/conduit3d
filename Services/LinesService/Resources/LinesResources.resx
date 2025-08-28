@@ -81,6 +81,9 @@
     <data name="lineRetrieved" xml:space="preserve">
         <value>Line retrieved successfully.</value>
     </data>
+    <data name="tipListRetrieved" xml:space="preserve">
+        <value>Tip list retrieved successfully.</value>
+    </data>
     <data name="lineCountRetrieved" xml:space="preserve">
         <value>Line count retrieved successfully.</value>
     </data>
@@ -89,12 +92,18 @@
     <data name="noLineFound" xml:space="preserve">
         <value>No line found.</value>
     </data>
+    <data name="noTipFound" xml:space="preserve">
+        <value>No tip found.</value>
+    </data>
     <data name="invalidLineId" xml:space="preserve">
         <value>Invalid line ID.</value>
     </data>
 
     <data name="lineRetrievalFailed" xml:space="preserve">
         <value>line retrieval failed: {0}</value>
+    </data>
+    <data name="tipListRetrievalFailed" xml:space="preserve">
+        <value>Tip retrieval failed: {0}</value>
     </data>
     <data name="lineCountRetrievalFailed" xml:space="preserve">
         <value>line count retrieval failed: {0}</value>

@@ -6,5 +6,5 @@ namespace LinesService.Infrastructure.Repositories;
 
 public interface IRekortmanRepository : IGenericRepository<Rekortman>
 {
-
+    public Task<List<string>> GetTipListAsync(CancellationToken cancellationToken);
 }

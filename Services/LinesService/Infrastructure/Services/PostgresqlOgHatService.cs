@@ -113,4 +113,24 @@ public class PostgresqlOgHatService(IUnitOfWork unitOfWork) : IOgHatService
             return Response<int>.UnhandledError(LinesResources.GetString("lineCountRetrievalFailed", ex.Message));
         }
     }
+
+    public async Task<Response<List<string>>> GetTipListAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            var tipList = await _unitOfWork.OgHatRepository.GetTipListAsync(cancellationToken);
+            if (tipList == null || tipList.Count == 0)
+                return Response<List<string>>.NotFound(LinesResources.GetString("noTipFound"));
+
+            return Response<List<string>>.Success(tipList, LinesResources.GetString("tipListRetrieved"));
+        }
+        catch (NpgsqlException ex)
+        {
+            return Response<List<string>>.DatabaseError(LinesResources.GetString("tipListRetrievalFailed", ex.Message));
+        }
+        catch (Exception ex)
+        {
+            return Response<List<string>>.UnhandledError(LinesResources.GetString("tipListRetrievalFailed", ex.Message));
+        }
+    }
 }

@@ -65,4 +65,9 @@ public class AgHatRepository(LinesContext context) : IAgHatRepository
 
         return await sqlQuery.CountAsync(cancellationToken);
     }
+
+    public async Task<List<string>> GetTipListAsync(CancellationToken cancellationToken)
+    {
+        return await _dbSet.Select(x => x.Cinsi).Distinct().ToListAsync(cancellationToken);
+    }
 }

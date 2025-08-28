@@ -7,5 +7,7 @@ namespace LinesService.Infrastructure.Services;
 
 public interface IAgHatService : IGenericService<AgHat>
 {
+    public Task<Response<List<string>>> GetTipListAsync(CancellationToken cancellationToken);
+
 }
 

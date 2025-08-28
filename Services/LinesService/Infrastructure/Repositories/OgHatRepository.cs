@@ -10,7 +10,7 @@ public class OgHatRepository(LinesContext context) : IOgHatRepository
 {
     private readonly LinesContext _context = context;
     private readonly DbSet<OgHat> _dbSet = context.Set<OgHat>();
-    
+
     public async Task<List<OgHat>> GetAllAsync(int pageNumber,
                                         int pageSize,
                                         string sortBy,
@@ -64,5 +64,10 @@ public class OgHatRepository(LinesContext context) : IOgHatRepository
                     WHERE ST_Transform(geometry, 4326) @ ST_MakeEnvelope({extent.MinX}, {extent.MinY}, {extent.MaxX}, {extent.MaxY}, 4326)");
 
         return await sqlQuery.CountAsync(cancellationToken);
+    }
+
+    public async Task<List<string>> GetTipListAsync(CancellationToken cancellationToken)
+    {
+        return await _dbSet.Select(x => x.Cinsi).Distinct().ToListAsync(cancellationToken);
     }
 }

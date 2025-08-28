@@ -6,5 +6,5 @@ namespace LinesService.Infrastructure.Repositories;
 
 public interface IAgHatRepository : IGenericRepository<AgHat>
 {
-
+    public Task<List<string>> GetTipListAsync(CancellationToken cancellationToken);
 }

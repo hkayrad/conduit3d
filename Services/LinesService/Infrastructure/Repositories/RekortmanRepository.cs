@@ -63,4 +63,9 @@ public class RekortmanRepository(LinesContext context) : IRekortmanRepository
 
         return await sqlQuery.CountAsync(cancellationToken);
     }
+
+    public async Task<List<string>> GetTipListAsync(CancellationToken cancellationToken)
+    {
+        return await _dbSet.Select(x => x.Tipi).Distinct().ToListAsync(cancellationToken);
+    }
 }

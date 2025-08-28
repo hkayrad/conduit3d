@@ -2,7 +2,6 @@ using Asp.Versioning;
 using Conduit3D.Common.Domain;
 using LinesService.Domain;
 using LinesService.Infrastructure.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LinesService.Controllers
@@ -50,6 +49,13 @@ namespace LinesService.Controllers
         )
         {
             return await _agHatService.GetCountAsync(extent, cancellationToken);
+        }
+
+        [MapToApiVersion("1.0")]
+        [HttpGet("types")]
+        public async Task<Response<List<string>>> GetTipListAsync(CancellationToken cancellationToken)
+        {
+            return await _agHatService.GetTipListAsync(cancellationToken);
         }
     }
 }
