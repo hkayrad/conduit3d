@@ -3,6 +3,7 @@
 .layer-control-dropdown {
     display: flex;
     flex-direction: column;
+    transition: margin-bottom 0.3s ease;
 
     &.closed {
         margin-bottom: 0px;
@@ -65,21 +66,30 @@
     }
 
     .content {
-        height: fit-content;
+        display: grid;
+        grid-template-rows: 0fr;
+        transition: grid-template-rows 0.3s ease, margin-top 0.3s ease;
         background: global.$primary-lighter;
-        transition: all 0.3s ease;
         border-radius: 8px;
-        max-height: 0px;
         overflow: hidden;
         user-select: none;
 
         &.open {
-            max-height: 120px;
+            grid-template-rows: 1fr;
             margin-top: 8px;
+
+            .content-wrapper {
+                padding: 12px 16px 16px 16px;
+            }
         }
 
         .content-wrapper {
-            padding: 12px 12px 16px 12px;
+            min-height: 0;
+            padding: 0px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: padding 0.3s ease;
         }
     }
 }
