@@ -66,6 +66,9 @@
   gap: 16px;
   max-height: 740px;
   overflow-y: scroll;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
 }
 .layer-control-content::-webkit-scrollbar {
   width: 6px;

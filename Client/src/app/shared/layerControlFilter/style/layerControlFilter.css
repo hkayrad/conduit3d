@@ -38,21 +38,30 @@
   font-size: 12px;
   font-weight: normal;
   letter-spacing: 1px;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
 }
 .layer-control-filter .control-buttons {
   display: flex;
   flex-direction: row;
   gap: 6px;
   flex-wrap: wrap;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
 }
 .layer-control-filter .control-buttons .filter-button {
-  background: #2B2D42;
-  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.5);
+  color: #2B2D42;
   border: none;
   border-radius: 100px;
   padding: 6px 10px;
+  font-size: 14px;
+  text-decoration: line-through;
 }
 .layer-control-filter .control-buttons .filter-button.active {
-  background: #FFFFFF;
-  color: #2B2D42;
+  background: #2B2D42;
+  color: #FFFFFF;
+  text-decoration: none;
 }/*# sourceMappingURL=layerControlFilter.css.map */

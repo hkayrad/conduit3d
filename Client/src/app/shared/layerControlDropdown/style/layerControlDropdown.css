@@ -93,6 +93,9 @@
   border-radius: 8px;
   max-height: 0px;
   overflow: hidden;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
 }
 .layer-control-dropdown .content.open {
   max-height: 200px;

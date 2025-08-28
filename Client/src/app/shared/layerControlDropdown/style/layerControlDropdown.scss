@@ -70,6 +70,7 @@
         border-radius: 8px;
         max-height: 0px;
         overflow: hidden;
+        user-select: none;
 
         &.open {
             max-height: 200px;

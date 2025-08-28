@@ -40,7 +40,9 @@
     gap: 16px;
     max-height: 740px;
     overflow-y: scroll;
-    
+    user-select: none;
+
+
     &::-webkit-scrollbar {
         width: 6px;
     }
