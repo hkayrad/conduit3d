@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../../lib/store";
-import type { AgDirekTipi, AydDirekTipi, OgMusDirekTipi } from "../../../lib/enums";
 
 export interface MapState {
     isDataLoading: boolean,
@@ -18,14 +17,19 @@ export interface MapState {
     },
     filters: {
         agDirek: {
-            tipi: AgDirekTipi[]
+            tipi: string[]
         },
         ogMusDirek: {
-            tipi: OgMusDirekTipi[]
+            tipi: string[]
         },
         aydDirek: {
-            tipi: AydDirekTipi[]
+            tipi: string[]
         }
+    },
+    types: {
+        agDirek: string[],
+        ogMusDirek: string[],
+        aydDirek: string[]
     },
     viewState: {
         lon: number,
@@ -66,6 +70,12 @@ const initialState: MapState = {
             tipi: []
         }
     },
+    types: {
+        agDirek: [],
+        ogMusDirek: [],
+        aydDirek: [],
+
+    },
     viewState: {
         lon: 41.287,
         lat: 39.9,
@@ -104,13 +114,23 @@ export const mapSlice = createSlice({
             state,
             action: PayloadAction<{
                 filter: keyof MapState["filters"];
-                tipi: (AgDirekTipi | OgMusDirekTipi | AydDirekTipi)[];
+                tipi: string[];
             }>
         ) => {
             const { filter, tipi } = action.payload;
             if (filter in state.filters) {
                 state.filters[filter].tipi = tipi as any[];
             }
+        },
+        setType: (
+            state,
+            action: PayloadAction<{
+                key: keyof MapState["types"];
+                types: string[];
+            }>
+        ) => {
+            const { key, types } = action.payload;
+            state.types[key] = types;
         },
         setViewState: (
             state,
@@ -129,13 +149,14 @@ export const mapSlice = createSlice({
     }
 });
 
-export const { setIsDataLoading, setMapLayerVisibility, setFilter, setViewState, setExtent } = mapSlice.actions;
+export const { setIsDataLoading, setMapLayerVisibility, setFilter, setViewState, setExtent, setType } = mapSlice.actions;
 
 export const selectMapState = (state: RootState) => state.map;
 
 export const selectIsDataLoading = (state: RootState) => state.map.isDataLoading;
 export const selectVisibility = (state: RootState) => state.map.visibility;
 export const selectFilters = (state: RootState) => state.map.filters;
+export const selectTypes = (state: RootState) => state.map.types;
 export const selectViewState = (state: RootState) => state.map.viewState;
 export const selectExtent = (state: RootState) => state.map.extent;
 
