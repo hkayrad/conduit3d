@@ -1,7 +1,6 @@
-import { useState } from "react";
 import "./style/layerControl.css"
 import { Building, ChevronRight, Layers2, PlugZap, UtilityPole, Zap } from "lucide-react";
-import { selectMapState, setFilter, setMapLayerVisibility, type MapState } from "../mapSlice";
+import { selectMapState, setFilter, setIsLayerControlsOpen, setMapLayerVisibility, type MapState } from "../mapSlice";
 import { useAppSelector } from "../../../../lib/hooks/reduxHooks";
 import { useDispatch } from "react-redux";
 import LayerControlSection from "../../../shared/layerControlSection/LayerControlSection";
@@ -9,11 +8,13 @@ import LayerControlDropdown from "../../../shared/layerControlDropdown/LayerCont
 import LayerControlFilter from "../../../shared/layerControlFilter/LayerControlFilter";
 
 export default function LayerControl() {
-    const [isControlsOpen, setIsControlsOpen] = useState<boolean>(false);
 
     const dispatch = useDispatch();
-    const { visibility, types, filters } = useAppSelector(selectMapState);
+    const { isLayerControlsOpen, visibility, types, filters } = useAppSelector(selectMapState);
 
+    const handleControlsToggle = () => {
+        dispatch(setIsLayerControlsOpen(!isLayerControlsOpen));
+    }
 
     const handleLayerToggle = (layer: keyof MapState["visibility"]) => {
         const isVisible = visibility[layer];
@@ -28,11 +29,11 @@ export default function LayerControl() {
         <>
             <button
                 id="layer-control-toggle"
-                className={`shadow ${isControlsOpen ? "open" : "closed"}`}
-                onClick={() => setIsControlsOpen(!isControlsOpen)}>
-                {isControlsOpen ? <ChevronRight /> : <Layers2 />}
+                className={`shadow ${isLayerControlsOpen ? "open" : "closed"}`}
+                onClick={handleControlsToggle}>
+                {isLayerControlsOpen ? <ChevronRight /> : <Layers2 />}
             </button>
-            <div className={`layer-control-content shadow ${isControlsOpen ? "open" : "closed"}`}>
+            <div className={`layer-control-content shadow ${isLayerControlsOpen ? "open" : "closed"}`}>
                 <LayerControlSection title="buildings">
                     <LayerControlDropdown
                         icon={<Building />}

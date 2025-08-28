@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import { COLORS } from "../colors";
-import { HatCinsi } from "../enums";
 import { filterFeature } from "../utils/filterFeature";
 import type { MapState } from "../../app/layout/map/mapSlice";
 

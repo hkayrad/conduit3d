@@ -4,6 +4,7 @@ import type { RootState } from "../../../lib/store";
 
 export interface MapState {
     isDataLoading: boolean,
+    isLayerControlsOpen: boolean,
     visibility: {
         basemap: boolean,
         adrBina: boolean,
@@ -60,6 +61,7 @@ export interface MapState {
 
 const initialState: MapState = {
     isDataLoading: false,
+    isLayerControlsOpen: false,
     visibility: {
         basemap: true,
         adrBina: true,
@@ -121,6 +123,9 @@ export const mapSlice = createSlice({
         setIsDataLoading: (state, action: PayloadAction<boolean>) => {
             state.isDataLoading = action.payload;
         },
+        setIsLayerControlsOpen: (state, action: PayloadAction<boolean>) => {
+            state.isLayerControlsOpen = action.payload;
+        },
         setMapLayerVisibility: (
             state,
             action: PayloadAction<{
@@ -172,11 +177,20 @@ export const mapSlice = createSlice({
     }
 });
 
-export const { setIsDataLoading, setMapLayerVisibility, setFilter, setViewState, setExtent, setType } = mapSlice.actions;
+export const {
+    setIsDataLoading,
+    setIsLayerControlsOpen,
+    setMapLayerVisibility,
+    setFilter,
+    setViewState,
+    setExtent,
+    setType
+} = mapSlice.actions;
 
 export const selectMapState = (state: RootState) => state.map;
 
 export const selectIsDataLoading = (state: RootState) => state.map.isDataLoading;
+export const selectIsLayerControlsOpen = (state: RootState) => state.map.isLayerControlsOpen;
 export const selectVisibility = (state: RootState) => state.map.visibility;
 export const selectFilters = (state: RootState) => state.map.filters;
 export const selectTypes = (state: RootState) => state.map.types;
