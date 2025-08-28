@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import { mapSlice } from '../app/layout/map/mapSlice';
 import { authSlice } from '../app/layout/auth/authSlice';
 
-const loadFromLocalStorage = () => {
+const loadUserFromLocalStorage = () => {
     try {
         const serializedState = localStorage.getItem('userState');
         if (serializedState === null) return undefined;
@@ -17,7 +17,7 @@ const loadFromLocalStorage = () => {
     }
 }
 
-const saveToLocalStorage = (state: any) => {
+const saveUserToLocalStorage = (state: any) => {
     try {
         const serializedState = JSON.stringify(state.auth.user);
         localStorage.setItem('userState', serializedState);
@@ -26,18 +26,18 @@ const saveToLocalStorage = (state: any) => {
     }
 }
 
-const preloadedState = loadFromLocalStorage();
+const preloadedUserState = loadUserFromLocalStorage();
 
 export const store = configureStore({
     reducer: {
         auth: authSlice.reducer,
         map: mapSlice.reducer,
     },
-    preloadedState,
+    preloadedState: preloadedUserState,
 });
 
 store.subscribe(() => {
-    saveToLocalStorage(store.getState());
+    saveUserToLocalStorage(store.getState());
 });
 
 export type RootState = ReturnType<typeof store.getState>;
