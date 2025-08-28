@@ -10,6 +10,11 @@ export class AgDirekApi {
         });
         return response.data;
     }
+
+    static async fetchTypes() {
+        const response = await instance.get<ApiResponse<string[]>>("agDirek/types");
+        return response.data;
+    }
 }
 
 export class OgMusDirekApi {
@@ -21,6 +26,11 @@ export class OgMusDirekApi {
         });
         return response.data;
     }
+
+    static async fetchTypes() {
+        const response = await instance.get<ApiResponse<string[]>>("ogMusDirek/types");
+        return response.data;
+    }
 }
 
 export class AydDirekApi {
@@ -30,6 +40,11 @@ export class AydDirekApi {
                 ...extent
             }
         });
+        return response.data;
+    }
+
+    static async fetchTypes() {
+        const response = await instance.get<ApiResponse<string[]>>("aydDirek/types");
         return response.data;
     }
 }
