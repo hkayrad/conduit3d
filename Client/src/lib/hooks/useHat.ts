@@ -8,76 +8,76 @@ export function useHat(
     agHat: GeoJSON.FeatureCollection,
     ogHat: GeoJSON.FeatureCollection,
     rekortman: GeoJSON.FeatureCollection,
-    mapState: MapState) {
+    visibility: MapState["visibility"]) {
     const agHatHavai = useMemo(() => ({
         id: "ag-hat-havai",
         color: COLORS.AG_HAT,
-        visibility: mapState.visibility.agHat,
+        visibility: visibility.agHat,
         cinsi: HatCinsi.HAVAI,
         data: filterHat(agHat, "cinsi", HatCinsi.HAVAI)
-    }), [agHat, mapState.visibility.agHat]);
+    }), [agHat, visibility.agHat]);
 
     const ogHatHavai = useMemo(() => ({
         id: "og-hat-havai",
         color: COLORS.OG_HAT,
-        visibility: mapState.visibility.ogHat,
+        visibility: visibility.ogHat,
         cinsi: HatCinsi.HAVAI,
         data: filterHat(ogHat, "cinsi", HatCinsi.HAVAI)
-    }), [ogHat, mapState.visibility.ogHat]);
+    }), [ogHat, visibility.ogHat]);
 
     const rekortmanHavai = useMemo(() => ({
         id: "rekortman-havai",
         color: COLORS.REKORTMAN,
-        visibility: mapState.visibility.rekortman,
+        visibility: visibility.rekortman,
         cinsi: HatCinsi.HAVAI,
         data: filterHat(rekortman, "tipi", HatCinsi.HAVAI)
-    }), [rekortman, mapState.visibility.rekortman]);
+    }), [rekortman, visibility.rekortman]);
     const agHatBara = useMemo(() => {
         return {
             id: "ag-hat-bara",
             color: COLORS.AG_HAT,
-            visibility: mapState.visibility.agHat,
+            visibility: visibility.agHat,
             cinsi: HatCinsi.BARA,
             data: filterHat(agHat, "cinsi", HatCinsi.BARA)
         }
-    }, [agHat, mapState.visibility.agHat]);
+    }, [agHat, visibility.agHat]);
     const ogHatBara = useMemo(() => {
         return {
             id: "og-hat-bara",
             color: COLORS.OG_HAT,
-            visibility: mapState.visibility.ogHat,
+            visibility: visibility.ogHat,
             cinsi: HatCinsi.BARA,
             data: filterHat(ogHat, "cinsi", HatCinsi.BARA)
         }
-    }, [ogHat, mapState.visibility.ogHat]);
+    }, [ogHat, visibility.ogHat]);
 
     const agHatYeralti = useMemo(() => {
         return {
             id: "ag-hat-yeralti",
             color: COLORS.AG_HAT,
-            visibility: mapState.visibility.agHat,
+            visibility: visibility.agHat,
             cinsi: HatCinsi.YERALTI,
             data: filterHat(agHat, "cinsi", HatCinsi.YERALTI)
         }
-    }, [agHat, mapState.visibility.agHat]);
+    }, [agHat, visibility.agHat]);
     const ogHatYeralti = useMemo(() => {
         return {
             id: "og-hat-yeralti",
             color: COLORS.OG_HAT,
-            visibility: mapState.visibility.ogHat,
+            visibility: visibility.ogHat,
             cinsi: HatCinsi.YERALTI,
             data: filterHat(ogHat, "cinsi", HatCinsi.YERALTI)
         }
-    }, [ogHat, mapState.visibility.ogHat]);
+    }, [ogHat, visibility.ogHat]);
     const rekortmanYeralti = useMemo(() => {
         return {
             id: "rekortman-yeralti",
             color: COLORS.REKORTMAN,
-            visibility: mapState.visibility.rekortman,
+            visibility: visibility.rekortman,
             cinsi: HatCinsi.YERALTI,
             data: filterHat(rekortman, "tipi", HatCinsi.YERALTI)
         }
-    }, [rekortman, mapState.visibility.rekortman]);
+    }, [rekortman, visibility.rekortman]);
 
     return { hatLayerData: [agHatHavai, ogHatHavai, rekortmanHavai, agHatBara, ogHatBara, agHatYeralti, ogHatYeralti, rekortmanYeralti] };
 }

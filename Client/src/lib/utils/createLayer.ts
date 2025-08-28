@@ -72,13 +72,13 @@ export class CreateLayer {
 
     static Direk(
         id: string,
-        data: GeoJSON.FeatureCollection,
+        data: GeoJSON.Feature[],
         color: [number, number, number, number],
         visibility: boolean,
     ) {
         return new ColumnLayer({
             id: id,
-            data: data ? data.features : [],
+            data: data ? data : [],
             getPosition: d => d.geometry.coordinates,
             getElevation: d => d.properties.height,
             getFillColor: color,

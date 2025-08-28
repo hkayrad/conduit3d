@@ -11,10 +11,11 @@ export default function LayerControl() {
     const [isControlsOpen, setIsControlsOpen] = useState<boolean>(false);
 
     const dispatch = useDispatch();
-    const mapState = useAppSelector(selectMapState);
+    const { visibility, filters } = useAppSelector(selectMapState);
+
 
     const handleLayerToggle = (layer: keyof MapState["visibility"]) => {
-        const isVisible = mapState.visibility[layer];
+        const isVisible = visibility[layer];
         dispatch(setMapLayerVisibility({ layer, visible: !isVisible }));
     }
 
@@ -31,13 +32,13 @@ export default function LayerControl() {
                     <LayerControlDropdown
                         icon={<Building />}
                         name="Adr Bina"
-                        isLayerVisible={mapState.visibility.adrBina}
+                        isLayerVisible={visibility.adrBina}
                         toggleLayer={() => handleLayerToggle("adrBina")}
                     />
                     <LayerControlDropdown
                         icon={<Zap />}
                         name="Trafo"
-                        isLayerVisible={mapState.visibility.trafoBina}
+                        isLayerVisible={visibility.trafoBina}
                         toggleLayer={() => handleLayerToggle("trafoBina")}
                     />
                 </LayerControlSection>
@@ -45,19 +46,19 @@ export default function LayerControl() {
                     <LayerControlDropdown
                         icon={<UtilityPole />}
                         name="Ag Direk"
-                        isLayerVisible={mapState.visibility.agDirek}
+                        isLayerVisible={visibility.agDirek}
                         toggleLayer={() => handleLayerToggle("agDirek")}
                     />
                     <LayerControlDropdown
                         icon={<UtilityPole />}
                         name="Og Mus Direk"
-                        isLayerVisible={mapState.visibility.ogMusDirek}
+                        isLayerVisible={visibility.ogMusDirek}
                         toggleLayer={() => handleLayerToggle("ogMusDirek")}
                     />
                     <LayerControlDropdown
                         icon={<UtilityPole />}
                         name="Ayd Direk"
-                        isLayerVisible={mapState.visibility.aydDirek}
+                        isLayerVisible={visibility.aydDirek}
                         toggleLayer={() => handleLayerToggle("aydDirek")}
                     />
                 </LayerControlSection>
@@ -65,19 +66,19 @@ export default function LayerControl() {
                     <LayerControlDropdown
                         icon={<PlugZap />}
                         name="Ag Hat"
-                        isLayerVisible={mapState.visibility.agHat}
+                        isLayerVisible={visibility.agHat}
                         toggleLayer={() => handleLayerToggle("agHat")}
                     />
                     <LayerControlDropdown
                         icon={<PlugZap />}
                         name="Og Hat"
-                        isLayerVisible={mapState.visibility.ogHat}
+                        isLayerVisible={visibility.ogHat}
                         toggleLayer={() => handleLayerToggle("ogHat")}
                     />
                     <LayerControlDropdown
                         icon={<PlugZap />}
                         name="Rekortman"
-                        isLayerVisible={mapState.visibility.rekortman}
+                        isLayerVisible={visibility.rekortman}
                         toggleLayer={() => handleLayerToggle("rekortman")}
                     />
                 </LayerControlSection>
