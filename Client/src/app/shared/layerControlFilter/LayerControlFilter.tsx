@@ -1,0 +1,38 @@
+import type { MapState } from "../../layout/map/mapSlice";
+import "./style/layerControlFilter.css"
+
+type Props = {
+    label: string,
+    typeList: string[],
+    filters: string[],
+    filterKey: keyof MapState["filters"],
+    setFilters: (filters: string[], filterKey: keyof MapState["filters"]) => void
+}
+
+export default function LayerControlFilter(props: Props) {
+    const { label, typeList, filters, filterKey, setFilters } = props;
+
+    return (
+        <div className="layer-control-filter">
+            <h4>{label}</h4>
+            <div className="control-buttons">
+                {typeList.map((type) => (
+                    <button
+                        key={type}
+                        className={`filter-button ${filters.includes(type) ? 'active' : ''}`}
+                        onClick={() =>
+                            setFilters(
+                                filters.includes(type) ?
+                                    filters.filter(f => f !== type) :
+                                    [...filters, type],
+                                filterKey
+                            )
+                        }
+                    >
+                        {type}
+                    </button>
+                ))}
+            </div>
+        </div>
+    );
+}

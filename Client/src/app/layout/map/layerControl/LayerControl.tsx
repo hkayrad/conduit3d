@@ -1,22 +1,27 @@
 import { useState } from "react";
 import "./style/layerControl.css"
 import { Building, ChevronRight, Layers2, PlugZap, UtilityPole, Zap } from "lucide-react";
-import { selectMapState, setMapLayerVisibility, type MapState } from "../mapSlice";
+import { selectMapState, setFilter, setMapLayerVisibility, type MapState } from "../mapSlice";
 import { useAppSelector } from "../../../../lib/hooks/reduxHooks";
 import { useDispatch } from "react-redux";
 import LayerControlSection from "../../../shared/layerControlSection/LayerControlSection";
 import LayerControlDropdown from "../../../shared/layerControlDropdown/LayerControlDropdown";
+import LayerControlFilter from "../../../shared/layerControlFilter/LayerControlFilter";
 
 export default function LayerControl() {
     const [isControlsOpen, setIsControlsOpen] = useState<boolean>(false);
 
     const dispatch = useDispatch();
-    const { visibility, filters } = useAppSelector(selectMapState);
+    const { visibility, types, filters } = useAppSelector(selectMapState);
 
 
     const handleLayerToggle = (layer: keyof MapState["visibility"]) => {
         const isVisible = visibility[layer];
         dispatch(setMapLayerVisibility({ layer, visible: !isVisible }));
+    }
+
+    const handleFilterToggle = (newFilters: string[], filterKey: keyof MapState["filters"]) => {
+        dispatch(setFilter({ filter: filterKey, tipi: newFilters }))
     }
 
     return (
@@ -48,19 +53,43 @@ export default function LayerControl() {
                         name="Ag Direk"
                         isLayerVisible={visibility.agDirek}
                         toggleLayer={() => handleLayerToggle("agDirek")}
-                    />
+                    >
+                        <LayerControlFilter
+                            label="Type"
+                            typeList={types.agDirek}
+                            filters={filters.agDirek.tipi}
+                            filterKey="agDirek"
+                            setFilters={handleFilterToggle}
+                        />
+                    </LayerControlDropdown>
                     <LayerControlDropdown
                         icon={<UtilityPole />}
                         name="Og Mus Direk"
                         isLayerVisible={visibility.ogMusDirek}
                         toggleLayer={() => handleLayerToggle("ogMusDirek")}
-                    />
+                    >
+                        <LayerControlFilter
+                            label="Type"
+                            typeList={types.ogMusDirek}
+                            filters={filters.ogMusDirek.tipi}
+                            filterKey="ogMusDirek"
+                            setFilters={handleFilterToggle}
+                        />
+                    </LayerControlDropdown>
                     <LayerControlDropdown
                         icon={<UtilityPole />}
                         name="Ayd Direk"
                         isLayerVisible={visibility.aydDirek}
                         toggleLayer={() => handleLayerToggle("aydDirek")}
-                    />
+                    >
+                        <LayerControlFilter
+                            label="Type"
+                            typeList={types.aydDirek}
+                            filters={filters.aydDirek.tipi}
+                            filterKey="aydDirek"
+                            setFilters={handleFilterToggle}
+                        />
+                    </LayerControlDropdown>
                 </LayerControlSection>
                 <LayerControlSection title="lines">
                     <LayerControlDropdown

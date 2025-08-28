@@ -7,15 +7,16 @@ type Props = {
     name: string,
     isLayerVisible: boolean,
     toggleLayer: () => void,
+    children?: React.ReactNode
 }
 
 export default function LayerControlDropdown(props: Props) {
-    const { icon, name, isLayerVisible, toggleLayer } = props;
+    const { icon, name, isLayerVisible, toggleLayer, children } = props;
 
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <div className={`layer-control-dropdown ${isOpen ? "open" : "closed"}`} onClick={() => setIsOpen(!isOpen)}>
+        <div className={`layer-control-dropdown ${isOpen && children ? "open" : "closed"}`} onClick={() => setIsOpen(!isOpen)}>
             <div className="controller">
                 <div className="left">
                     {icon}
@@ -28,10 +29,16 @@ export default function LayerControlDropdown(props: Props) {
                     }}>
                         {isLayerVisible ? <Eye /> : <EyeClosed />}
                     </button>
-                    <ChevronDown className={isOpen ? "open" : "closed"} />
+                    {children && <ChevronDown className={isOpen && children ? "open" : "closed"} />}
                 </div>
             </div>
-            <div onClick={(e) => e.stopPropagation()} className={`content ${isOpen ? "open" : "closed"}`}></div>
+            {children &&
+                <div onClick={(e) => e.stopPropagation()} className={`content ${isOpen && children ? "open" : "closed"}`}>
+                    <div className="content-wrapper">
+                        {children}
+                    </div>
+                </div>
+            }
         </div>
     )
 }

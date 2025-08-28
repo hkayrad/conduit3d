@@ -2,7 +2,7 @@ import { useCallback, useEffect } from "react";
 import { OgMusDirekApi } from "../../../../../lib/api/poles";
 import type { Direk, Extent } from "../../../../../lib/types";
 import { useDispatch } from "react-redux";
-import { setFilter, setType } from "../../mapSlice";
+import { setType } from "../../mapSlice";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
@@ -48,7 +48,6 @@ export default function OgMusDirekComponent(props: Props) {
 
         if (response.isSuccess) {
             dispatch(setType({ key: "ogMusDirek", types: response.data }));
-            dispatch(setFilter({ filter: "ogMusDirek", tipi: response.data }));
         }
     }, []);
 

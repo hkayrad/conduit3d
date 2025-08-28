@@ -17,7 +17,9 @@ export default function useDirek(
                     id: `ag-direk-${type}`,
                     data: agDirek.features.filter(f => f.properties!.tipi === type),
                     color: COLORS.AG_DIREK,
-                    visibility: visibility.agDirek && filters.agDirek.tipi.includes(type),
+                    visibility:
+                        visibility.agDirek &&
+                        (filters.agDirek.tipi.includes(type) || filters.agDirek.tipi.length === 0),
                 }
             });
         else
@@ -30,7 +32,9 @@ export default function useDirek(
                     id: `og-mus-direk-${type}`,
                     data: ogMusDirek.features.filter(f => f.properties!.tipi === type),
                     color: COLORS.OG_MUS_DIREK,
-                    visibility: visibility.ogMusDirek && filters.ogMusDirek.tipi.includes(type),
+                    visibility:
+                        visibility.ogMusDirek &&
+                        (filters.ogMusDirek.tipi.includes(type) || filters.ogMusDirek.tipi.length === 0),
                 }
             });
         else
@@ -43,7 +47,9 @@ export default function useDirek(
                     id: `ayd-direk-${type}`,
                     data: aydDirek.features.filter(f => f.properties!.tipi === type),
                     color: COLORS.AYD_DIREK,
-                    visibility: visibility.aydDirek && filters.aydDirek.tipi.includes(type),
+                    visibility:
+                        visibility.aydDirek &&
+                        (filters.aydDirek.tipi.includes(type) || filters.aydDirek.tipi.length === 0),
                 }
             });
         else

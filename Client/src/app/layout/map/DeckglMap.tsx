@@ -74,6 +74,7 @@ export default function DeckglMap() {
 
     const layers: Layer[] = useMemo(() => [
         ...CreateLayer.LocalTiles(visibility.basemap),
+
         ...hatLayerData.map(hat =>
             CreateLayer.Hat(
                 `${hat.id}-layer`,
@@ -123,7 +124,7 @@ export default function DeckglMap() {
             diskResolution: 4,
             visible: visibility.trafoBina,
         })
-    ], [visibility, adrBina, trafoBina, agDirek, ogMusDirek, aydDirek, agHat, ogHat, rekortman, lineWidth]);
+    ], [filters, visibility, adrBina, trafoBina, agDirek, ogMusDirek, aydDirek, agHat, ogHat, rekortman, lineWidth]);
 
     const handleViewStateChange = useCallback((viewState: MapViewState) => {
         setMapViewState(viewState);

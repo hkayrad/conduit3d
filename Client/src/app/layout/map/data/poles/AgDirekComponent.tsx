@@ -48,7 +48,6 @@ export default function AgDirekComponent(props: Props) {
 
         if (response.isSuccess) {
             dispatch(setType({ key: "agDirek", types: response.data }));
-            dispatch(setFilter({ filter: "agDirek", tipi: response.data }));
         }
     }, []);
 
