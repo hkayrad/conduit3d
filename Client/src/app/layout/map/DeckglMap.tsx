@@ -21,6 +21,7 @@ import MousePosition from "./mousePosition/MousePosition"
 import Attribution from "./attribution/Attribution"
 import { useSearchParams } from "react-router"
 import { useDispatch } from "react-redux"
+import HoverCard from "./hoverCard/HoverCard"
 
 // const MAP_STYLE = "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
 // const MAP_STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
@@ -60,6 +61,7 @@ export default function DeckglMap() {
 
     const [hoveredFeature, setHoveredFeature] = useState<GeoJSON.Feature | null>(null);
 
+    const [mousePos, setMousePos] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
     const [mouseLonLat, setMouseLonLat] = useState<number[]>([0, 0]);
 
     const { hatLayerData } = useHat(
@@ -141,6 +143,7 @@ export default function DeckglMap() {
 
     const handleMouseMove = useCallback((info: PickingInfo) => {
         setHoveredFeature(info.object);
+        setMousePos({ x: info.x, y: info.y });
         setMouseLonLat(info.coordinate ? info.coordinate : [0, 0]);
     }, []);
 
@@ -215,6 +218,10 @@ export default function DeckglMap() {
             <div id="map-page">
                 <LayerControl />
                 <MousePosition mouseLonLat={mouseLonLat} />
+                <HoverCard
+                    hoveredFeature={hoveredFeature}
+                    mousePos={mousePos}
+                />
                 <Attribution />
                 <DeckGL
                     controller

@@ -3,6 +3,7 @@ import { OgMusDirekApi } from "../../../../../lib/api/poles";
 import type { Direk, Extent } from "../../../../../lib/types";
 import { useDispatch } from "react-redux";
 import { setType } from "../../mapSlice";
+import { DataType } from "../../../../../lib/enums";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
@@ -30,9 +31,11 @@ export default function OgMusDirekComponent(props: Props) {
                     geometry: JSON.parse(rawData.geoJson),
                     properties: {
                         id: rawData.id,
+                        dataType: DataType.POLE,
                         cinsi: rawData.cinsi,
                         tipi: rawData.tipi,
                         direkNo: rawData.direkNo,
+                        boyOzellik: rawData.boyOzellik,
                         height: Number.isNaN(height) ? 10 : height,
                     }
                 } as GeoJSON.Feature;

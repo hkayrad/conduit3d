@@ -4,6 +4,7 @@ import type { Extent, Rekortman } from "../../../../../lib/types";
 import { lineStringToSegments } from "../../../../../lib/utils/lineStringToSegments";
 import { useDispatch } from "react-redux";
 import { setType } from "../../mapSlice";
+import { DataType } from "../../../../../lib/enums";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
@@ -31,6 +32,7 @@ export default function RekortmanComponent(props: Props) {
                     geometry: JSON.parse(rawData.geoJson),
                     properties: {
                         id: rawData.id,
+                        dataType: DataType.REKORTMAN,
                         tipi: rawData.tipi,
                         kesit: rawData.kesit
                     }

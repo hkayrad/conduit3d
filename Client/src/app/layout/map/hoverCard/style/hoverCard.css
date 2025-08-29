@@ -1,0 +1,84 @@
+@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Lexend", sans-serif;
+  font-size: 16px;
+}
+
+.lucide {
+  width: 16px;
+  height: 16px;
+}
+
+.error {
+  color: #D32F2F !important;
+}
+
+.warning {
+  color: #FFC107 !important;
+}
+
+.success {
+  color: #4CAF50 !important;
+}
+
+.shadow {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+#hover-card {
+  position: absolute;
+  z-index: 1000;
+  background: #2B2D42;
+  color: #FFFFFF;
+  padding: 12px;
+  border-radius: 8px;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+#hover-card.hidden {
+  display: none;
+}
+#hover-card.visible {
+  display: flex !important;
+}
+#hover-card #content {
+  display: flex;
+  flex-direction: column;
+  min-width: -moz-fit-content;
+  min-width: fit-content;
+  gap: 4px;
+}
+#hover-card #content h3 {
+  min-width: -moz-fit-content;
+  min-width: fit-content;
+  margin: 0;
+  font-size: 14px;
+  gap: 4px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+#hover-card #content h3 span {
+  text-transform: uppercase;
+}
+#hover-card #content #divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.3);
+  margin: 4px 0;
+}
+#hover-card #content p {
+  min-width: -moz-fit-content;
+  min-width: fit-content;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  flex-wrap: nowrap;
+  word-wrap: normal;
+  text-wrap-mode: nowrap;
+}
+#hover-card #content span {
+  text-transform: capitalize;
+}/*# sourceMappingURL=hoverCard.css.map */

@@ -4,6 +4,7 @@ import { lineStringToSegments } from "../../../../../lib/utils/lineStringToSegme
 import { setType } from "../../mapSlice";
 import { useDispatch } from "react-redux";
 import { AgHatApi } from "../../../../../lib/api/lines";
+import { DataType } from "../../../../../lib/enums";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>
@@ -32,6 +33,7 @@ export default function AgHatComponent(props: Props) {
                     geometry: JSON.parse(rawData.geoJson),
                     properties: {
                         id: rawData.id,
+                        dataType: DataType.LINE,
                         cinsi: rawData.cinsi,
                         tipi: rawData.tipi,
                         kesit: rawData.kesit

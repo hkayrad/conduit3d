@@ -9,4 +9,12 @@ enum HatCinsi {
     YERALTI = "YERALTI"
 }
 
-export { UserRoles, HatCinsi }
+enum DataType {
+    BUILDING = "building",
+    TRAFO = "trafo",
+    POLE = "pole",
+    LINE = "line",
+    REKORTMAN = "rekortman"
+}
+
+export { UserRoles, HatCinsi, DataType }
