@@ -63,7 +63,11 @@
   padding: 0px 8px;
   text-wrap-mode: nowrap;
 }
-.feature-info-popup .header button {
+.feature-info-popup .header .dragger-buttons {
+  display: flex;
+  flex-direction: row;
+}
+.feature-info-popup .header .dragger-buttons button {
   display: flex;
   align-items: center;
   background: none;
@@ -72,7 +76,10 @@
   padding: 8px 8px;
   color: #EEEEEE;
 }
-.feature-info-popup .header button:hover {
+.feature-info-popup .header .dragger-buttons button:hover {
+  background-color: #4B4E73;
+}
+.feature-info-popup .header .dragger-buttons button:last-child {
   background-color: #D32F2F;
 }
 .feature-info-popup .content {

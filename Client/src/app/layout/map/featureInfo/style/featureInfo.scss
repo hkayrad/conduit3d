@@ -37,19 +37,29 @@
             text-wrap-mode: nowrap;
         }
 
-        button {
+        .dragger-buttons {
             display: flex;
-            align-items: center;
-            background: none;
-            border: none;
-            height: auto;
-            padding: 8px 8px;
-            color: global.$off-white;
+            flex-direction: row;
 
-            &:hover {
-                background-color: global.$error;
+            button {
+                display: flex;
+                align-items: center;
+                background: none;
+                border: none;
+                height: auto;
+                padding: 8px 8px;
+                color: global.$off-white;
+
+                &:hover {
+                    background-color: global.$primary-lighter;
+                }
+
+                &:last-child {
+                    background-color: global.$error;
+                }
             }
         }
+
     }
 
     .content {

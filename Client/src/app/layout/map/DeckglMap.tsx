@@ -8,7 +8,7 @@ import { CompassWidget, ZoomWidget } from "@deck.gl/widgets";
 import { Map as MapLibre } from 'react-map-gl/maplibre';
 import { useAppSelector } from "../../../lib/hooks/reduxHooks"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Layer, MapView, WebMercatorViewport, type MapViewState, type PickingInfo } from "@deck.gl/core";
+import { FlyToInterpolator, Layer, MapView, WebMercatorViewport, type MapViewState, type PickingInfo } from "@deck.gl/core";
 import { selectMapState, setExtent, setViewState } from "./mapSlice";
 import LayerControl from "./layerControl/LayerControl";
 import { ColumnLayer, GeoJsonLayer } from "deck.gl"
@@ -23,6 +23,9 @@ import { useSearchParams } from "react-router"
 import { useDispatch } from "react-redux"
 import HoverCard from "./hoverCard/HoverCard"
 import FeatureInfo from "./featureInfo/FeatureInfo"
+import { easeInOutCubic } from "../../../lib/utils/easeInOutCubic"
+import { bbox } from "@turf/turf";
+import { DataType } from "../../../lib/enums"
 
 // const MAP_STYLE = "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
 // const MAP_STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
@@ -145,6 +148,33 @@ export default function DeckglMap() {
             visible: visibility.trafoBina,
         })
     ], [filters, visibility, adrBina, trafoBina, agDirek, ogMusDirek, aydDirek, agHat, ogHat, rekortman, lineWidth]);
+
+    const flyToFeature = useCallback((feature: GeoJSON.Feature) => {
+        if (!feature) return;
+
+        const [minLng, minLat, maxLng, maxLat] = bbox(feature);
+
+        const { longitude, latitude, zoom } = new WebMercatorViewport(mapViewState).fitBounds(
+            [[minLng, minLat], [maxLng, maxLat]],
+            {
+                padding: 300
+            }
+        );
+
+        const zoomLevel = feature.properties!.dataType === DataType.POLE ? 20 :
+            feature.properties!.dataType === DataType.TRAFO ? 23 :
+                feature.properties!.dataType === DataType.LINE || feature.properties!.dataType === DataType.REKORTMAN ? 20 : zoom;
+
+        setMapViewState({
+            ...mapViewState,
+            longitude,
+            latitude,
+            zoom: zoomLevel,
+            transitionInterpolator: new FlyToInterpolator({ speed: 2 }),
+            transitionDuration: 2000,
+            transitionEasing: t => easeInOutCubic(t),
+        })
+    }, [mapViewState])
 
     const handleViewStateChange = useCallback((viewState: MapViewState) => {
         setMapViewState(viewState);
@@ -272,6 +302,7 @@ export default function DeckglMap() {
                         zIndex={popup.zIndex}
                         onFocus={() => handleFocusPopup(popup.id)}
                         onClose={() => handleClosePopup(popup.id)}
+                        onFlyTo={() => flyToFeature(popup.info.object)}
                     />
                 ))}
                 <LayerControl />

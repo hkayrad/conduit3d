@@ -1,4 +1,4 @@
-import { LucideX } from "lucide-react";
+import { LucideArrowRight, LucideX } from "lucide-react";
 import "./style/featureInfo.css"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { DataType } from "../../../../lib/enums";
@@ -10,10 +10,11 @@ type Props = {
     zIndex: number;
     onClose: () => void;
     onFocus: () => void;
+    onFlyTo: () => void;
 };
 
 export default function FeatureInfo(props: Props) {
-    const { info, zIndex, onClose, onFocus } = props;
+    const { info, zIndex, onClose, onFocus, onFlyTo } = props;
     const { object, x, y } = info;
     const { properties } = object || {};
 
@@ -128,7 +129,10 @@ export default function FeatureInfo(props: Props) {
         >
             <div className="header" onMouseDown={onMouseDown} style={{ cursor: isDragging ? "grabbing" : "grab" }}>
                 <p>Feature Details: {properties!.id}</p>
-                <button onClick={onClose}><LucideX /></button>
+                <div className="dragger-buttons">
+                    <button onClick={onFlyTo}><LucideArrowRight /></button>
+                    <button onClick={onClose}><LucideX /></button>
+                </div>
             </div>
             <div className="content">
                 {content}
