@@ -7,7 +7,7 @@ import { DeckGL } from "@deck.gl/react"
 import { CompassWidget, ZoomWidget } from "@deck.gl/widgets";
 import { Map as MapLibre } from 'react-map-gl/maplibre';
 import { useAppSelector } from "../../../lib/hooks/reduxHooks"
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Layer, MapView, WebMercatorViewport, type MapViewState, type PickingInfo } from "@deck.gl/core";
 import { selectMapState, setExtent, setViewState } from "./mapSlice";
 import LayerControl from "./layerControl/LayerControl";
@@ -22,6 +22,7 @@ import Attribution from "./attribution/Attribution"
 import { useSearchParams } from "react-router"
 import { useDispatch } from "react-redux"
 import HoverCard from "./hoverCard/HoverCard"
+import FeatureInfo from "./featureInfo/FeatureInfo"
 
 // const MAP_STYLE = "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
 // const MAP_STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
@@ -31,6 +32,12 @@ import HoverCard from "./hoverCard/HoverCard"
 // const MAP_STYLE = "https://tiles.openfreemap.org/styles/liberty"
 
 const DEBOUNCE_TIME_MS = 500;
+
+type PopupState = {
+    id: string;
+    info: PickingInfo;
+    zIndex: number;
+}
 
 export default function DeckglMap() {
     const dispatch = useDispatch();
@@ -60,6 +67,9 @@ export default function DeckglMap() {
     const [rekortman, setRekortman] = useState<GeoJSON.FeatureCollection>(null!);
 
     const [hoveredFeature, setHoveredFeature] = useState<GeoJSON.Feature | null>(null);
+
+    const [activePopups, setActivePopups] = useState<PopupState[]>([]);
+    const zIndexCounter = useRef(1000);
 
     const [mousePos, setMousePos] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
     const [mouseLonLat, setMouseLonLat] = useState<number[]>([0, 0]);
@@ -147,8 +157,47 @@ export default function DeckglMap() {
         setMouseLonLat(info.coordinate ? info.coordinate : [0, 0]);
     }, []);
 
-    const onClick = useCallback((info: PickingInfo, event: any) => {
-        console.log('Clicked:', info, event);
+    const handleClick = useCallback((info: PickingInfo) => {
+        if (info.object) {
+            const id = Math.random().toString(36).substring(2, 9);
+            zIndexCounter.current += 1;
+            const newPopup: PopupState = {
+                id: `popup-${id}`,
+                info: info,
+                zIndex: zIndexCounter.current
+            };
+            setActivePopups(prev => [...prev, newPopup]);
+        }
+    }, []);
+
+    const handleClosePopup = useCallback((id: string) => {
+        setActivePopups(prev => prev.filter(popup => popup.id !== id));
+    }, []);
+
+    const handleFocusPopup = useCallback((id: string) => {
+        const maxZIndex = Math.max(...activePopups.map(p => p.zIndex));
+        const focusedPopup = activePopups.find(p => p.id === id);
+
+        // Only update if the focused popup is not already on top
+        if (focusedPopup && focusedPopup.zIndex < maxZIndex) {
+            zIndexCounter.current += 1;
+            setActivePopups(prev =>
+                prev.map(p =>
+                    p.id === id ? { ...p, zIndex: zIndexCounter.current } : p
+                )
+            );
+        }
+    }, [activePopups]);
+
+    const handleKeyPresses = useCallback((e: KeyboardEvent) => {
+        if (e.key === "Delete" && e.ctrlKey) {
+            e.preventDefault();
+            setActivePopups([]);
+        }
+    }, [])
+
+    useEffect(() => {
+        document.addEventListener("keypress", (e) => handleKeyPresses(e));
     }, []);
 
     useEffect(() => {
@@ -216,6 +265,15 @@ export default function DeckglMap() {
                 setRekortman={setRekortman}
             />
             <div id="map-page">
+                {activePopups.map(popup => (
+                    <FeatureInfo
+                        key={popup.id}
+                        info={popup.info}
+                        zIndex={popup.zIndex}
+                        onFocus={() => handleFocusPopup(popup.id)}
+                        onClose={() => handleClosePopup(popup.id)}
+                    />
+                ))}
                 <LayerControl />
                 <MousePosition mouseLonLat={mouseLonLat} />
                 <HoverCard
@@ -230,8 +288,8 @@ export default function DeckglMap() {
                     onViewStateChange={(e) => handleViewStateChange(e.viewState as MapViewState)}
                     layers={layers}
                     widgets={[new ZoomWidget(), new CompassWidget({})]}
-                    onClick={onClick}
-                    onHover={info => handleMouseMove(info)}
+                    onClick={handleClick}
+                    onHover={handleMouseMove}
                 >
                     <MapLibre
                         reuseMaps

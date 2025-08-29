@@ -1,0 +1,61 @@
+@use "../../../../../global.scss";
+
+.feature-info-popup {
+    position: absolute;
+    background: global.$primary;
+    color: global.$white;
+    // left: 0;
+    // top: 200px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    border-radius: 8px;
+    // z-index: 2;
+    overflow: hidden;
+
+    &.active {
+        left: 0;
+    }
+
+    .header {
+        width: 100%;
+        display: flex;
+        flex-grow: 1;
+        flex-direction: row;
+        align-items: center;
+        justify-content: stretch;
+        background: global.$primary;
+        color: global.$off-white;
+        border-bottom: 1px solid global.$primary-lighter;
+        user-select: none;
+
+        p {
+            width: 100%;
+            display: flex;
+            padding: 0px 8px;
+            text-wrap-mode: nowrap;
+        }
+
+        button {
+            display: flex;
+            align-items: center;
+            background: none;
+            border: none;
+            height: auto;
+            padding: 8px 8px;
+            color: global.$off-white;
+
+            &:hover {
+                background-color: global.$error;
+            }
+        }
+    }
+
+    .content {
+        display: flex;
+        flex-direction: column;
+        padding: 8px;
+        gap: 4px;
+    }
+}

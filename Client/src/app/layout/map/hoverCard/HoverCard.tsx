@@ -3,6 +3,7 @@ import "./style/hoverCard.css";
 import { DataType } from "../../../../lib/enums";
 import { selectIsHoverInfoVisible } from "../mapSlice";
 import { useSelector } from "react-redux";
+import { renderField } from "../../../../lib/utils/renderInfoField";
 
 type Props = {
     mousePos: { x: number, y: number };
@@ -22,15 +23,6 @@ type FeatureProperties = {
     boyOzellik?: string;
     kesit?: string;
 }
-
-const renderField = (label: string, value: string | number | undefined, capitalize = false) => {
-    if (!value) return null;
-    return (
-        <p key={label}>
-            {label}: <span className={capitalize ? "capitalize" : ""}>{value}</span>
-        </p>
-    );
-};
 
 export default function HoverCard(props: Props) {
     const { hoveredFeature, mousePos } = props;
