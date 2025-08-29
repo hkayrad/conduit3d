@@ -34,7 +34,7 @@ export default function Input(props: Props) {
                 />
             </label>
             {type === "password" &&
-                <button id="toggle-password" onClick={() => setIsPasswordVisible(!isPasswordVisible)}>
+                <button id="toggle-password" type="button" onClick={() => setIsPasswordVisible(!isPasswordVisible)}>
                     {isPasswordVisible ? <EyeOff /> : <Eye />}
                 </button>
             }

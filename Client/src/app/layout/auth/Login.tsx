@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import { clearUser, setUser } from "./authSlice";
 
 export default function Login() {
+
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [loginError, setLoginError] = useState<string | null>("");
@@ -21,7 +22,9 @@ export default function Login() {
 
     const navigate = useNavigate();
 
-    const handleLogin = async () => {
+    const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
         setLoading(true);
         const user: LoginUserDto = { username, password };
 
@@ -69,7 +72,7 @@ export default function Login() {
             </div>
             <h2 id="welcome">Welcome</h2>
             <p id="instructions">Use credentials given by your system administrator</p>
-            <div id="login-form">
+            <form onSubmit={handleLogin} id="login-form">
                 <Input
                     id="username"
                     label="Username"
@@ -87,11 +90,11 @@ export default function Login() {
                     state={password}
                     setState={setPassword}
                     required />
-                <button className="shadow" id="login-button" onClick={handleLogin} disabled={loading}>
+                <button className="shadow" id="login-button" type="submit" disabled={loading}>
                     {loading ? <Loader id="loader" /> : <LogIn />}
                     {loading ? "Loading..." : "Login"}
                 </button>
-            </div>
+            </form>
             <p className={`shadow ${loginError ? "visible" : ""}`} id="login-error">
                 <ShieldX />
                 {loginError}
