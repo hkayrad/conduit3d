@@ -30,7 +30,6 @@
 
 #header {
   width: 100vw;
-  height: 64px;
   position: fixed;
   top: 0;
   left: 0;
@@ -42,6 +41,10 @@
 #header #logo-container {
   background-color: #FFFFFF;
   border-radius: 0 0 12px 0;
+  padding: 4px 0;
+}
+#header #logo-container #logo {
+  height: 48px;
 }
 #header #actions {
   display: flex;

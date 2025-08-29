@@ -30,7 +30,7 @@
 
 #layer-control-toggle {
   position: absolute;
-  top: 80px;
+  top: 76px;
   right: 16px;
   z-index: 1;
   transition: all 0.3s ease;
@@ -53,7 +53,7 @@
 .layer-control-content {
   z-index: 1;
   position: absolute;
-  top: 80px;
+  top: 76px;
   right: -320px;
   width: 304px;
   transition: all 0.3s ease;

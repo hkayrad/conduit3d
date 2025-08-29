@@ -2,7 +2,6 @@
 
 #header {
     width: 100vw;
-    height: 64px;
     position: fixed;
     top: 0;
     left: 0;
@@ -14,6 +13,11 @@
     #logo-container {
         background-color: global.$white;
         border-radius: 0 0 12px 0;
+        padding: 4px 0;
+
+        #logo {
+            height: 48px;
+        }
     }
 
     #actions {
