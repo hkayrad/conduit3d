@@ -1,19 +1,24 @@
 import "./style/layerControl.css"
-import { Building, ChevronRight, Layers2, PlugZap, UtilityPole, Zap } from "lucide-react";
-import { selectMapState, setFilter, setIsLayerControlsOpen, setMapLayerVisibility, type MapState } from "../mapSlice";
+import { Building, ChevronRight, Eye, EyeClosed, Layers2, PlugZap, UtilityPole, Zap } from "lucide-react";
+import { selectMapState, setFilter, setIsHoverInfoVisible, setIsLayerControlsOpen, setMapLayerVisibility, type MapState } from "../mapSlice";
 import { useAppSelector } from "../../../../lib/hooks/reduxHooks";
 import { useDispatch } from "react-redux";
-import LayerControlSection from "../../../shared/layerControlSection/LayerControlSection";
-import LayerControlDropdown from "../../../shared/layerControlDropdown/LayerControlDropdown";
-import LayerControlFilter from "../../../shared/layerControlFilter/LayerControlFilter";
+import LayerControlSection from "../../../shared/layerControl/layerControlSection/LayerControlSection";
+import LayerControlDropdown from "../../../shared/layerControl/layerControlDropdown/LayerControlDropdown";
+import LayerControlFilter from "../../../shared/layerControl/layerControlFilter/LayerControlFilter";
+import SettingToggleButton from "../../../shared/layerControl/settingToggleButton/SettingToggleButton";
 
 export default function LayerControl() {
 
     const dispatch = useDispatch();
-    const { isLayerControlsOpen, visibility, types, filters } = useAppSelector(selectMapState);
+    const { isLayerControlsOpen, isHoverInfoVisible, visibility, types, filters } = useAppSelector(selectMapState);
 
     const handleControlsToggle = () => {
         dispatch(setIsLayerControlsOpen(!isLayerControlsOpen));
+    }
+
+    const handleHoverInfoToggle = (state: boolean) => {
+        dispatch(setIsHoverInfoVisible(state));
     }
 
     const handleLayerToggle = (layer: keyof MapState["visibility"]) => {
@@ -34,6 +39,14 @@ export default function LayerControl() {
                 {isLayerControlsOpen ? <ChevronRight /> : <Layers2 />}
             </button>
             <div className={`layer-control-content shadow ${isLayerControlsOpen ? "open" : "closed"}`}>
+                <LayerControlSection title="hover info">
+                    <SettingToggleButton
+                        active={isHoverInfoVisible}
+                        toggle={handleHoverInfoToggle}
+                        hideLabel={<><EyeClosed /> Hide</>}
+                        showLabel={<><Eye /> Show</>}
+                    />
+                </LayerControlSection>
                 <LayerControlSection title="buildings">
                     <LayerControlDropdown
                         icon={<Building />}

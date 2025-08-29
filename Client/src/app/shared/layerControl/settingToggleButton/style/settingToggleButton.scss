@@ -1,0 +1,28 @@
+@use "../../../../../global.scss";
+
+.layer-control-toggle-switch {
+    display: flex;
+    flex-direction: row;
+    justify-content: stretch;
+    background-color: global.$primary-light;
+    padding: 4px;
+    gap: 4px;
+    border-radius: 8px;
+
+    .toggle-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        background: none;
+        border: none;
+        border-radius: 4px;
+        color: global.$white;
+        padding: 8px;
+        width: 100%;
+
+        &.active {
+            background: global.$primary-lighter;
+        }
+    }
+}

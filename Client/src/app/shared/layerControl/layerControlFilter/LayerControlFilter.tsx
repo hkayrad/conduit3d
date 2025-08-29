@@ -1,5 +1,5 @@
 import { Circle, CircleCheck } from "lucide-react";
-import type { MapState } from "../../layout/map/mapSlice";
+import type { MapState } from "../../../layout/map/mapSlice";
 import "./style/layerControlFilter.css"
 
 type Props = {

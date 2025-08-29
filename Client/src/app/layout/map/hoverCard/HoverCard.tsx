@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef } from "react";
 import "./style/hoverCard.css";
 import { DataType } from "../../../../lib/enums";
+import { selectIsHoverInfoVisible } from "../mapSlice";
+import { useSelector } from "react-redux";
 
 type Props = {
     mousePos: { x: number, y: number };
@@ -34,6 +36,8 @@ export default function HoverCard(props: Props) {
     const { hoveredFeature, mousePos } = props;
 
     const hoverCardRef = useRef<HTMLDivElement>(null);
+
+    const isHoverInfoVisible = useSelector(selectIsHoverInfoVisible);
 
     useEffect(() => {
         if (hoverCardRef.current) {
@@ -116,7 +120,7 @@ export default function HoverCard(props: Props) {
     return (
         <div
             ref={hoverCardRef}
-            className={`${hoveredFeature ? "visible" : "hidden"}`}
+            className={`${hoveredFeature && isHoverInfoVisible ? "visible" : "hidden"}`}
             id="hover-card">
             {hoveredFeature && (
                 <div id="content">
