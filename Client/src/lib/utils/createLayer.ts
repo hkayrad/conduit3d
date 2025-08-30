@@ -7,12 +7,12 @@ export class CreateLayer {
     static LocalTiles(
         visibility: boolean
     ) {
-        return ["eskisehir", "erzurum"].map(city =>
+        return ["turkey", "eskisehir", "erzurum"].map(city =>
             new TileLayer<ImageBitmap>({
                 id: `${city}-basemap`,
                 data: [`http://localhost:3001/${city}/{z}/{x}/{y}`],
                 minZoom: 0,
-                maxZoom: 18,
+                maxZoom: city === "turkey" ? 12 : 18,
                 tileSize: 256,
                 zoomOffset: devicePixelRatio === 1 ? -1 : 0,
                 renderSubLayers: props => {
