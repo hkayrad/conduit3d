@@ -79,7 +79,7 @@
 .feature-info-popup .header .dragger-buttons button:hover {
   background-color: #4B4E73;
 }
-.feature-info-popup .header .dragger-buttons button:last-child {
+.feature-info-popup .header .dragger-buttons button:last-child:hover {
   background-color: #D32F2F;
 }
 .feature-info-popup .content {

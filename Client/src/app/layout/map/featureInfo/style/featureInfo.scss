@@ -55,7 +55,9 @@
                 }
 
                 &:last-child {
-                    background-color: global.$error;
+                    &:hover {
+                        background-color: global.$error;
+                    }
                 }
             }
         }
