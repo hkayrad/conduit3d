@@ -37,6 +37,8 @@
   border-radius: 8px;
   width: -moz-fit-content;
   width: fit-content;
+  left: -9999px;
+  top: -9999px;
 }
 #hover-card.hidden {
   display: none;

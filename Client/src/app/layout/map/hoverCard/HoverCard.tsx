@@ -32,23 +32,36 @@ export default function HoverCard(props: Props) {
     const isHoverInfoVisible = useSelector(selectIsHoverInfoVisible);
 
     useEffect(() => {
-        if (hoverCardRef.current) {
+        if (hoverCardRef.current && hoveredFeature) {
             const card = hoverCardRef.current;
-            const cardRect = card.getBoundingClientRect();
 
-            let left = mousePos.x + 10;
-            let top = mousePos.y + 10;
+            // Use requestAnimationFrame to ensure the card has rendered
+            requestAnimationFrame(() => {
+                const cardRect = card.getBoundingClientRect();
 
-            // Adjust position if card would overflow viewport
-            if (left + cardRect.width > window.innerWidth) {
-                left = mousePos.x - cardRect.width - 10;
-            }
-            if (top + cardRect.height > window.innerHeight) {
-                top = mousePos.y - cardRect.height - 10;
-            }
+                // Only proceed if we have valid dimensions
+                if (cardRect.width === 0 || cardRect.height === 0) {
+                    return;
+                }
 
-            card.style.left = `${left}px`;
-            card.style.top = `${top}px`;
+                let left = mousePos.x + 10;
+                let top = mousePos.y + 10;
+
+                // Adjust position if card would overflow viewport
+                if (left + cardRect.width > window.innerWidth) {
+                    left = mousePos.x - cardRect.width - 10;
+                }
+                if (top + cardRect.height > window.innerHeight) {
+                    top = mousePos.y - cardRect.height - 10;
+                }
+
+                // Ensure coordinates are never negative or NaN
+                left = Math.max(0, left || 0);
+                top = Math.max(0, top || 0);
+
+                card.style.left = `${left}px`;
+                card.style.top = `${top}px`;
+            });
         }
     }, [mousePos, hoveredFeature]);
 

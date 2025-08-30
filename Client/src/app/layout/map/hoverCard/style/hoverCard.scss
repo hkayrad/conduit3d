@@ -8,6 +8,8 @@
     padding: 12px;
     border-radius: 8px;
     width: fit-content;
+    left: -9999px;
+    top: -9999px;
 
     &.hidden {
         display: none;
