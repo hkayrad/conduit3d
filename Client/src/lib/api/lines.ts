@@ -40,7 +40,7 @@ export class AgHatApi {
 export class OgHatApi {
     /**
      * Fetch all OG Hat features within the specified extent.
-     * @param extent The geographical extent to filter the features.
+     * @param {Extent} extent The geographical extent to filter the features.
      * @returns A promise that resolves to the list of OG Hat features.
      */
     static async fetchAll(extent: Extent) {
@@ -73,7 +73,7 @@ export class OgHatApi {
 export class RekortmanApi {
     /**
      * Fetch all Rekortman features within the specified extent.
-     * @param extent The geographical extent to filter the features.
+     * @param {Extent} extent The geographical extent to filter the features.
      * @returns A promise that resolves to the list of Rekortman features.
      */
     static async fetchAll(extent: Extent) {

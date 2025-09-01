@@ -7,7 +7,7 @@ import type { ApiResponse, Direk, Extent } from "../types";
 export class AgDirekApi {
     /**
      * Fetch all AG Direk features within the specified extent.
-     * @param extent The geographical extent to filter the features.
+     * @param {Extent} extent The geographical extent to filter the features.
      * @returns A promise that resolves to the list of AG Direk features.
      */
     static async fetchAll(extent: Extent) {
@@ -35,7 +35,7 @@ export class AgDirekApi {
 export class OgMusDirekApi {
     /**
      * Fetch all OG Mus Direk features within the specified extent.
-     * @param extent The geographical extent to filter the features.
+     * @param {Extent} extent The geographical extent to filter the features.
      * @returns A promise that resolves to the list of OG Mus Direk features.
      */
     static async fetchAll(extent: Extent) {
@@ -63,7 +63,7 @@ export class OgMusDirekApi {
 export class AydDirekApi {
     /**
      * Fetch all Ayd Direk features within the specified extent.
-     * @param extent The geographical extent to filter the features.
+     * @param {Extent} extent The geographical extent to filter the features.
      * @returns A promise that resolves to the list of Ayd Direk features.
      */
     static async fetchAll(extent: Extent) {

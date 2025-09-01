@@ -9,7 +9,7 @@ export class AuthApi {
 
     /**
      * Login a user.
-     * @param user The user credentials.
+     * @param {LoginUserDto} user The user credentials.
      * @returns The logged-in user data.
      */
     static async login(user: LoginUserDto) {

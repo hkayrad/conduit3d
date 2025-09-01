@@ -7,7 +7,7 @@ import type { AdrBina, ApiResponse, Extent, TrafoBina } from "../types";
 export class AdrBinaApi {
     /**
      * Fetch all ADR buildings within the specified extent.
-     * @param extent The geographical extent to filter the buildings.
+     * @param {Extent} extent The geographical extent to filter the buildings.
      * @returns A promise that resolves to the list of ADR buildings.
      */
     static async fetchAll(extent: Extent) {
@@ -26,7 +26,7 @@ export class AdrBinaApi {
 export class TrafoBinaApi {
     /**
      * Fetch all transformer stations within the specified extent.
-     * @param extent The geographical extent to filter the buildings.
+     * @param {Extent} extent The geographical extent to filter the buildings.
      * @returns A promise that resolves to the list of transformer stations.
      */
     static async fetchAll(extent: Extent) {
