@@ -2,6 +2,7 @@ services:
   auth_database:
     image: postgres:17
     container_name: auth_database
+    # Remove the ports section when deploying
     ports:
       - "6000:5432"
     environment:
@@ -17,6 +18,7 @@ services:
   buildings_database:
     image: postgis/postgis:17-master
     container_name: buildings_database
+    # Remove the ports section when deploying
     ports:
       - "6001:5432"
     environment:
@@ -32,6 +34,7 @@ services:
   poles_database:
     image: postgis/postgis:17-master
     container_name: poles_database
+    # Remove the ports section when deploying
     ports:
       - "6002:5432"
     environment:
@@ -47,6 +50,7 @@ services:
   lines_database:
     image: postgis/postgis:17-master
     container_name: lines_database
+    # Remove the ports section when deploying
     ports:
       - "6003:5432"
     environment:
@@ -151,7 +155,6 @@ services:
       - poles_service
     volumes:
       - ./ApiGateway/Caddyfile:/etc/caddy/Caddyfile
-      - ./ApiGateway/grug.png:/usr/share/caddy/grug.png
       - ./ApiGateway/default.html:/usr/share/caddy/default.html
       - ./ApiGateway/docs.html:/usr/share/caddy/docs.html
       - ./ApiGateway/localhost.pem:/usr/share/caddy/localhost.pem
@@ -160,8 +163,10 @@ services:
     restart: unless-stopped
 
 networks:
+  # Service - Database connection network
   gis_db_connection:
     driver: bridge
+  # Api Gateway - Service connection network
   api_gateway_network:
     driver: bridge
 
