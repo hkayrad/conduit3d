@@ -4,10 +4,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LinesService.Infrastructure.Data;
 
+/// <summary>
+/// Database context for managing line-related data.
+/// </summary>
+/// <param name="options">DbContext options.</param>
 public class LinesContext(DbContextOptions options) : DbContext(options)
 {
+    /// <summary>
+    /// DbSet for SBK_AGHAT entities
+    /// </summary>
     public DbSet<AgHat> AgHatlar { get; set; }
+
+    /// <summary>
+    /// DbSet for SBK_OGHAT entities
+    /// </summary>
     public DbSet<OgHat> OgHatlar { get; set; }
+
+    /// <summary>
+    /// DbSet for SBK_REKORTMAN entities
+    /// </summary>
     public DbSet<Rekortman> Rekortmanlar { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

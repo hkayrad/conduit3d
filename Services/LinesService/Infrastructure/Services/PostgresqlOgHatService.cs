@@ -6,10 +6,18 @@ using Npgsql;
 
 namespace LinesService.Infrastructure.Services;
 
+/// <summary>
+/// PostgreSQL implementation of <see cref="IOgHatService"/> for managing OG_HAT entities.
+/// </summary>
+/// <param name="unitOfWork">Unit of work for managing database operations.</param>
 public class PostgresqlOgHatService(IUnitOfWork unitOfWork) : IOgHatService
 {
+    /// <summary>
+    /// Unit of work for managing database operations.
+    /// </summary>
     private readonly IUnitOfWork _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 
+    /// <inheritdoc />
     public async Task<Response<List<OgHat>>> GetAllAsync(int pageNumber,
                                                         int pageSize,
                                                         string sortBy,
@@ -63,6 +71,7 @@ public class PostgresqlOgHatService(IUnitOfWork unitOfWork) : IOgHatService
         }
     }
 
+    /// <inheritdoc />
     public async Task<Response<OgHat>> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         if (id <= 0)
@@ -87,6 +96,7 @@ public class PostgresqlOgHatService(IUnitOfWork unitOfWork) : IOgHatService
         }
     }
 
+    /// <inheritdoc />
     public async Task<Response<int>> GetCountAsync(Extent? extent, CancellationToken cancellationToken)
     {
         extent ??= new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
@@ -114,6 +124,7 @@ public class PostgresqlOgHatService(IUnitOfWork unitOfWork) : IOgHatService
         }
     }
 
+    /// <inheritdoc />
     public async Task<Response<List<string>>> GetTipListAsync(CancellationToken cancellationToken)
     {
         try

@@ -6,6 +6,10 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace LinesService.Infrastructure;
 
+/// <summary>
+/// Unit of Work for managing database operations.
+/// </summary>
+/// <param name="context"></param>
 public class UnitOfWork(LinesContext context) : IUnitOfWork
 {
     private readonly LinesContext _context = context ?? throw new ArgumentNullException(nameof(context));
@@ -15,6 +19,7 @@ public class UnitOfWork(LinesContext context) : IUnitOfWork
     private IDbContextTransaction? _transaction;
     private bool _disposed = false;
 
+    /// <inheritdoc />
     public AgHatRepository AgHatRepository
     {
         get
@@ -23,6 +28,7 @@ public class UnitOfWork(LinesContext context) : IUnitOfWork
         }
     }
 
+    /// <inheritdoc />
     public OgHatRepository OgHatRepository
     {
         get
@@ -31,6 +37,7 @@ public class UnitOfWork(LinesContext context) : IUnitOfWork
         }
     }
 
+    /// <inheritdoc />
     public RekortmanRepository RekortmanRepository
     {
         get
@@ -39,11 +46,13 @@ public class UnitOfWork(LinesContext context) : IUnitOfWork
         }
     }
 
+    /// <inheritdoc />
     public async Task BeginTransactionAsync(CancellationToken cancellationToken)
     {
         _transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task CommitTransactionAsync(CancellationToken cancellationToken)
     {
         if (_transaction != null)
@@ -54,6 +63,7 @@ public class UnitOfWork(LinesContext context) : IUnitOfWork
         }
     }
 
+    /// <inheritdoc />
     public async Task RollbackTransactionAsync(CancellationToken cancellationToken)
     {
         if (_transaction != null)
@@ -64,11 +74,13 @@ public class UnitOfWork(LinesContext context) : IUnitOfWork
         }
     }
 
+    /// <inheritdoc />
     public async Task SaveChangesAsync(CancellationToken cancellationToken)
     {
         await _context.SaveChangesAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
     public void Dispose()
     {
         if (!_disposed)

@@ -5,6 +5,9 @@ using LinesService.Domain;
 
 namespace LinesService.Infrastructure.Services;
 
+/// <summary>
+/// Service interface for managing Rekortman entities.
+/// </summary>
 public interface IRekortmanService : IGenericService<Rekortman>
 {
     public Task<Response<List<string>>> GetTipListAsync(CancellationToken cancellationToken);

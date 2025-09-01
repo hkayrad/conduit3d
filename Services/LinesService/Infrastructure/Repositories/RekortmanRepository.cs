@@ -6,11 +6,29 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LinesService.Infrastructure.Repositories;
 
+/// <summary>
+/// Entity Framework Core implementation of <see cref="IRekortmanRepository"/> for managing REKORTMAN entities.
+/// </summary>
+/// <param name="context">Database context.</param>
+/// <remarks>
+/// This class implements the <see cref="IRekortmanRepository"/> interface and provides methods for managing REKORTMAN entities.
+/// </remarks>
 public class RekortmanRepository(LinesContext context) : IRekortmanRepository
 {
+    /// <summary>
+    /// Lines database context.
+    /// </summary>
     private readonly LinesContext _context = context;
+
+    /// <summary>
+    /// DbSet for REKORTMAN entities.
+    /// </summary>
     private readonly DbSet<Rekortman> _dbSet = context.Set<Rekortman>();
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// This method retrieves all REKORTMAN entities with pagination, sorting, and filtering options using native SQL.
+    /// </remarks>
     public async Task<List<Rekortman>> GetAllAsync(int pageNumber,
                                         int pageSize,
                                         string sortBy,
@@ -43,6 +61,10 @@ public class RekortmanRepository(LinesContext context) : IRekortmanRepository
         return await sqlQuery.ToListAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// This method retrieves an REKORTMAN entity by its ID using native SQL.
+    /// </remarks>
     public async Task<Rekortman?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         var sqlQuery = _dbSet.FromSql($@"SELECT 
@@ -55,6 +77,10 @@ public class RekortmanRepository(LinesContext context) : IRekortmanRepository
         return await sqlQuery.FirstOrDefaultAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// This method retrieves the count of REKORTMAN entities within a specified spatial extent using native SQL.
+    /// </remarks>
     public async Task<int> GetCountAsync(Extent extent, CancellationToken cancellationToken)
     {
         var sqlQuery = _dbSet.FromSql($@"SELECT *
@@ -64,6 +90,10 @@ public class RekortmanRepository(LinesContext context) : IRekortmanRepository
         return await sqlQuery.CountAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// This method retrieves a list of distinct REKORTMAN types using EF LINQ.
+    /// </remarks>
     public async Task<List<string>> GetTipListAsync(CancellationToken cancellationToken)
     {
         return await _dbSet.Select(x => x.Tipi).Distinct().ToListAsync(cancellationToken);

@@ -6,11 +6,29 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LinesService.Infrastructure.Repositories;
 
+/// <summary>
+/// Entity Framework Core implementation of <see cref="IAgHatRepository"/> for managing AG_HAT entities.
+/// </summary>
+/// <param name="context">Database context.</param>
+/// <remarks>
+/// This class implements the <see cref="IAgHatRepository"/> interface and provides methods for managing AG_HAT entities.
+/// </remarks>
 public class AgHatRepository(LinesContext context) : IAgHatRepository
 {
+    /// <summary>
+    /// Lines database context.
+    /// </summary>
     private readonly LinesContext _context = context;
+
+    /// <summary>
+    /// DbSet for AG_HAT entities.
+    /// </summary>
     private readonly DbSet<AgHat> _dbSet = context.Set<AgHat>();
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// This method retrieves all AG_HAT entities with pagination, sorting, and filtering options using native SQL.
+    /// </remarks>
     public async Task<List<AgHat>> GetAllAsync(int pageNumber,
                                         int pageSize,
                                         string sortBy,
@@ -44,6 +62,10 @@ public class AgHatRepository(LinesContext context) : IAgHatRepository
         return await sqlQuery.ToListAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// This method retrieves an AG_HAT entity by its ID using native SQL.
+    /// </remarks>
     public async Task<AgHat?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         var sqlQuery = _dbSet.FromSql($@"SELECT 
@@ -57,6 +79,10 @@ public class AgHatRepository(LinesContext context) : IAgHatRepository
         return await sqlQuery.FirstOrDefaultAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// This method retrieves the count of AG_HAT entities within a specified spatial extent using native SQL.
+    /// </remarks>
     public async Task<int> GetCountAsync(Extent extent, CancellationToken cancellationToken)
     {
         var sqlQuery = _dbSet.FromSql($@"SELECT *
@@ -66,6 +92,10 @@ public class AgHatRepository(LinesContext context) : IAgHatRepository
         return await sqlQuery.CountAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// This method retrieves a list of distinct AG_HAT types using EF LINQ.
+    /// </remarks>
     public async Task<List<string>> GetTipListAsync(CancellationToken cancellationToken)
     {
         return await _dbSet.Select(x => x.Cinsi).Distinct().ToListAsync(cancellationToken);
