@@ -1,8 +1,18 @@
 import { useMemo } from "react"
-import { COLORS } from "../colors"
 import type { MapState } from "../../app/layout/map/mapSlice"
-import { filterFeature } from "../utils/filterFeature";
+import { filterFeature } from "../utils/geometry/filterFeature";
+import { COLORS } from "../constants";
 
+/**
+ * Format the AG Direk feature collection.
+ * @param agDirek The AG Direk feature collection.
+ * @param ogMusDirek The OG Mus Direk feature collection.
+ * @param aydDirek The Ayd Direk feature collection.
+ * @param types The map state types.
+ * @param filters The map state filters.
+ * @param visibility The map state visibility.
+ * @returns The formatted AG Direk feature collection.
+*/
 export default function useDirek(
     agDirek: GeoJSON.FeatureCollection,
     ogMusDirek: GeoJSON.FeatureCollection,

@@ -1,3 +1,5 @@
+import type { HatCinsi } from "./enums"
+
 export type ApiResponse<T> = {
     isSuccess: boolean,
     message: string,
@@ -43,7 +45,7 @@ export type TrafoBina = {
 
 export type Hat = {
     id: number,
-    cinsi: string,
+    cinsi: HatCinsi,
     tipi: string,
     kesit: string,
     geoJson: string
@@ -51,7 +53,7 @@ export type Hat = {
 
 export type Rekortman = {
     id: number,
-    tipi: string,
+    tipi: HatCinsi,
     kesit: string,
     geoJson: string
 }
@@ -63,4 +65,10 @@ export type Direk = {
     boyOzellik: string,
     direkNo: string,
     geoJson: string
+}
+
+export type PopupState = {
+    id: string;
+    info: PickingInfo;
+    zIndex: number;
 }

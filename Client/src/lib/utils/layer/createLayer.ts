@@ -1,9 +1,14 @@
 import { BitmapLayer, ColumnLayer, PathLayer, TileLayer } from "deck.gl";
-import { COLORS } from "../colors";
 import { PathStyleExtension } from "@deck.gl/extensions";
-import { HatCinsi } from "../enums";
+import { HatCinsi } from "../../enums";
+import { COLORS } from "../../constants";
 
 export class CreateLayer {
+    /**
+     * Create local tile layers for the specified cities.
+     * @param visibility Whether the layers should be visible.
+     * @returns An array of TileLayer instances.
+     */
     static LocalTiles(
         visibility: boolean
     ) {
@@ -30,6 +35,17 @@ export class CreateLayer {
             })
         )
     }
+
+    /**
+     * Create a path layer for the specified hat feature.
+     * @param id The layer ID.
+     * @param data The feature data.
+     * @param color The line color.
+     * @param lineWidth The line width.
+     * @param visibility Whether the layer should be visible.
+     * @param type The hat type.
+     * @returns A PathLayer instance.
+     */
     static Hat(
         id: string,
         data: GeoJSON.Feature[],
@@ -70,6 +86,14 @@ export class CreateLayer {
             })
     }
 
+    /**
+     * Create a column layer for the specified direk feature.
+     * @param id The layer ID.
+     * @param data The feature data.
+     * @param color The fill color.
+     * @param visibility Whether the layer should be visible.
+     * @returns A ColumnLayer instance.
+     */
     static Direk(
         id: string,
         data: GeoJSON.Feature[],

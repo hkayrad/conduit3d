@@ -1,8 +1,18 @@
 import { useMemo } from "react";
-import { COLORS } from "../colors";
-import { filterFeature } from "../utils/filterFeature";
+import { filterFeature } from "../utils/geometry/filterFeature";
 import type { MapState } from "../../app/layout/map/mapSlice";
+import { COLORS } from "../constants";
 
+/**
+ * Format the AG Hat feature collection.
+ * @param agHat The AG Hat feature collection.
+ * @param ogHat The OG Hat feature collection.
+ * @param rekortman The Rekortman feature collection.
+ * @param types The map state types.
+ * @param filters The map state filters.
+ * @param visibility The map state visibility.
+ * @returns The formatted AG Hat feature collection.
+ */
 export function useHat(
     agHat: GeoJSON.FeatureCollection,
     ogHat: GeoJSON.FeatureCollection,
@@ -60,68 +70,6 @@ export function useHat(
         else
             return [];
     }, [rekortman, visibility.rekortman, filters.rekortman.tipi]);
-
-    // const ogHatHavai = useMemo(() => ({
-    //     id: "og-hat-havai",
-    //     color: COLORS.OG_HAT,
-    //     visibility: visibility.ogHat,
-    //     cinsi: HatCinsi.HAVAI,
-    //     data: filterHat(ogHat, "cinsi", HatCinsi.HAVAI)
-    // }), [ogHat, visibility.ogHat]);
-
-    // const rekortmanHavai = useMemo(() => ({
-    //     id: "rekortman-havai",
-    //     color: COLORS.REKORTMAN,
-    //     visibility: visibility.rekortman,
-    //     cinsi: HatCinsi.HAVAI,
-    //     data: filterHat(rekortman, "tipi", HatCinsi.HAVAI)
-    // }), [rekortman, visibility.rekortman]);
-    // const agHatBara = useMemo(() => {
-    //     return {
-    //         id: "ag-hat-bara",
-    //         color: COLORS.AG_HAT,
-    //         visibility: visibility.agHat,
-    //         cinsi: HatCinsi.BARA,
-    //         data: filterHat(agHat, "cinsi", HatCinsi.BARA)
-    //     }
-    // }, [agHat, visibility.agHat]);
-    // const ogHatBara = useMemo(() => {
-    //     return {
-    //         id: "og-hat-bara",
-    //         color: COLORS.OG_HAT,
-    //         visibility: visibility.ogHat,
-    //         cinsi: HatCinsi.BARA,
-    //         data: filterHat(ogHat, "cinsi", HatCinsi.BARA)
-    //     }
-    // }, [ogHat, visibility.ogHat]);
-
-    // const agHatYeralti = useMemo(() => {
-    //     return {
-    //         id: "ag-hat-yeralti",
-    //         color: COLORS.AG_HAT,
-    //         visibility: visibility.agHat,
-    //         cinsi: HatCinsi.YERALTI,
-    //         data: filterHat(agHat, "cinsi", HatCinsi.YERALTI)
-    //     }
-    // }, [agHat, visibility.agHat]);
-    // const ogHatYeralti = useMemo(() => {
-    //     return {
-    //         id: "og-hat-yeralti",
-    //         color: COLORS.OG_HAT,
-    //         visibility: visibility.ogHat,
-    //         cinsi: HatCinsi.YERALTI,
-    //         data: filterHat(ogHat, "cinsi", HatCinsi.YERALTI)
-    //     }
-    // }, [ogHat, visibility.ogHat]);
-    // const rekortmanYeralti = useMemo(() => {
-    //     return {
-    //         id: "rekortman-yeralti",
-    //         color: COLORS.REKORTMAN,
-    //         visibility: visibility.rekortman,
-    //         cinsi: HatCinsi.YERALTI,
-    //         data: filterHat(rekortman, "tipi", HatCinsi.YERALTI)
-    //     }
-    // }, [rekortman, visibility.rekortman]);
 
     return { hatLayerData: [agHatFormatted, ogHatFormatted, rekortmanFormatted] };
 }
