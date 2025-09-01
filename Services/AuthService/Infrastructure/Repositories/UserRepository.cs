@@ -8,11 +8,29 @@ using Npgsql;
 
 namespace AuthService.Infrastructure.Repositories;
 
+/// <summary>
+/// Entity framework implementation of <see cref="IUserRepository"/> for managing user data.
+/// </summary>
+/// <param name="context">User database context.</param>
+/// <remarks>
+/// This class implements the IUserRepository interface and provides methods for managing user data.
+/// </remarks>
 public class UserRepository(UsersContext context) : IUserRepository
 {
+    /// <summary>
+    /// User database context.
+    /// </summary>
     private readonly UsersContext _context = context;
+
+    /// <summary>
+    /// DbSet for user entities.
+    /// </summary>
     private readonly DbSet<User> _users = context.Set<User>();
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// This implementation uses PostgreSQL's native SQL capabilities.
+    /// </remarks>
     public async Task<User> CreateAsync(AddUserDto addUserDto, CancellationToken cancellationToken)
     {
         var sql = @"INSERT INTO users (username, email, user_role, name, password_hash)
@@ -55,6 +73,10 @@ public class UserRepository(UsersContext context) : IUserRepository
         return user;
     }
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// This implementation uses Entity Framework Core's LINQ capabilities.
+    /// </remarks>
     public async Task<List<User>> GetAllAsync(int pageNumber,
                                             int pageSize,
                                             string sortBy,
@@ -74,16 +96,28 @@ public class UserRepository(UsersContext context) : IUserRepository
         return await query.ToListAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// This implementation uses Entity Framework Core's LINQ capabilities.
+    /// </remarks>
     public async Task<User?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         return await _users.FindAsync([id], cancellationToken: cancellationToken);
     }
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// This implementation uses Entity Framework Core's LINQ capabilities.
+    /// </remarks>
     public async Task<int> GetCountAsync(CancellationToken cancellationToken)
     {
         return await _users.CountAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// This implementation uses PostgreSQL's native SQL capabilities.
+    /// </remarks>
     public async Task<User?> UpdateAsync(int id, UpdateUserDto updateUserDto, CancellationToken cancellationToken)
     {
         var user = await _users.FindAsync([id], cancellationToken: cancellationToken);
@@ -129,6 +163,10 @@ public class UserRepository(UsersContext context) : IUserRepository
         return updatedUser;
     }
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// This implementation uses Entity Framework Core's LINQ capabilities.
+    /// </remarks>
     public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
     {
         var user = await _users.FindAsync([id], cancellationToken: cancellationToken);
@@ -141,6 +179,10 @@ public class UserRepository(UsersContext context) : IUserRepository
         return true;
     }
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// This implementation uses PostgreSQL's native SQL capabilities.
+    /// </remarks>
     public async Task<UserWithToken> LoginAsync(LoginUserDto loginUserDto, CancellationToken cancellationToken)
     {
         var sql = @"SELECT id, username, email, user_role, name

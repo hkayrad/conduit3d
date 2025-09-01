@@ -4,8 +4,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AuthService.Infrastructure.Data;
 
+/// <summary>
+/// Database context for managing user-related data.
+/// </summary>
+/// <param name="options">DbContext options.</param>
 public class UsersContext(DbContextOptions options) : DbContext(options)
 {
+    /// <summary>
+    /// DbSet for users entities
+    /// </summary>
     public DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

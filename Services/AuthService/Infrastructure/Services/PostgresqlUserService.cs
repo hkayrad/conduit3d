@@ -8,10 +8,18 @@ using Npgsql;
 
 namespace AuthService.Infrastructure.Services;
 
+/// <summary>
+/// PostgreSQL implementation of <see cref="IUserService"/> for managing user data.
+/// </summary>
+/// <param name="unitOfWork">Unit of Work for database operations.</param>
 public class PostgresqlUserService(IUnitOfWork unitOfWork) : IUserService
 {
+    /// <summary>
+    /// Unit of work for managing repositories and transactions.
+    /// </summary>
     private readonly IUnitOfWork _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 
+    /// <inheritdoc />
     public async Task<Response<User>> CreateAsync(AddUserDto addUserDto, CancellationToken cancellationToken)
     {
         if (addUserDto == null)
@@ -34,6 +42,7 @@ public class PostgresqlUserService(IUnitOfWork unitOfWork) : IUserService
         }
     }
 
+    /// <inheritdoc />
     public async Task<Response<List<User>>> GetAllUsersAsync(int pageSize,
                                                             int pageNumber,
                                                             string sortBy,
@@ -73,6 +82,7 @@ public class PostgresqlUserService(IUnitOfWork unitOfWork) : IUserService
         }
     }
 
+    /// <inheritdoc />
     public async Task<Response<User>> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         if (id < 0)
@@ -93,11 +103,11 @@ public class PostgresqlUserService(IUnitOfWork unitOfWork) : IUserService
         }
         catch (Exception ex)
         {
-            return Response<User>.Failure(AuthResources.GetString("userRetrievalFailed", ex.Message),
-                                        HttpStatusCode.InternalServerError);
+            return Response<User>.UnhandledError(AuthResources.GetString("userRetrievalFailed", ex.Message));
         }
     }
 
+    /// <inheritdoc />
     public async Task<Response<int>> GetCountAsync(CancellationToken cancellationToken)
     {
         try
@@ -115,6 +125,7 @@ public class PostgresqlUserService(IUnitOfWork unitOfWork) : IUserService
         }
     }
 
+    /// <inheritdoc />
     public async Task<Response<User>> UpdateAsync(int id,
                                                     UpdateUserDto updateUserDto,
                                                     CancellationToken cancellationToken)
@@ -144,6 +155,7 @@ public class PostgresqlUserService(IUnitOfWork unitOfWork) : IUserService
         }
     }
 
+    /// <inheritdoc />
     public async Task<Response<object>> DeleteAsync(int id, CancellationToken cancellationToken)
     {
         if (id < 0)
@@ -173,6 +185,7 @@ public class PostgresqlUserService(IUnitOfWork unitOfWork) : IUserService
         }
     }
 
+    /// <inheritdoc />
     public async Task<Response<UserWithToken>> LoginAsync(LoginUserDto loginUserDto, CancellationToken cancellationToken)
     {
         if (loginUserDto == null)
