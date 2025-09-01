@@ -14,6 +14,7 @@ public class UnitOfWork(PolesContext context) : IUnitOfWork
     private IDbContextTransaction? _transaction;
     private bool _disposed = false;
 
+    /// <inheritdoc />
     public AgDirekRepository AgDirekRepository
     {
         get
@@ -22,6 +23,7 @@ public class UnitOfWork(PolesContext context) : IUnitOfWork
         }
     }
 
+    /// <inheritdoc />
     public AydDirekRepository AydDirekRepository
     {
         get
@@ -30,6 +32,7 @@ public class UnitOfWork(PolesContext context) : IUnitOfWork
         }
     }
 
+    /// <inheritdoc />
     public OgMusDirekRepository OgMusDirekRepository
     {
         get
@@ -38,11 +41,13 @@ public class UnitOfWork(PolesContext context) : IUnitOfWork
         }
     }
 
+    /// <inheritdoc />
     public async Task BeginTransactionAsync(CancellationToken cancellationToken)
     {
         _transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task CommitTransactionAsync(CancellationToken cancellationToken)
     {
         if (_transaction != null)
@@ -53,6 +58,7 @@ public class UnitOfWork(PolesContext context) : IUnitOfWork
         }
     }
 
+    /// <inheritdoc />
     public async Task RollbackTransactionAsync(CancellationToken cancellationToken)
     {
         if (_transaction != null)
@@ -63,11 +69,13 @@ public class UnitOfWork(PolesContext context) : IUnitOfWork
         }
     }
 
+    /// <inheritdoc />
     public async Task SaveChangesAsync(CancellationToken cancellationToken)
     {
         await _context.SaveChangesAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
     public void Dispose()
     {
         if (!_disposed)

@@ -5,6 +5,9 @@ using PolesService.Domain;
 
 namespace PolesService.Infrastructure.Services;
 
+/// <summary>
+/// Service interface for managing OgMusDirek entities.
+/// </summary>
 public interface IOgMusDirekService : IGenericService<OgMusDirek>
 {
     public Task<Response<List<string>>> GetTipListAsync(CancellationToken cancellationToken);

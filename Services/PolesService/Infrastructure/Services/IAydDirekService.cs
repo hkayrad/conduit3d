@@ -5,6 +5,9 @@ using PolesService.Domain;
 
 namespace PolesService.Infrastructure.Services;
 
+/// <summary>
+/// Service interface for managing AydDirek entities.
+/// </summary>
 public interface IAydDirekService : IGenericService<AydDirek>
 {
     public Task<Response<List<string>>> GetTipListAsync(CancellationToken cancellationToken);

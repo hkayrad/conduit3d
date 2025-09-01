@@ -12,9 +12,9 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+// Configure API versioning
 builder.Services.AddApiVersioning(options =>
 {
     options.DefaultApiVersion = new ApiVersion(1, 0);
@@ -30,6 +30,7 @@ builder.Services.AddApiVersioning(options =>
     options.SubstituteApiVersionInUrl = true;
 });
 
+// Custom error handler to send appropriate response to the user.
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.InvalidModelStateResponseFactory = context =>
@@ -53,12 +54,12 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
     };
 });
 
-// builder.Services.AddCors();
-
+// Configure Swagger
 builder.Services.AddSwaggerGen(config =>
 {
     config.SwaggerDoc("v1", new OpenApiInfo { Title = "Conduit3D Auth API", Version = "v1" });
 
+    // Configure JWT authentication
     config.AddSecurityDefinition("bearerAuth", new OpenApiSecurityScheme
     {
         Type = SecuritySchemeType.Http,
@@ -83,15 +84,20 @@ builder.Services.AddSwaggerGen(config =>
     });
 });
 
+// Get PostgreSQL connection string
 string? postgresqlConnectionString = Environment.GetEnvironmentVariable("POSTGRESQL_CONNECTION_STRING");
 
+// Validate the connection string
 if (string.IsNullOrEmpty(postgresqlConnectionString))
     throw new InvalidOperationException("POSTGRESQL_CONNECTION_STRING environment variable is not set.");
 
+// Connect to the db if the connection string is valid
 builder.Services.AddDbContext<PolesContext>(options =>
 {
     options.UseNpgsql(postgresqlConnectionString);
 });
+
+// Inject dependencies
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAgDirekService, PostgresqlAgDirekService>();
 builder.Services.AddScoped<IAydDirekService, PostgresqlAydDirekService>();
@@ -108,8 +114,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-
+// Custom middleware for request logging & authorization
 app.Use(async (context, next) =>
 {
     var path = context.Request.Path.Value?.ToLower();
