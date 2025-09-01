@@ -2,8 +2,8 @@ import { useEffect, useMemo, useRef } from "react";
 import "./style/hoverCard.css";
 import { DataType } from "../../../../lib/enums";
 import { selectIsHoverInfoVisible } from "../mapSlice";
-import { useSelector } from "react-redux";
-import { renderField } from "../../../../lib/utils/renderInfoField";
+import { useAppSelector } from "../../../../lib/hooks/reduxHooks";
+import InfoContent from "../../../shared/infoContent/InfoContent";
 
 type Props = {
     mousePos: { x: number, y: number };
@@ -29,7 +29,10 @@ export default function HoverCard(props: Props) {
 
     const hoverCardRef = useRef<HTMLDivElement>(null);
 
-    const isHoverInfoVisible = useSelector(selectIsHoverInfoVisible);
+    const isHoverInfoVisible = useAppSelector(selectIsHoverInfoVisible);
+
+    const properties = hoveredFeature?.properties as FeatureProperties | undefined;
+
 
     useEffect(() => {
         if (hoverCardRef.current && hoveredFeature) {
@@ -65,62 +68,7 @@ export default function HoverCard(props: Props) {
         }
     }, [mousePos, hoveredFeature]);
 
-    const properties = hoveredFeature?.properties as FeatureProperties | undefined;
-
-    const content = useMemo(() => {
-        if (!properties) return null;
-
-        switch (properties.dataType) {
-            case DataType.BUILDING:
-                return (
-                    <>
-                        {renderField("Name", properties.name, true)}
-                        {renderField("Height", `${properties.height} m`)}
-                        {renderField("Floor Count", properties.floorCount)}
-                        {renderField("Type", properties.type, true)}
-                    </>
-                );
-
-            case DataType.TRAFO:
-                return (
-                    <>
-                        {renderField("Name", properties.name)}
-                        {renderField("Code", properties.kodu)}
-                    </>
-                );
-
-            case DataType.POLE:
-                return (
-                    <>
-                        {renderField("Pole No", properties.direkNo)}
-                        {renderField("Cinsi", properties.cinsi)}
-                        {renderField("Type", properties.tipi)}
-                        {renderField("Height", `${properties.height} m`)}
-                        {renderField("Pole Features", properties.boyOzellik)}
-                    </>
-                );
-
-            case DataType.LINE:
-                return (
-                    <>
-                        {renderField("Cinsi", properties.cinsi)}
-                        {renderField("Type", properties.tipi)}
-                        {renderField("Section", properties.kesit)}
-                    </>
-                );
-
-            case DataType.REKORTMAN:
-                return (
-                    <>
-                        {renderField("Cinsi", properties.tipi)}
-                        {renderField("Section", properties.kesit)}
-                    </>
-                );
-
-            default:
-                return null;
-        }
-    }, [properties])
+    const content = useMemo(() => InfoContent(properties), [properties])
 
     return (
         <div

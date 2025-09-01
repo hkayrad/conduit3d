@@ -1,9 +1,8 @@
 import { LucideArrowRight, LucideX } from "lucide-react";
 import "./style/featureInfo.css"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { DataType } from "../../../../lib/enums";
-import { renderField } from "../../../../lib/utils/renderInfoField";
 import type { PickingInfo } from "deck.gl";
+import InfoContent from "../../../shared/infoContent/InfoContent";
 
 type Props = {
     info: PickingInfo;
@@ -24,60 +23,7 @@ export default function FeatureInfo(props: Props) {
 
     const windowRef = useRef<HTMLDivElement>(null);
 
-    const content = useMemo(() => {
-        if (!properties) return null;
-
-        switch (properties.dataType) {
-            case DataType.BUILDING:
-                return (
-                    <>
-                        {renderField("Name", properties.name, true)}
-                        {renderField("Height", `${properties.height} m`)}
-                        {renderField("Floor Count", properties.floorCount)}
-                        {renderField("Type", properties.type, true)}
-                    </>
-                );
-
-            case DataType.TRAFO:
-                return (
-                    <>
-                        {renderField("Name", properties.name)}
-                        {renderField("Code", properties.kodu)}
-                    </>
-                );
-
-            case DataType.POLE:
-                return (
-                    <>
-                        {renderField("Pole No", properties.direkNo)}
-                        {renderField("Cinsi", properties.cinsi)}
-                        {renderField("Type", properties.tipi)}
-                        {renderField("Height", `${properties.height} m`)}
-                        {renderField("Pole Features", properties.boyOzellik)}
-                    </>
-                );
-
-            case DataType.LINE:
-                return (
-                    <>
-                        {renderField("Cinsi", properties.cinsi)}
-                        {renderField("Type", properties.tipi)}
-                        {renderField("Section", properties.kesit)}
-                    </>
-                );
-
-            case DataType.REKORTMAN:
-                return (
-                    <>
-                        {renderField("Cinsi", properties.tipi)}
-                        {renderField("Section", properties.kesit)}
-                    </>
-                );
-
-            default:
-                return null;
-        }
-    }, [properties]);
+    const content = useMemo(() => InfoContent(properties), [properties])
 
     const handleMouseDown = useCallback((e: React.MouseEvent) => {
         if (windowRef.current) {

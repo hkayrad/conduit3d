@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { TrafoBinaApi } from "../../../../../lib/api/buildings";
+import { TrafoBinaApi } from "../../../../../lib/api";
 import type { Extent, TrafoBina } from "../../../../../lib/types";
 import { DataType } from "../../../../../lib/enums";
 

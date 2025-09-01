@@ -1,9 +1,9 @@
 import { useCallback, useEffect } from "react";
 import type { Extent, Hat } from "../../../../../lib/types";
-import { lineStringToSegments } from "../../../../../lib/utils/lineStringToSegments";
+import { lineStringToSegments } from "../../../../../lib/utils";
 import { setType } from "../../mapSlice";
 import { useDispatch } from "react-redux";
-import { AgHatApi } from "../../../../../lib/api/lines";
+import { AgHatApi } from "../../../../../lib/api";
 import { DataType } from "../../../../../lib/enums";
 
 type Props = {

@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { AydDirekApi } from "../../../../../lib/api/poles";
+import { AydDirekApi } from "../../../../../lib/api";
 import type { Direk, Extent } from "../../../../../lib/types";
 import { useDispatch } from "react-redux";
 import { setType } from "../../mapSlice";

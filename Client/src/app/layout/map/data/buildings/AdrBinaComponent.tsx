@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from "react";
 import type { AdrBina, Extent } from "../../../../../lib/types"
-import { AdrBinaApi } from "../../../../../lib/api/buildings";
+import { AdrBinaApi } from "../../../../../lib/api";
 import { DataType } from "../../../../../lib/enums";
 
 type Props = {

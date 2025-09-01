@@ -8,12 +8,11 @@ import { CompassWidget, ZoomWidget } from "@deck.gl/widgets";
 import { Map as MapLibre } from 'react-map-gl/maplibre';
 import { useAppSelector } from "../../../lib/hooks/reduxHooks"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { FlyToInterpolator, Layer, MapView, WebMercatorViewport, type MapViewState, type PickingInfo } from "@deck.gl/core";
+import { Layer, MapView, WebMercatorViewport, type MapViewState } from "@deck.gl/core";
 import { selectMapState, setExtent, setViewState } from "./mapSlice";
 import LayerControl from "./layerControl/LayerControl";
 import { ColumnLayer, GeoJsonLayer } from "deck.gl"
-import { CreateLayer } from "../../../lib/utils/createLayer"
-import { COLORS } from "../../../lib/colors"
+import { CreateLayer } from "../../../lib/utils/layer/createLayer"
 import DataComponent from "./data/DataComponent"
 import { useHat } from "../../../lib/hooks/useHat"
 import useDirek from "../../../lib/hooks/useDirek"
@@ -23,9 +22,10 @@ import { useSearchParams } from "react-router"
 import { useDispatch } from "react-redux"
 import HoverCard from "./hoverCard/HoverCard"
 import FeatureInfo from "./featureInfo/FeatureInfo"
-import { easeInOutCubic } from "../../../lib/utils/easeInOutCubic"
-import { bbox } from "@turf/turf";
-import { DataType } from "../../../lib/enums"
+import { flyToFeature } from "../../../lib/utils"
+import type { PopupState } from "../../../lib/types"
+import { useMapInteraction } from "../../../lib/hooks/useMapInteraction"
+import { COLORS, DEBOUNCE_TIME_MS } from "../../../lib/constants"
 
 // const MAP_STYLE = "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
 // const MAP_STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
@@ -34,18 +34,13 @@ import { DataType } from "../../../lib/enums"
 // const MAP_STYLE = "https://tiles.openfreemap.org/styles/bright"
 // const MAP_STYLE = "https://tiles.openfreemap.org/styles/liberty"
 
-const DEBOUNCE_TIME_MS = 500;
-
-type PopupState = {
-    id: string;
-    info: PickingInfo;
-    zIndex: number;
-}
-
 export default function DeckglMap() {
+    var [searchParams, setSearchParams] = useSearchParams();
+
     const dispatch = useDispatch();
 
-    var [searchParams, setSearchParams] = useSearchParams();
+    // Global Map State
+    const { visibility, filters, types } = useAppSelector(selectMapState);
 
     const [mapViewState, setMapViewState] = useState<MapViewState>({
         longitude: searchParams.get("lon") ? parseFloat(searchParams.get("lon")!) : 41.287,
@@ -57,7 +52,6 @@ export default function DeckglMap() {
     });
 
     const [lineWidth, setLineWidth] = useState<number>(1);
-    const { visibility, filters, types } = useAppSelector(selectMapState);
 
     // Map data
     const [adrBina, setAdrBina] = useState<GeoJSON.FeatureCollection>(null!);
@@ -77,6 +71,7 @@ export default function DeckglMap() {
     const [mousePos, setMousePos] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
     const [mouseLonLat, setMouseLonLat] = useState<number[]>([0, 0]);
 
+    // Formatted Hat Layer Data
     const { hatLayerData } = useHat(
         agHat,
         ogHat,
@@ -85,6 +80,7 @@ export default function DeckglMap() {
         filters,
         visibility);
 
+    // Formatted Direk Layer Data and All Poles
     const { direkLayerData, allPoles } = useDirek(
         agDirek,
         ogMusDirek,
@@ -92,6 +88,24 @@ export default function DeckglMap() {
         types,
         filters,
         visibility);
+
+    // Map Interaction Handlers
+    const { handleViewStateChange,
+        handleMouseMove,
+        handleClick,
+        handleClosePopup,
+        handleFocusPopup,
+        handleKeyPresses
+    } = useMapInteraction(
+        zIndexCounter,
+        activePopups,
+        setMapViewState,
+        setLineWidth,
+        setHoveredFeature,
+        setMousePos,
+        setMouseLonLat,
+        setActivePopups
+    )
 
     const layers: Layer[] = useMemo(() => [
         ...CreateLayer.LocalTiles(visibility.basemap),
@@ -149,82 +163,11 @@ export default function DeckglMap() {
         })
     ], [filters, visibility, adrBina, trafoBina, agDirek, ogMusDirek, aydDirek, agHat, ogHat, rekortman, lineWidth]);
 
-    const flyToFeature = useCallback((feature: GeoJSON.Feature) => {
-        if (!feature) return;
-
-        const [minLng, minLat, maxLng, maxLat] = bbox(feature);
-
-        const { longitude, latitude, zoom } = new WebMercatorViewport(mapViewState).fitBounds(
-            [[minLng, minLat], [maxLng, maxLat]],
-            {
-                padding: 300
-            }
-        );
-
-        const zoomLevel = feature.properties!.dataType === DataType.POLE ? 20 :
-            feature.properties!.dataType === DataType.TRAFO ? 23 :
-                feature.properties!.dataType === DataType.LINE || feature.properties!.dataType === DataType.REKORTMAN ? 20 : zoom;
-
-        setMapViewState({
-            ...mapViewState,
-            longitude,
-            latitude,
-            zoom: zoomLevel,
-            transitionInterpolator: new FlyToInterpolator({ speed: 2 }),
-            transitionDuration: 2000,
-            transitionEasing: t => easeInOutCubic(t),
-        })
+    const flyTo = useCallback((
+        feature: GeoJSON.Feature,
+    ) => {
+        flyToFeature(feature, mapViewState, setMapViewState);
     }, [mapViewState])
-
-    const handleViewStateChange = useCallback((viewState: MapViewState) => {
-        setMapViewState(viewState);
-        setLineWidth(Number(Math.max((23.5 - viewState.zoom) / 10, 0.01).toFixed(4)));
-    }, []);
-
-    const handleMouseMove = useCallback((info: PickingInfo) => {
-        setHoveredFeature(info.object);
-        setMousePos({ x: info.x, y: info.y });
-        setMouseLonLat(info.coordinate ? info.coordinate : [0, 0]);
-    }, []);
-
-    const handleClick = useCallback((info: PickingInfo) => {
-        if (info.object) {
-            const id = Math.random().toString(36).substring(2, 9);
-            zIndexCounter.current += 1;
-            const newPopup: PopupState = {
-                id: `popup-${id}`,
-                info: info,
-                zIndex: zIndexCounter.current
-            };
-            setActivePopups(prev => [...prev, newPopup]);
-        }
-    }, []);
-
-    const handleClosePopup = useCallback((id: string) => {
-        setActivePopups(prev => prev.filter(popup => popup.id !== id));
-    }, []);
-
-    const handleFocusPopup = useCallback((id: string) => {
-        const maxZIndex = Math.max(...activePopups.map(p => p.zIndex));
-        const focusedPopup = activePopups.find(p => p.id === id);
-
-        // Only update if the focused popup is not already on top
-        if (focusedPopup && focusedPopup.zIndex < maxZIndex) {
-            zIndexCounter.current += 1;
-            setActivePopups(prev =>
-                prev.map(p =>
-                    p.id === id ? { ...p, zIndex: zIndexCounter.current } : p
-                )
-            );
-        }
-    }, [activePopups]);
-
-    const handleKeyPresses = useCallback((e: KeyboardEvent) => {
-        if (e.key === "Delete" && e.ctrlKey) {
-            e.preventDefault();
-            setActivePopups([]);
-        }
-    }, [])
 
     useEffect(() => {
         document.addEventListener("keypress", (e) => handleKeyPresses(e));
@@ -302,7 +245,7 @@ export default function DeckglMap() {
                         zIndex={popup.zIndex}
                         onFocus={() => handleFocusPopup(popup.id)}
                         onClose={() => handleClosePopup(popup.id)}
-                        onFlyTo={() => flyToFeature(popup.info.object)}
+                        onFlyTo={() => flyTo(popup.info.object)}
                     />
                 ))}
                 <LayerControl />

@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from "react";
-import { RekortmanApi } from "../../../../../lib/api/lines";
+import { RekortmanApi } from "../../../../../lib/api";
 import type { Extent, Rekortman } from "../../../../../lib/types";
-import { lineStringToSegments } from "../../../../../lib/utils/lineStringToSegments";
+import { lineStringToSegments } from "../../../../../lib/utils";
 import { useDispatch } from "react-redux";
 import { setType } from "../../mapSlice";
 import { DataType } from "../../../../../lib/enums";

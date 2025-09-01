@@ -1,7 +1,7 @@
 import "./style/login.css"
 
 import { useNavigate } from "react-router";
-import AuthApi from "../../../lib/api/auth";
+import { AuthApi } from "../../../lib/api";
 import Logo from "../../shared/logo/Logo";
 import Input from "../../shared/input/Input";
 import { useState } from "react";
