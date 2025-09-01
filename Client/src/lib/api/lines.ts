@@ -7,7 +7,7 @@ import type { ApiResponse, Extent, Hat, Rekortman } from "../types";
 export class AgHatApi {
     /**
      * Fetch all AG Hat features within the specified extent.
-     * @param extent The geographical extent to filter the features.
+     * @param {Extent} extent The geographical extent to filter the features.
      * @returns A promise that resolves to the list of AG Hat features.
      */
     static async fetchAll(extent: Extent) {
@@ -15,10 +15,7 @@ export class AgHatApi {
             "agHat",
             {
                 params: {
-                    minX: extent.minX,
-                    minY: extent.minY,
-                    maxX: extent.maxX,
-                    maxY: extent.maxY
+                    ...extent
                 }
             }
         );
@@ -51,10 +48,7 @@ export class OgHatApi {
             "ogHat",
             {
                 params: {
-                    minX: extent.minX,
-                    minY: extent.minY,
-                    maxX: extent.maxX,
-                    maxY: extent.maxY
+                    ...extent
                 }
             });
 
@@ -87,10 +81,7 @@ export class RekortmanApi {
             "rekortman",
             {
                 params: {
-                    minX: extent.minX,
-                    minY: extent.minY,
-                    maxX: extent.maxX,
-                    maxY: extent.maxY
+                    ...extent
                 }
             }
         );
