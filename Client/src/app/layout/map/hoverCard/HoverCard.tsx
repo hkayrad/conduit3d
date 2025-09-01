@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, type JSX } from "react";
+import { useEffect, useMemo, useRef, useState, type JSX } from "react";
 import "./style/hoverCard.css";
 import { DataType } from "../../../../lib/enums";
 import { selectIsHoverInfoVisible } from "../mapSlice";
@@ -33,12 +33,43 @@ type FeatureProperties = {
 export default function HoverCard(props: Props): JSX.Element {
     const { hoveredFeature, mousePos } = props;
 
+    const properties = hoveredFeature?.properties as FeatureProperties | undefined;
+
     const hoverCardRef = useRef<HTMLDivElement>(null);
+    const lastPositionRef = useRef<{ x: number; y: number } | null>(null);
+    const lastTimeRef = useRef<number | null>(null);
+    const velocityRef = useRef<{ x: number; y: number; magnitude: number }>({ x: 0, y: 0, magnitude: 0 });
+
+    const [mouseVelocity, setMouseVelocity] = useState({ x: 0, y: 0, magnitude: 0 });
 
     const isHoverInfoVisible = useAppSelector(selectIsHoverInfoVisible);
 
-    const properties = hoveredFeature?.properties as FeatureProperties | undefined;
+    useEffect(() => {
+        const currentTime = performance.now();
 
+        if (lastPositionRef.current && lastTimeRef.current) {
+            const deltaX = mousePos.x - lastPositionRef.current.x;
+            const deltaY = mousePos.y - lastPositionRef.current.y;
+            const deltaTime = currentTime - lastTimeRef.current;
+
+            if (deltaTime > 0) {
+                const velocityX = deltaX / deltaTime; // pixels per millisecond
+                const velocityY = deltaY / deltaTime;
+                const magnitude = Math.sqrt(velocityX * velocityX + velocityY * velocityY);
+
+                velocityRef.current = {
+                    x: velocityX * 1000, // Convert to pixels per second
+                    y: velocityY * 1000,
+                    magnitude: magnitude * 1000
+                };
+
+                setMouseVelocity(velocityRef.current);
+            }
+        }
+
+        lastPositionRef.current = { x: mousePos.x, y: mousePos.y };
+        lastTimeRef.current = currentTime;
+    }, [mousePos]);
 
     useEffect(() => {
         if (hoverCardRef.current && hoveredFeature) {
@@ -79,7 +110,7 @@ export default function HoverCard(props: Props): JSX.Element {
     return (
         <div
             ref={hoverCardRef}
-            className={`${hoveredFeature && isHoverInfoVisible ? "visible" : "hidden"}`}
+            className={`${hoveredFeature && isHoverInfoVisible && mouseVelocity.magnitude < 1000 ? "visible" : "hidden"}`}
             id="hover-card">
             {hoveredFeature && (
                 <div id="content">

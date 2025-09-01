@@ -20,7 +20,7 @@ type Props = {
  */
 export default function FeatureInfo(props: Props): JSX.Element {
     const { info, zIndex, onClose, onFocus, onFlyTo } = props;
-    const { object, x, y } = info;
+    const { object, coordinate, x, y } = info;
     const { properties } = object || {};
 
     const [position, setPosition] = useState<{ x: number; y: number }>({ x, y });
@@ -29,7 +29,7 @@ export default function FeatureInfo(props: Props): JSX.Element {
 
     const windowRef = useRef<HTMLDivElement>(null);
 
-    const content = useMemo(() => InfoContent(properties), [properties])
+    const content = useMemo(() => InfoContent(properties, coordinate!), [coordinate, properties]);
 
     const handleMouseDown = useCallback((e: React.MouseEvent) => {
         if (windowRef.current) {
