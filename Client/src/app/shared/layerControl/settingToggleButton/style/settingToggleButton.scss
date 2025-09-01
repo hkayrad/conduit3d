@@ -8,6 +8,7 @@
     padding: 4px;
     gap: 4px;
     border-radius: 8px;
+    position: relative;
 
     .toggle-button {
         display: flex;
@@ -20,9 +21,22 @@
         color: global.$white;
         padding: 8px;
         width: 100%;
+        z-index: 3;
+    }
+
+    .toggle-slider {
+        width: calc(50% - 4px); // Half width minus gap compensation
+        height: calc(100% - 8px); // Full height minus padding
+        border-radius: 4px;
+        position: absolute;
+        background: global.$primary-lighter;
+        z-index: 1;
+        transition: all 0.3s ease;
+        top: 4px; // Match parent padding
+        left: 4px; // Match parent padding
 
         &.active {
-            background: global.$primary-lighter;
+            transform: translateX(100%);
         }
     }
 }
