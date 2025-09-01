@@ -12,6 +12,11 @@ type Props = {
     extent: Extent
 }
 
+/**
+ * RekortmanComponent is responsible for fetching and rendering the REKORTMAN data.
+ * @component
+ * @param props - The props for the component
+ */
 export default function RekortmanComponent(props: Props) {
     const { setData, allPoles, extent } = props;
 

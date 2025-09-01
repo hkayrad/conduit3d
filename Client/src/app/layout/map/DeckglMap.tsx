@@ -7,7 +7,7 @@ import { DeckGL } from "@deck.gl/react"
 import { CompassWidget, ZoomWidget } from "@deck.gl/widgets";
 import { Map as MapLibre } from 'react-map-gl/maplibre';
 import { useAppSelector } from "../../../lib/hooks/reduxHooks"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type JSX } from "react";
 import { Layer, MapView, WebMercatorViewport, type MapViewState } from "@deck.gl/core";
 import { selectMapState, setExtent, setViewState } from "./mapSlice";
 import LayerControl from "./layerControl/LayerControl";
@@ -25,16 +25,14 @@ import FeatureInfo from "./featureInfo/FeatureInfo"
 import { flyToFeature } from "../../../lib/utils"
 import type { PopupState } from "../../../lib/types"
 import { useMapInteraction } from "../../../lib/hooks/useMapInteraction"
-import { COLORS, DEBOUNCE_TIME_MS } from "../../../lib/constants"
+import { COLORS, DEBOUNCE_TIME_MS, MAX_ZOOM } from "../../../lib/constants"
 
-// const MAP_STYLE = "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
-// const MAP_STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
-// const MAP_STYLE = "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
-// const MAP_STYLE = "https://tiles.openfreemap.org/styles/positron"
-// const MAP_STYLE = "https://tiles.openfreemap.org/styles/bright"
-// const MAP_STYLE = "https://tiles.openfreemap.org/styles/liberty"
-
-export default function DeckglMap() {
+/**
+ * DeckglMap component renders the Deck.gl map with various layers and controls.
+ * @component
+ * @returns {JSX.Element} The rendered component
+ */
+export default function DeckglMap(): JSX.Element {
     var [searchParams, setSearchParams] = useSearchParams();
 
     const dispatch = useDispatch();
@@ -46,7 +44,7 @@ export default function DeckglMap() {
         longitude: searchParams.get("lon") ? parseFloat(searchParams.get("lon")!) : 41.287,
         latitude: searchParams.get("lat") ? parseFloat(searchParams.get("lat")!) : 39.9,
         zoom: searchParams.get("z") ? parseFloat(searchParams.get("z")!) : 15,
-        maxZoom: 25,
+        maxZoom: MAX_ZOOM,
         pitch: searchParams.get("p") ? parseFloat(searchParams.get("p")!) : 60,
         bearing: searchParams.get("b") ? parseFloat(searchParams.get("b")!) : 0
     });
@@ -104,9 +102,9 @@ export default function DeckglMap() {
         setHoveredFeature,
         setMousePos,
         setMouseLonLat,
-        setActivePopups
-    )
+        setActivePopups);
 
+    // Create layers from the formatted data
     const layers: Layer[] = useMemo(() => [
         ...CreateLayer.LocalTiles(visibility.basemap),
 
@@ -163,16 +161,19 @@ export default function DeckglMap() {
         })
     ], [filters, visibility, adrBina, trafoBina, agDirek, ogMusDirek, aydDirek, agHat, ogHat, rekortman, lineWidth]);
 
+    // Fly to a given feature
     const flyTo = useCallback((
         feature: GeoJSON.Feature,
     ) => {
         flyToFeature(feature, mapViewState, setMapViewState);
     }, [mapViewState])
 
+    // Add keyboard event listener
     useEffect(() => {
         document.addEventListener("keypress", (e) => handleKeyPresses(e));
     }, []);
 
+    // Handle view state changes
     useEffect(() => {
         const handler = setTimeout(() => {
             const viewport = new WebMercatorViewport({
@@ -238,6 +239,7 @@ export default function DeckglMap() {
                 setRekortman={setRekortman}
             />
             <div id="map-page">
+                {/* Dynamically create the FeatureInfo components */}
                 {activePopups.map(popup => (
                     <FeatureInfo
                         key={popup.id}
@@ -261,13 +263,13 @@ export default function DeckglMap() {
                     viewState={mapViewState}
                     onViewStateChange={(e) => handleViewStateChange(e.viewState as MapViewState)}
                     layers={layers}
-                    widgets={[new ZoomWidget(), new CompassWidget({})]}
+                    widgets={[new ZoomWidget({}), new CompassWidget({})]}
                     onClick={handleClick}
                     onHover={handleMouseMove}
                 >
                     <MapLibre
+                        // mapStyle={MAP_STYLE[0]}
                         reuseMaps
-                        // mapStyle={mapState.visibility.basemap ? MAP_STYLE : undefined}
                         attributionControl={false}
                         maxZoom={25}
                         boxZoom={false}

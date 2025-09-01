@@ -10,6 +10,11 @@ type Props = {
     extent: Extent
 }
 
+/**
+ * OgMusDirekComponent is responsible for fetching and rendering the OG MUS direk data.
+ * @component
+ * @param props - The props for the component
+ */
 export default function OgMusDirekComponent(props: Props) {
     const { setData, extent } = props;
 

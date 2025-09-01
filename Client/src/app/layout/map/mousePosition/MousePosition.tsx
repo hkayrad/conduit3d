@@ -1,10 +1,17 @@
+import type { JSX } from "react";
 import "./style/mousePosition.css";
 
 type Props = {
     mouseLonLat: number[];
 }
 
-export default function MousePosition(props: Props) {
+/**
+ * MousePosition component displays the current mouse coordinates in longitude and latitude.
+ * @component
+ * @param props - The props for the component
+ * @returns {JSX.Element} The rendered component
+ */
+export default function MousePosition(props: Props): JSX.Element {
     const { mouseLonLat } = props;
     return (
         <div id="mouse-position">

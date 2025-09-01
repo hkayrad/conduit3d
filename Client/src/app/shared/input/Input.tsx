@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type JSX } from "react";
 import "./style/input.css"
 import { Eye, EyeOff } from "lucide-react";
 
@@ -13,7 +13,13 @@ type Props = {
     setState: React.Dispatch<React.SetStateAction<string>>
 }
 
-export default function Input(props: Props) {
+/**
+ * Input component for text and password fields.
+ * @p * @component
+ram props - The props for the component
+ * @returns {JSX.Element} The rendered component
+ */
+export default function Input(props: Props): JSX.Element {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     const { type, id, name, label, required, placeholder, state, setState } = props;

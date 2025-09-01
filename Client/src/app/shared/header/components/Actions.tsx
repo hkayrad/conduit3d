@@ -1,12 +1,18 @@
 import { List, LogOut, Map, ShieldUser } from "lucide-react";
 import { NavLink, useNavigate } from "react-router";
-import AuthApi from "../../../../lib/api/auth";
+import { AuthApi } from "../../../../lib/api";
 import { useDispatch, useSelector } from "react-redux";
 import { clearUser, selectUserState } from "../../../layout/auth/authSlice";
 import { UserRoles } from "../../../../lib/enums";
 import { selectViewState } from "../../../layout/map/mapSlice";
+import type { JSX } from "react";
 
-export default function Actions() {
+/**
+ * Actions component displays user action buttons.
+ * @component
+ * @returns {JSX.Element} The rendered component
+ */
+export default function Actions(): JSX.Element {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 

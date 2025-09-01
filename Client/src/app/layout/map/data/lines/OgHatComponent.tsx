@@ -12,6 +12,11 @@ type Props = {
     extent: Extent
 }
 
+/**
+ * OgHatComponent is responsible for fetching and rendering the OG HAT data.
+ * @component
+ * @param props - The props for the component
+ */
 export default function OgHatComponent(props: Props) {
     const { setData, allPoles, extent } = props;
 

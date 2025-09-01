@@ -1,3 +1,4 @@
+import type { JSX } from "react";
 import { useAppSelector } from "../../../../lib/hooks/reduxHooks";
 import { selectExtent } from "../mapSlice";
 import AdrBinaComponent from "./buildings/AdrBinaComponent";
@@ -21,7 +22,13 @@ type Props = {
     setRekortman: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>;
 }
 
-export default function DataComponent(props: Props) {
+/**
+ * DataComponent is responsible for rendering all data-related components.
+ * @component
+ * @param props - The props for the component
+ * @returns {JSX.Element} The rendered component
+ */
+export default function DataComponent(props: Props): JSX.Element {
     const {
         allPoles,
         setAdrBina,

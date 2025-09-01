@@ -1,6 +1,12 @@
 import { DataType } from "../../../lib/enums";
 import InfoField from "../infoField/InfoField";
 
+/**
+ * InfoContent component displays information fields based on the properties provided.
+ * @component
+ * @param properties - The properties for the component
+ * @returns {JSX.Element} The rendered component
+ */
 export default function InfoContent(properties: any) {
     if (!properties) return null;
 

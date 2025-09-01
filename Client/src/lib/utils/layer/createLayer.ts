@@ -3,6 +3,9 @@ import { PathStyleExtension } from "@deck.gl/extensions";
 import { HatCinsi } from "../../enums";
 import { COLORS } from "../../constants";
 
+/**
+ * Class for creating different types of layers.
+ */
 export class CreateLayer {
     /**
      * Create local tile layers for the specified cities.

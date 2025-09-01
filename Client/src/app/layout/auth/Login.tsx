@@ -4,13 +4,18 @@ import { useNavigate } from "react-router";
 import { AuthApi } from "../../../lib/api";
 import Logo from "../../shared/logo/Logo";
 import Input from "../../shared/input/Input";
-import { useState } from "react";
+import { useState, type JSX } from "react";
 import type { LoginUserDto } from "../../../lib/types";
 import { Info, Loader, LogIn, ShieldX } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { clearUser, setUser } from "./authSlice";
 
-export default function Login() {
+/**
+ * Login component is responsible for rendering the login form and handling user authentication.
+ * @component
+ * @returns {JSX.Element} The rendered component
+ */
+export default function Login(): JSX.Element {
 
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");

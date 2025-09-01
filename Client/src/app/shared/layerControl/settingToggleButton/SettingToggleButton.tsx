@@ -1,3 +1,4 @@
+import type { JSX } from "react";
 import "./style/settingToggleButton.css";
 
 type Props = {
@@ -7,7 +8,13 @@ type Props = {
     showLabel: React.ReactNode;
 }
 
-export default function SettingToggleButton(props: Props) {
+/**
+ * SettingToggleButton component displays a toggle button for layer settings.
+ * @component
+ * @param props - The props for the component
+ * @returns {JSX.Element} The rendered component
+ */
+export default function SettingToggleButton(props: Props): JSX.Element {
     const { active, toggle, hideLabel, showLabel } = props;
     return (
         <div className="layer-control-toggle-switch">

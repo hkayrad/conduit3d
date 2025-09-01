@@ -12,6 +12,11 @@ type Props = {
     extent: Extent
 }
 
+/**
+ * AgHatComponent is responsible for fetching and rendering the AG HAT data.
+ * @component
+ * @param props - The props for the component
+ */
 export default function AgHatComponent(props: Props) {
     const { setData, allPoles, extent } = props;
 

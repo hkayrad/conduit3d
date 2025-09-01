@@ -7,8 +7,14 @@ import LayerControlSection from "../../../shared/layerControl/layerControlSectio
 import LayerControlDropdown from "../../../shared/layerControl/layerControlDropdown/LayerControlDropdown";
 import LayerControlFilter from "../../../shared/layerControl/layerControlFilter/LayerControlFilter";
 import SettingToggleButton from "../../../shared/layerControl/settingToggleButton/SettingToggleButton";
+import type { JSX } from "react";
 
-export default function LayerControl() {
+/**
+ * LayerControl component manages the visibility and settings of map layers.
+ * @component
+ * @returns {JSX.Element} The rendered component
+ */
+export default function LayerControl(): JSX.Element {
 
     const dispatch = useDispatch();
     const { isLayerControlsOpen, isHoverInfoVisible, visibility, types, filters } = useAppSelector(selectMapState);

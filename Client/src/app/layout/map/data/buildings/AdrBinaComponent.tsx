@@ -8,6 +8,11 @@ type Props = {
     extent: Extent
 }
 
+/**
+ * AdrBinaComponent is responsible for fetching and rendering the ADR BINA data.
+ * @component
+ * @param props - The props for the component
+ */
 export default function AdrBinaComponent(props: Props) {
     const { setData, extent } = props;
 

@@ -10,6 +10,11 @@ type Props = {
     extent: Extent
 }
 
+/**
+ * AgDirekComponent is responsible for fetching and rendering the AG direk data.
+ * @component
+ * @param props - The props for the component
+ */
 export default function AgDirekComponent(props: Props) {
     const { setData, extent } = props;
 

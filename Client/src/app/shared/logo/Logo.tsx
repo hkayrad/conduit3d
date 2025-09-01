@@ -1,10 +1,19 @@
+import type { JSX } from "react";
+
 type Props = {
     color?: "Dark" | "White",
     type?: "Long" | "Short",
     size?: "Small" | "Big"
 }
 
-export default function Logo({ color = "Dark", type = "Long", size = "Small" }: Props) {
+/**
+ * Logo component displays a logo image with customizable properties.
+ * @component
+ * @param props - The props for the component
+ * @returns {JSX.Element} The rendered component
+ */
+export default function Logo(props: Props): JSX.Element {
+    const { color = "Dark", type = "Long", size = "Small" } = props;
     return (
         <img
             id="logo"

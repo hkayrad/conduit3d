@@ -8,6 +8,11 @@ type Props = {
     extent: Extent
 }
 
+/**
+ * TrafoBinaComponent is responsible for fetching and rendering the TRAFO BINA data.
+ * @component
+ * @param props - The props for the component
+ */
 export default function TrafoBinaComponent(props: Props) {
     const { setData, extent } = props;
 

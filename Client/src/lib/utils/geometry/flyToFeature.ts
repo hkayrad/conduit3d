@@ -2,6 +2,7 @@ import { FlyToInterpolator, WebMercatorViewport, type MapViewState } from "@deck
 import { DataType } from "../../enums";
 import { bbox } from "@turf/turf";
 import { easeInOutCubic } from "..";
+import { MAX_ZOOM } from "../../constants";
 
 /**
  * Fly to a specific feature on the map.
@@ -33,6 +34,7 @@ export function flyToFeature(
         longitude,
         latitude,
         zoom: zoomLevel,
+        maxZoom: MAX_ZOOM,
         transitionInterpolator: new FlyToInterpolator({ speed: 2 }),
         transitionDuration: 2000,
         transitionEasing: t => easeInOutCubic(t),
