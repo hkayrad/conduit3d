@@ -4,6 +4,9 @@ using Conduit3D.Common.Infrastructure.Repositories;
 
 namespace BuildingsService.Infrastructure.Repositories;
 
+/// <summary>
+/// Repository interface for managing Building entities.
+/// </summary>
 public interface IBuildingsRepository : IGenericRepository<Building>
 {
 

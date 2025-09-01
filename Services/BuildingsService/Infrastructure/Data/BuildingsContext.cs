@@ -4,10 +4,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BuildingsService.Infrastructure.Data;
 
+/// <summary>
+/// Database context for managing building-related data.
+/// </summary>
+/// <param name="options">DbContext options.</param>
 public class BuildingsContext(DbContextOptions options) : DbContext(options)
 {
+    /// <summary>
+    /// DbSet for buildings entities
+    /// </summary>
     public DbSet<Building> Buildings { get; set; }
+
+    /// <summary>
+    /// DbSet for ADR_BINA entities
+    /// </summary>
     public DbSet<AdrBina> AdrBuildings { get; set; }
+
+    /// <summary>
+    /// DbSet for SBK_TRAFOBINATIP entities
+    /// </summary>
     public DbSet<TrafoBina> TrafoBuildings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

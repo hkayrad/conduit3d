@@ -7,6 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BuildingsService.Controllers
 {
+    /// <summary>
+    /// Controller for managing Trafo buildings.
+    /// </summary>
+    /// <remarks>
+    /// This controller provides endpoints for managing Trafo buildings.
+    /// </remarks>
+    /// <param name="trafoBuildingsService">Trafo buildings service instance.</param>
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
@@ -14,6 +21,24 @@ namespace BuildingsService.Controllers
     {
         private readonly ITrafoBinaService _trafoBuildingsService = trafoBuildingsService ?? throw new ArgumentNullException(nameof(trafoBuildingsService));
 
+        /// <summary>
+        /// Retrieves a paginated list of Trafo buildings.
+        /// </summary>
+        /// <param name="pageNumber">The page number to retrieve.</param>
+        /// <param name="pageSize">The number of items per page.</param>
+        /// <param name="sortBy">The field to sort by.</param>
+        /// <param name="ascending">Whether to sort in ascending order.</param>
+        /// <param name="extent">The extent to filter by.</param>
+        /// <param name="query">The search query.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>A paginated list of Trafo buildings.</returns>
+        /// <response code="200">Returns a paginated list of Trafo buildings.</response>
+        /// <response code="400">Invalid parameters.</response>
+        /// <response code="404">No Trafo buildings found.</response>
+        /// <response code="500">Internal server error.</response>
+        /// <example>
+        /// GET /api/v1/trafoBina?pageNumber=1&pageSize=10&sortBy=name&ascending=true&minX=26&minY=36&maxX=45&maxY=42
+        /// </example>
         [MapToApiVersion("1.0")]
         [HttpGet]
         public async Task<Response<List<TrafoBina>>> GetAllAsync(
@@ -35,6 +60,19 @@ namespace BuildingsService.Controllers
                                                     cancellationToken);
         }
 
+        /// <summary>
+        /// Retrieves an Trafo building by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the Trafo building to retrieve.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>The Trafo building with the specified ID.</returns>
+        /// <response code="200">Returns the Trafo building.</response>
+        /// <response code="400">Invalid Trafo building ID.</response>
+        /// <response code="404">Trafo building not found.</response>
+        /// <response code="500">Internal server error.</response>
+        /// <example>
+        /// GET /api/v1/trafoBina/1
+        /// </example>
         [MapToApiVersion("1.0")]
         [HttpGet("{id}")]
         public async Task<Response<TrafoBina>> GetByIdAsync(int id, CancellationToken cancellationToken)
@@ -42,6 +80,18 @@ namespace BuildingsService.Controllers
             return await _trafoBuildingsService.GetByIdAsync(id, cancellationToken);
         }
 
+        /// <summary>
+        /// Retrieves a paginated list of Trafo buildings.
+        /// </summary>
+        /// <param name="extent">The extent to filter by.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>The total number of Trafo buildings.</returns>
+        /// <response code="200">Returns the count of Trafo buildings.</response>
+        /// <response code="400">Invalid parameters.</response>
+        /// <response code="500">Internal server error.</response>
+        /// <example>
+        /// GET /api/v1/trafoBina/count?minX=26&minY=36&maxX=45&maxY=42
+        /// </example>
         [MapToApiVersion("1.0")]
         [HttpGet("count")]
         public async Task<Response<int>> GetCountAsync(

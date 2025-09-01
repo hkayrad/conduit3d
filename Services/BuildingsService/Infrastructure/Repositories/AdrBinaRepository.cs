@@ -6,11 +6,29 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BuildingsService.Infrastructure.Repositories;
 
+/// <summary>
+/// Repository for managing ADR_BINA entities.
+/// </summary>
+/// <param name="context">AdrBina context.</param>
+/// <remarks>
+/// This class implements the IAdrBinaRepository interface and provides methods for managing ADR_BINA entities.
+/// </remarks>
 public class AdrBinaRepository(BuildingsContext context) : IAdrBinaRepository
 {
+    /// <summary>
+    /// Buildings context.
+    /// </summary>
     private readonly BuildingsContext _context = context;
+
+    /// <summary>
+    /// ADR_BINA DbSet.
+    /// </summary>
     private readonly DbSet<AdrBina> _dbSet = context.Set<AdrBina>();
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// Retrieves all ADR_BINA entities with pagination and sorting using native SQL.
+    /// </remarks>
     public async Task<List<AdrBina>> GetAllAsync(int pageNumber,
                                             int pageSize,
                                             string sortBy,
@@ -44,6 +62,10 @@ public class AdrBinaRepository(BuildingsContext context) : IAdrBinaRepository
         return await sqlQuery.ToListAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// Retrieves a single ADR_BINA entity by its ID using native SQL.
+    /// </remarks>
     public async Task<AdrBina?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         var sqlQuery = _dbSet.FromSql($@"SELECT 
@@ -57,6 +79,10 @@ public class AdrBinaRepository(BuildingsContext context) : IAdrBinaRepository
         return await sqlQuery.FirstOrDefaultAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// Retrieves the count of ADR_BINA entities within the specified extent using native SQL.
+    /// </remarks>
     public async Task<int> GetCountAsync(Extent extent, CancellationToken cancellationToken)
     {
         var sqlQuery = _dbSet.FromSql($@"SELECT *

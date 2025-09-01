@@ -5,7 +5,10 @@ using Conduit3D.Common.Infrastructure.Services;
 
 namespace BuildingsService.Infrastructure.Services;
 
-public interface IBuildingsService: IGenericService<Building>
+/// <summary>
+/// Service interface for managing Building entities.
+/// </summary>
+public interface IBuildingsService : IGenericService<Building>
 {
-    
+
 }

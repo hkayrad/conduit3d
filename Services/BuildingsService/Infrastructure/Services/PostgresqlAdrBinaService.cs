@@ -6,10 +6,18 @@ using Npgsql;
 
 namespace BuildingsService.Infrastructure.Services;
 
+/// <summary>
+/// PostgreSQL implementation of <see cref="IAdrBinaService"/> for managing ADR_BINA entities.
+/// </summary>
+/// <param name="unitOfWork">Unit of Work for buildings service.</param>
 public class PostgresqlAdrBinaService(IUnitOfWork unitOfWork) : IAdrBinaService
 {
+    /// <summary>
+    /// Unit of Work for buildings service.
+    /// </summary>
     private readonly IUnitOfWork _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 
+    /// <inheritdoc />
     public async Task<Response<List<AdrBina>>> GetAllAsync(int pageNumber,
                                             int pageSize,
                                             string sortBy,
@@ -63,6 +71,7 @@ public class PostgresqlAdrBinaService(IUnitOfWork unitOfWork) : IAdrBinaService
         }
     }
 
+    /// <inheritdoc />
     public async Task<Response<AdrBina>> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         if (id <= 0)
@@ -87,6 +96,7 @@ public class PostgresqlAdrBinaService(IUnitOfWork unitOfWork) : IAdrBinaService
         }
     }
 
+    /// <inheritdoc />
     public async Task<Response<int>> GetCountAsync(Extent? extent, CancellationToken cancellationToken)
     {
         extent ??= new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };

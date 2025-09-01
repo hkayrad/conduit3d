@@ -6,11 +6,29 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BuildingsService.Infrastructure.Repositories;
 
+/// <summary>
+/// Repository for managing SBK_TRAFOBINATIP entities.
+/// </summary>
+/// <param name="context">Buildings context.</param>
+/// <remarks>
+/// This class implements the ITrafoBinaRepository interface and provides methods for managing SBK_TRAFOBINATIP entities.
+/// </remarks>
 public class TrafoBinaRepository(BuildingsContext context) : ITrafoBinaRepository
 {
+    /// <summary>
+    /// Buildings context.
+    /// </summary>
     private readonly BuildingsContext _context = context;
+
+    /// <summary>
+    /// SBK_TRAFOBINATIP DbSet.
+    /// </summary>
     private readonly DbSet<TrafoBina> _dbSet = context.Set<TrafoBina>();
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// Retrieves all SBK_TRAFOBINATIP entities with pagination and sorting using native SQL.
+    /// </remarks>
     public async Task<List<TrafoBina>> GetAllAsync(int pageNumber,
                                             int pageSize,
                                             string sortBy,
@@ -43,6 +61,10 @@ public class TrafoBinaRepository(BuildingsContext context) : ITrafoBinaRepositor
         return await sqlQuery.ToListAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// Retrieves a single SBK_TRAFOBINATIP entity by its ID using native SQL.
+    /// </remarks>
     public async Task<TrafoBina?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         var sqlQuery = _dbSet.FromSql($@"SELECT 
@@ -55,6 +77,10 @@ public class TrafoBinaRepository(BuildingsContext context) : ITrafoBinaRepositor
         return await sqlQuery.FirstOrDefaultAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// Retrieves the count of SBK_TRAFOBINATIP entities within the specified extent using native SQL.
+    /// </remarks>
     public async Task<int> GetCountAsync(Extent extent, CancellationToken cancellationToken)
     {
         var sqlQuery = _dbSet.FromSql($@"SELECT *

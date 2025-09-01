@@ -15,6 +15,7 @@ public class UnitOfWork(BuildingsContext context) : IUnitOfWork
     private IDbContextTransaction? _transaction;
     private bool _disposed = false;
 
+    /// <inheritdoc />
     public BuildingsRepository BuildingsRepository
     {
         get
@@ -23,6 +24,7 @@ public class UnitOfWork(BuildingsContext context) : IUnitOfWork
         }
     }
 
+    /// <inheritdoc />
     public AdrBinaRepository AdrBuildingsRepository
     {
         get
@@ -31,6 +33,7 @@ public class UnitOfWork(BuildingsContext context) : IUnitOfWork
         }
     }
 
+    /// <inheritdoc />
     public TrafoBinaRepository TrafoBuildingsRepository
     {
         get
@@ -39,11 +42,13 @@ public class UnitOfWork(BuildingsContext context) : IUnitOfWork
         }
     }
 
+    /// <inheritdoc />
     public async Task BeginTransactionAsync(CancellationToken cancellationToken)
     {
         _transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task CommitTransactionAsync(CancellationToken cancellationToken)
     {
         if (_transaction != null)
@@ -54,6 +59,7 @@ public class UnitOfWork(BuildingsContext context) : IUnitOfWork
         }
     }
 
+    /// <inheritdoc />
     public async Task RollbackTransactionAsync(CancellationToken cancellationToken)
     {
         if (_transaction != null)
@@ -64,11 +70,13 @@ public class UnitOfWork(BuildingsContext context) : IUnitOfWork
         }
     }
 
+    /// <inheritdoc />
     public async Task SaveChangesAsync(CancellationToken cancellationToken)
     {
         await _context.SaveChangesAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
     public void Dispose()
     {
         if (!_disposed)

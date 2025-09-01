@@ -6,11 +6,29 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BuildingsService.Infrastructure.Repositories;
 
+/// <summary>
+/// Repository for managing building entities.
+/// </summary>
+/// <param name="context">Buildings context.</param>
+/// <remarks>
+/// This class implements the IBuildingsRepository interface and provides methods for managing building entities.
+/// </remarks>
 public class BuildingsRepository(BuildingsContext context) : IBuildingsRepository
 {
+    /// <summary>
+    /// Buildings context.
+    /// </summary>
     private readonly BuildingsContext _context = context;
+
+    /// <summary>
+    /// Buildings DbSet.
+    /// </summary>
     private readonly DbSet<Building> _dbSet = context.Set<Building>();
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// Retrieves all buildings with pagination and sorting using native SQL.
+    /// </remarks>
     public async Task<List<Building>> GetAllAsync(int pageNumber,
                                             int pageSize,
                                             string sortBy,
@@ -44,6 +62,10 @@ public class BuildingsRepository(BuildingsContext context) : IBuildingsRepositor
         return await sqlQuery.ToListAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// Retrieves a single building by its ID using native SQL.
+    /// </remarks>
     public async Task<Building?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         var sqlQuery = _dbSet.FromSql($@"SELECT 
@@ -57,6 +79,10 @@ public class BuildingsRepository(BuildingsContext context) : IBuildingsRepositor
         return await sqlQuery.FirstOrDefaultAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// Retrieves the count of buildings within the specified extent using native SQL.
+    /// </remarks>
     public async Task<int> GetCountAsync(Extent extent, CancellationToken cancellationToken)
     {
         var sqlQuery = _dbSet.FromSql($@"SELECT *

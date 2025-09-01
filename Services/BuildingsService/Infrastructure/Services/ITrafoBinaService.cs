@@ -4,6 +4,9 @@ using Conduit3D.Common.Infrastructure.Services;
 
 namespace BuildingsService.Infrastructure.Services;
 
-public interface ITrafoBinaService: IGenericService<TrafoBina>
+/// <summary>
+/// Service interface for managing TrafoBina entities.
+/// </summary>
+public interface ITrafoBinaService : IGenericService<TrafoBina>
 {
 }
