@@ -36,6 +36,12 @@ public class UpdateUserDto : IValidatableObject
     /// </summary>
     public required string Password { get; set; }
 
+
+    /// <summary>
+    /// Indicates whether the user is active.
+    /// </summary>
+    public bool? IsActive { get; set; }
+
     /// <summary>
     /// Validates the properties of the user DTO.
     /// </summary>

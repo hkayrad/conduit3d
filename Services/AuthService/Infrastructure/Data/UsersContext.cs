@@ -56,6 +56,11 @@ public class UsersContext(DbContextOptions options) : DbContext(options)
                 .IsRequired()
                 .HasColumnType("timestamp")
                 .HasColumnName("created_at");
+
+            entity.Property(e => e.IsActive)
+                .IsRequired()
+                .HasColumnType("boolean")
+                .HasColumnName("is_active");
         });
     }
 }

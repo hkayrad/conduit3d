@@ -67,7 +67,8 @@ public class UserRepository(UsersContext context) : IUserRepository
             Email = addUserDto.Email,
             UserRole = addUserDto.UserRole,
             Name = addUserDto.Name,
-            CreatedAt = createdAt
+            CreatedAt = createdAt,
+            IsActive = addUserDto.IsActive ?? true
         };
 
         return user;
@@ -145,19 +146,20 @@ public class UserRepository(UsersContext context) : IUserRepository
         command.Parameters.Add(new NpgsqlParameter("@Name", updateUserDto.Name ?? user.Name));
         command.Parameters.Add(new NpgsqlParameter("@UserRole", updateUserDto.UserRole ?? user.UserRole));
         command.Parameters.Add(new NpgsqlParameter("@Password", updateUserDto.Password));
+        command.Parameters.Add(new NpgsqlParameter("@IsActive", updateUserDto.IsActive ?? user.IsActive));
 
         await using var reader = await command.ExecuteReaderAsync(cancellationToken);
         await reader.ReadAsync(cancellationToken);
 
-        var updatedUserId = reader.GetInt32(0);
-
         var updatedUser = new User
         {
-            Id = updatedUserId,
+            Id = id,
             Username = updateUserDto.Username ?? user.Username,
             Email = updateUserDto.Email ?? user.Email,
             Name = updateUserDto.Name ?? user.Name,
-            UserRole = updateUserDto.UserRole ?? user.UserRole
+            UserRole = updateUserDto.UserRole ?? user.UserRole,
+            CreatedAt = user.CreatedAt,
+            IsActive = updateUserDto.IsActive ?? user.IsActive
         };
 
         return updatedUser;
@@ -185,7 +187,7 @@ public class UserRepository(UsersContext context) : IUserRepository
     /// </remarks>
     public async Task<UserWithToken> LoginAsync(LoginUserDto loginUserDto, CancellationToken cancellationToken)
     {
-        var sql = @"SELECT id, username, email, user_role, name
+        var sql = @"SELECT id, username, email, user_role, name, is_active
                     FROM users 
                     WHERE username = @Username 
                         AND password_hash = crypt(@Password, password_hash)";
@@ -201,23 +203,30 @@ public class UserRepository(UsersContext context) : IUserRepository
         await using var reader = await command.ExecuteReaderAsync(cancellationToken);
         if (await reader.ReadAsync(cancellationToken))
         {
-            var user = new User
-            {
-                Id = reader.GetInt32(reader.GetOrdinal("id")),
-                Username = reader.GetString(reader.GetOrdinal("username")),
-                Email = reader.GetString(reader.GetOrdinal("email")),
-                UserRole = reader.GetString(reader.GetOrdinal("user_role")),
-                Name = reader.GetString(reader.GetOrdinal("name"))
-            };
+            var isActive = reader.GetBoolean(reader.GetOrdinal("is_active"));
 
-            return new UserWithToken
+            if (isActive)
             {
-                User = user,
-                Token = TokenProvider.GenerateToken(user)
-            };
+                var user = new User
+                {
+                    Id = reader.GetInt32(reader.GetOrdinal("id")),
+                    Username = reader.GetString(reader.GetOrdinal("username")),
+                    Email = reader.GetString(reader.GetOrdinal("email")),
+                    UserRole = reader.GetString(reader.GetOrdinal("user_role")),
+                    Name = reader.GetString(reader.GetOrdinal("name"))
+                };
+
+                return new UserWithToken
+                {
+                    User = user,
+                    Token = TokenProvider.GenerateToken(user)
+                };
+            }
+
+            return null!;
         }
 
         return null!;
-    }
 
+    }
 }

@@ -41,4 +41,9 @@ public class User
     /// The date and time when the user was created.
     /// </summary>
     public DateTime CreatedAt { get; set; }
+
+    /// <summary>
+    /// Indicates whether the user is active.
+    /// </summary>
+    public bool IsActive { get; set; }
 }

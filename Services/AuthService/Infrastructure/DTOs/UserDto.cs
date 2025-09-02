@@ -32,6 +32,11 @@ public class UserDto : IValidatableObject
     public required string Name { get; set; }
 
     /// <summary>
+    /// Indicates whether the user is active.
+    /// </summary>
+    public bool? IsActive { get; set; }
+
+    /// <summary>
     /// Validates the properties of the user DTO.
     /// </summary>
     /// <param name="validationContext">Validation context for the user DTO.</param>
