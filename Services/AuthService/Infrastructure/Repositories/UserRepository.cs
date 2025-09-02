@@ -131,6 +131,7 @@ public class UserRepository(UsersContext context) : IUserRepository
                         email = @Email,
                         name = @Name,
                         user_role = @UserRole,
+                        is_active = @IsActive,
                         password_hash = crypt(@Password, gen_salt('bf'))
                     WHERE id = @Id
                     RETURNING id;";
