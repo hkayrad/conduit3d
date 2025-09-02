@@ -1,0 +1,49 @@
+import { useState, type JSX } from "react";
+import "./style/input.css"
+import { Eye, EyeOff } from "lucide-react";
+
+type Props = {
+    type?: "text" | "password",
+    id?: string
+    name?: string,
+    label?: string,
+    required?: boolean,
+    placeholder?: string,
+    state: string,
+    setState: React.Dispatch<React.SetStateAction<string>>
+}
+
+/**
+ * Input component for text and password fields.
+ * @p * @component
+ram props - The props for the component
+ * @returns {JSX.Element} The rendered component
+ */
+export default function Input(props: Props): JSX.Element {
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+    const { type, id, name, label, required, placeholder, state, setState } = props;
+
+    return (
+        <div className="auth-input-container">
+            <label className="auth-input">
+                {label && <p>{label}{required && <span className="error">*</span>}</p>}
+                <input
+                    type={type ? type === "password" && isPasswordVisible ? "text" : type : "text"}
+                    id={id}
+                    name={name}
+                    required={required}
+                    placeholder={placeholder}
+                    value={state}
+                    autoComplete={name === "password" ? "current-password" : name === "username" ? "username" : "off"}
+                    onChange={(e) => setState(e.target.value)}
+                />
+            </label>
+            {type === "password" &&
+                <button id="toggle-password" type="button" onClick={() => setIsPasswordVisible(!isPasswordVisible)}>
+                    {isPasswordVisible ? <EyeOff /> : <Eye />}
+                </button>
+            }
+        </div>
+    );
+}

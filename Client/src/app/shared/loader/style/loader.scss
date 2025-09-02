@@ -1,0 +1,39 @@
+@use "../../../../global.scss";
+
+.loader {
+    position: absolute;
+    z-index: 1000;
+    background: global.$primary;
+    color: global.$white;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    left: 235px;
+    top: 16px;
+    transition: all .5s ease;
+    pointer-events: none;
+
+    &.visible {
+        opacity: 1;
+    }
+
+    &:not(.visible) {
+        opacity: 0;
+    }
+
+    #loader-icon {
+        animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+}

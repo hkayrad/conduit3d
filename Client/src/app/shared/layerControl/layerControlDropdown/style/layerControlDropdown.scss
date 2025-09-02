@@ -1,0 +1,95 @@
+@use "../../../../../global.scss";
+
+.layer-control-dropdown {
+    display: flex;
+    flex-direction: column;
+    transition: margin-bottom 0.3s ease;
+
+    &.closed {
+        margin-bottom: 0px;
+    }
+
+    &.open {
+        margin-bottom: 8px;
+    }
+
+    .controller {
+        width: 100%;
+        height: fit-content;
+        background-color: global.$primary-light;
+        padding: 12px 16px;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        overflow: hidden;
+
+        .left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: default;
+            user-select: none;
+        }
+
+        .right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+
+            button {
+                background: none;
+                border: none;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: global.$white;
+                padding: 4px;
+                border-radius: 4px;
+                transition: all 0.2s ease;
+
+                &:hover {
+                    background: global.$primary-lighter;
+                    cursor: pointer;
+                }
+            }
+
+            svg {
+                transition: all 0.3s ease;
+
+                &.open {
+                    transform: rotate(180deg);
+                }
+            }
+        }
+    }
+
+    .content {
+        display: grid;
+        grid-template-rows: 0fr;
+        transition: grid-template-rows 0.3s ease, margin-top 0.3s ease;
+        background: global.$primary-lighter;
+        border-radius: 8px;
+        overflow: hidden;
+        user-select: none;
+
+        &.open {
+            grid-template-rows: 1fr;
+            margin-top: 8px;
+
+            .content-wrapper {
+                padding: 12px 16px 16px 16px;
+            }
+        }
+
+        .content-wrapper {
+            min-height: 0;
+            padding: 0px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: padding 0.3s ease;
+        }
+    }
+}

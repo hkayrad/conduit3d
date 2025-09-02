@@ -1,0 +1,62 @@
+@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Lexend", sans-serif;
+  font-size: 16px;
+}
+
+.lucide {
+  width: 16px;
+  height: 16px;
+}
+
+.error {
+  color: #D32F2F !important;
+}
+
+.warning {
+  color: #FFC107 !important;
+}
+
+.success {
+  color: #4CAF50 !important;
+}
+
+.shadow {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+#map-page {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+#map-page .top-left {
+  top: 76px !important;
+  left: 16px !important;
+}
+#map-page .top-left .deck-widget {
+  margin-top: 0px !important;
+  margin-left: 0px !important;
+  background: none !important;
+  border: none !important;
+}
+#map-page .top-left .deck-widget .deck-widget-button-group {
+  gap: 0px;
+  background: none !important;
+}
+#map-page .top-left .deck-widget .deck-widget-button-group .deck-widget-icon-button {
+  background: #2B2D42 !important;
+}
+#map-page .top-left .deck-widget .deck-widget-button-group .deck-widget-icon-button .deck-widget-icon {
+  background: #FFFFFF !important;
+}
+#map-page .top-left .deck-widget.deck-widget-compass .deck-widget-button {
+  background: none !important;
+}
+#map-page .top-left .deck-widget.deck-widget-compass .deck-widget-button button {
+  background: #2B2D42 !important;
+}/*# sourceMappingURL=deckglMap.css.map */

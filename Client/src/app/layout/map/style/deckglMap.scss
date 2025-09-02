@@ -1,0 +1,44 @@
+@use "../../../../global.scss";
+
+#map-page {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+
+    .top-left {
+        top: 76px !important;
+        left: 16px !important;
+
+        .deck-widget {
+            margin-top: 0px !important;
+            margin-left: 0px !important;
+            background: none !important;
+            border: none !important;
+
+            .deck-widget-button-group {
+                gap: 0px;
+                background: none !important;
+
+                .deck-widget-icon-button {
+                    background: global.$primary !important;
+
+                    .deck-widget-icon {
+                        background: global.$white !important;
+                    }
+                }
+
+            }
+
+            &.deck-widget-compass {
+                .deck-widget-button {
+                    background: none !important;
+
+                    button {
+                        background: global.$primary !important;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,3 +1,9 @@
+# TODO
+
+ - Add keybindings overlay to show the users all of the keybinds.
+ - Add auto windows adjustment
+ - FIX: HOVER POPUP FLICKERS
+
 ### Optimization Notes
 
  > ***DONT CHECK THE PERFORMANCE WHILE THE NETWORK TAB IS OPEN IN THE DEV TOOLS, IT CAUSES MAJOR PERFORMANCE PROBLEMS WHILE LOADING TILES FROM THE SERVER***

@@ -1,0 +1,63 @@
+@use "../../../../global.scss";
+
+#header {
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    #logo-container {
+        background-color: global.$white;
+        border-radius: 0 0 12px 0;
+        padding: 4px 0;
+
+        #logo {
+            height: 48px;
+        }
+    }
+
+    #actions {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 16px;
+        padding: 8px 14px;
+        background: global.$white;
+        border-radius: 0 0 0 12px;
+
+        #action-button {
+            color: global.$primary;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            outline: none;
+            border: none;
+            background: none;
+            padding: 8px;
+            transition: all 0.2s ease;
+            border-radius: 6px;
+
+            &.error {
+                &:hover {
+                    background: global.$error !important;
+                    color: global.$white !important;
+                }
+            }
+
+            &:hover {
+                cursor: pointer;
+                background: global.$primary;
+                color: global.$white;
+            }
+
+            &.active {
+                font-weight: 600;
+            }
+        }
+    }
+}

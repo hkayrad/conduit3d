@@ -1,0 +1,39 @@
+$primary: #2B2D42;
+$primary-light: #3B3E5A;
+$primary-lighter: #4B4E73;
+$success: #4CAF50;
+$warning: #FFC107;
+$error: #D32F2F;
+$white: #FFFFFF;
+$off-white: #EEEEEE;
+
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Lexend', sans-serif;
+    font-size: 16px;
+}
+
+.lucide {
+    width: 16px;
+    height: 16px;
+}
+
+.error {
+    color: $error !important;
+}
+
+.warning {
+    color: $warning !important;
+}
+
+.success {
+    color: $success !important;
+}
+
+.shadow {
+    box-shadow: 0 4px 8px rgba(#000000, .15);
+}

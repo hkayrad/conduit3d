@@ -1,0 +1,158 @@
+@use "../../../../global.scss";
+
+#login {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 100svh;
+    width: 100svw;
+    overflow: hidden;
+
+    #left {
+        height: 100vh;
+        background-color: global.$primary;
+        position: relative;
+        display: grid;
+        align-items: center;
+        justify-items: center;
+
+        #logo {
+            position: fixed;
+            z-index: 2;
+        }
+
+        #bg {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+            opacity: .1;
+        }
+    }
+
+    #right {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 32px;
+        padding: 0 250px;
+
+        #info-box {
+            position: absolute;
+            right: 16px;
+            top: 16px;
+
+            #info-hover {
+                color: global.$white;
+                background: global.$primary;
+                display: flex;
+                align-items: center;
+                padding: 12px;
+                border-radius: 8px;
+
+                &:hover {
+                    cursor: help;
+                }
+            }
+
+            #info-text {
+                position: absolute;
+                transition: all .2s ease;
+                right: 0;
+                top: 48px;
+                font-size: 12px;
+                color: global.$white;
+                background: global.$primary;
+                padding: 8px;
+                width: 200px;
+                border-radius: 8px;
+                opacity: 0;
+
+                &.visible {
+                    opacity: 1;
+                }
+            }
+        }
+
+        #welcome {
+            color: global.$primary;
+            font-size: 48px;
+            font-weight: bold;
+        }
+
+        #instructions {
+            color: #808080;
+            font-weight: normal;
+        }
+
+        #login-form {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            justify-content: center;
+            width: 100%;
+
+            .input {
+                margin: auto;
+                min-width: 300px;
+                width: 20vw;
+            }
+
+            #login-button {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: fit-content;
+                padding: 8px 12px;
+                margin: auto;
+                gap: 8px;
+                background-color: global.$primary;
+                color: global.$white;
+                border: none;
+                border-radius: 8px;
+                transition: all ease .2s;
+
+                #loader {
+                    animation: spin 2s linear infinite;
+                }
+
+                &:hover {
+                    background-color: global.$primary-light;
+                    cursor: pointer;
+                }
+
+                &:disabled {
+                    background: rgba(global.$primary, .6);
+                }
+            }
+        }
+
+        #login-error {
+            background-color: global.$error;
+            color: global.$white;
+            width: fit-content;
+            height: fit-content;
+            display: flex;
+            align-items: center;
+            width: fit-content;
+            gap: 16px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            visibility: hidden;
+
+            &.visible {
+                visibility: visible;
+            }
+        }
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}

@@ -1,0 +1,14 @@
+@use "../../../../../global.scss";
+
+.layer-control-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    h4 {
+        font-size: 12px;
+        opacity: .65;
+        text-transform: uppercase;
+        letter-spacing: 2px
+    }
+}

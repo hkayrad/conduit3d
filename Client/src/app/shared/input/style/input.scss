@@ -1,0 +1,64 @@
+@use "../../../../global.scss";
+
+.auth-input-container {
+    display: flex;
+    flex: row;
+    align-items: end;
+    min-width: 320px;
+    gap: 8px;
+
+    .auth-input {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 4px;
+
+        p {
+            margin-left: 12px;
+        }
+
+        input {
+            width: 100%;
+            border: 1px solid rgba(global.$primary, .2);
+            border-radius: 4px;
+            outline: none;
+            padding: 6px 12px;
+            transition: all ease .2s;
+
+            &::placeholder {
+                color: rgba(global.$primary, .6)
+            }
+
+            &:hover,
+            &:focus {
+                background: rgba(global.$primary, .1);
+            }
+
+            /* &:focus {
+                background: global.$primary;
+                color: global.$white;
+                border-color: global.$primary;
+
+                &::placeholder {
+                    color: global.$white;
+                }
+            } */
+        }
+    }
+
+    #toggle-password {
+        display: flex;
+        align-items: center;
+        background: none;
+        border: 1px solid rgba(global.$primary, .2);
+        color: global.$primary;
+        padding: 8px 8px;
+        border-radius: 4px;
+        transition: all ease .2s;
+
+        &:hover {
+            cursor: pointer;
+            background: rgba(global.$primary, .1);
+        }
+    }
+}

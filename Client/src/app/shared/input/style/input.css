@@ -1,0 +1,86 @@
+@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Lexend", sans-serif;
+  font-size: 16px;
+}
+
+.lucide {
+  width: 16px;
+  height: 16px;
+}
+
+.error {
+  color: #D32F2F !important;
+}
+
+.warning {
+  color: #FFC107 !important;
+}
+
+.success {
+  color: #4CAF50 !important;
+}
+
+.shadow {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.auth-input-container {
+  display: flex;
+  flex: row;
+  align-items: end;
+  min-width: 320px;
+  gap: 8px;
+}
+.auth-input-container .auth-input {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 4px;
+}
+.auth-input-container .auth-input p {
+  margin-left: 12px;
+}
+.auth-input-container .auth-input input {
+  width: 100%;
+  border: 1px solid rgba(43, 45, 66, 0.2);
+  border-radius: 4px;
+  outline: none;
+  padding: 6px 12px;
+  transition: all ease 0.2s;
+  /* &:focus {
+      background: global.$primary;
+      color: global.$white;
+      border-color: global.$primary;
+
+      &::placeholder {
+          color: global.$white;
+      }
+  } */
+}
+.auth-input-container .auth-input input::-moz-placeholder {
+  color: rgba(43, 45, 66, 0.6);
+}
+.auth-input-container .auth-input input::placeholder {
+  color: rgba(43, 45, 66, 0.6);
+}
+.auth-input-container .auth-input input:hover, .auth-input-container .auth-input input:focus {
+  background: rgba(43, 45, 66, 0.1);
+}
+.auth-input-container #toggle-password {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: 1px solid rgba(43, 45, 66, 0.2);
+  color: #2B2D42;
+  padding: 8px 8px;
+  border-radius: 4px;
+  transition: all ease 0.2s;
+}
+.auth-input-container #toggle-password:hover {
+  cursor: pointer;
+  background: rgba(43, 45, 66, 0.1);
+}/*# sourceMappingURL=input.css.map */

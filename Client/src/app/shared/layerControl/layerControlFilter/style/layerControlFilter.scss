@@ -1,0 +1,53 @@
+@use "../../../../../global.scss";
+
+.layer-control-filter {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    h4 {
+        opacity: .65;
+        font-size: 12px;
+        font-weight: normal;
+        letter-spacing: 1px;
+        user-select: none;
+    }
+
+    .control-buttons {
+        display: flex;
+        flex-direction: row;
+        gap: 6px;
+        flex-wrap: wrap;
+        user-select: none;
+
+        .filter-button {
+            background: rgba(global.$white, .5);
+            color: global.$primary;
+            border: none;
+            border-radius: 100px;
+            padding: 6px 10px;
+            font-size: 14px;
+            text-decoration: line-through;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 4px;
+            transition: all .2s ease;
+
+
+            &:hover {
+                background: rgba(global.$white, .7);
+            }
+
+            &.active {
+                background: global.$primary;
+                color: global.$white;
+                text-decoration: none;
+
+                &:hover {
+                    background: global.$primary-light;
+                }
+            }
+        }
+    }
+}
