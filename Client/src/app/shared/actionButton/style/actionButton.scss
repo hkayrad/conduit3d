@@ -8,6 +8,7 @@
     cursor: pointer;
     border-radius: 8px;
     padding: 8px 8px;
+    box-shadow: 0 2px 8px rgba(global.$primary, .1);
 
     &.success {
         background: global.$success;
@@ -33,6 +34,15 @@
 
         &:hover {
             background: darken(global.$warning, 5%);
+        }
+    }
+
+    &:disabled {
+        background: global.$gray;
+        cursor: not-allowed;
+
+        &:hover {
+            background: global.$gray;
         }
     }
 }
