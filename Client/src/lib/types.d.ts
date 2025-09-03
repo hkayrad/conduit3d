@@ -21,11 +21,23 @@ export type User = {
     userRole: string,
     name: string,
     createdAt: Date,
+    isActive: boolean
 }
 
 export type LoginUserDto = {
     username: string,
     password: string
+}
+
+export type UserCountsDto = {
+    totalUsers: number,
+    activeUsers: number,
+    inactiveUsers: number
+}
+
+export type TableData = {
+    headers: string[];
+    rows: (string | React.ReactNode)[][];
 }
 
 export type AdrBina = {
