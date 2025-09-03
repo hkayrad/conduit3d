@@ -1,0 +1,84 @@
+@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Lexend", sans-serif;
+  font-size: 16px;
+}
+
+.lucide {
+  width: 16px;
+  height: 16px;
+}
+
+.error {
+  color: #D32F2F !important;
+}
+
+.warning {
+  color: #FFC107 !important;
+}
+
+.success {
+  color: #4CAF50 !important;
+}
+
+.shadow {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+#admin-page {
+  margin-top: 128px;
+  display: flex;
+  flex-direction: column;
+}
+#admin-page #stats {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: auto 15% auto 15%;
+  gap: 12px;
+}
+#admin-page #stats .card {
+  background-color: #EEEEEE;
+  flex-grow: 1;
+  border: 1px solid rgba(75, 78, 115, 0.25);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(43, 45, 66, 0.1);
+}
+#admin-page #stats .card .upper {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+}
+#admin-page #stats .card .upper p {
+  color: #2B2D42;
+}
+#admin-page #stats .card .upper svg {
+  color: #2B2D42;
+}
+#admin-page #stats .card .lower {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+}
+#admin-page #stats .card .lower .content {
+  font-size: 36px;
+  font-weight: bold;
+}
+#admin-page #stats .card .lower .info {
+  color: #3B3E5A;
+}
+#admin-page .action-button-wrapper {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+}/*# sourceMappingURL=admin.css.map */

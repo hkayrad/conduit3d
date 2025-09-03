@@ -1,0 +1,65 @@
+@use "../../../../global.scss";
+
+#admin-page {
+    margin-top: 128px;
+    display: flex;
+    flex-direction: column;
+
+    #stats {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        margin: auto 15% auto 15%;
+        gap: 12px;
+
+        .card {
+            background-color: global.$off-white;
+            flex-grow: 1;
+            border: 1px solid rgba(global.$primary-lighter, .25);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(global.$primary, .1);
+
+            .upper {
+                display: flex;
+                flex-direction: row;
+                align-items: baseline;
+                justify-content: space-between;
+
+                p {
+                    color: global.$primary;
+                }
+
+                svg {
+                    color: global.$primary;
+                }
+            }
+
+            .lower {
+                display: flex;
+                flex-direction: row;
+                align-items: baseline;
+                justify-content: space-between;
+
+                .content {
+                    font-size: 36px;
+                    font-weight: bold;
+                }
+
+                .info {
+                    color: global.$primary-light;
+                }
+            }
+        }
+    }
+
+    .action-button-wrapper {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        align-items: center;
+    }
+}

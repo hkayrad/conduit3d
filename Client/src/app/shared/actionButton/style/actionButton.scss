@@ -1,0 +1,38 @@
+@use "../../../../global.scss";
+
+.action-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    padding: 8px 8px;
+
+    &.success {
+        background: global.$success;
+        color: global.$white !important;
+
+        &:hover {
+            background: darken(global.$success, 5%);
+        }
+    }
+
+    &.error {
+        background: global.$error;
+        color: global.$white !important;
+
+        &:hover {
+            background: darken(global.$error, 5%);
+        }
+    }
+
+    &.warning {
+        background: global.$warning;
+        color: global.$primary !important;
+
+        &:hover {
+            background: darken(global.$warning, 5%);
+        }
+    }
+}
