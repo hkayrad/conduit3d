@@ -1,20 +1,22 @@
-# This is the newer version
+FROM node:lts as build
 
-FROM node:lts
+WORKDIR /src
 
-WORKDIR /app
-
-COPY package.json .
+COPY "Client/package.json" "Client/package-lock.json" ./
 
 RUN npm install
 
-RUN npm i -g serve
-
-COPY . .
-
-WORKDIR "/app/Client"
+COPY "Client/" .
 
 RUN npm run build
+
+FROM node:lts AS final
+
+WORKDIR /app
+
+COPY --from=build /src/dist ./dist
+
+RUN npm i -g serve
 
 EXPOSE 3000
 

@@ -10,6 +10,7 @@ import { Provider } from "react-redux"
 import { store } from "./lib/store"
 import Admin from "./app/layout/admin/Admin"
 import List from "./app/layout/list/List"
+import NotFound from "./notFound"
 
 createRoot(document.getElementById('root')!).render(
   <Provider store={store}>
@@ -39,6 +40,7 @@ createRoot(document.getElementById('root')!).render(
             <Login />
           </RequireNoAuth>
         } />
+        <Route path='*' element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   </Provider>

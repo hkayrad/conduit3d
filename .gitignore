@@ -485,3 +485,5 @@ $RECYCLE.BIN/
 
 localhost.pem
 localhost-key.pem
+
+TileData/*

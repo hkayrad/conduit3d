@@ -7,7 +7,9 @@ COPY ["Common/Common.csproj", "Common/"]
 
 RUN dotnet restore "Services/LinesService/LinesService.csproj"
 
-COPY . .
+COPY ["Services/LinesService/", "Services/LinesService/"]
+COPY ["Common/", "Common/"]
+
 WORKDIR "/src/Services/LinesService"
 
 RUN dotnet publish "LinesService.csproj" -c Release -o /app/publish /p:UseAppHost=false

@@ -146,6 +146,18 @@ services:
       - api_gateway_network
     restart: unless-stopped
 
+  tile_server:
+    image: maplibre/martin:main
+    container_name: tile_server
+    networks:
+      - api_gateway_network
+    ports: 
+      - "3001:3000"
+    volumes:
+      - tile_data:/tileData
+    command: ["/tileData"]
+    restart: unless-stopped
+
   api_gateway:
     image: caddy_gateway:latest
     container_name: api_gateway
@@ -188,3 +200,5 @@ volumes:
   poles_data:
   auth_data:
   caddy_data:
+  tile_data:
+  
