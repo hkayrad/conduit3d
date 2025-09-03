@@ -33,6 +33,9 @@
   border-radius: 1000px;
   padding: 4px 8px;
   display: inline-block;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
 }
 .badge.badge-success {
   background-color: #4CAF50;

@@ -5,6 +5,7 @@
     border-radius: 1000px;
     padding: 4px 8px;
     display: inline-block;
+    user-select: none;
 
     &.badge-success {
         background-color: global.$success;
