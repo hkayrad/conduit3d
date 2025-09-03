@@ -1,7 +1,6 @@
-import { Pencil, Trash2, UserCheck2Icon, Users2, UserX2Icon } from "lucide-react";
-import Card from "./components/Card";
+import { Pencil, Trash2 } from "lucide-react";
 import "./style/admin.css";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { TableData, User, UserCountsDto } from "../../../lib/types";
 import { AuthApi } from "../../../lib/api";
 import { useDispatch } from "react-redux";
@@ -12,7 +11,6 @@ import Badge from "../../shared/badge/Badge";
 import { capitalizeFirstLetter } from "../../../lib/utils";
 import ActionButton from "../../shared/actionButton/ActionButton";
 import Stats from "./components/Stats";
-import UserModal from "../../shared/userModal/UserModal";
 import { selectUserState } from "../auth/authSlice";
 
 export default function Admin() {

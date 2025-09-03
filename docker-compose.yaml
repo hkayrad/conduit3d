@@ -135,6 +135,17 @@ services:
     #   - "5002:8080"
     restart: unless-stopped
 
+  client:
+    build:
+      context: .
+      dockerfile: Client/Dockerfile
+    container_name: client
+    environment:
+      - VITE_API_URL=${VITE_API_URL}
+    networks:
+      - api_gateway_network
+    restart: unless-stopped
+
   api_gateway:
     image: caddy_gateway:latest
     container_name: api_gateway
@@ -153,6 +164,7 @@ services:
       - auth_service
       - lines_service
       - poles_service
+      - client
     volumes:
       - ./ApiGateway/Caddyfile:/etc/caddy/Caddyfile
       - ./ApiGateway/default.html:/usr/share/caddy/default.html

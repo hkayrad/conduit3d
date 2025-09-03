@@ -18,7 +18,7 @@ localhost {
         respond "" 204
     }
     
-    handle_path /docs* {
+    handle_path /api/docs* {
         handle_path /auth* {
             reverse_proxy auth_service:8080
         }
@@ -215,10 +215,14 @@ localhost {
     }
 
     handle {
-        root * /usr/share/caddy
-        try_files {path} default.html
-        file_server
+        reverse_proxy client:3000
     }
+
+    # handle {
+    #     root * /usr/share/caddy
+    #     try_files {path} default.html
+    #     file_server
+    # }
 }
 
 # C3D-67: Integrate JWT authentication
