@@ -1,4 +1,4 @@
-import type { ApiResponse, LoginUserDto, User } from "../types";
+import type { ApiResponse, LoginUserDto, User, UserCountsDto } from "../types";
 import instance from "../instance";
 import Cookies from "js-cookie";
 
@@ -25,5 +25,38 @@ export class AuthApi {
      */
     static logout() {
         Cookies.remove("user_session");
+    }
+
+    /**
+     * Get all users.
+     * @returns An array of users.
+     */
+    static async fetchAll(pageSize: number = 10, pageNumber: number = 1) {
+        const response = await instance.get<ApiResponse<User[]>>("/auth", {
+            params: {
+                pageSize: pageSize,
+                pageNumber: pageNumber
+            }
+        });
+        return response.data;
+    }
+
+    /**
+     * Get the count of users.
+     * @returns The count of users.
+     */
+    static async fetchCount() {
+        const response = await instance.get<ApiResponse<UserCountsDto>>("/auth/count");
+        return response.data;
+    }
+
+    /**
+     * Delete a user.
+     * @param userId The ID of the user to delete.
+     * @returns A promise that resolves when the user is deleted.
+     */
+    static async deleteUser(userId: number) {
+        const response = await instance.delete<ApiResponse<void>>(`/auth/${userId}`);
+        return response.data;
     }
 }
