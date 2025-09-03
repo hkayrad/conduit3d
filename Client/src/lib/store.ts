@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { mapSlice } from '../app/layout/map/mapSlice';
 import { authSlice } from '../app/layout/auth/authSlice';
+import { adminSlice } from '../app/layout/admin/adminSlice';
 
 const loadUserFromLocalStorage = () => {
     try {
@@ -30,6 +31,7 @@ const preloadedUserState = loadUserFromLocalStorage();
 
 export const store = configureStore({
     reducer: {
+        admin: adminSlice.reducer,
         auth: authSlice.reducer,
         map: mapSlice.reducer,
     },
