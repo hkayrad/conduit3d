@@ -1,0 +1,23 @@
+@use "../../../../global.scss";
+
+.badge {
+    font-size: 12px;
+    border-radius: 1000px;
+    padding: 4px 8px;
+    display: inline-block;
+
+    &.badge-success {
+        background-color: global.$success;
+        color: global.$white;
+    }
+
+    &.badge-error {
+        background-color: global.$error;
+        color: global.$white;
+    }
+
+    &.badge-warning {
+        background-color: global.$warning;
+        color: global.$primary;
+    }
+}

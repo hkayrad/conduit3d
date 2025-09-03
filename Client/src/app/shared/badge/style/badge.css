@@ -1,0 +1,48 @@
+@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Lexend", sans-serif;
+  font-size: 16px;
+}
+
+.lucide {
+  width: 16px;
+  height: 16px;
+}
+
+.error {
+  color: #D32F2F !important;
+}
+
+.warning {
+  color: #FFC107 !important;
+}
+
+.success {
+  color: #4CAF50 !important;
+}
+
+.shadow {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.badge {
+  font-size: 12px;
+  border-radius: 1000px;
+  padding: 4px 8px;
+  display: inline-block;
+}
+.badge.badge-success {
+  background-color: #4CAF50;
+  color: #FFFFFF;
+}
+.badge.badge-error {
+  background-color: #D32F2F;
+  color: #FFFFFF;
+}
+.badge.badge-warning {
+  background-color: #FFC107;
+  color: #2B2D42;
+}/*# sourceMappingURL=badge.css.map */
