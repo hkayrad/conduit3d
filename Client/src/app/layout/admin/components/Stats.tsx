@@ -6,6 +6,12 @@ type Props = {
     userCounts: UserCountsDto
 }
 
+/**
+ * Stats component for displaying user statistics.
+ * @component
+ * @param props - The properties for the stats component.
+ * @returns The rendered stats component.
+ */
 export default function Stats(props: Props) {
     const { userCounts } = props;
 

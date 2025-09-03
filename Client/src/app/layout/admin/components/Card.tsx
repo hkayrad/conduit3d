@@ -6,6 +6,12 @@ type Props = {
     info?: string
 }
 
+/**
+ * Card component for displaying a statistic with an icon.
+ * @component
+ * @param props - The properties for the card component.
+ * @returns The rendered card component.
+ */
 export default function Card(props: Props) {
     const { title, icon, number, info, numberColor } = props;
 
