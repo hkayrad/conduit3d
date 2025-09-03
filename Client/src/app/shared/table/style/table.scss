@@ -1,0 +1,185 @@
+@use "../../../../global.scss";
+
+.data-table-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    margin: 32px auto 0 auto;
+
+    .data-table-header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        margin: 0 0 16px 0;
+
+        p {
+            font-size: 24px;
+        }
+
+        .data-table-header-actions {
+            display: flex;
+            gap: 24px;
+
+            .items-per-page-selector {
+                display: flex;
+                gap: 8px;
+                align-items: center;
+
+                p {
+                    font-size: 16px;
+                    color: global.$primary;
+                }
+
+                select {
+                    color: global.$primary;
+                    font-size: 16px;
+                    padding: 4px 8px;
+                    border-radius: 12px;
+                    background: none;
+                    border: 1px solid rgba(global.$primary-lighter, .25);
+                    box-shadow: 0 2px 8px rgba(global.$primary, .1);
+                }
+            }
+
+            button {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                gap: 8px;
+                background: global.$primary;
+                color: global.$white;
+                border: none;
+                border-radius: 12px;
+                padding: 8px 16px;
+                cursor: pointer;
+                font-size: 16px;
+                box-shadow: 0 2px 8px rgba(global.$primary, .1);
+
+                &:hover {
+                    background: global.$primary;
+                }
+            }
+        }
+    }
+
+    .data-table {
+        margin: 0 auto;
+        border: 1px solid rgba(global.$primary-lighter, .25);
+        border-radius: 12px;
+        overflow: hidden;
+        width: 100%;
+
+        table {
+            table-layout: auto;
+            border-collapse: collapse;
+            width: 100%;
+            overflow: hidden;
+
+            tr {
+                border: none;
+
+                &:nth-child(odd) {
+                    background: global.$off-white
+                }
+
+                &:nth-child(even) {
+                    background: global.$white
+                }
+
+                th,
+                td {
+                    padding: 12px 12px;
+                    border-left: 1px solid rgba(global.$primary-lighter, .1);
+                    width: fit-content;
+
+                    &:first-child {
+                        border: none;
+                        max-width: 64px;
+                    }
+                }
+
+                th {
+                    background: global.$primary;
+                    color: global.$white;
+                }
+
+            }
+
+        }
+    }
+
+    .data-table-footer {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        margin: 16px 0 32px 0;
+        gap: 32px;
+
+        .pagination {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            flex-grow: 1;
+
+            button {
+                padding: 8px 12px;
+                border: none;
+                border-radius: 12px;
+                background: global.$primary;
+                color: global.$white;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                box-shadow: 0 2px 8px rgba(global.$primary, .1);
+                gap: 8px;
+
+                &:disabled {
+                    background: global.$gray;
+                    cursor: not-allowed;
+                }
+            }
+
+        }
+
+        .goto-page {
+            display: flex;
+            gap: 8px;
+
+            input {
+                width: 96px;
+                border-radius: 12px;
+                padding: 4px 8px;
+                background: none;
+                border: 1px solid rgba(global.$primary-lighter, .25);
+                box-shadow: 0 2px 8px rgba(global.$primary, .1);
+                color: global.$primary;
+                font-size: 16px;
+                text-align: center;
+
+                &::placeholder {
+                    color: rgba(global.$primary, .5);
+                }
+            }
+
+            button {
+                padding: 8px 12px;
+                border: none;
+                border-radius: 12px;
+                background: global.$primary;
+                color: global.$white;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                box-shadow: 0 2px 8px rgba(global.$primary, .1);
+                gap: 8px;
+
+                &:disabled {
+                    background: global.$gray;
+                    cursor: not-allowed;
+                }
+            }
+        }
+    }
+}
