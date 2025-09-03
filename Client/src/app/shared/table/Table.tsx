@@ -1,6 +1,6 @@
 import "./style/table.css";
 import type { TableData } from "../../../lib/types";
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, RotateCcw } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type Props = {
@@ -10,6 +10,7 @@ type Props = {
     setPageNumber: (newPageNumber: number) => void;
     setItemsPerPage: (e: React.ChangeEvent<HTMLSelectElement>) => void;
     onAddClick?: () => void;
+    onRefresh?: () => void;
     data: TableData,
     totalDataCount: number
 }
@@ -22,6 +23,7 @@ export default function Table(props: Props) {
         setPageNumber,
         setItemsPerPage,
         onAddClick,
+        onRefresh,
         data,
         totalDataCount
     } = props;
@@ -65,6 +67,7 @@ export default function Table(props: Props) {
                                 <option value={50}>50</option>
                             </select>
                         </div>}
+                    {onRefresh && <button onClick={onRefresh}><RotateCcw />Refresh</button>}
                     {onAddClick && <button onClick={onAddClick}><Plus />Add</button>}
                 </div>
                 {/* Table name, page size selector, data filter, add button */}

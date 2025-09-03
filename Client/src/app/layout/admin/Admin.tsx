@@ -125,9 +125,13 @@ export default function Admin() {
         handleDeleteUser(userId);
     }, [handleDeleteUser]);
 
-    useEffect(() => {
+    const handleRefreshData = useCallback(() => {
         handleFetchUsers(itemsPerPage, pageNumber);
         handleFetchUserCount();
+    }, [handleFetchUsers, handleFetchUserCount]);
+
+    useEffect(() => {
+        handleRefreshData();
     }, [itemsPerPage, pageNumber])
 
     useEffect(() => {
@@ -142,6 +146,7 @@ export default function Admin() {
             itemsPerPage={itemsPerPage}
             setPageNumber={handleSetPageNumber}
             setItemsPerPage={handleChangeItemsPerPage}
+            onRefresh={handleRefreshData}
             data={tableData}
             totalDataCount={userCounts.totalUsers}
         />
