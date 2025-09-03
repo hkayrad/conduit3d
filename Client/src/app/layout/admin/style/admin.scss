@@ -1,5 +1,19 @@
 @use "../../../../global.scss";
 
+body {
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: none;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: global.$primary-lighter;
+    }
+}
+
 #admin-page {
     margin-top: 128px;
     display: flex;
@@ -10,6 +24,7 @@
         flex-direction: row;
         justify-content: center;
         margin: auto 15% auto 15%;
+        height: 128px;
         gap: 12px;
 
         .card {

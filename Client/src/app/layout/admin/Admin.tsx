@@ -12,10 +12,13 @@ import Badge from "../../shared/badge/Badge";
 import { capitalizeFirstLetter } from "../../../lib/utils";
 import ActionButton from "../../shared/actionButton/ActionButton";
 import Stats from "./components/Stats";
+import UserModal from "../../shared/userModal/UserModal";
+import { selectUserState } from "../auth/authSlice";
 
 export default function Admin() {
     const dispatch = useDispatch();
     const { itemsPerPage, pageNumber } = useAppSelector(selectAdminState)
+    const currentUser = useAppSelector(selectUserState)
 
     const [users, setUsers] = useState<User[]>([]);
     const [tableData, setTableData] = useState<TableData>({
@@ -27,6 +30,8 @@ export default function Admin() {
         activeUsers: 0,
         inactiveUsers: 0
     });
+    // const [editingUser, setEditingUser] = useState<User | null>(null);
+    // const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
     const handleFetchUsers = async (pageSize: number, pageNumber: number) => {
         const response = await AuthApi.fetchAll(pageSize, pageNumber);
@@ -53,6 +58,29 @@ export default function Admin() {
         }
     }
 
+    // const handleEditUser = async (updatedUser: User) => {
+    //     console.log(updatedUser);
+
+    //     // const response = await AuthApi.updateUser(updatedUser.id, updatedUser);
+
+    //     // if (response.isSuccess) {
+    //     //     await handleFetchUsers(itemsPerPage, pageNumber);
+    //     //     await handleFetchUserCount();
+    //     setIsEditModalOpen(false);
+    //     setEditingUser(null);
+    //     // }
+    // }
+
+    // const handleEditUserButtonClick = useCallback((user: User) => {
+    //     setEditingUser(user);
+    //     setIsEditModalOpen(true);
+    // }, []);
+
+    // const handleCloseEditModal = useCallback(() => {
+    //     setIsEditModalOpen(false);
+    //     setEditingUser(null);
+    // }, []);
+
     const formatData = useCallback(() => {
         const headers = ["Index", "Username", "Name", "Email", "Role", "Status", "Created At", "Actions"];
         const rows = users.map((user, index) => [
@@ -66,16 +94,17 @@ export default function Admin() {
             <Badge
                 color={user.isActive ? "success" : "error"}
                 label={user.isActive ? "Active" : "Inactive"} />,
-            <p className="created-at">{new Date(user.createdAt).toLocaleDateString()}</p>,
+            <p className="created-at">{new Date(user.createdAt).toDateString()}</p>,
             <div className="action-button-wrapper">
                 <ActionButton
                     content={<Pencil />}
                     style="warning"
-                    onClick={() => { }}
+                    onClick={() => {/* handleEditUserButtonClick(user) */ }}
                 />
                 <ActionButton
                     content={<Trash2 />}
                     style="error"
+                    disabled={user.id === currentUser?.id}
                     onClick={() => handleDeleteUserButtonClick(user.id)}
                 />
             </div>
@@ -116,5 +145,13 @@ export default function Admin() {
             data={tableData}
             totalDataCount={userCounts.totalUsers}
         />
+        {/* {isEditModalOpen && editingUser && (
+            <UserModal
+                editingUser={editingUser}
+                setEditingUser={setEditingUser}
+                handleEditUser={handleEditUser}
+                handleCloseEditModal={handleCloseEditModal}
+            />
+        )} */}
     </div >
 }

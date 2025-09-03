@@ -97,12 +97,16 @@
 }
 .data-table-wrapper .data-table table tr {
   border: none;
+  transition: background 0.2s ease;
 }
 .data-table-wrapper .data-table table tr:nth-child(odd) {
-  background: #EEEEEE;
+  background: #F8F8F8;
 }
 .data-table-wrapper .data-table table tr:nth-child(even) {
   background: #FFFFFF;
+}
+.data-table-wrapper .data-table table tr:hover {
+  background: #D3D3D3;
 }
 .data-table-wrapper .data-table table tr th,
 .data-table-wrapper .data-table table tr td {

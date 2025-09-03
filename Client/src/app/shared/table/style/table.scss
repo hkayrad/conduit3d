@@ -77,6 +77,7 @@
 
             tr {
                 border: none;
+                transition: background .2s ease;
 
                 &:nth-child(odd) {
                     background: global.$off-white
@@ -84,6 +85,10 @@
 
                 &:nth-child(even) {
                     background: global.$white
+                }
+
+                &:hover {
+                    background: global.$gray-light;
                 }
 
                 th,

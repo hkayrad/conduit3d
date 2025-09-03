@@ -20,13 +20,19 @@ createRoot(document.getElementById('root')!).render(
             <App />
           </RequireAuth>
         }>
-          <Route index element={<DeckglMap />} />
+          <Route index element={
+            <RequireAuth>
+              <DeckglMap />
+            </RequireAuth>} />
+          <Route path='/list' element={
+            <RequireAuth>
+              <List />
+            </RequireAuth>} />
           <Route path='/admin' element={
             <RequireAdmin>
               <Admin />
             </RequireAdmin>
           } />
-          <Route path='/list' element={<List />} />
         </Route>
         <Route path='/login' element={
           <RequireNoAuth>

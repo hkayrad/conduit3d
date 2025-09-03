@@ -28,6 +28,16 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
+body::-webkit-scrollbar {
+  width: 8px;
+}
+body::-webkit-scrollbar-track {
+  background: none;
+}
+body::-webkit-scrollbar-thumb {
+  background: #4B4E73;
+}
+
 #admin-page {
   margin-top: 128px;
   display: flex;
@@ -38,10 +48,11 @@
   flex-direction: row;
   justify-content: center;
   margin: auto 15% auto 15%;
+  height: 128px;
   gap: 12px;
 }
 #admin-page #stats .card {
-  background-color: #EEEEEE;
+  background-color: #F8F8F8;
   flex-grow: 1;
   border: 1px solid rgba(75, 78, 115, 0.25);
   border-radius: 12px;
