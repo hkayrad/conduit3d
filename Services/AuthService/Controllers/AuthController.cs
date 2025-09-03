@@ -111,7 +111,7 @@ namespace AuthService.Controllers
         /// </example>
         [MapToApiVersion("1.0")]
         [HttpGet("count")]
-        public async Task<Response<int>> GetCountAsync(CancellationToken cancellationToken = default)
+        public async Task<Response<UserCountsDto>> GetCountAsync(CancellationToken cancellationToken = default)
         {
             return await _userService.GetCountAsync(cancellationToken);
         }

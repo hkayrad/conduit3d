@@ -41,7 +41,7 @@ public interface IUserRepository
    /// </summary>
    /// <param name="cancellationToken">Cancellation token.</param>
    /// <returns>The total count of users.</returns>
-   public Task<int> GetCountAsync(CancellationToken cancellationToken);
+   public Task<UserCountsDto> GetCountAsync(CancellationToken cancellationToken);
 
    /// <summary>
    /// Updates a user.
@@ -66,5 +66,5 @@ public interface IUserRepository
    /// <param name="loginUserDto">User login data transfer object.</param>
    /// <param name="cancellationToken">Cancellation token.</param>
    /// <returns>The user information with token.</returns>
-   public Task<UserWithToken> LoginAsync(LoginUserDto loginUserDto, CancellationToken cancellationToken);
+   public Task<UserWithTokenDto> LoginAsync(LoginUserDto loginUserDto, CancellationToken cancellationToken);
 }

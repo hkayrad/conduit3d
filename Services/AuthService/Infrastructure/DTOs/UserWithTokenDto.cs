@@ -1,11 +1,12 @@
 using System;
+using AuthService.Domain;
 
-namespace AuthService.Domain;
+namespace AuthService.Infrastructure.DTOs;
 
 /// <summary>
 /// Represents a user with an authentication token.
 /// </summary>
-public class UserWithToken
+public class UserWithTokenDto
 {
     /// <summary>
     /// The user information.

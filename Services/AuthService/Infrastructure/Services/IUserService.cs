@@ -55,7 +55,7 @@ public interface IUserService
     /// <returns>The total number of users.</returns>
     /// <response code="200">Returns the total number of users.</response>
     /// <response code="500">Internal server error.</response>
-    Task<Response<int>> GetCountAsync(CancellationToken cancellationToken);
+    Task<Response<UserCountsDto>> GetCountAsync(CancellationToken cancellationToken);
 
     /// <summary>
     /// Updates a user.
@@ -91,5 +91,5 @@ public interface IUserService
     /// <response code="200">User authenticated successfully.</response>
     /// <response code="400">Invalid login data.</response>
     /// <response code="500">Internal server error.</response>
-    Task<Response<UserWithToken>> LoginAsync(LoginUserDto loginUserDto, CancellationToken cancellationToken);
+    Task<Response<UserWithTokenDto>> LoginAsync(LoginUserDto loginUserDto, CancellationToken cancellationToken);
 }

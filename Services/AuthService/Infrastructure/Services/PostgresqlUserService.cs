@@ -108,20 +108,20 @@ public class PostgresqlUserService(IUnitOfWork unitOfWork) : IUserService
     }
 
     /// <inheritdoc />
-    public async Task<Response<int>> GetCountAsync(CancellationToken cancellationToken)
+    public async Task<Response<UserCountsDto>> GetCountAsync(CancellationToken cancellationToken)
     {
         try
         {
             var count = await _unitOfWork.UserRepository.GetCountAsync(cancellationToken);
-            return Response<int>.Success(count, AuthResources.GetString("userCountRetrieved"));
+            return Response<UserCountsDto>.Success(count, AuthResources.GetString("userCountRetrieved"));
         }
         catch (NpgsqlException ex)
         {
-            return Response<int>.DatabaseError(AuthResources.GetString("userCountRetrievalFailed", ex.Message));
+            return Response<UserCountsDto>.DatabaseError(AuthResources.GetString("userCountRetrievalFailed", ex.Message));
         }
         catch (Exception ex)
         {
-            return Response<int>.UnhandledError(AuthResources.GetString("userCountRetrievalFailed", ex.Message));
+            return Response<UserCountsDto>.UnhandledError(AuthResources.GetString("userCountRetrievalFailed", ex.Message));
         }
     }
 
@@ -186,27 +186,27 @@ public class PostgresqlUserService(IUnitOfWork unitOfWork) : IUserService
     }
 
     /// <inheritdoc />
-    public async Task<Response<UserWithToken>> LoginAsync(LoginUserDto loginUserDto, CancellationToken cancellationToken)
+    public async Task<Response<UserWithTokenDto>> LoginAsync(LoginUserDto loginUserDto, CancellationToken cancellationToken)
     {
         if (loginUserDto == null)
-            return Response<UserWithToken>.ValidationError(AuthResources.GetString("invalidLoginData"));
+            return Response<UserWithTokenDto>.ValidationError(AuthResources.GetString("invalidLoginData"));
 
         try
         {
             var response = await _unitOfWork.UserRepository.LoginAsync(loginUserDto, cancellationToken);
 
             if (response == null)
-                return Response<UserWithToken>.ValidationError(AuthResources.GetString("invalidLoginData"));
+                return Response<UserWithTokenDto>.ValidationError(AuthResources.GetString("invalidLoginData"));
 
-            return Response<UserWithToken>.Success(response, AuthResources.GetString("loginSuccessful"), HttpStatusCode.OK);
+            return Response<UserWithTokenDto>.Success(response, AuthResources.GetString("loginSuccessful"), HttpStatusCode.OK);
         }
         catch (NpgsqlException ex)
         {
-            return Response<UserWithToken>.DatabaseError(AuthResources.GetString("loginFailed", ex.Message));
+            return Response<UserWithTokenDto>.DatabaseError(AuthResources.GetString("loginFailed", ex.Message));
         }
         catch (Exception ex)
         {
-            return Response<UserWithToken>.UnhandledError(AuthResources.GetString("loginFailed", ex.Message));
+            return Response<UserWithTokenDto>.UnhandledError(AuthResources.GetString("loginFailed", ex.Message));
         }
     }
 }

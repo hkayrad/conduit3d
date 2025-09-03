@@ -33,12 +33,13 @@ public class UserRepository(UsersContext context) : IUserRepository
     /// </remarks>
     public async Task<User> CreateAsync(AddUserDto addUserDto, CancellationToken cancellationToken)
     {
-        var sql = @"INSERT INTO users (username, email, user_role, name, password_hash)
+        var sql = @"INSERT INTO users (username, email, user_role, name, is_active, password_hash)
                 VALUES (
                     @Username, 
                     @Email, 
                     @UserRole, 
                     @Name, 
+                    @IsActive,
                     crypt(@Password, gen_salt('bf'))
                 )
                 RETURNING id, created_at";
@@ -53,6 +54,7 @@ public class UserRepository(UsersContext context) : IUserRepository
         command.Parameters.Add(new NpgsqlParameter("@UserRole", addUserDto.UserRole));
         command.Parameters.Add(new NpgsqlParameter("@Name", addUserDto.Name));
         command.Parameters.Add(new NpgsqlParameter("@Password", addUserDto.Password));
+        command.Parameters.Add(new NpgsqlParameter("@IsActive", addUserDto.IsActive));
 
         await using var reader = await command.ExecuteReaderAsync(cancellationToken);
         await reader.ReadAsync(cancellationToken);
@@ -110,9 +112,18 @@ public class UserRepository(UsersContext context) : IUserRepository
     /// <remarks>
     /// This implementation uses Entity Framework Core's LINQ capabilities.
     /// </remarks>
-    public async Task<int> GetCountAsync(CancellationToken cancellationToken)
+    public async Task<UserCountsDto> GetCountAsync(CancellationToken cancellationToken)
     {
-        return await _users.CountAsync(cancellationToken);
+        int totalCount = await _users.CountAsync(cancellationToken);
+        int activeCount = await _users.CountAsync(u => u.IsActive, cancellationToken);
+        int inactiveCount = await _users.CountAsync(u => !u.IsActive, cancellationToken);
+
+        return new UserCountsDto
+        {
+            TotalUsers = totalCount,
+            ActiveUsers = activeCount,
+            InactiveUsers = inactiveCount
+        };
     }
 
     /// <inheritdoc />
@@ -186,7 +197,7 @@ public class UserRepository(UsersContext context) : IUserRepository
     /// <remarks>
     /// This implementation uses PostgreSQL's native SQL capabilities.
     /// </remarks>
-    public async Task<UserWithToken> LoginAsync(LoginUserDto loginUserDto, CancellationToken cancellationToken)
+    public async Task<UserWithTokenDto> LoginAsync(LoginUserDto loginUserDto, CancellationToken cancellationToken)
     {
         var sql = @"SELECT id, username, email, user_role, name, is_active
                     FROM users 
@@ -217,7 +228,7 @@ public class UserRepository(UsersContext context) : IUserRepository
                     Name = reader.GetString(reader.GetOrdinal("name"))
                 };
 
-                return new UserWithToken
+                return new UserWithTokenDto
                 {
                     User = user,
                     Token = TokenProvider.GenerateToken(user)
