@@ -13,7 +13,7 @@ import { COLORS } from "../constants";
  * @param visibility The map state visibility.
  * @returns The formatted AG Direk feature collection.
 */
-export default function useDirek(
+export function useDirek(
     agDirek: GeoJSON.FeatureCollection,
     ogMusDirek: GeoJSON.FeatureCollection,
     aydDirek: GeoJSON.FeatureCollection,

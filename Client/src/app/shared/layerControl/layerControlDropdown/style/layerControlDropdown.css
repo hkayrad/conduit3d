@@ -112,4 +112,9 @@
   flex-direction: column;
   gap: 12px;
   transition: padding 0.3s ease;
+}
+.layer-control-dropdown .content .inner-content {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
 }/*# sourceMappingURL=layerControlDropdown.css.map */

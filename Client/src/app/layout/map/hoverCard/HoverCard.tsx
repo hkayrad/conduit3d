@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, type JSX } from "react";
 import "./style/hoverCard.css";
 import { DataType } from "../../../../lib/enums";
 import { selectIsHoverInfoVisible } from "../mapSlice";
-import { useAppSelector } from "../../../../lib/hooks/reduxHooks";
+import { useAppSelector } from "../../../../lib/hooks";
 import InfoContent from "../../../shared/infoContent/InfoContent";
 
 type Props = {

@@ -3,29 +3,34 @@ import "deck.gl/stylesheet.css"
 import "maplibre-gl/dist/maplibre-gl.css"
 import "./style/deckglMap.css"
 
-import { DeckGL } from "@deck.gl/react"
+import { COLORS, DEBOUNCE_TIME_MS, MAX_ZOOM } from "../../../lib/constants";
+
+import type { PopupState } from "../../../lib/types";
+
+import { useAppSelector } from "../../../lib/hooks";
+import { useHat } from "../../../lib/hooks";
+import { useDirek } from "../../../lib/hooks";
+import { useMapInteraction } from "../../../lib/hooks";
+
+import { CreateLayer } from "../../../lib/utils";
+import { flyToFeature } from "../../../lib/utils";
+
+import { Layer, MapView, WebMercatorViewport, type MapViewState } from "@deck.gl/core";
+import { ColumnLayer, GeoJsonLayer } from "deck.gl";
+import { DeckGL } from "@deck.gl/react";
 import { CompassWidget, ZoomWidget } from "@deck.gl/widgets";
 import { Map as MapLibre } from 'react-map-gl/maplibre';
-import { useAppSelector } from "../../../lib/hooks/reduxHooks"
 import { useCallback, useEffect, useMemo, useRef, useState, type JSX } from "react";
-import { Layer, MapView, WebMercatorViewport, type MapViewState } from "@deck.gl/core";
+import { useSearchParams } from "react-router";
+import { useDispatch } from "react-redux";
+
 import { selectMapState, setExtent, setViewState } from "./mapSlice";
 import LayerControl from "./layerControl/LayerControl";
-import { ColumnLayer, GeoJsonLayer } from "deck.gl"
-import { CreateLayer } from "../../../lib/utils/layer/createLayer"
-import DataComponent from "./data/DataComponent"
-import { useHat } from "../../../lib/hooks/useHat"
-import useDirek from "../../../lib/hooks/useDirek"
-import MousePosition from "./mousePosition/MousePosition"
-import Attribution from "./attribution/Attribution"
-import { useSearchParams } from "react-router"
-import { useDispatch } from "react-redux"
-import HoverCard from "./hoverCard/HoverCard"
-import FeatureInfo from "./featureInfo/FeatureInfo"
-import { flyToFeature } from "../../../lib/utils"
-import type { PopupState } from "../../../lib/types"
-import { useMapInteraction } from "../../../lib/hooks/useMapInteraction"
-import { COLORS, DEBOUNCE_TIME_MS, MAX_ZOOM } from "../../../lib/constants"
+import DataComponent from "./data/DataComponent";
+import MousePosition from "./mousePosition/MousePosition";
+import Attribution from "./attribution/Attribution";
+import HoverCard from "./hoverCard/HoverCard";
+import FeatureInfo from "./featureInfo/FeatureInfo";
 
 /**
  * DeckglMap component renders the Deck.gl map with various layers and controls.

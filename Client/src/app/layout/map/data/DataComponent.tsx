@@ -1,5 +1,5 @@
 import type { JSX } from "react";
-import { useAppSelector } from "../../../../lib/hooks/reduxHooks";
+import { useAppSelector } from "../../../../lib/hooks";
 import { selectExtent } from "../mapSlice";
 import AdrBinaComponent from "./buildings/AdrBinaComponent";
 import TrafoBinaComponent from "./buildings/TrafoBinaComponent";

@@ -91,5 +91,11 @@
             gap: 12px;
             transition: padding 0.3s ease;
         }
+
+        .inner-content {
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+        }
     }
 }

@@ -1,6 +1,6 @@
 import "./style/loader.css";
 import { LoaderIcon } from "lucide-react";
-import { useAppSelector } from "../../../lib/hooks/reduxHooks";
+import { useAppSelector } from "../../../lib/hooks";
 import { selectIsDataLoading } from "../../layout/map/mapSlice";
 import type { JSX } from "react";
 
