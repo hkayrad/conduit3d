@@ -214,15 +214,16 @@ localhost {
         reverse_proxy poles_service:8080
     }
 
+    handle /404 {
+        root * /usr/share/caddy
+        try_files {path} default.html
+        file_server
+    }
+
     handle {
         reverse_proxy client:3000
     }
 
-    # handle {
-    #     root * /usr/share/caddy
-    #     try_files {path} default.html
-    #     file_server
-    # }
 }
 
 # C3D-67: Integrate JWT authentication
