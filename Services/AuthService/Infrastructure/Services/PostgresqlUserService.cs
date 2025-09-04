@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using AuthService.Domain;
 using AuthService.Infrastructure.DTOs;
+using AuthService.Infrastructure.Utilities;
 using AuthService.Resources;
 using Conduit3D.Common.Domain;
 using Npgsql;
@@ -34,7 +35,12 @@ public class PostgresqlUserService(IUnitOfWork unitOfWork) : IUserService
         }
         catch (NpgsqlException ex)
         {
-            return Response<User>.DatabaseError(AuthResources.GetString("userCreationFailed", ex.Message));
+            return Response<User>.DatabaseError(
+                AuthResources.GetString(
+                    "userCreationFailed",
+                    ErrorParser.ParseDatabaseError(ex)
+                )
+            );
         }
         catch (Exception ex)
         {
@@ -55,7 +61,7 @@ public class PostgresqlUserService(IUnitOfWork unitOfWork) : IUserService
         if (pageNumber < 1)
             return Response<List<User>>.ValidationError(AuthResources.GetString("invalidPageNumber"));
 
-        var allowedSortColumns = new[] { "Id", "Username", "Email", "UserRole", "Name", "CreatedAt" };
+        var allowedSortColumns = new[] { "Id", "Username", "Email", "UserRole", "Name", "CreatedAt", "IsActive", "Status" };
         if (!allowedSortColumns.Contains(sortBy))
             return Response<List<User>>.ValidationError(AuthResources.GetString("invalidSortBy"));
 
@@ -147,7 +153,12 @@ public class PostgresqlUserService(IUnitOfWork unitOfWork) : IUserService
         }
         catch (NpgsqlException ex)
         {
-            return Response<User>.DatabaseError(AuthResources.GetString("userUpdateFailed", ex.Message));
+            return Response<User>.DatabaseError(
+                AuthResources.GetString(
+                    "userUpdateFailed",
+                    ErrorParser.ParseDatabaseError(ex)
+                )
+            );
         }
         catch (Exception ex)
         {
