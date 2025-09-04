@@ -7,6 +7,16 @@
   font-size: 16px;
 }
 
+body::-webkit-scrollbar {
+  width: 8px;
+}
+body::-webkit-scrollbar-track {
+  background: none;
+}
+body::-webkit-scrollbar-thumb {
+  background: #4B4E73;
+}
+
 .lucide {
   width: 16px;
   height: 16px;
@@ -28,23 +38,23 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-.auth-input-container {
+.input-container {
   display: flex;
   flex: row;
   align-items: end;
   min-width: 320px;
   gap: 8px;
 }
-.auth-input-container .auth-input {
+.input-container .input {
   display: flex;
   flex-direction: column;
   width: 100%;
   gap: 4px;
 }
-.auth-input-container .auth-input p {
+.input-container .input p {
   margin-left: 12px;
 }
-.auth-input-container .auth-input input {
+.input-container .input input {
   width: 100%;
   border: 1px solid rgba(43, 45, 66, 0.2);
   border-radius: 4px;
@@ -61,16 +71,16 @@
       }
   } */
 }
-.auth-input-container .auth-input input::-moz-placeholder {
+.input-container .input input::-moz-placeholder {
   color: rgba(43, 45, 66, 0.6);
 }
-.auth-input-container .auth-input input::placeholder {
+.input-container .input input::placeholder {
   color: rgba(43, 45, 66, 0.6);
 }
-.auth-input-container .auth-input input:hover, .auth-input-container .auth-input input:focus {
+.input-container .input input:hover, .input-container .input input:focus {
   background: rgba(43, 45, 66, 0.1);
 }
-.auth-input-container #toggle-password {
+.input-container #toggle-password {
   display: flex;
   align-items: center;
   background: none;
@@ -80,7 +90,7 @@
   border-radius: 4px;
   transition: all ease 0.2s;
 }
-.auth-input-container #toggle-password:hover {
+.input-container #toggle-password:hover {
   cursor: pointer;
   background: rgba(43, 45, 66, 0.1);
 }/*# sourceMappingURL=input.css.map */

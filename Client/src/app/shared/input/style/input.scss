@@ -1,13 +1,13 @@
 @use "../../../../global.scss";
 
-.auth-input-container {
+.input-container {
     display: flex;
     flex: row;
     align-items: end;
     min-width: 320px;
     gap: 8px;
 
-    .auth-input {
+    .input {
         display: flex;
         flex-direction: column;
         width: 100%;

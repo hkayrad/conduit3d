@@ -15,8 +15,8 @@ type Props = {
 
 /**
  * Input component for text and password fields.
- * @p * @component
-ram props - The props for the component
+ * @component
+ * @param props - The props for the component
  * @returns {JSX.Element} The rendered component
  */
 export default function Input(props: Props): JSX.Element {
@@ -25,8 +25,8 @@ export default function Input(props: Props): JSX.Element {
     const { type, id, name, label, required, placeholder, state, setState } = props;
 
     return (
-        <div className="auth-input-container">
-            <label className="auth-input">
+        <div className="input-container">
+            <label className="input">
                 {label && <p>{label}{required && <span className="error">*</span>}</p>}
                 <input
                     type={type ? type === "password" && isPasswordVisible ? "text" : type : "text"}
