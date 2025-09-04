@@ -19,6 +19,20 @@ $off-white: #F8F8F8;
     font-size: 16px;
 }
 
+body {
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: none;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: $primary-lighter;
+    }
+}
+
 .lucide {
     width: 16px;
     height: 16px;
