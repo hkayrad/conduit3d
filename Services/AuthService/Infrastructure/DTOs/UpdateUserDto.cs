@@ -50,7 +50,9 @@ public class UpdateUserDto : IValidatableObject
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         // Username null check
-        if (!string.IsNullOrWhiteSpace(Username))
+        if (string.IsNullOrWhiteSpace(Username))
+            yield return new ValidationResult(AuthResources.GetString("usernameNull"), [nameof(Username)]);
+        else
         {
             // Username max length check
             if (Username.Length > 100)
@@ -66,15 +68,16 @@ public class UpdateUserDto : IValidatableObject
         }
 
         // Email null check
-        if (!string.IsNullOrWhiteSpace(Email))
-        {
-            // Email format check
-            if (!Regex.IsMatch(Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
-                yield return new ValidationResult(AuthResources.GetString("emailInvalid"), [nameof(Email)]);
-        }
+        if (string.IsNullOrWhiteSpace(Email))
+            yield return new ValidationResult(AuthResources.GetString("emailNull"), [nameof(Email)]);
+        // Email format check
+        else if (!Regex.IsMatch(Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            yield return new ValidationResult(AuthResources.GetString("emailInvalid"), [nameof(Email)]);
 
         // UserRole null check
-        if (!string.IsNullOrWhiteSpace(UserRole))
+        if (string.IsNullOrWhiteSpace(UserRole))
+            yield return new ValidationResult(AuthResources.GetString("userRoleNull"), [nameof(UserRole)]);
+        else
         {
             // UserRole validity check
             var allowedRoles = Roles.AllowedRoles;
@@ -83,7 +86,9 @@ public class UpdateUserDto : IValidatableObject
         }
 
         // Name null check
-        if (!string.IsNullOrWhiteSpace(Name))
+        if (string.IsNullOrWhiteSpace(Name))
+            yield return new ValidationResult(AuthResources.GetString("nameNull"), [nameof(Name)]);
+        else
         {
             // Name max length check
             if (Name.Length > 255)
@@ -99,7 +104,9 @@ public class UpdateUserDto : IValidatableObject
         }
 
         // Password null check
-        if (!string.IsNullOrWhiteSpace(Password))
+        if (string.IsNullOrWhiteSpace(Password))
+            yield return new ValidationResult(AuthResources.GetString("passwordNull"), [nameof(Password)]);
+        else
         {
             // Password complexity check
             if (!Regex.IsMatch(Password, @"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"))

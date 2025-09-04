@@ -65,7 +65,7 @@ public class UserDto : IValidatableObject
         if (string.IsNullOrWhiteSpace(Email))
             yield return new ValidationResult(AuthResources.GetString("emailNull"), [nameof(Email)]);
         // Email format check
-        else if (!Regex.IsMatch(Email, @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"))
+        else if (!Regex.IsMatch(Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
             yield return new ValidationResult(AuthResources.GetString("emailInvalid"), [nameof(Email)]);
 
         // UserRole null check
