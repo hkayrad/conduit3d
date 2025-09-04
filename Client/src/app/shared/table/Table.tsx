@@ -1,18 +1,22 @@
 import "./style/table.css";
-import type { TableData } from "../../../lib/types";
-import { ChevronLeft, ChevronRight, Plus, RotateCcw } from "lucide-react";
+import type { TableData, UserSortBy } from "../../../lib/types";
+import { ChevronLeft, ChevronRight, Plus, RotateCcw, SortAsc, SortDesc } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type Props = {
-    tableName: string;
+    tableName?: string;
     pageNumber: number;
     itemsPerPage: number;
+    sortBy: UserSortBy;
+    ascending: boolean;
     setPageNumber: (newPageNumber: number) => void;
     setItemsPerPage: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+    setSortBy: (e: UserSortBy) => void;
+    setAscending: (e: boolean) => void;
     onAddClick?: () => void;
     onRefresh?: () => void;
-    data: TableData,
-    totalDataCount: number
+    data: TableData;
+    totalDataCount: number;
 }
 
 export default function Table(props: Props) {
@@ -20,8 +24,12 @@ export default function Table(props: Props) {
         tableName,
         pageNumber,
         itemsPerPage,
+        sortBy,
+        ascending,
         setPageNumber,
         setItemsPerPage,
+        setSortBy,
+        setAscending,
         onAddClick,
         onRefresh,
         data,
@@ -47,6 +55,21 @@ export default function Table(props: Props) {
             handleGoToPage();
         }
     };
+
+    const handleSort = (headerId: string) => {
+        if (headerId === 'actions')
+            return;
+
+        if (sortBy === headerId) {
+            // If already sorting by this header, toggle to default sort
+            setAscending(!ascending);
+            return;
+        }
+
+        setSortBy(headerId as UserSortBy);
+        setAscending(true);
+
+    }
 
     useEffect(() => {
         setMaxPageCount(calculateTotalPages());
@@ -78,7 +101,16 @@ export default function Table(props: Props) {
                     <thead>
                         <tr>
                             {data.headers.map((header, index) => (
-                                <th id={`header-${header.toLowerCase()}`} key={index}>{header}</th>
+                                <th id={`header-${header.id}`} key={index}>
+                                    <div onClick={() => handleSort(header.id)} className="header-content">
+                                        <p className={sortBy === header.id ? "active" : ""} >{header.label}</p>
+                                        <div onClick={e => e.stopPropagation()} className="header-actions">
+                                            <button disabled={sortBy !== header.id} onClick={() => setAscending(!ascending)}>
+                                                {sortBy === header.id ? (ascending ? <SortDesc /> : <SortAsc />) : ""}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </th>
                             ))}
                         </tr>
                     </thead>

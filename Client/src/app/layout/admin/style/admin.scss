@@ -1,19 +1,5 @@
 @use "../../../../global.scss";
 
-body {
-    &::-webkit-scrollbar {
-        width: 8px;
-    }
-
-    &::-webkit-scrollbar-track {
-        background: none;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        background: global.$primary-lighter;
-    }
-}
-
 #admin-page {
     margin-top: 128px;
     display: flex;
@@ -77,4 +63,122 @@ body {
         justify-content: center;
         align-items: center;
     }
+
+    .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+
+    .modal {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        max-width: 500px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+
+        h2 {
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+
+            label {
+                display: block;
+                margin-bottom: 0.5rem;
+            }
+
+            input,
+            select {
+                width: 100%;
+                padding: 8px;
+                border: 1px solid rgba(global.$primary-lighter, 0.25);
+                background: global.$white;
+                border-radius: 4px;
+
+                &:focus {
+                    border-color: global.$primary;
+                    background: global.$off-white;
+                    outline: none;
+                }
+            }
+
+            &.password-group {
+                display: flex;
+                align-items: end;
+                gap: 8px;
+
+                .input-group {
+                    flex-grow: 1;
+                }
+
+                button {
+                    display: flex;
+                    align-items: center;
+                    width: fit-content;
+                    height: fit-content;
+                    padding: 10px;
+                    border-radius: 4px;
+                    background: none;
+                    cursor: pointer;
+                    border: 1px solid rgba(global.$primary-lighter, 0.25);
+
+                    &:hover {
+                        background: rgba(global.$primary-lighter, 0.1);
+                    }
+                }
+            }
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+
+            button {
+                padding: 0.5rem 1rem;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+
+                &[type="submit"] {
+                    background-color: global.$success;
+                    color: white;
+                }
+
+                &[type="button"] {
+                    background-color: global.$error;
+                    color: white;
+                }
+            }
+        }
+
+        .error-text {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            margin-top: 12px;
+            border-radius: 12px;
+            color: global.$white;
+            background-color: global.$error;
+
+            svg {
+                width: 24px;
+                height: 24px;
+            }
+        }
+    }
+}
 }

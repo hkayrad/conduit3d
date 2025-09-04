@@ -70,7 +70,7 @@
         width: 100%;
 
         table {
-            table-layout: auto;
+            table-layout: fixed;
             border-collapse: collapse;
             width: 100%;
             overflow: hidden;
@@ -96,16 +96,83 @@
                     padding: 12px 12px;
                     border-left: 1px solid rgba(global.$primary-lighter, .1);
                     width: fit-content;
+                    text-wrap: nowrap;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
 
                     &:first-child {
                         border: none;
-                        max-width: 64px;
+                        width: 120px;
                     }
                 }
 
                 th {
                     background: global.$primary;
                     color: global.$white;
+                    user-select: none;
+
+                    &:last-child {
+                        .header-content {
+                            justify-content: center;
+
+                            .header-actions {
+                                display: none;
+                            }
+                        }
+                    }
+
+                    &#header-userRole,
+                    &#header-actions,
+                    &#header-isActive {
+                        width: 120px;
+                    }
+
+                    .header-content {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        gap: 8px;
+
+                        &:hover {
+                            cursor: pointer;
+                        }
+
+                        p {
+                            text-align: left;
+                            font-weight: normal;
+                            cursor: pointer;
+                            flex-grow: 1;
+
+                            &.active {
+                                font-weight: 600;
+                            }
+                        }
+
+                        .header-actions {
+                            display: flex;
+                            align-items: center;
+
+                            button {
+                                display: flex;
+                                align-items: center;
+                                background: none;
+                                border: none;
+                                color: global.$white;
+                                padding: 4px;
+                                transition: all .2s ease;
+                                border-radius: 4px;
+
+                                &:hover {
+                                    background: global.$primary-lighter;
+                                    cursor: pointer;
+                                }
+
+                                &:focus {
+                                    outline: none
+                                }
+                            }
+                        }
+                    }
                 }
 
             }

@@ -7,6 +7,16 @@
   font-size: 16px;
 }
 
+body::-webkit-scrollbar {
+  width: 8px;
+}
+body::-webkit-scrollbar-track {
+  background: none;
+}
+body::-webkit-scrollbar-thumb {
+  background: #4B4E73;
+}
+
 .lucide {
   width: 16px;
   height: 16px;
@@ -26,16 +36,6 @@
 
 .shadow {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-body::-webkit-scrollbar {
-  width: 8px;
-}
-body::-webkit-scrollbar-track {
-  background: none;
-}
-body::-webkit-scrollbar-thumb {
-  background: #4B4E73;
 }
 
 #admin-page {
@@ -92,4 +92,108 @@ body::-webkit-scrollbar-thumb {
   gap: 8px;
   justify-content: center;
   align-items: center;
+}
+#admin-page .modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+#admin-page .modal-overlay .modal {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+#admin-page .modal-overlay .modal h2 {
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+#admin-page .modal-overlay .modal .form-group {
+  margin-bottom: 1rem;
+}
+#admin-page .modal-overlay .modal .form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+#admin-page .modal-overlay .modal .form-group input,
+#admin-page .modal-overlay .modal .form-group select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid rgba(75, 78, 115, 0.25);
+  background: #FFFFFF;
+  border-radius: 4px;
+}
+#admin-page .modal-overlay .modal .form-group input:focus,
+#admin-page .modal-overlay .modal .form-group select:focus {
+  border-color: #2B2D42;
+  background: #F8F8F8;
+  outline: none;
+}
+#admin-page .modal-overlay .modal .form-group.password-group {
+  display: flex;
+  align-items: end;
+  gap: 8px;
+}
+#admin-page .modal-overlay .modal .form-group.password-group .input-group {
+  flex-grow: 1;
+}
+#admin-page .modal-overlay .modal .form-group.password-group button {
+  display: flex;
+  align-items: center;
+  width: -moz-fit-content;
+  width: fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  padding: 10px;
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
+  border: 1px solid rgba(75, 78, 115, 0.25);
+}
+#admin-page .modal-overlay .modal .form-group.password-group button:hover {
+  background: rgba(75, 78, 115, 0.1);
+}
+#admin-page .modal-overlay .modal .modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+#admin-page .modal-overlay .modal .modal-actions button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+#admin-page .modal-overlay .modal .modal-actions button[type=submit] {
+  background-color: #4CAF50;
+  color: white;
+}
+#admin-page .modal-overlay .modal .modal-actions button[type=button] {
+  background-color: #D32F2F;
+  color: white;
+}
+#admin-page .modal-overlay .modal .error-text {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  margin-top: 12px;
+  border-radius: 12px;
+  color: #FFFFFF;
+  background-color: #D32F2F;
+}
+#admin-page .modal-overlay .modal .error-text svg {
+  width: 24px;
+  height: 24px;
 }/*# sourceMappingURL=admin.css.map */

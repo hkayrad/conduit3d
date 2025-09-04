@@ -1,21 +1,22 @@
 import { Pencil, Trash2 } from "lucide-react";
 import "./style/admin.css";
 import { useCallback, useEffect, useState } from "react";
-import type { TableData, User, UserCountsDto } from "../../../lib/types";
+import type { TableData, User, UserCountsDto, UserSortBy } from "../../../lib/types";
 import { AuthApi } from "../../../lib/api";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../../../lib/hooks";
-import { selectAdminState, setItemsPerPage, setPageNumber } from "./adminSlice";
+import { selectAdminState, setItemsPerPage, setPageNumber, setSortBy, setAscending } from "./adminSlice";
 import Table from "../../shared/table/Table";
 import Badge from "../../shared/badge/Badge";
 import { capitalizeFirstLetter } from "../../../lib/utils";
 import ActionButton from "../../shared/actionButton/ActionButton";
 import Stats from "./components/Stats";
 import { selectUserState } from "../auth/authSlice";
+import UserModal from "./components/UserModal";
 
 export default function Admin() {
     const dispatch = useDispatch();
-    const { itemsPerPage, pageNumber } = useAppSelector(selectAdminState)
+    const { itemsPerPage, pageNumber, sortBy, ascending } = useAppSelector(selectAdminState)
     const currentUser = useAppSelector(selectUserState)
 
     const [users, setUsers] = useState<User[]>([]);
@@ -28,11 +29,14 @@ export default function Admin() {
         activeUsers: 0,
         inactiveUsers: 0
     });
-    // const [editingUser, setEditingUser] = useState<User | null>(null);
-    // const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [editingUser, setEditingUser] = useState<User>({} as User);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [newUser, setNewUser] = useState<User>({} as User);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [errorText, setErrorText] = useState("");
 
-    const handleFetchUsers = async (pageSize: number, pageNumber: number) => {
-        const response = await AuthApi.fetchAll(pageSize, pageNumber);
+    const handleFetchUsers = async (pageSize: number, pageNumber: number, sortBy: string, ascending: boolean) => {
+        const response = await AuthApi.fetchAll(pageSize, pageNumber, sortBy, ascending);
 
         if (response.isSuccess) {
             setUsers(response.data);
@@ -51,38 +55,101 @@ export default function Admin() {
         const response = await AuthApi.deleteUser(userId);
 
         if (response.isSuccess) {
-            await handleFetchUsers(itemsPerPage, pageNumber);
+            await handleFetchUsers(itemsPerPage, pageNumber, sortBy, ascending);
             await handleFetchUserCount();
         }
     }
 
-    // const handleEditUser = async (updatedUser: User) => {
-    //     console.log(updatedUser);
+    const handleEditUser = async (updatedUser: User) => {
+        const response = await AuthApi.updateUser(updatedUser.id, updatedUser) as any;
 
-    //     // const response = await AuthApi.updateUser(updatedUser.id, updatedUser);
+        if (response.isSuccess) {
+            await handleFetchUsers(itemsPerPage, pageNumber, sortBy, ascending);
+            await handleFetchUserCount();
+            setIsEditModalOpen(false);
+            setEditingUser({} as User);
+            setErrorText("");
+            return;
+        }
 
-    //     // if (response.isSuccess) {
-    //     //     await handleFetchUsers(itemsPerPage, pageNumber);
-    //     //     await handleFetchUserCount();
-    //     setIsEditModalOpen(false);
-    //     setEditingUser(null);
-    //     // }
-    // }
+        setErrorText(response.message)
 
-    // const handleEditUserButtonClick = useCallback((user: User) => {
-    //     setEditingUser(user);
-    //     setIsEditModalOpen(true);
-    // }, []);
 
-    // const handleCloseEditModal = useCallback(() => {
-    //     setIsEditModalOpen(false);
-    //     setEditingUser(null);
-    // }, []);
+    }
+
+    const handleAddUser = async (newUser: User) => {
+        const response = await AuthApi.createUser(newUser);
+
+        if (response.isSuccess) {
+            await handleFetchUsers(itemsPerPage, pageNumber, sortBy, ascending);
+            await handleFetchUserCount();
+            setIsAddModalOpen(false);
+            setNewUser({} as User);
+            setErrorText("");
+            return;
+        }
+
+        setErrorText(response.message)
+    }
+
+    const handleEditUserButtonClick = useCallback((user: User) => {
+        setEditingUser(user);
+        setIsEditModalOpen(true);
+    }, []);
+
+    const handleAddUserButtonClick = useCallback(() => {
+        setIsAddModalOpen(true);
+    }, []);
+
+    const handleCloseEditModal = useCallback(() => {
+        setErrorText("");
+        setIsEditModalOpen(false);
+        setEditingUser({} as User);
+    }, []);
+
+    const handleCloseAddModal = useCallback(() => {
+        setErrorText("");
+        setIsAddModalOpen(false);
+        setNewUser({} as User);
+    }, []);
 
     const formatData = useCallback(() => {
-        const headers = ["Index", "Username", "Name", "Email", "Role", "Status", "Created At", "Actions"];
-        const rows = users.map((user, index) => [
-            index + 1,
+        const headers = [
+            {
+                id: "id",
+                label: "Id"
+            },
+            {
+                id: "username",
+                label: "Username"
+            },
+            {
+                id: "name",
+                label: "Name"
+            },
+            {
+                id: "email",
+                label: "Email"
+            },
+            {
+                id: "userRole",
+                label: "Role"
+            },
+            {
+                id: "isActive",
+                label: "Status"
+            },
+            {
+                id: "createdAt",
+                label: "Created At"
+            },
+            {
+                id: "actions",
+                label: "Actions"
+            }
+        ];
+        const rows = users.map((user) => [
+            user.id,
             user.username,
             user.name,
             user.email,
@@ -97,7 +164,7 @@ export default function Admin() {
                 <ActionButton
                     content={<Pencil />}
                     style="warning"
-                    onClick={() => {/* handleEditUserButtonClick(user) */ }}
+                    onClick={() => { handleEditUserButtonClick(user) }}
                 />
                 <ActionButton
                     content={<Trash2 />}
@@ -119,18 +186,26 @@ export default function Admin() {
         dispatch(setPageNumber(newPageNumber));
     }, []);
 
+    const handleSetSortBy = useCallback((newSortBy: UserSortBy) => {
+        dispatch(setSortBy(newSortBy));
+    }, []);
+
+    const handleSetAscending = useCallback((newSortOrder: boolean) => {
+        dispatch(setAscending(newSortOrder));
+    }, []);
+
     const handleDeleteUserButtonClick = useCallback((userId: number) => {
         handleDeleteUser(userId);
     }, [handleDeleteUser]);
 
     const handleRefreshData = useCallback(() => {
-        handleFetchUsers(itemsPerPage, pageNumber);
+        handleFetchUsers(itemsPerPage, pageNumber, sortBy, ascending);
         handleFetchUserCount();
     }, [handleFetchUsers, handleFetchUserCount]);
 
     useEffect(() => {
         handleRefreshData();
-    }, [itemsPerPage, pageNumber])
+    }, [itemsPerPage, pageNumber, sortBy, ascending]);
 
     useEffect(() => {
         formatData();
@@ -142,19 +217,36 @@ export default function Admin() {
             tableName="User Management"
             pageNumber={pageNumber}
             itemsPerPage={itemsPerPage}
+            sortBy={sortBy}
+            ascending={ascending}
             setPageNumber={handleSetPageNumber}
+            setSortBy={handleSetSortBy}
+            setAscending={handleSetAscending}
             setItemsPerPage={handleChangeItemsPerPage}
             onRefresh={handleRefreshData}
+            onAddClick={handleAddUserButtonClick}
             data={tableData}
             totalDataCount={userCounts.totalUsers}
         />
-        {/* {isEditModalOpen && editingUser && (
+        {isEditModalOpen && editingUser && (
             <UserModal
-                editingUser={editingUser}
-                setEditingUser={setEditingUser}
-                handleEditUser={handleEditUser}
-                handleCloseEditModal={handleCloseEditModal}
+                user={editingUser}
+                setUser={setEditingUser}
+                handleSubmit={handleEditUser}
+                handleCloseModal={handleCloseEditModal}
+                errorText={errorText}
+                isPasswordRequired
             />
-        )} */}
+        )}
+        {isAddModalOpen && (
+            <UserModal
+                user={newUser}
+                setUser={setNewUser}
+                handleSubmit={handleAddUser}
+                handleCloseModal={handleCloseAddModal}
+                errorText={errorText}
+                isPasswordRequired
+            />
+        )}
     </div >
 }
