@@ -1,6 +1,7 @@
 import type { ApiResponse, LoginUserDto, User, UserCountsDto } from "../types";
 import instance from "../instance";
 import Cookies from "js-cookie";
+import { capitalizeFirstLetter } from "../utils";
 
 /**
  * Class representing the authentication API.
@@ -31,11 +32,17 @@ export class AuthApi {
      * Get all users.
      * @returns An array of users.
      */
-    static async fetchAll(pageSize: number = 10, pageNumber: number = 1) {
+    static async fetchAll(
+        pageSize: number = 10,
+        pageNumber: number = 1,
+        sortBy: string = 'id',
+        ascending: boolean = true) {
         const response = await instance.get<ApiResponse<User[]>>("/auth", {
             params: {
                 pageSize: pageSize,
-                pageNumber: pageNumber
+                pageNumber: pageNumber,
+                sortBy: capitalizeFirstLetter(sortBy),
+                ascending: ascending
             }
         });
         return response.data;
@@ -57,6 +64,16 @@ export class AuthApi {
      */
     static async deleteUser(userId: number) {
         const response = await instance.delete<ApiResponse<void>>(`/auth/${userId}`);
+        return response.data;
+    }
+
+    static async updateUser(userId: number, user: User) {
+        const response = await instance.put<ApiResponse<User>>(`/auth/${userId}`, user);
+        return response.data;
+    }
+
+    static async createUser(user: User) {
+        const response = await instance.post<ApiResponse<User>>(`/auth`, user);
         return response.data;
     }
 }
