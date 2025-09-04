@@ -1,7 +1,6 @@
 import type { User } from "../../../../lib/types";
 import { useEffect, useState } from "react";
 import { CircleAlert, Eye, EyeOff } from "lucide-react";
-import Input from "../../../shared/input/Input";
 
 type Props = {
     user: User;
