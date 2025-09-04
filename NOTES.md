@@ -2,7 +2,9 @@
 
  - Add keybindings overlay to show the users all of the keybinds.
  - Add auto windows adjustment
- - FIX: HOVER POPUP FLICKERS
+ - FIX: HOVER POPUP FLICKERS +
+ - Add deletion confirmation
+ - Fix npgsql error handling
 
 ### Optimization Notes
 

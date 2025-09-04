@@ -20,9 +20,9 @@ instance.interceptors.response.use((response: AxiosResponse) => {
     store.dispatch(setIsDataLoading(false));
     return response;
 }, (error) => {
+    console.log(error.response?.data);
     store.dispatch(setIsDataLoading(false));
-    console.log("Unhandled API Error:", error?.response?.data?.message || error.message);
-    return Promise.reject(error);
+    return error.response.data;
 })
 
 export default instance;
