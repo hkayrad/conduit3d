@@ -37,9 +37,11 @@ export type UserCountsDto = {
 }
 
 export type TableData = {
-    headers: string[];
+    headers: { id: string, label: string }[],
     rows: (string | React.ReactNode)[][];
 }
+
+export type UserSortBy = 'id' | 'username' | 'email' | 'userRole' | 'name' | 'createdAt' | 'isActive';
 
 export type AdrBina = {
     id: number,
