@@ -1,2 +1,7 @@
 @use "../../../../global.scss";
 
+#list-page {
+    margin-top: 96px;
+    display: flex;
+    flex-direction: column;
+}

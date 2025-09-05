@@ -1,5 +1,5 @@
 import "./style/table.css";
-import type { TableData, UserSortBy } from "../../../lib/types";
+import type { TableData } from "../../../lib/types";
 import { ChevronLeft, ChevronRight, Plus, RotateCcw, SortAsc, SortDesc } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -7,11 +7,11 @@ type Props = {
     tableName?: string;
     pageNumber: number;
     itemsPerPage: number;
-    sortBy: UserSortBy;
+    sortBy: string;
     ascending: boolean;
     setPageNumber: (newPageNumber: number) => void;
     setItemsPerPage: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-    setSortBy: (e: UserSortBy) => void;
+    setSortBy: (e: string) => void;
     setAscending: (e: boolean) => void;
     onAddClick?: () => void;
     onRefresh?: () => void;
@@ -66,7 +66,7 @@ export default function Table(props: Props) {
             return;
         }
 
-        setSortBy(headerId as UserSortBy);
+        setSortBy(headerId);
         setAscending(true);
 
     }
