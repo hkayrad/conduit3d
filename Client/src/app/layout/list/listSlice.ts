@@ -6,14 +6,16 @@ export interface ListState {
     itemsPerPage: number,
     pageNumber: number,
     sortBy: string,
-    ascending: boolean
+    ascending: boolean,
+    featureType: string
 }
 
 const initialState: ListState = {
     itemsPerPage: 10,
     pageNumber: 1,
     sortBy: 'id',
-    ascending: true
+    ascending: true,
+    featureType: 'AdrBina'
 };
 
 export const listSlice = createSlice({
@@ -31,6 +33,9 @@ export const listSlice = createSlice({
         },
         setAscending: (state, action: PayloadAction<ListState['ascending']>) => {
             state.ascending = action.payload;
+        },
+        setFeatureType: (state, action: PayloadAction<ListState['featureType']>) => {
+            state.featureType = action.payload;
         }
     }
 });
@@ -39,7 +44,8 @@ export const {
     setItemsPerPage,
     setPageNumber,
     setSortBy,
-    setAscending
+    setAscending,
+    setFeatureType
 } = listSlice.actions;
 
 export const selectListState = (state: RootState) => state.list;
@@ -48,5 +54,6 @@ export const selectItemsPerPage = (state: RootState) => state.list.itemsPerPage;
 export const selectPageNumber = (state: RootState) => state.list.pageNumber;
 export const selectSortBy = (state: RootState) => state.list.sortBy;
 export const selectSortOrder = (state: RootState) => state.list.ascending;
+export const selectFeatureType = (state: RootState) => state.list.featureType;
 
 export default listSlice.reducer;

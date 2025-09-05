@@ -4,7 +4,7 @@ import Table from "../../shared/table/Table";
 import React, { useCallback, useEffect, useState } from "react";
 import type { TableData } from "../../../lib/types";
 import { useAppSelector } from "../../../lib/hooks";
-import { selectListState, setAscending, setItemsPerPage, setPageNumber, setSortBy } from "./listSlice";
+import { selectListState, setAscending, setFeatureType, setItemsPerPage, setPageNumber, setSortBy } from "./listSlice";
 import { AdrBinaApi, AgDirekApi, AgHatApi, AydDirekApi, OgHatApi, OgMusDirekApi, RekortmanApi, TrafoBinaApi } from "../../../lib/api";
 import { capitalizeFirstLetter, findAverageLonLat } from "../../../lib/utils";
 import { MapPin } from "lucide-react";
@@ -14,11 +14,11 @@ import { useNavigate } from "react-router";
 export default function List() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { itemsPerPage, pageNumber, sortBy, ascending } = useAppSelector(selectListState)
+    const { itemsPerPage, pageNumber, sortBy, ascending, featureType } = useAppSelector(selectListState)
 
     const [features, setFeatures] = useState<any[]>([]);
     const [featureCount, setFeatureCount] = useState<number>(0);
-    const [featureToFetch, setFeatureToFetch] = useState<string>("AdrBina");
+
     const [tableData, setTableData] = useState<TableData>({
         headers: [],
         rows: []
@@ -158,12 +158,12 @@ export default function List() {
     }, []);
 
     const handleRefreshData = useCallback(() => {
-        handleFetchFeatures(featureToFetch);
-    }, [handleFetchFeatures, featureToFetch]);
+        handleFetchFeatures(featureType);
+    }, [handleFetchFeatures, featureType]);
 
     useEffect(() => {
         handleRefreshData();
-    }, [featureToFetch, itemsPerPage, pageNumber, sortBy, ascending]);
+    }, [featureType, itemsPerPage, pageNumber, sortBy, ascending]);
 
     useEffect(() => {
         formatData();
@@ -171,7 +171,7 @@ export default function List() {
 
     useEffect(() => {
         dispatch(setPageNumber(1));
-    }, [featureToFetch])
+    }, [featureType])
 
     return <div id="list-page">
         <div className="feature-type-selector">
@@ -192,8 +192,8 @@ export default function List() {
                         {section.types.map((type, typeIndex) => (
                             <button
                                 key={index}
-                                className={featureToFetch === type ? "selected" : ""}
-                                onClick={() => setFeatureToFetch(type)}
+                                className={featureType === type ? "selected" : ""}
+                                onClick={() => dispatch(setFeatureType(type))}
                             >
                                 {type}
                             </button>
