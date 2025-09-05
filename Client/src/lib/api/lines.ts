@@ -1,5 +1,6 @@
 import instance from "../instance";
 import type { ApiResponse, Extent, Hat, Rekortman } from "../types";
+import { capitalizeFirstLetter } from "../utils";
 
 /**
  * Class representing the AG Hat API
@@ -10,11 +11,21 @@ export class AgHatApi {
      * @param {Extent} extent The geographical extent to filter the features.
      * @returns A promise that resolves to the list of AG Hat features.
      */
-    static async fetchAll(extent: Extent) {
+    static async fetchAll(
+        pageSize: number = 200000,
+        pageNumber: number = 1,
+        sortBy: string = 'id',
+        ascending: boolean = true,
+        extent?: Extent
+    ) {
         const response = await instance.get<ApiResponse<Hat[]>>(
             "agHat",
             {
                 params: {
+                    pageSize,
+                    pageNumber,
+                    sortBy: capitalizeFirstLetter(sortBy),
+                    ascending,
                     ...extent
                 }
             }
@@ -32,6 +43,11 @@ export class AgHatApi {
         );
         return response.data;
     }
+
+    static async fetchCount() {
+        const response = await instance.get<ApiResponse<number>>("agHat/count");
+        return response.data;
+    }
 }
 
 /**
@@ -43,11 +59,21 @@ export class OgHatApi {
      * @param {Extent} extent The geographical extent to filter the features.
      * @returns A promise that resolves to the list of OG Hat features.
      */
-    static async fetchAll(extent: Extent) {
+    static async fetchAll(
+        pageSize: number = 200000,
+        pageNumber: number = 1,
+        sortBy: string = 'id',
+        ascending: boolean = true,
+        extent?: Extent
+    ) {
         const response = await instance.get<ApiResponse<Hat[]>>(
             "ogHat",
             {
                 params: {
+                    pageSize,
+                    pageNumber,
+                    sortBy: capitalizeFirstLetter(sortBy),
+                    ascending,
                     ...extent
                 }
             });
@@ -65,6 +91,11 @@ export class OgHatApi {
         );
         return response.data;
     }
+
+    static async fetchCount() {
+        const response = await instance.get<ApiResponse<number>>("ogHat/count");
+        return response.data;
+    }
 }
 
 /**
@@ -76,11 +107,21 @@ export class RekortmanApi {
      * @param {Extent} extent The geographical extent to filter the features.
      * @returns A promise that resolves to the list of Rekortman features.
      */
-    static async fetchAll(extent: Extent) {
+    static async fetchAll(
+        pageSize: number = 200000,
+        pageNumber: number = 1,
+        sortBy: string = 'id',
+        ascending: boolean = true,
+        extent?: Extent
+    ) {
         const response = await instance.get<ApiResponse<Rekortman[]>>(
             "rekortman",
             {
                 params: {
+                    pageSize,
+                    pageNumber,
+                    sortBy: capitalizeFirstLetter(sortBy),
+                    ascending,
                     ...extent
                 }
             }
@@ -96,6 +137,11 @@ export class RekortmanApi {
         const response = await instance.get<ApiResponse<string[]>>(
             "rekortman/types"
         );
+        return response.data;
+    }
+
+    static async fetchCount() {
+        const response = await instance.get<ApiResponse<number>>("rekortman/count");
         return response.data;
     }
 }
