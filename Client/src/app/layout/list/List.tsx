@@ -18,17 +18,17 @@ export default function List() {
 
     const [features, setFeatures] = useState<any[]>([]);
     const [featureCount, setFeatureCount] = useState<number>(0);
-    const [featureToFetch, setFeatureToFetch] = useState<number>(0);
+    const [featureToFetch, setFeatureToFetch] = useState<string>("AdrBina");
     const [tableData, setTableData] = useState<TableData>({
         headers: [],
         rows: []
     });
 
-    const handleFetchFeatures = async (featureToFetch: number) => {
+    const handleFetchFeatures = async (featureToFetch: string) => {
         var dataResponse;
         var countResponse;
         switch (featureToFetch) {
-            case 0:
+            case "AdrBina":
                 dataResponse = await AdrBinaApi.fetchAll(itemsPerPage, pageNumber, sortBy, ascending)
                 if (dataResponse.isSuccess) {
                     setFeatures(dataResponse.data);
@@ -38,7 +38,7 @@ export default function List() {
                     setFeatureCount(countResponse.data);
                 }
                 break;
-            case 1:
+            case "Trafo":
                 dataResponse = await TrafoBinaApi.fetchAll(itemsPerPage, pageNumber, sortBy, ascending)
                 if (dataResponse.isSuccess) {
                     setFeatures(dataResponse.data);
@@ -48,7 +48,7 @@ export default function List() {
                     setFeatureCount(countResponse.data);
                 }
                 break;
-            case 2:
+            case "AgDirek":
                 dataResponse = await AgDirekApi.fetchAll(itemsPerPage, pageNumber, sortBy, ascending)
                 if (dataResponse.isSuccess) {
                     setFeatures(dataResponse.data);
@@ -58,7 +58,7 @@ export default function List() {
                     setFeatureCount(countResponse.data);
                 }
                 break;
-            case 3:
+            case "OgMusDirek":
                 dataResponse = await OgMusDirekApi.fetchAll(itemsPerPage, pageNumber, sortBy, ascending)
                 if (dataResponse.isSuccess) {
                     setFeatures(dataResponse.data);
@@ -68,7 +68,7 @@ export default function List() {
                     setFeatureCount(countResponse.data);
                 }
                 break;
-            case 4:
+            case "AydDirek":
                 dataResponse = await AydDirekApi.fetchAll(itemsPerPage, pageNumber, sortBy, ascending)
                 if (dataResponse.isSuccess) {
                     setFeatures(dataResponse.data);
@@ -78,7 +78,7 @@ export default function List() {
                     setFeatureCount(countResponse.data);
                 }
                 break;
-            case 5:
+            case "AgHat":
                 dataResponse = await AgHatApi.fetchAll(itemsPerPage, pageNumber, sortBy, ascending)
                 if (dataResponse.isSuccess) {
                     setFeatures(dataResponse.data);
@@ -88,7 +88,7 @@ export default function List() {
                     setFeatureCount(countResponse.data);
                 }
                 break;
-            case 6:
+            case "OgHat":
                 dataResponse = await OgHatApi.fetchAll(itemsPerPage, pageNumber, sortBy, ascending)
                 if (dataResponse.isSuccess) {
                     setFeatures(dataResponse.data);
@@ -98,7 +98,7 @@ export default function List() {
                     setFeatureCount(countResponse.data);
                 }
                 break;
-            case 7:
+            case "Rekortman":
                 dataResponse = await RekortmanApi.fetchAll(itemsPerPage, pageNumber, sortBy, ascending)
                 if (dataResponse.isSuccess) {
                     setFeatures(dataResponse.data);
@@ -176,18 +176,33 @@ export default function List() {
     return <div id="list-page">
         <div className="feature-type-selector">
             <h2>Feature Type</h2>
-            <div className="feature-type-buttons">
-                {['AdrBina', 'TrafoBina', 'AgDirek', 'OgMusDirek', 'AydDirek', 'AgHat', 'OgHat', 'Rekortman'].map((featureType, index) => (
-                    <button
-                        key={index}
-                        className={featureToFetch === index ? "selected" : ""}
-                        onClick={() => setFeatureToFetch(index)}
-                    >
-                        {featureType}
-                    </button>
+            <div className="feature-type-sections">
+                {[{
+                    sectionLabel: "Binalar",
+                    types: ["AdrBina", "Trafo"]
+                }, {
+                    sectionLabel: "Direkler",
+                    types: ["AgDirek", "OgMusDirek", "AydDirek"]
+                }, {
+                    sectionLabel: "Hatlar",
+                    types: ["AgHat", "OgHat", "Rekortman"]
+                }].map((section, index) => (
+                    <div key={index} className="feature-type-section">
+                        <h3>{section.sectionLabel}</h3>
+                        {section.types.map((type, typeIndex) => (
+                            <button
+                                key={index}
+                                className={featureToFetch === type ? "selected" : ""}
+                                onClick={() => setFeatureToFetch(type)}
+                            >
+                                {type}
+                            </button>
+                        ))}
+                    </div>
                 ))}
             </div>
         </div>
+        <div className="divider" />
         <Table
             tableName="Features"
             pageNumber={pageNumber}

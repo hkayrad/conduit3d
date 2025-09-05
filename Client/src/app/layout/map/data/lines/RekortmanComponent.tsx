@@ -23,7 +23,7 @@ export default function RekortmanComponent(props: Props) {
     const dispatch = useDispatch();
 
     const handleRekortmanFetch = useCallback(async () => {
-        const response = await RekortmanApi.fetchAll(extent);
+        const response = await RekortmanApi.fetchAll(200000, 1, 'id', true, extent);
 
         if (response.isSuccess) {
             var dataList: GeoJSON.FeatureCollection = {

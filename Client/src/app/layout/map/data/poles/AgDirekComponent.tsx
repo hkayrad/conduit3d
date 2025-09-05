@@ -21,7 +21,7 @@ export default function AgDirekComponent(props: Props) {
     const dispatch = useDispatch();
 
     const handleAgDirekFetch = useCallback(async () => {
-        const response = await AgDirekApi.fetchAll(extent);
+        const response = await AgDirekApi.fetchAll(200000, 1, 'id', true, extent);
 
         if (response.isSuccess) {
             var dataList: GeoJSON.FeatureCollection = {
