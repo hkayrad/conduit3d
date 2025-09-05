@@ -26,7 +26,7 @@ export default function Input(props: Props): JSX.Element {
 
     return (
         <div className="input-container">
-            <label className="input">
+            <label className="input-element">
                 {label && <p>{label}{required && <span className="error">*</span>}</p>}
                 <input
                     type={type ? type === "password" && isPasswordVisible ? "text" : type : "text"}

@@ -22,7 +22,7 @@ export default function Card(props: Props) {
                 <div className="icon">{icon}</div>
             </div>
             <div className="lower">
-                <p className={`content ${numberColor}`}>{number}</p>
+                <p className={`content ${numberColor}-fg`}>{number}</p>
                 {info && <p className="info">{info}</p>}
             </div>
         </div>

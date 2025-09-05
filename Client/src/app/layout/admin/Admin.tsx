@@ -12,7 +12,9 @@ import { capitalizeFirstLetter } from "../../../lib/utils";
 import ActionButton from "../../shared/actionButton/ActionButton";
 import Stats from "./components/Stats";
 import { selectUserState } from "../auth/authSlice";
-import UserModal from "./components/UserModal";
+import Modal from "../../shared/modal/Modal";
+import UserActionModalContent from "./components/UserModalContent";
+import UserDeleteModalContent from "./components/UserDeleteModalContent";
 
 export default function Admin() {
     const dispatch = useDispatch();
@@ -34,6 +36,8 @@ export default function Admin() {
     const [newUser, setNewUser] = useState<User>({} as User);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [errorText, setErrorText] = useState("");
+    const [iseDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [userToDelete, setUserToDelete] = useState<User>({} as User);
 
     const handleFetchUsers = async (pageSize: number, pageNumber: number, sortBy: string, ascending: boolean) => {
         const response = await AuthApi.fetchAll(pageSize, pageNumber, sortBy, ascending);
@@ -57,6 +61,10 @@ export default function Admin() {
         if (response.isSuccess) {
             await handleFetchUsers(itemsPerPage, pageNumber, sortBy, ascending);
             await handleFetchUserCount();
+            setIsDeleteModalOpen(false);
+            setUserToDelete({} as User);
+            setErrorText("");
+            return;
         }
     }
 
@@ -101,6 +109,11 @@ export default function Admin() {
         setIsAddModalOpen(true);
     }, []);
 
+    const handleDeleteUserButtonClick = useCallback((user: User) => {
+        setUserToDelete(user);
+        setIsDeleteModalOpen(true);
+    }, []);
+
     const handleCloseEditModal = useCallback(() => {
         setErrorText("");
         setIsEditModalOpen(false);
@@ -111,6 +124,12 @@ export default function Admin() {
         setErrorText("");
         setIsAddModalOpen(false);
         setNewUser({} as User);
+    }, []);
+
+    const handleCloseDeleteModal = useCallback(() => {
+        setErrorText("");
+        setIsDeleteModalOpen(false);
+        setUserToDelete({} as User);
     }, []);
 
     const formatData = useCallback(() => {
@@ -170,7 +189,7 @@ export default function Admin() {
                     content={<Trash2 />}
                     style="error"
                     disabled={user.id === currentUser?.id}
-                    onClick={() => handleDeleteUserButtonClick(user.id)}
+                    onClick={() => handleDeleteUserButtonClick(user)}
                 />
             </div>
         ]);
@@ -193,10 +212,6 @@ export default function Admin() {
     const handleSetAscending = useCallback((newSortOrder: boolean) => {
         dispatch(setAscending(newSortOrder));
     }, []);
-
-    const handleDeleteUserButtonClick = useCallback((userId: number) => {
-        handleDeleteUser(userId);
-    }, [handleDeleteUser]);
 
     const handleRefreshData = useCallback(() => {
         handleFetchUsers(itemsPerPage, pageNumber, sortBy, ascending);
@@ -229,24 +244,36 @@ export default function Admin() {
             totalDataCount={userCounts.totalUsers}
         />
         {isEditModalOpen && editingUser && (
-            <UserModal
-                user={editingUser}
-                setUser={setEditingUser}
-                handleSubmit={handleEditUser}
-                handleCloseModal={handleCloseEditModal}
-                errorText={errorText}
-                isPasswordRequired
-            />
+            <Modal>
+                <UserActionModalContent
+                    user={editingUser}
+                    setUser={setEditingUser}
+                    handleSubmit={handleEditUser}
+                    handleCloseModal={handleCloseEditModal}
+                    errorText={errorText}
+                    isPasswordRequired
+                />
+            </Modal>
         )}
         {isAddModalOpen && (
-            <UserModal
-                user={newUser}
-                setUser={setNewUser}
-                handleSubmit={handleAddUser}
-                handleCloseModal={handleCloseAddModal}
-                errorText={errorText}
-                isPasswordRequired
-            />
+            <Modal>
+                <UserActionModalContent
+                    user={newUser}
+                    setUser={setNewUser}
+                    handleSubmit={handleAddUser}
+                    handleCloseModal={handleCloseAddModal}
+                    errorText={errorText}
+                    isPasswordRequired
+                />
+            </Modal>
         )}
+        {iseDeleteModalOpen &&
+            <Modal>
+                <UserDeleteModalContent
+                    user={userToDelete}
+                    handleDelete={handleDeleteUser}
+                    handleCloseModal={handleCloseDeleteModal}
+                />
+            </Modal>}
     </div >
 }

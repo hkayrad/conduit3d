@@ -38,16 +38,36 @@ body {
     height: 16px;
 }
 
-.error {
+.error-fg {
     color: $error !important;
 }
 
-.warning {
+.warning-fg {
     color: $warning !important;
 }
 
-.success {
+.success-fg {
     color: $success !important;
+}
+
+.white-fg {
+    color: $white !important;
+}
+
+.error-bg {
+    background: $error !important;
+}
+
+.warning-bg {
+    background: $warning !important;
+}
+
+.success-bg {
+    background: $success !important;
+}
+
+.white-bg {
+    background: $white !important;
 }
 
 .shadow {

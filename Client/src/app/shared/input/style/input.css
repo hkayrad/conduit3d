@@ -45,16 +45,16 @@ body::-webkit-scrollbar-thumb {
   min-width: 320px;
   gap: 8px;
 }
-.input-container .input {
+.input-container .input-element {
   display: flex;
   flex-direction: column;
   width: 100%;
   gap: 4px;
 }
-.input-container .input p {
+.input-container .input-element p {
   margin-left: 12px;
 }
-.input-container .input input {
+.input-container .input-element input {
   width: 100%;
   border: 1px solid rgba(43, 45, 66, 0.2);
   border-radius: 4px;
@@ -71,13 +71,13 @@ body::-webkit-scrollbar-thumb {
       }
   } */
 }
-.input-container .input input::-moz-placeholder {
+.input-container .input-element input::-moz-placeholder {
   color: rgba(43, 45, 66, 0.6);
 }
-.input-container .input input::placeholder {
+.input-container .input-element input::placeholder {
   color: rgba(43, 45, 66, 0.6);
 }
-.input-container .input input:hover, .input-container .input input:focus {
+.input-container .input-element input:hover, .input-container .input-element input:focus {
   background: rgba(43, 45, 66, 0.1);
 }
 .input-container #toggle-password {
