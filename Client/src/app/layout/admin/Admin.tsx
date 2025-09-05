@@ -11,7 +11,7 @@ import Badge from "../../shared/badge/Badge";
 import { capitalizeFirstLetter } from "../../../lib/utils";
 import ActionButton from "../../shared/actionButton/ActionButton";
 import Stats from "./components/Stats";
-import { selectUserState } from "../auth/authSlice";
+import { selectUserState, setUser } from "../auth/authSlice";
 import Modal from "../../shared/modal/Modal";
 import UserActionModalContent from "./components/UserModalContent";
 import UserDeleteModalContent from "./components/UserDeleteModalContent";
@@ -40,12 +40,15 @@ export default function Admin() {
     const [userToDelete, setUserToDelete] = useState<User>({} as User);
     const [query, setQuery] = useState<string>("");
 
-    const handleFetchUsers = async (pageSize: number, pageNumber: number, sortBy: string, ascending: boolean) => {
-        const response = await AuthApi.fetchAll(pageSize, pageNumber, sortBy, ascending);
+    const handleFetchUsers = async (pageSize: number, pageNumber: number, sortBy: string, ascending: boolean, query: string) => {
+        const response = await AuthApi.fetchAll(pageSize, pageNumber, sortBy, ascending, query);
 
         if (response.isSuccess) {
             setUsers(response.data);
+            return;
         }
+
+        setUsers([]);
     }
 
     const handleFetchUserCount = async () => {
@@ -60,7 +63,7 @@ export default function Admin() {
         const response = await AuthApi.deleteUser(userId);
 
         if (response.isSuccess) {
-            await handleFetchUsers(itemsPerPage, pageNumber, sortBy, ascending);
+            await handleFetchUsers(itemsPerPage, pageNumber, sortBy, ascending, query);
             await handleFetchUserCount();
             setIsDeleteModalOpen(false);
             setUserToDelete({} as User);
@@ -73,7 +76,7 @@ export default function Admin() {
         const response = await AuthApi.updateUser(updatedUser.id, updatedUser) as any;
 
         if (response.isSuccess) {
-            await handleFetchUsers(itemsPerPage, pageNumber, sortBy, ascending);
+            await handleFetchUsers(itemsPerPage, pageNumber, sortBy, ascending, query);
             await handleFetchUserCount();
             setIsEditModalOpen(false);
             setEditingUser({} as User);
@@ -90,7 +93,7 @@ export default function Admin() {
         const response = await AuthApi.createUser(newUser);
 
         if (response.isSuccess) {
-            await handleFetchUsers(itemsPerPage, pageNumber, sortBy, ascending);
+            await handleFetchUsers(itemsPerPage, pageNumber, sortBy, ascending, query);
             await handleFetchUserCount();
             setIsAddModalOpen(false);
             setNewUser({} as User);
@@ -215,13 +218,21 @@ export default function Admin() {
     }, []);
 
     const handleRefreshData = useCallback(() => {
-        handleFetchUsers(itemsPerPage, pageNumber, sortBy, ascending);
+        handleFetchUsers(itemsPerPage, pageNumber, sortBy, ascending, query);
         handleFetchUserCount();
     }, [handleFetchUsers, handleFetchUserCount]);
 
     useEffect(() => {
         handleRefreshData();
     }, [itemsPerPage, pageNumber, sortBy, ascending]);
+
+    useEffect(() => {
+        const delayDebounceFn = setTimeout(() => {
+            handleRefreshData();
+        }, 500)
+
+        return () => clearTimeout(delayDebounceFn)
+    }, [query])
 
     useEffect(() => {
         formatData();

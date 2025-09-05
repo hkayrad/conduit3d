@@ -36,13 +36,15 @@ export class AuthApi {
         pageSize: number = 10,
         pageNumber: number = 1,
         sortBy: string = 'id',
-        ascending: boolean = true) {
+        ascending: boolean = true,
+        query: string = null!) {
         const response = await instance.get<ApiResponse<User[]>>("/auth", {
             params: {
                 pageSize: pageSize,
                 pageNumber: pageNumber,
                 sortBy: capitalizeFirstLetter(sortBy),
-                ascending: ascending
+                ascending: ascending,
+                query: query
             }
         });
         return response.data;
