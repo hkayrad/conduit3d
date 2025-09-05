@@ -1,5 +1,8 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+using NpgsqlTypes;
 
 namespace AuthService.Domain;
 
@@ -46,4 +49,11 @@ public class User
     /// Indicates whether the user is active.
     /// </summary>
     public bool IsActive { get; set; }
+
+    /// <summary>
+    /// TsVector column for full-text search.
+    /// </summary>
+    [Column("searchable_text")]
+    [JsonIgnore]
+    public NpgsqlTsVector SearchableText { get; set; } = null!;
 }

@@ -53,6 +53,7 @@ public class PostgresqlUserService(IUnitOfWork unitOfWork) : IUserService
                                                             int pageNumber,
                                                             string sortBy,
                                                             bool ascending,
+                                                            string? query,
                                                             CancellationToken cancellationToken)
     {
         if (pageSize < 1 || pageSize > 100000)
@@ -71,6 +72,7 @@ public class PostgresqlUserService(IUnitOfWork unitOfWork) : IUserService
                                                                     pageSize,
                                                                     sortBy,
                                                                     ascending,
+                                                                    query,
                                                                     cancellationToken);
 
             if (users == null || users.Count == 0)

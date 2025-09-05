@@ -34,7 +34,7 @@ public interface IUserService
     /// <response code="400">Invalid parameters.</response>
     /// <response code="404">No users found.</response>
     /// <response code="500">Internal server error.</response>
-    Task<Response<List<User>>> GetAllUsersAsync(int pageSize, int pageNumber, string sortBy, bool ascending, CancellationToken cancellationToken);
+    Task<Response<List<User>>> GetAllUsersAsync(int pageSize, int pageNumber, string sortBy, bool ascending, string? query, CancellationToken cancellationToken);
 
     /// <summary>
     /// Retrieves a user by their ID.

@@ -84,19 +84,23 @@ public class UserRepository(UsersContext context) : IUserRepository
                                             int pageSize,
                                             string sortBy,
                                             bool ascending,
+                                            string? query,
                                             CancellationToken cancellationToken)
     {
-        var query = _users.AsQueryable();
+        var dbQuery = _users.AsQueryable();
 
         if (ascending)
-            query = query.OrderBy(u => EF.Property<object>(u, sortBy));
+            dbQuery = dbQuery.OrderBy(u => EF.Property<object>(u, sortBy));
         else
-            query = query.OrderByDescending(u => EF.Property<object>(u, sortBy));
+            dbQuery = dbQuery.OrderByDescending(u => EF.Property<object>(u, sortBy));
 
-        query = query.Skip((pageNumber - 1) * pageSize)
+        if (!string.IsNullOrWhiteSpace(query))
+            dbQuery = dbQuery.Where(u => u.SearchableText.Matches(EF.Functions.ToTsQuery("simple", query)));
+
+        dbQuery = dbQuery.Skip((pageNumber - 1) * pageSize)
                      .Take(pageSize);
 
-        return await query.ToListAsync(cancellationToken);
+        return await dbQuery.ToListAsync(cancellationToken);
     }
 
     /// <inheritdoc />

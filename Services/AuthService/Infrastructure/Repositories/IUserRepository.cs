@@ -26,7 +26,7 @@ public interface IUserRepository
    /// <param name="ascending">Sort order.</param>
    /// <param name="cancellationToken">Cancellation token.</param>
    /// <returns>A list of users.</returns>
-   public Task<List<User>> GetAllAsync(int pageNumber, int pageSize, string sortBy, bool ascending, CancellationToken cancellationToken);
+   public Task<List<User>> GetAllAsync(int pageNumber, int pageSize, string sortBy, bool ascending, string? query, CancellationToken cancellationToken);
 
    /// <summary>
    /// Gets a user by ID.

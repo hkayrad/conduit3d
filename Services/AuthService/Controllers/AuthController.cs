@@ -72,9 +72,10 @@ namespace AuthService.Controllers
             [FromQuery] int pageNumber = 1,
             [FromQuery] string sortBy = "Id",
             [FromQuery] bool ascending = true,
+            [FromQuery] string? query = null,
             CancellationToken cancellationToken = default)
         {
-            return await _userService.GetAllUsersAsync(pageSize, pageNumber, sortBy, ascending, cancellationToken);
+            return await _userService.GetAllUsersAsync(pageSize, pageNumber, sortBy, ascending, query, cancellationToken);
         }
 
         /// <summary>
