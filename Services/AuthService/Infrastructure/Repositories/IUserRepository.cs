@@ -41,7 +41,7 @@ public interface IUserRepository
    /// </summary>
    /// <param name="cancellationToken">Cancellation token.</param>
    /// <returns>The total count of users.</returns>
-   public Task<UserCountsDto> GetCountAsync(CancellationToken cancellationToken);
+   public Task<UserCountsDto> GetCountAsync(string? query, CancellationToken cancellationToken);
 
    /// <summary>
    /// Updates a user.

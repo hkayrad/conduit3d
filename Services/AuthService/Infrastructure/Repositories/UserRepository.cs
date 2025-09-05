@@ -116,11 +116,27 @@ public class UserRepository(UsersContext context) : IUserRepository
     /// <remarks>
     /// This implementation uses Entity Framework Core's LINQ capabilities.
     /// </remarks>
-    public async Task<UserCountsDto> GetCountAsync(CancellationToken cancellationToken)
+    public async Task<UserCountsDto> GetCountAsync(string? query, CancellationToken cancellationToken)
     {
-        int totalCount = await _users.CountAsync(cancellationToken);
-        int activeCount = await _users.CountAsync(u => u.IsActive, cancellationToken);
-        int inactiveCount = await _users.CountAsync(u => !u.IsActive, cancellationToken);
+        int totalCount;
+        int activeCount;
+        int inactiveCount;
+
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            totalCount = await _users.CountAsync(cancellationToken);
+            activeCount = await _users.CountAsync(u => u.IsActive, cancellationToken);
+            inactiveCount = await _users.CountAsync(u => !u.IsActive, cancellationToken);
+        }
+        else
+        {
+            var dbQuery = _users.AsQueryable();
+            dbQuery = dbQuery.Where(u => u.SearchableText.Matches(EF.Functions.ToTsQuery("simple", query)));
+
+            totalCount = await dbQuery.CountAsync(cancellationToken);
+            activeCount = await dbQuery.CountAsync(u => u.IsActive, cancellationToken);
+            inactiveCount = await dbQuery.CountAsync(u => !u.IsActive, cancellationToken);
+        }
 
         return new UserCountsDto
         {

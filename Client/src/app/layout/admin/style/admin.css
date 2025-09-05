@@ -64,9 +64,10 @@ body::-webkit-scrollbar-thumb {
   flex-direction: column;
 }
 #admin-page #stats {
-  display: flex;
+  display: grid;
   flex-direction: row;
   justify-content: center;
+  grid-template-columns: 1fr 1fr 1fr;
   margin: auto 15% auto 15%;
   height: 128px;
   gap: 12px;

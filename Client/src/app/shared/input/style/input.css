@@ -77,7 +77,7 @@ body::-webkit-scrollbar-thumb {
 .input-container .input-element input {
   width: 100%;
   border: 1px solid rgba(43, 45, 66, 0.2);
-  border-radius: 4px;
+  border-radius: 12px;
   outline: none;
   padding: 6px 12px;
   transition: all ease 0.2s;
@@ -99,6 +99,9 @@ body::-webkit-scrollbar-thumb {
 }
 .input-container .input-element input:hover, .input-container .input-element input:focus {
   background: rgba(43, 45, 66, 0.1);
+}
+.input-container .input-element input:focus {
+  border-color: #2B2D42;
 }
 .input-container #toggle-password {
   display: flex;

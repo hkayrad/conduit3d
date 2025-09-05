@@ -116,11 +116,11 @@ public class PostgresqlUserService(IUnitOfWork unitOfWork) : IUserService
     }
 
     /// <inheritdoc />
-    public async Task<Response<UserCountsDto>> GetCountAsync(CancellationToken cancellationToken)
+    public async Task<Response<UserCountsDto>> GetCountAsync(string? query, CancellationToken cancellationToken)
     {
         try
         {
-            var count = await _unitOfWork.UserRepository.GetCountAsync(cancellationToken);
+            var count = await _unitOfWork.UserRepository.GetCountAsync(query, cancellationToken);
             return Response<UserCountsDto>.Success(count, AuthResources.GetString("userCountRetrieved"));
         }
         catch (NpgsqlException ex)

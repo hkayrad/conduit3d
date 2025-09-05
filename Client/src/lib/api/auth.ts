@@ -54,8 +54,12 @@ export class AuthApi {
      * Get the count of users.
      * @returns The count of users.
      */
-    static async fetchCount() {
-        const response = await instance.get<ApiResponse<UserCountsDto>>("/auth/count");
+    static async fetchCount(query: string = null!) {
+        const response = await instance.get<ApiResponse<UserCountsDto>>("/auth/count", {
+            params: {
+                query: query
+            }
+        });
         return response.data;
     }
 

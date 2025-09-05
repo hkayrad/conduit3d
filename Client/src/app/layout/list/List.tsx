@@ -124,7 +124,7 @@ export default function List() {
         ]
         const rows = [
             ...features.map(f => [
-                ...Object.entries(f).filter(([key, _]) => key !== 'geoJson').map(([_, value]) => value),
+                ...Object.entries(f).filter(([key, _]) => key !== 'geoJson').map(([_, value]) => value === "" ? "-" : value),
                 <div className="action-button-wrapper">
                     <ActionButton
                         content={<MapPin />}

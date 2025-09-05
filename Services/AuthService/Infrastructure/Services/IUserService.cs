@@ -55,7 +55,7 @@ public interface IUserService
     /// <returns>The total number of users.</returns>
     /// <response code="200">Returns the total number of users.</response>
     /// <response code="500">Internal server error.</response>
-    Task<Response<UserCountsDto>> GetCountAsync(CancellationToken cancellationToken);
+    Task<Response<UserCountsDto>> GetCountAsync(string? query, CancellationToken cancellationToken);
 
     /// <summary>
     /// Updates a user.
