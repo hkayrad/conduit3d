@@ -182,7 +182,7 @@ export default function Admin() {
             <Badge
                 color={user.isActive ? "success" : "error"}
                 label={user.isActive ? "Active" : "Inactive"} />,
-            <p className="created-at">{new Date(user.createdAt).toDateString()}</p>,
+            <p className="created-at">{new Date(user.createdAt).toLocaleString()}</p>,
             <div className="action-button-wrapper">
                 <ActionButton
                     content={<Pencil />}
