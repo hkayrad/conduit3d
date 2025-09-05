@@ -22,16 +22,36 @@ body::-webkit-scrollbar-thumb {
   height: 16px;
 }
 
-.error {
+.error-fg {
   color: #D32F2F !important;
 }
 
-.warning {
+.warning-fg {
   color: #FFC107 !important;
 }
 
-.success {
+.success-fg {
   color: #4CAF50 !important;
+}
+
+.white-fg {
+  color: #FFFFFF !important;
+}
+
+.error-bg {
+  background: #D32F2F !important;
+}
+
+.warning-bg {
+  background: #FFC107 !important;
+}
+
+.success-bg {
+  background: #4CAF50 !important;
+}
+
+.white-bg {
+  background: #FFFFFF !important;
 }
 
 .shadow {
@@ -41,7 +61,7 @@ body::-webkit-scrollbar-thumb {
 .data-table-wrapper {
   display: flex;
   flex-direction: column;
-  width: 70%;
+  width: 80%;
   margin: 32px auto 0 auto;
 }
 .data-table-wrapper .data-table-header {

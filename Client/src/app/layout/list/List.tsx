@@ -114,8 +114,6 @@ export default function List() {
     }
 
     const formatData = useCallback(() => {
-        console.log(features);
-
         const headers = [
             ...features[0] ? Object.keys(features[0]).map(k => ({
                 id: k,
@@ -172,11 +170,24 @@ export default function List() {
     }, [features])
 
     useEffect(() => {
-        console.log(features);
-
-    }, [features]);
+        dispatch(setPageNumber(1));
+    }, [featureToFetch])
 
     return <div id="list-page">
+        <div className="feature-type-selector">
+            <h2>Feature Type</h2>
+            <div className="feature-type-buttons">
+                {['AdrBina', 'TrafoBina', 'AgDirek', 'OgMusDirek', 'AydDirek', 'AgHat', 'OgHat', 'Rekortman'].map((featureType, index) => (
+                    <button
+                        key={index}
+                        className={featureToFetch === index ? "selected" : ""}
+                        onClick={() => setFeatureToFetch(index)}
+                    >
+                        {featureType}
+                    </button>
+                ))}
+            </div>
+        </div>
         <Table
             tableName="Features"
             pageNumber={pageNumber}

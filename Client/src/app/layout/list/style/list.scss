@@ -2,6 +2,54 @@
 
 #list-page {
     margin-top: 96px;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+
+    .data-table-wrapper {
+        width: 90% !important;
+    }
+
+    .feature-type-selector {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 200px;
+        padding: 16px;
+        border-radius: 0 12px 12px 0;
+        margin: auto 0 auto;
+        height: fit-content;
+        background: global.$primary;
+
+        h2 {
+            color: global.$white;
+            margin-bottom: 8px;
+        }
+
+        .feature-type-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+
+            button {
+                background: global.$primary-lighter;
+                color: global.$white;
+                border: none;
+                padding: 8px 12px;
+                border-radius: 4px;
+                text-align: left;
+                transition: all ease .2s;
+
+                &:hover {
+                    cursor: pointer;
+                    background: global.$white;
+                    color: global.$primary;
+                }
+
+                &.selected {
+                    background: global.$white;
+                    color: global.$primary;
+                }
+            }
+        }
+    }
 }

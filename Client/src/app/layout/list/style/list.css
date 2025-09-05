@@ -60,6 +60,48 @@ body::-webkit-scrollbar-thumb {
 
 #list-page {
   margin-top: 96px;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+}
+#list-page .data-table-wrapper {
+  width: 90% !important;
+}
+#list-page .feature-type-selector {
   display: flex;
   flex-direction: column;
+  gap: 8px;
+  width: 200px;
+  padding: 16px;
+  border-radius: 0 12px 12px 0;
+  margin: auto 0 auto;
+  height: -moz-fit-content;
+  height: fit-content;
+  background: #2B2D42;
+}
+#list-page .feature-type-selector h2 {
+  color: #FFFFFF;
+  margin-bottom: 8px;
+}
+#list-page .feature-type-selector .feature-type-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+#list-page .feature-type-selector .feature-type-buttons button {
+  background: #4B4E73;
+  color: #FFFFFF;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  text-align: left;
+  transition: all ease 0.2s;
+}
+#list-page .feature-type-selector .feature-type-buttons button:hover {
+  cursor: pointer;
+  background: #FFFFFF;
+  color: #2B2D42;
+}
+#list-page .feature-type-selector .feature-type-buttons button.selected {
+  background: #FFFFFF;
+  color: #2B2D42;
 }/*# sourceMappingURL=list.css.map */
