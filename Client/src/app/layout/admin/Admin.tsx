@@ -205,8 +205,8 @@ export default function Admin() {
         dispatch(setPageNumber(newPageNumber));
     }, []);
 
-    const handleSetSortBy = useCallback((newSortBy: UserSortBy) => {
-        dispatch(setSortBy(newSortBy));
+    const handleSetSortBy = useCallback((newSortBy: string) => {
+        dispatch(setSortBy(newSortBy as UserSortBy));
     }, []);
 
     const handleSetAscending = useCallback((newSortOrder: boolean) => {

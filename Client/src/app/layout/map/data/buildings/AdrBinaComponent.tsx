@@ -17,7 +17,7 @@ export default function AdrBinaComponent(props: Props) {
     const { setData, extent } = props;
 
     const handleAdrBinaFetch = useCallback(async () => {
-        const response = await AdrBinaApi.fetchAll(extent);
+        const response = await AdrBinaApi.fetchAll(200000, 1, 'id', true, extent);
 
         if (response.isSuccess) {
             var dataList: GeoJSON.FeatureCollection = {
