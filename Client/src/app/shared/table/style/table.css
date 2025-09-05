@@ -77,6 +77,15 @@ body::-webkit-scrollbar-thumb {
   display: flex;
   gap: 24px;
 }
+.data-table-wrapper .data-table-header .data-table-header-actions .input-container {
+  font-size: 16px;
+  color: #2B2D42;
+  width: 200px;
+  min-width: 0px !important;
+}
+.data-table-wrapper .data-table-header .data-table-header-actions .input-container input {
+  border-radius: 12px;
+}
 .data-table-wrapper .data-table-header .data-table-header-actions .items-per-page-selector {
   display: flex;
   gap: 8px;
@@ -108,9 +117,20 @@ body::-webkit-scrollbar-thumb {
   cursor: pointer;
   font-size: 16px;
   box-shadow: 0 2px 8px rgba(43, 45, 66, 0.1);
+  transition: all 0.2s ease;
 }
 .data-table-wrapper .data-table-header .data-table-header-actions button:hover {
-  background: #2B2D42;
+  background: #3B3E5A;
+}
+.data-table-wrapper .data-table-header .data-table-header-actions button.loading {
+  cursor: not-allowed;
+  background: #7d8488;
+}
+.data-table-wrapper .data-table-header .data-table-header-actions button.loading:hover {
+  background: #7d8488;
+}
+.data-table-wrapper .data-table-header .data-table-header-actions button .rotating {
+  animation: rotate 2s linear infinite;
 }
 .data-table-wrapper .data-table {
   margin: 0 auto;
@@ -275,4 +295,13 @@ body::-webkit-scrollbar-thumb {
 .data-table-wrapper .data-table-footer .goto-page button:disabled {
   background: #7d8488;
   cursor: not-allowed;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
 }/*# sourceMappingURL=table.css.map */

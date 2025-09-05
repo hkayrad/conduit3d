@@ -62,7 +62,7 @@ export default function Login(): JSX.Element {
                 setLoading(false);
                 setLoginError("An error occurred while trying to log in");
             }
-        }, 500);
+        }, 250);
     }
 
     return <div id="login">

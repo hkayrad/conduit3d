@@ -20,6 +20,17 @@
             display: flex;
             gap: 24px;
 
+            .input-container {
+                font-size: 16px;
+                color: global.$primary;
+                width: 200px;
+                min-width: 0px !important;
+                
+                input {
+                    border-radius: 12px;
+                }
+            }
+
             .items-per-page-selector {
                 display: flex;
                 gap: 8px;
@@ -54,9 +65,23 @@
                 cursor: pointer;
                 font-size: 16px;
                 box-shadow: 0 2px 8px rgba(global.$primary, .1);
+                transition: all .2s ease;
 
                 &:hover {
-                    background: global.$primary;
+                    background: global.$primary-light;
+                }
+
+                &.loading {
+                    cursor: not-allowed;
+                    background: global.$gray;
+
+                    &:hover {
+                        background: global.$gray;
+                    }
+                }
+
+                .rotating {
+                    animation: rotate 2s linear infinite;
                 }
             }
         }
@@ -253,5 +278,14 @@
                 }
             }
         }
+    }
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(-360deg);
     }
 }

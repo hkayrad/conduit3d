@@ -1,7 +1,8 @@
 import "./style/table.css";
 import type { TableData } from "../../../lib/types";
-import { ChevronLeft, ChevronRight, Plus, RotateCcw, SortAsc, SortDesc } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader, Plus, RotateCcw, SortAsc, SortDesc } from "lucide-react";
 import { useEffect, useState } from "react";
+import Input from "../input/Input";
 
 type Props = {
     tableName?: string;
@@ -9,6 +10,8 @@ type Props = {
     itemsPerPage: number;
     sortBy: string;
     ascending: boolean;
+    query?: string;
+    setQuery?: React.Dispatch<React.SetStateAction<string>>;
     setPageNumber: (newPageNumber: number) => void;
     setItemsPerPage: (e: React.ChangeEvent<HTMLSelectElement>) => void;
     setSortBy: (e: string) => void;
@@ -26,10 +29,12 @@ export default function Table(props: Props) {
         itemsPerPage,
         sortBy,
         ascending,
+        query,
         setPageNumber,
         setItemsPerPage,
         setSortBy,
         setAscending,
+        setQuery,
         onAddClick,
         onRefresh,
         data,
@@ -37,6 +42,7 @@ export default function Table(props: Props) {
     } = props;
     const [maxPageCount, setMaxPageCount] = useState(1);
     const [gotoPageInput, setGotoPageInput] = useState('');
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
     const calculateTotalPages = () => {
         return Math.ceil(totalDataCount / itemsPerPage);
@@ -71,6 +77,14 @@ export default function Table(props: Props) {
 
     }
 
+    const handleRefreshClick = async () => {
+        if (onRefresh) {
+            setIsRefreshing(true);
+            onRefresh();
+            setTimeout(() => setIsRefreshing(false), 250); // Simulate refresh time
+        }
+    }
+
     useEffect(() => {
         setMaxPageCount(calculateTotalPages());
     }, [itemsPerPage, totalDataCount])
@@ -80,6 +94,15 @@ export default function Table(props: Props) {
             <div className="data-table-header">
                 <p>{tableName}</p>
                 <div className="data-table-header-actions">
+                    {setQuery && query !== undefined &&
+                        <Input
+                            state={query}
+                            setState={setQuery}
+                            placeholder="Search..."
+                            id="search"
+                            type="text"
+                        />
+                    }
                     {setItemsPerPage &&
                         <div className="items-per-page-selector">
                             <p>Items per page:</p>
@@ -90,7 +113,9 @@ export default function Table(props: Props) {
                                 <option value={50}>50</option>
                             </select>
                         </div>}
-                    {onRefresh && <button onClick={onRefresh}><RotateCcw />Refresh</button>}
+                    {onRefresh && <button className={`${isRefreshing ? "loading" : ""}`} onClick={handleRefreshClick}>{
+                        isRefreshing ? <Loader className="rotating" /> : <RotateCcw />
+                    }Refresh</button>}
                     {onAddClick && <button onClick={onAddClick}><Plus />Add</button>}
                 </div>
                 {/* Table name, page size selector, data filter, add button */}

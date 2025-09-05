@@ -38,6 +38,7 @@ export default function Admin() {
     const [errorText, setErrorText] = useState("");
     const [iseDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [userToDelete, setUserToDelete] = useState<User>({} as User);
+    const [query, setQuery] = useState<string>("");
 
     const handleFetchUsers = async (pageSize: number, pageNumber: number, sortBy: string, ascending: boolean) => {
         const response = await AuthApi.fetchAll(pageSize, pageNumber, sortBy, ascending);
@@ -234,6 +235,8 @@ export default function Admin() {
             itemsPerPage={itemsPerPage}
             sortBy={sortBy}
             ascending={ascending}
+            query={query}
+            setQuery={setQuery}
             setPageNumber={handleSetPageNumber}
             setSortBy={handleSetSortBy}
             setAscending={handleSetAscending}

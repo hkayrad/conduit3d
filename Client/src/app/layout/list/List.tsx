@@ -18,6 +18,7 @@ export default function List() {
 
     const [features, setFeatures] = useState<any[]>([]);
     const [featureCount, setFeatureCount] = useState<number>(0);
+    const [query, setQuery] = useState<string>("");
 
     const [tableData, setTableData] = useState<TableData>({
         headers: [],
@@ -171,6 +172,8 @@ export default function List() {
 
     useEffect(() => {
         dispatch(setPageNumber(1));
+        dispatch(setSortBy("id"));
+        dispatch(setAscending(true));
     }, [featureType])
 
     return <div id="list-page">
@@ -189,7 +192,7 @@ export default function List() {
                 }].map((section, index) => (
                     <div key={index} className="feature-type-section">
                         <h3>{section.sectionLabel}</h3>
-                        {section.types.map((type, typeIndex) => (
+                        {section.types.map((type, _) => (
                             <button
                                 key={index}
                                 className={featureType === type ? "selected" : ""}
@@ -209,6 +212,8 @@ export default function List() {
             itemsPerPage={itemsPerPage}
             sortBy={sortBy}
             ascending={ascending}
+            query={query}
+            setQuery={setQuery}
             setPageNumber={handleSetPageNumber}
             setSortBy={handleSetSortBy}
             setAscending={handleSetAscending}
