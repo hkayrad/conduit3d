@@ -18,7 +18,7 @@ export class CreateLayer {
         return ["turkey", "eskisehir", "erzurum"].map(city =>
             new TileLayer<ImageBitmap>({
                 id: `${city}-basemap`,
-                data: [`http://localhost:3001/${city}/{z}/{x}/{y}`],
+                data: [`${import.meta.env.VITE_TILE_SERVER_URL}/${city}/{z}/{x}/{y}`],
                 minZoom: 0,
                 maxZoom: city === "turkey" ? 12 : 18,
                 tileSize: 256,
