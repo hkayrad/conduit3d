@@ -486,4 +486,4 @@ $RECYCLE.BIN/
 localhost.pem
 localhost-key.pem
 
-TileData/*
+TileService/*.mbtiles

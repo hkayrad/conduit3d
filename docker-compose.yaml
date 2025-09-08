@@ -139,9 +139,10 @@ services:
     build:
       context: .
       dockerfile: Client/Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+        VITE_TILE_SERVER_URL: ${VITE_TILE_SERVER_URL}
     container_name: client
-    environment:
-      - VITE_API_URL=${VITE_API_URL}
     networks:
       - api_gateway_network
     restart: unless-stopped
@@ -151,11 +152,12 @@ services:
     container_name: tile_server
     networks:
       - api_gateway_network
-    ports: 
-      - "3001:3000"
+    # ports: 
+    #   - "3001:3000"
     volumes:
       - tile_data:/tileData
-    command: ["/tileData"]
+      - ./TileService/config.yml:/tileData/config.yml
+    command: ["--config", "/tileData/config.yml"]
     restart: unless-stopped
 
   api_gateway:
@@ -166,17 +168,12 @@ services:
       - JWT_ISSUER=${JWT_ISSUER}
       - JWT_AUDIENCE=${JWT_AUDIENCE}
       - JWT_EXPIRATION_TIME_HRS=${JWT_EXPIRATION_TIME_HRS}
+      - BASE_URL=${BASE_URL}
     networks:
       - api_gateway_network
     ports:
       - "443:443"
       - "80:80"
-    depends_on:
-      - buildings_service
-      - auth_service
-      - lines_service
-      - poles_service
-      - client
     volumes:
       - ./ApiGateway/Caddyfile:/etc/caddy/Caddyfile
       - ./ApiGateway/default.html:/usr/share/caddy/default.html

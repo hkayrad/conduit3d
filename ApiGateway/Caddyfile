@@ -1,11 +1,11 @@
 {
 	order jwtauth before basicauth
 }
-localhost {
+{$BASE_URL} {
     tls /usr/share/caddy/localhost.pem /usr/share/caddy/localhost-key.pem
 
 	header {
-        Access-Control-Allow-Origin "https://localhost:3000"
+        Access-Control-Allow-Origin "{$BASE_URL}:3000"
         Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
         Access-Control-Allow-Headers "Accept, Content-Type, Authorization, Credentials"
         Access-Control-Allow-Credentials "true"
@@ -14,6 +14,7 @@ localhost {
 	@options {
         method OPTIONS
     }
+
     handle @options {
         respond "" 204
     }
@@ -214,16 +215,14 @@ localhost {
         reverse_proxy poles_service:8080
     }
 
-    handle /404 {
-        root * /usr/share/caddy
-        try_files {path} default.html
-        file_server
+    handle_path /tiles* {
+        reverse_proxy tile_server:3000 {
+            # Remove CORS headers added by the tile server
+            header_down -Access-Control-Allow-Origin
+        }
     }
 
     handle {
         reverse_proxy client:3000
     }
-
 }
-
-# C3D-67: Integrate JWT authentication
