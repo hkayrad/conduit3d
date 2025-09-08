@@ -21,7 +21,7 @@ export default function AydDirekComponent(props: Props): null {
     const dispatch = useDispatch();
 
     const handleAydDirekFetch = useCallback(async () => {
-        const response = await AydDirekApi.fetchAll(200000, 1, 'id', true, extent);
+        const response = await AydDirekApi.fetchAll(200000, 1, 'id', true, null!, extent);
 
         if (response.isSuccess) {
             var dataList: GeoJSON.FeatureCollection = {

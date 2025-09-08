@@ -21,7 +21,7 @@ export default function OgMusDirekComponent(props: Props): null {
     const dispatch = useDispatch();
 
     const handleOgMusDirekFetch = useCallback(async () => {
-        const response = await OgMusDirekApi.fetchAll(200000, 1, 'id', true, extent);
+        const response = await OgMusDirekApi.fetchAll(200000, 1, 'id', true, null!, extent);
 
         if (response.isSuccess) {
             var dataList: GeoJSON.FeatureCollection = {

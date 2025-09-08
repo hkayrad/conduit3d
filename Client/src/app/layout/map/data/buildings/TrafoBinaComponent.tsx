@@ -17,7 +17,7 @@ export default function TrafoBinaComponent(props: Props): null {
     const { setData, extent } = props;
 
     const handleTrafoBinaFetch = useCallback(async () => {
-        const response = await TrafoBinaApi.fetchAll(200000, 1, 'id', true, extent);
+        const response = await TrafoBinaApi.fetchAll(200000, 1, 'id', true, null!, extent);
 
         if (response.isSuccess) {
             var dataList: GeoJSON.FeatureCollection = {

@@ -23,7 +23,7 @@ export default function AgHatComponent(props: Props): null {
     const dispatch = useDispatch();
 
     const handleAgHatFetch = useCallback(async () => {
-        const response = await AgHatApi.fetchAll(200000, 1, 'id', true, extent);
+        const response = await AgHatApi.fetchAll(200000, 1, 'id', true, null!, extent);
 
         if (response.isSuccess) {
             var dataList: GeoJSON.FeatureCollection = {

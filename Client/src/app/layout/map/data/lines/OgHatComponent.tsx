@@ -23,7 +23,7 @@ export default function OgHatComponent(props: Props): null {
     const dispatch = useDispatch();
 
     const handleOgHatFetch = useCallback(async () => {
-        const response = await OgHatApi.fetchAll(200000, 1, 'id', true, extent);
+        const response = await OgHatApi.fetchAll(200000, 1, 'id', true, null!, extent);
 
         if (response.isSuccess) {
             var dataList: GeoJSON.FeatureCollection = {
