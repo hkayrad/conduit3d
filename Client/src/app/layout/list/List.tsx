@@ -1,7 +1,7 @@
 import "./style/list.css";
 import { useDispatch } from "react-redux";
 import Table from "../../shared/table/Table";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import type { TableData } from "../../../lib/types";
 import { useAppSelector, useList } from "../../../lib/hooks";
 import { selectListState, setAscending, setFeatureType, setPageNumber, setQuery, setSortBy } from "./listSlice";
@@ -17,33 +17,22 @@ import { ListDataType } from "../../../lib/enums";
  * @returns The List component renders a list of features with pagination, sorting, and filtering capabilities.
  */
 export default function List(): React.ReactNode {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+    // Redux state
     const { itemsPerPage, pageNumber, sortBy, ascending, featureType, query } = useAppSelector(selectListState)
 
+    // Local state
     const [features, setFeatures] = useState<any[]>([]);
     const [featureCount, setFeatureCount] = useState<number>(0);
-    // const [query, setQuery] = useState<string>("");
-
     const [tableData, setTableData] = useState<TableData>({
         headers: [],
         rows: []
     });
 
-    const featureTypeSelectorSections = [{
-        sectionLabel: "Binalar",
-        sectionIcon: <Building />,
-        types: [ListDataType.AdrBina, ListDataType.TrafoBina]
-    }, {
-        sectionLabel: "Direkler",
-        sectionIcon: <UtilityPole />,
-        types: [ListDataType.AgDirek, ListDataType.OgMusDirek, ListDataType.AydDirek]
-    }, {
-        sectionLabel: "Hatlar",
-        sectionIcon: <PlugZap />,
-        types: [ListDataType.AgHat, ListDataType.OgHat, ListDataType.Rekortman]
-    }];
+    // Redux hooks
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
+    // List hook
     const {
         handleChangeItemsPerPage,
         handleSetPageNumber,
@@ -62,35 +51,50 @@ export default function List(): React.ReactNode {
         setFeatureCount
     )
 
-    const formatData = useCallback((): void => {
-        const headers = [
-            { id: 'index', label: '#' },
-            ...features[0] ? Object.keys(features[0]).map(k => ({
-                id: k,
-                label: capitalizeFirstLetter(k),
-            })).filter(header => header.id !== 'geoJson') : [],
-            { id: 'actions', label: 'Actions' }
-        ]
-        const rows = [
-            ...features.map((f, index) => [
-                index + 1,
-                ...Object.entries(f).filter(([key, _]) => key !== 'geoJson').map(([_, value]) => value === "" ? "-" : value),
-                <div className="action-button-wrapper">
-                    <ActionButton
-                        content={<MapPin />}
-                        style="success"
-                        onClick={() => {
-                            const coords = findAverageLonLat(JSON.parse(f.geoJson));
-                            navigate(`/?lon=${coords[0]}&lat=${coords[1]}&z=20`);
-                        }}
-                    />
-                </div>
-            ] as React.ReactNode[])
-        ];
+    // Memoized feature type selector sections
+    const featureTypeSelectorSections = useMemo(() => [{
+        sectionLabel: "Binalar",
+        sectionIcon: <Building />,
+        types: [ListDataType.AdrBina, ListDataType.TrafoBina]
+    }, {
+        sectionLabel: "Direkler",
+        sectionIcon: <UtilityPole />,
+        types: [ListDataType.AgDirek, ListDataType.OgMusDirek, ListDataType.AydDirek]
+    }, {
+        sectionLabel: "Hatlar",
+        sectionIcon: <PlugZap />,
+        types: [ListDataType.AgHat, ListDataType.OgHat, ListDataType.Rekortman]
+    }], []);
 
-        setTableData({ headers, rows });
-    }, [features]);
+    // Memoized table headers
+    const headers = useMemo(() => [
+        { id: 'index', label: '#' },
+        ...features[0] ? Object.keys(features[0]).map(k => ({
+            id: k,
+            label: capitalizeFirstLetter(k),
+        })).filter(header => header.id !== 'geoJson') : [],
+        { id: 'actions', label: 'Actions' }
+    ], [features]);
 
+    // Memoized table rows
+    const rows = useMemo(() => [
+        ...features.map((f, index) => [
+            index + 1,
+            ...Object.entries(f).filter(([key, _]) => key !== 'geoJson').map(([_, value]) => value === "" ? "-" : value),
+            <div className="action-button-wrapper">
+                <ActionButton
+                    content={<MapPin />}
+                    style="success"
+                    onClick={() => {
+                        const coords = findAverageLonLat(JSON.parse(f.geoJson));
+                        navigate(`/?lon=${coords[0]}&lat=${coords[1]}&z=20`);
+                    }}
+                />
+            </div>
+        ] as React.ReactNode[])
+    ], [features]);
+
+    // Effects
     useEffect(() => {
         handleRefreshData();
     }, [featureType, itemsPerPage, pageNumber, sortBy, ascending]);
@@ -112,8 +116,8 @@ export default function List(): React.ReactNode {
     }, [featureType]);
 
     useEffect(() => {
-        formatData();
-    }, [features])
+        setTableData({ headers, rows });
+    }, [headers, rows])
 
     return <div id="list-page">
         <div className="feature-type-selector">

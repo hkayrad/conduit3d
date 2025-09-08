@@ -12,7 +12,7 @@ import type { PopupState } from "../types";
  * @param setMousePos Function to update the mouse position
  * @param setMouseLonLat Function to update the mouse longitude and latitude
  * @param setActivePopups Function to update the active popups
- * @returns Map interaction handlers {handleViewStateChange, handleMouseMove, handleClick, handleClosePopup, handleFocusPopup, handleKeyPresses}
+ * @returns Map interaction handlers
  */
 export function useMapInteraction(
     zIndexCounter: React.RefObject<number>,

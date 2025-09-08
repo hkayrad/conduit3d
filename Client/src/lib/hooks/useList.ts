@@ -4,6 +4,18 @@ import { ListDataType } from "../enums";
 import { useDispatch } from "react-redux";
 import { setAscending, setItemsPerPage, setPageNumber, setQuery, setSortBy } from "../../app/layout/list/listSlice";
 
+/**
+ * Custom hook for managing list state and API interactions.
+ * @param featureType The type of feature to manage.
+ * @param itemsPerPage The number of items to display per page.
+ * @param pageNumber The current page number.
+ * @param sortBy The field to sort by.
+ * @param ascending Whether the sort is ascending or descending.
+ * @param query The search query.
+ * @param setFeatures A function to set the features state.
+ * @param setFeatureCount A function to set the feature count state.
+ * @returns List related functions and handlers
+ */
 export function useList(
     featureType: ListDataType,
     itemsPerPage: number,

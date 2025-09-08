@@ -17,7 +17,7 @@ import { useDispatch } from "react-redux";
  * @param setErrorText Function to set error text
  * @param setUserToAddModify Function to set user to add/modify
  * @param setModalStatus Function to set modal status
- * @returns Admin related functions and handlers {handleFetchUsers, handleFetchUserCount, handleAddUser, handleDeleteUser, handleEditUser, handleOpenModal, handleCloseModal, handleEditUserButtonClick, handleAddUserButtonClick, handleDeleteUserButtonClick}
+ * @returns Admin related functions and handlers
  */
 export function useAdmin(
     itemsPerPage: number,
@@ -32,6 +32,7 @@ export function useAdmin(
     setModalStatus: React.Dispatch<React.SetStateAction<AdminModalStatus>>,
 ) {
     const dispatch = useDispatch();
+
     /**
      * Fetch all users with the given parameters and update the users state.
      * @returns void

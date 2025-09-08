@@ -1,9 +1,9 @@
 import "./style/admin.css";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
 import type { AdminModalStatus, TableData, User, UserCounts } from "../../../lib/types";
 import { useAdmin, useAppSelector } from "../../../lib/hooks";
-import { selectAdminState, setPageNumber } from "./adminSlice";
+import { selectAdminState } from "./adminSlice";
 import Table from "../../shared/table/Table";
 import Badge from "../../shared/badge/Badge";
 import { capitalizeFirstLetter } from "../../../lib/utils";
@@ -19,9 +19,11 @@ import UserDeleteModalContent from "./components/UserDeleteModalContent";
  * @returns The Admin component for user management.
  */
 export default function Admin() {
+    // Redux state
     const { itemsPerPage, pageNumber, sortBy, ascending, query } = useAppSelector(selectAdminState)
     const currentUser = useAppSelector(selectUserState)
 
+    // Local state
     const [users, setUsers] = useState<User[]>([]);
     const [tableData, setTableData] = useState<TableData>({
         headers: [],
@@ -32,9 +34,7 @@ export default function Admin() {
         activeUsers: 0,
         inactiveUsers: 0
     });
-
     const [errorText, setErrorText] = useState("");
-
     const [userToAddModify, setUserToAddModify] = useState<User>({} as User);
     const [modalStatus, setModalStatus] = useState<AdminModalStatus>({
         isEditModalOpen: false,
@@ -42,6 +42,7 @@ export default function Admin() {
         isDeleteModalOpen: false
     });
 
+    // Admin hook
     const {
         handleAddUser,
         handleDeleteUser,
@@ -69,55 +70,60 @@ export default function Admin() {
         setModalStatus
     );
 
-    const formatData = useCallback((): void => {
-        const headers = [
-            { id: 'index', label: '#' },
-            { id: "id", label: "Id" },
-            { id: "username", label: "Username" },
-            { id: "name", label: "Name" },
-            { id: "email", label: "Email" },
-            { id: "userRole", label: "Role" },
-            { id: "isActive", label: "Status" },
-            { id: "createdAt", label: "Created At" },
-            { id: "actions", label: "Actions" }
-        ];
-        const rows = users.map((user, index) => [
-            index + 1,
-            user.id,
-            user.username,
-            user.name,
-            user.email,
-            <Badge
-                color={user.userRole === "admin" ? "success" : "warning"}
-                label={capitalizeFirstLetter(user.userRole)} />,
-            <Badge
-                color={user.isActive ? "success" : "error"}
-                label={user.isActive ? "Active" : "Inactive"} />,
-            <p className="created-at">{new Date(user.createdAt).toLocaleString()}</p>,
-            <div className="action-button-wrapper">
-                <ActionButton
-                    content={<Pencil />}
-                    style="warning"
-                    onClick={() => { handleEditUserButtonClick(user) }}
-                />
-                <ActionButton
-                    content={<Trash2 />}
-                    style="error"
-                    disabled={user.id === currentUser?.id}
-                    onClick={() => handleDeleteUserButtonClick(user)}
-                />
-            </div>
-        ]);
-        setTableData({ headers, rows });
-    }, [users]);
+    // Mamoized table headers
+    const headers = useMemo(() => [
+        { id: 'index', label: '#' },
+        { id: "id", label: "Id" },
+        { id: "username", label: "Username" },
+        { id: "name", label: "Name" },
+        { id: "email", label: "Email" },
+        { id: "userRole", label: "Role" },
+        { id: "isActive", label: "Status" },
+        { id: "createdAt", label: "Created At" },
+        { id: "actions", label: "Actions" }
+    ], []);
 
+    // Mamoized table rows
+    const rows = useMemo(() => users.map((user, index) => [
+        index + 1,
+        user.id,
+        user.username,
+        user.name,
+        user.email,
+        <Badge
+            key={`role-${user.id}`}
+            color={user.userRole === "admin" ? "success" : "warning"}
+            label={capitalizeFirstLetter(user.userRole)} />,
+        <Badge
+            key={`status-${user.id}`}
+            color={user.isActive ? "success" : "error"}
+            label={user.isActive ? "Active" : "Inactive"} />,
+        <p key={`created-at-${user.id}`} className="created-at">{new Date(user.createdAt).toLocaleString()}</p>,
+        <div key={`actions-${user.id}`} className="action-button-wrapper">
+            <ActionButton
+                key={`edit-${user.id}`}
+                content={<Pencil />}
+                style="warning"
+                onClick={() => { handleEditUserButtonClick(user) }}
+            />
+            <ActionButton
+                key={`delete-${user.id}`}
+                content={<Trash2 />}
+                style="error"
+                disabled={user.id === currentUser?.id}
+                onClick={() => handleDeleteUserButtonClick(user)}
+            />
+        </div>
+    ]), [users, currentUser]);
+
+    // Effects
     useEffect(() => {
         handleRefreshData();
     }, [itemsPerPage, pageNumber, sortBy, ascending]);
 
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
-            setPageNumber(1);
+            handleSetPageNumber(1);
             handleRefreshData();
         }, 250)
 
@@ -125,7 +131,7 @@ export default function Admin() {
     }, [query])
 
     useEffect(() => {
-        formatData();
+        setTableData({ headers, rows });
     }, [users])
 
     return <div id="admin-page">
@@ -147,6 +153,8 @@ export default function Admin() {
             data={tableData}
             totalDataCount={userCounts.totalUsers}
         />
+
+        {/* Edit User Modal */}
         {modalStatus.isEditModalOpen && userToAddModify && (
             <Modal>
                 <UserActionModalContent
@@ -159,6 +167,8 @@ export default function Admin() {
                 />
             </Modal>
         )}
+
+        {/* Add User Modal */}
         {modalStatus.isAddModalOpen && (
             <Modal>
                 <UserActionModalContent
@@ -171,6 +181,8 @@ export default function Admin() {
                 />
             </Modal>
         )}
+
+        {/* Delete User Modal */}
         {modalStatus.isDeleteModalOpen && userToAddModify &&
             <Modal>
                 <UserDeleteModalContent
