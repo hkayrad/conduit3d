@@ -9,10 +9,27 @@ export enum HatCinsi {
     YERALTI = "YERALTI"
 }
 
-export enum DataType {
+export enum FeatureType {
     BUILDING = "building",
     TRAFO = "trafo",
     POLE = "pole",
     LINE = "line",
     REKORTMAN = "rekortman"
+}
+
+export enum AdminModalType {
+    Edit = "edit",
+    Add = "add",
+    Delete = "delete"
+}
+
+export enum ListDataType {
+    AdrBina = "adrBina",
+    TrafoBina = "trafoBina",
+    AgHat = "agHat",
+    OgHat = "ogHat",
+    Rekortman = "rekortman",
+    AgDirek = "AgDirek",
+    OgMusDirek = "OgMusDirek",
+    AydDirek = "AydDirek"
 }

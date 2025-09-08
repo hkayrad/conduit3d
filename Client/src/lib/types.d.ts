@@ -30,10 +30,16 @@ export type LoginUserDto = {
     password: string
 }
 
-export type UserCountsDto = {
+export type UserCounts = {
     totalUsers: number,
     activeUsers: number,
     inactiveUsers: number
+}
+
+export type AdminModalStatus = {
+    isEditModalOpen: boolean,
+    isAddModalOpen: boolean,
+    isDeleteModalOpen: boolean
 }
 
 export type TableData = {
