@@ -70,6 +70,7 @@ export function useList(
     const handleChangeItemsPerPage = useCallback((e: React.ChangeEvent<HTMLSelectElement>): void => {
         const newItemsPerPage = parseInt(e.target.value);
         dispatch(setItemsPerPage(newItemsPerPage));
+        dispatch(setPageNumber(1)); // Reset to first page on items per page change
     }, []);
 
     /**
