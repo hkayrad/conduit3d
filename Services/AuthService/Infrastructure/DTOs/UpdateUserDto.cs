@@ -34,7 +34,7 @@ public class UpdateUserDto : IValidatableObject
     /// <summary>
     /// The password of the user.
     /// </summary>
-    public required string Password { get; set; }
+    public string? Password { get; set; }
 
 
     /// <summary>
@@ -50,9 +50,7 @@ public class UpdateUserDto : IValidatableObject
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         // Username null check
-        if (string.IsNullOrWhiteSpace(Username))
-            yield return new ValidationResult(AuthResources.GetString("usernameNull"), [nameof(Username)]);
-        else
+        if (!string.IsNullOrWhiteSpace(Username))
         {
             // Username max length check
             if (Username.Length > 100)
@@ -68,16 +66,12 @@ public class UpdateUserDto : IValidatableObject
         }
 
         // Email null check
-        if (string.IsNullOrWhiteSpace(Email))
-            yield return new ValidationResult(AuthResources.GetString("emailNull"), [nameof(Email)]);
-        // Email format check
-        else if (!Regex.IsMatch(Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
-            yield return new ValidationResult(AuthResources.GetString("emailInvalid"), [nameof(Email)]);
+        if (!string.IsNullOrWhiteSpace(Email))
+            if (!Regex.IsMatch(Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+                yield return new ValidationResult(AuthResources.GetString("emailInvalid"), [nameof(Email)]);
 
         // UserRole null check
-        if (string.IsNullOrWhiteSpace(UserRole))
-            yield return new ValidationResult(AuthResources.GetString("userRoleNull"), [nameof(UserRole)]);
-        else
+        if (!string.IsNullOrWhiteSpace(UserRole))
         {
             // UserRole validity check
             var allowedRoles = Roles.AllowedRoles;
@@ -86,9 +80,7 @@ public class UpdateUserDto : IValidatableObject
         }
 
         // Name null check
-        if (string.IsNullOrWhiteSpace(Name))
-            yield return new ValidationResult(AuthResources.GetString("nameNull"), [nameof(Name)]);
-        else
+        if (!string.IsNullOrWhiteSpace(Name))
         {
             // Name max length check
             if (Name.Length > 255)
