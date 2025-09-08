@@ -3,6 +3,7 @@ using AuthService.Domain;
 using AuthService.Infrastructure.Data;
 using AuthService.Infrastructure.DTOs;
 using AuthService.Infrastructure.Utilities;
+using Conduit3D.Common.Infrastructure.Utilities;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
@@ -95,7 +96,9 @@ public class UserRepository(UsersContext context) : IUserRepository
             dbQuery = dbQuery.OrderByDescending(u => EF.Property<object>(u, sortBy));
 
         if (!string.IsNullOrWhiteSpace(query))
-            dbQuery = dbQuery.Where(u => u.SearchableText.Matches(EF.Functions.ToTsQuery("simple", query)));
+            dbQuery = dbQuery.Where(u => u.SearchableText.Matches(
+                EF.Functions.ToTsQuery("simple", ParseTsQuery.ConvertToTsQuery(query))
+            ));
 
         dbQuery = dbQuery.Skip((pageNumber - 1) * pageSize)
                      .Take(pageSize);
@@ -131,7 +134,9 @@ public class UserRepository(UsersContext context) : IUserRepository
         else
         {
             var dbQuery = _users.AsQueryable();
-            dbQuery = dbQuery.Where(u => u.SearchableText.Matches(EF.Functions.ToTsQuery("simple", query)));
+            dbQuery = dbQuery.Where(u => u.SearchableText.Matches(
+                EF.Functions.ToTsQuery("simple", ParseTsQuery.ConvertToTsQuery(query))
+            ));
 
             totalCount = await dbQuery.CountAsync(cancellationToken);
             activeCount = await dbQuery.CountAsync(u => u.IsActive, cancellationToken);
