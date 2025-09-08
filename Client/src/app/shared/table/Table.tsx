@@ -11,7 +11,7 @@ type Props = {
     sortBy: string;
     ascending: boolean;
     query?: string;
-    setQuery?: React.Dispatch<React.SetStateAction<string>>;
+    setQuery?: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
     setPageNumber: (newPageNumber: number) => void;
     setItemsPerPage: (e: React.ChangeEvent<HTMLSelectElement>) => void;
     setSortBy: (e: string) => void;

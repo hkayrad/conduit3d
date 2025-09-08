@@ -4,7 +4,7 @@ import Table from "../../shared/table/Table";
 import React, { useCallback, useEffect, useState } from "react";
 import type { TableData } from "../../../lib/types";
 import { useAppSelector, useList } from "../../../lib/hooks";
-import { selectListState, setAscending, setFeatureType, setItemsPerPage, setPageNumber, setSortBy } from "./listSlice";
+import { selectListState, setAscending, setFeatureType, setPageNumber, setQuery, setSortBy } from "./listSlice";
 import { capitalizeFirstLetter, findAverageLonLat } from "../../../lib/utils";
 import { Building, MapPin, PlugZap, UtilityPole } from "lucide-react";
 import ActionButton from "../../shared/actionButton/ActionButton";
@@ -19,20 +19,40 @@ import { ListDataType } from "../../../lib/enums";
 export default function List(): React.ReactNode {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { itemsPerPage, pageNumber, sortBy, ascending, featureType } = useAppSelector(selectListState)
+    const { itemsPerPage, pageNumber, sortBy, ascending, featureType, query } = useAppSelector(selectListState)
 
     const [features, setFeatures] = useState<any[]>([]);
     const [featureCount, setFeatureCount] = useState<number>(0);
-    const [query, setQuery] = useState<string>("");
+    // const [query, setQuery] = useState<string>("");
 
     const [tableData, setTableData] = useState<TableData>({
         headers: [],
         rows: []
     });
 
+    const featureTypeSelectorSections = [{
+        sectionLabel: "Binalar",
+        sectionIcon: <Building />,
+        types: [ListDataType.AdrBina, ListDataType.TrafoBina]
+    }, {
+        sectionLabel: "Direkler",
+        sectionIcon: <UtilityPole />,
+        types: [ListDataType.AgDirek, ListDataType.OgMusDirek, ListDataType.AydDirek]
+    }, {
+        sectionLabel: "Hatlar",
+        sectionIcon: <PlugZap />,
+        types: [ListDataType.AgHat, ListDataType.OgHat, ListDataType.Rekortman]
+    }];
+
     const {
-        handleFetchFeatures
+        handleChangeItemsPerPage,
+        handleSetPageNumber,
+        handleSetSortBy,
+        handleSetAscending,
+        handleSetQuery,
+        handleRefreshData
     } = useList(
+        featureType,
         itemsPerPage,
         pageNumber,
         sortBy,
@@ -71,33 +91,13 @@ export default function List(): React.ReactNode {
         setTableData({ headers, rows });
     }, [features]);
 
-    const handleChangeItemsPerPage = useCallback((e: React.ChangeEvent<HTMLSelectElement>): void => {
-        const newItemsPerPage = parseInt(e.target.value);
-        dispatch(setItemsPerPage(newItemsPerPage));
-    }, []);
-
-    const handleSetPageNumber = useCallback((newPageNumber: number): void => {
-        dispatch(setPageNumber(newPageNumber));
-    }, []);
-
-    const handleSetSortBy = useCallback((newSortBy: string): void => {
-        dispatch(setSortBy(newSortBy));
-    }, []);
-
-    const handleSetAscending = useCallback((newSortOrder: boolean): void => {
-        dispatch(setAscending(newSortOrder));
-    }, []);
-
-    const handleRefreshData = useCallback((): void => {
-        handleFetchFeatures(featureType);
-    }, [handleFetchFeatures, featureType]);
-
     useEffect(() => {
         handleRefreshData();
     }, [featureType, itemsPerPage, pageNumber, sortBy, ascending]);
 
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
+            dispatch(setPageNumber(1));
             handleRefreshData();
         }, 250)
 
@@ -105,32 +105,21 @@ export default function List(): React.ReactNode {
     }, [query])
 
     useEffect(() => {
-        formatData();
-    }, [features])
-
-    useEffect(() => {
         dispatch(setPageNumber(1));
         dispatch(setSortBy("id"));
         dispatch(setAscending(true));
-    }, [featureType])
+        dispatch(setQuery(""));
+    }, [featureType]);
+
+    useEffect(() => {
+        formatData();
+    }, [features])
 
     return <div id="list-page">
         <div className="feature-type-selector">
             <h2>Feature Type</h2>
             <div className="feature-type-sections">
-                {[{
-                    sectionLabel: "Binalar",
-                    sectionIcon: <Building />,
-                    types: [ListDataType.AdrBina, ListDataType.TrafoBina]
-                }, {
-                    sectionLabel: "Direkler",
-                    sectionIcon: <UtilityPole />,
-                    types: [ListDataType.AgDirek, ListDataType.OgMusDirek, ListDataType.AydDirek]
-                }, {
-                    sectionLabel: "Hatlar",
-                    sectionIcon: <PlugZap />,
-                    types: [ListDataType.AgHat, ListDataType.OgHat, ListDataType.Rekortman]
-                }].map((section, _) => (
+                {featureTypeSelectorSections.map((section, _) => (
                     <div key={`div-${section.sectionLabel}`} className="feature-type-section">
                         <h3>{section.sectionLabel}</h3>
                         {section.types.map((type, _) => (
@@ -155,7 +144,7 @@ export default function List(): React.ReactNode {
             sortBy={sortBy}
             ascending={ascending}
             query={query}
-            setQuery={setQuery}
+            setQuery={handleSetQuery}
             setPageNumber={handleSetPageNumber}
             setSortBy={handleSetSortBy}
             setAscending={handleSetAscending}

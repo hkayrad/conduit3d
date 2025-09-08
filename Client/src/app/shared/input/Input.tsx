@@ -10,7 +10,7 @@ type Props = {
     required?: boolean,
     placeholder?: string,
     state: string,
-    setState: React.Dispatch<React.SetStateAction<string>>
+    setState: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
 }
 
 /**

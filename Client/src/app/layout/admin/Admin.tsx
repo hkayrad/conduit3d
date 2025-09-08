@@ -1,10 +1,9 @@
 import "./style/admin.css";
 import { useCallback, useEffect, useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
-import type { AdminModalStatus, TableData, User, UserCounts, UserSortBy } from "../../../lib/types";
-import { useDispatch } from "react-redux";
+import type { AdminModalStatus, TableData, User, UserCounts } from "../../../lib/types";
 import { useAdmin, useAppSelector } from "../../../lib/hooks";
-import { selectAdminState, setItemsPerPage, setPageNumber, setSortBy, setAscending } from "./adminSlice";
+import { selectAdminState, setPageNumber } from "./adminSlice";
 import Table from "../../shared/table/Table";
 import Badge from "../../shared/badge/Badge";
 import { capitalizeFirstLetter } from "../../../lib/utils";
@@ -20,8 +19,7 @@ import UserDeleteModalContent from "./components/UserDeleteModalContent";
  * @returns The Admin component for user management.
  */
 export default function Admin() {
-    const dispatch = useDispatch();
-    const { itemsPerPage, pageNumber, sortBy, ascending } = useAppSelector(selectAdminState)
+    const { itemsPerPage, pageNumber, sortBy, ascending, query } = useAppSelector(selectAdminState)
     const currentUser = useAppSelector(selectUserState)
 
     const [users, setUsers] = useState<User[]>([]);
@@ -36,7 +34,6 @@ export default function Admin() {
     });
 
     const [errorText, setErrorText] = useState("");
-    const [query, setQuery] = useState<string>("");
 
     const [userToAddModify, setUserToAddModify] = useState<User>({} as User);
     const [modalStatus, setModalStatus] = useState<AdminModalStatus>({
@@ -46,15 +43,19 @@ export default function Admin() {
     });
 
     const {
-        handleFetchUsers,
-        handleFetchUserCount,
         handleAddUser,
         handleDeleteUser,
         handleEditUser,
         handleCloseModal,
         handleEditUserButtonClick,
         handleAddUserButtonClick,
-        handleDeleteUserButtonClick
+        handleDeleteUserButtonClick,
+        handleChangeItemsPerPage,
+        handleSetPageNumber,
+        handleSetSortBy,
+        handleSetAscending,
+        handleSetQuery,
+        handleRefreshData
     } = useAdmin(
         itemsPerPage,
         pageNumber,
@@ -110,34 +111,13 @@ export default function Admin() {
         setTableData({ headers, rows });
     }, [users]);
 
-    const handleChangeItemsPerPage = useCallback((e: React.ChangeEvent<HTMLSelectElement>): void => {
-        const newItemsPerPage = parseInt(e.target.value);
-        dispatch(setItemsPerPage(newItemsPerPage));
-    }, []);
-
-    const handleSetPageNumber = useCallback((newPageNumber: number): void => {
-        dispatch(setPageNumber(newPageNumber));
-    }, []);
-
-    const handleSetSortBy = useCallback((newSortBy: string): void => {
-        dispatch(setSortBy(newSortBy as UserSortBy));
-    }, []);
-
-    const handleSetAscending = useCallback((newSortOrder: boolean): void => {
-        dispatch(setAscending(newSortOrder));
-    }, []);
-
-    const handleRefreshData = useCallback((): void => {
-        handleFetchUsers();
-        handleFetchUserCount();
-    }, [handleFetchUsers, handleFetchUserCount]);
-
     useEffect(() => {
         handleRefreshData();
     }, [itemsPerPage, pageNumber, sortBy, ascending]);
 
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
+            setPageNumber(1);
             handleRefreshData();
         }, 250)
 
@@ -157,7 +137,7 @@ export default function Admin() {
             sortBy={sortBy}
             ascending={ascending}
             query={query}
-            setQuery={setQuery}
+            setQuery={handleSetQuery}
             setPageNumber={handleSetPageNumber}
             setSortBy={handleSetSortBy}
             setAscending={handleSetAscending}

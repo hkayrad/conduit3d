@@ -1,7 +1,9 @@
 import { useCallback } from "react";
 import { AuthApi } from "../api";
-import type { AdminModalStatus, User, UserCounts } from "../types";
+import type { AdminModalStatus, User, UserCounts, UserSortBy } from "../types";
 import { AdminModalType } from "../enums";
+import { setAscending, setItemsPerPage, setPageNumber, setQuery, setSortBy } from "../../app/layout/admin/adminSlice";
+import { useDispatch } from "react-redux";
 
 /**
  * Returns admin related functions and handlers.
@@ -29,6 +31,7 @@ export function useAdmin(
     setUserToAddModify: React.Dispatch<React.SetStateAction<User>>,
     setModalStatus: React.Dispatch<React.SetStateAction<AdminModalStatus>>,
 ) {
+    const dispatch = useDispatch();
     /**
      * Fetch all users with the given parameters and update the users state.
      * @returns void
@@ -184,6 +187,61 @@ export function useAdmin(
         handleOpenModal(AdminModalType.Delete, user);
     }, []);
 
+    /**
+     * Handle change in items per page.
+     * @param e The change event from the select element
+     * @returns void
+     */
+    const handleChangeItemsPerPage = useCallback((e: React.ChangeEvent<HTMLSelectElement>): void => {
+        const newItemsPerPage = parseInt(e.target.value);
+        dispatch(setItemsPerPage(newItemsPerPage));
+    }, []);
+
+    /**
+     * Handle setting page number.
+     * @param newPageNumber The new page number to set
+     * @returns void
+     */
+    const handleSetPageNumber = useCallback((newPageNumber: number): void => {
+        dispatch(setPageNumber(newPageNumber));
+    }, []);
+
+    /**
+     * Handle setting sort by field.
+     * @param newSortBy The new field to sort by
+     * @returns void
+     */
+    const handleSetSortBy = useCallback((newSortBy: string): void => {
+        dispatch(setSortBy(newSortBy as UserSortBy));
+    }, []);
+
+    /**
+     * Handle setting sort order.
+     * @param newSortOrder The new sort order (true for ascending, false for descending)
+     * @returns void
+     */
+    const handleSetAscending = useCallback((newSortOrder: boolean): void => {
+        dispatch(setAscending(newSortOrder));
+    }, []);
+
+    /**
+     * Handle setting query.
+     * @param newQuery The new search query to set
+     * @returns void
+     */
+    const handleSetQuery = useCallback((newQuery: string): void => {
+        dispatch(setQuery(newQuery));
+    }, []);
+
+    /**
+     * Refresh data by fetching users and user count again.
+     * @returns void
+     */
+    const handleRefreshData = useCallback((): void => {
+        handleFetchUsers();
+        handleFetchUserCount();
+    }, [handleFetchUsers, handleFetchUserCount]);
+
     return {
         handleFetchUsers,
         handleFetchUserCount,
@@ -194,6 +252,12 @@ export function useAdmin(
         handleCloseModal,
         handleEditUserButtonClick,
         handleAddUserButtonClick,
-        handleDeleteUserButtonClick
+        handleDeleteUserButtonClick,
+        handleChangeItemsPerPage,
+        handleSetPageNumber,
+        handleSetSortBy,
+        handleSetAscending,
+        handleSetQuery,
+        handleRefreshData
     };
 }

@@ -8,7 +8,8 @@ export interface ListState {
     pageNumber: number,
     sortBy: string,
     ascending: boolean,
-    featureType: ListDataType
+    featureType: ListDataType,
+    query: string
 }
 
 const initialState: ListState = {
@@ -16,7 +17,8 @@ const initialState: ListState = {
     pageNumber: 1,
     sortBy: 'id',
     ascending: true,
-    featureType: ListDataType.AdrBina
+    featureType: ListDataType.AdrBina,
+    query: ""
 };
 
 export const listSlice = createSlice({
@@ -37,6 +39,9 @@ export const listSlice = createSlice({
         },
         setFeatureType: (state, action: PayloadAction<ListState['featureType']>) => {
             state.featureType = action.payload;
+        },
+        setQuery: (state, action: PayloadAction<ListState['query']>) => {
+            state.query = action.payload;
         }
     }
 });
@@ -46,7 +51,8 @@ export const {
     setPageNumber,
     setSortBy,
     setAscending,
-    setFeatureType
+    setFeatureType,
+    setQuery
 } = listSlice.actions;
 
 export const selectListState = (state: RootState) => state.list;
@@ -56,5 +62,6 @@ export const selectPageNumber = (state: RootState) => state.list.pageNumber;
 export const selectSortBy = (state: RootState) => state.list.sortBy;
 export const selectSortOrder = (state: RootState) => state.list.ascending;
 export const selectFeatureType = (state: RootState) => state.list.featureType;
+export const selectQuery = (state: RootState) => state.list.query;
 
 export default listSlice.reducer;
