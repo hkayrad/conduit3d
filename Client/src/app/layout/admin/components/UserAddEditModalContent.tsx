@@ -11,6 +11,11 @@ type Props = {
     errorText?: string;
 }
 
+/**
+ * UserActionModalContent component for adding or editing a user.
+ * @param props - Props for the UserActionModalContent component
+ * @returns The rendered component
+ */
 export default function UserActionModalContent(props: Props) {
     const { user, setUser, handleSubmit, handleCloseModal, isPasswordRequired = false, errorText } = props;
 
