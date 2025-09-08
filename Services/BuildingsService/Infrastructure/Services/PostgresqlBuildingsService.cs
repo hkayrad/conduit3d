@@ -111,7 +111,7 @@ public class PostgresqlBuildingsService(IUnitOfWork unitOfWork) : IBuildingsServ
 
         try
         {
-            var count = await _unitOfWork.BuildingsRepository.GetCountAsync(extent, cancellationToken);
+            var count = await _unitOfWork.BuildingsRepository.GetCountAsync(extent, query, cancellationToken);
             return Response<int>.Success(count, BuildingsResources.GetString("buildingCountRetrieved"));
         }
         catch (NpgsqlException ex)

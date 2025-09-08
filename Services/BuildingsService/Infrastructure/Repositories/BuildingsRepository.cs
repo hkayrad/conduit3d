@@ -83,7 +83,7 @@ public class BuildingsRepository(BuildingsContext context) : IBuildingsRepositor
     /// <remarks>
     /// Retrieves the count of buildings within the specified extent using native SQL.
     /// </remarks>
-    public async Task<int> GetCountAsync(Extent extent, CancellationToken cancellationToken)
+    public async Task<int> GetCountAsync(Extent extent, string? query, CancellationToken cancellationToken)
     {
         var sqlQuery = _dbSet.FromSql($@"SELECT *
                     FROM buildings

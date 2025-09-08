@@ -42,7 +42,8 @@ public class RekortmanRepository(LinesContext context) : IRekortmanRepository
                                         id, 
                                         tipi,
                                         kesit,
-                                        ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson
+                                        ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson,
+                                        searchable_text
                                     FROM ""SBK_rEKORTMAN""
                                     WHERE ST_Transform(geometry, 4326) @ ST_MakeEnvelope(
                                         {extent.MinX}, 
@@ -51,6 +52,11 @@ public class RekortmanRepository(LinesContext context) : IRekortmanRepository
                                         {extent.MaxY}, 
                                         4326
                                     )");
+
+        if (!string.IsNullOrWhiteSpace(query))
+            sqlQuery = sqlQuery.Where(u => u.SearchableText.Matches(
+                EF.Functions.ToTsQuery("simple", ParseTsQuery.ConvertToTsQuery(query))
+            ));
 
         if (ascending)
             sqlQuery = sqlQuery.OrderBy(x => EF.Property<object>(x, sortBy));

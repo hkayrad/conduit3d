@@ -97,7 +97,7 @@ public class PostgresqlOgMusDirekService(IUnitOfWork unitOfWork) : IOgMusDirekSe
     }
 
     /// <inheritdoc />
-    public async Task<Response<int>> GetCountAsync(Extent? extent, CancellationToken cancellationToken)
+    public async Task<Response<int>> GetCountAsync(Extent? extent, string? query, CancellationToken cancellationToken)
     {
         extent ??= new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
 
@@ -111,7 +111,7 @@ public class PostgresqlOgMusDirekService(IUnitOfWork unitOfWork) : IOgMusDirekSe
 
         try
         {
-            var count = await _unitOfWork.OgMusDirekRepository.GetCountAsync(extent, cancellationToken);
+            var count = await _unitOfWork.OgMusDirekRepository.GetCountAsync(extent, query, cancellationToken);
             return Response<int>.Success(count, PolesResources.GetString("poleCountRetrieved"));
         }
         catch (NpgsqlException ex)

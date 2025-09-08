@@ -44,7 +44,8 @@ public class AgDirekRepository(PolesContext context) : IAgDirekRepository
                                         tipi,
                                         direk_no,
                                         boy_ozellik,
-                                        ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson
+                                        ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson,
+                                        searchable_text
                                     FROM ""SBK_AGDIREK""
                                     WHERE ST_Transform(geometry, 4326) @ ST_MakeEnvelope(
                                         {extent.MinX}, 
@@ -53,6 +54,11 @@ public class AgDirekRepository(PolesContext context) : IAgDirekRepository
                                         {extent.MaxY}, 
                                         4326
                                     )");
+
+        if (!string.IsNullOrWhiteSpace(query))
+            sqlQuery = sqlQuery.Where(u => u.SearchableText.Matches(
+                EF.Functions.ToTsQuery("simple", ParseTsQuery.ConvertToTsQuery(query))
+            ));
 
         if (ascending)
             sqlQuery = sqlQuery.OrderBy(x => EF.Property<object>(x, sortBy));

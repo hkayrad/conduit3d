@@ -43,7 +43,8 @@ public class AgHatRepository(LinesContext context) : IAgHatRepository
                                         cinsi, 
                                         tipi,
                                         kesit,
-                                        ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson
+                                        ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson,
+                                        searchable_text
                                     FROM ""SBK_AGHAT""
                                     WHERE ST_Transform(geometry, 4326) @ ST_MakeEnvelope(
                                         {extent.MinX}, 
@@ -52,6 +53,11 @@ public class AgHatRepository(LinesContext context) : IAgHatRepository
                                         {extent.MaxY}, 
                                         4326
                                     )");
+
+        if (!string.IsNullOrWhiteSpace(query))
+            sqlQuery = sqlQuery.Where(u => u.SearchableText.Matches(
+                EF.Functions.ToTsQuery("simple", ParseTsQuery.ConvertToTsQuery(query))
+            ));
 
         if (ascending)
             sqlQuery = sqlQuery.OrderBy(x => EF.Property<object>(x, sortBy));
