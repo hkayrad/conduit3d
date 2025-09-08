@@ -20,7 +20,7 @@ import { ColumnLayer, GeoJsonLayer } from "deck.gl";
 import { DeckGL } from "@deck.gl/react";
 import { CompassWidget, ZoomWidget } from "@deck.gl/widgets";
 import { Map as MapLibre } from 'react-map-gl/maplibre';
-import { useCallback, useEffect, useMemo, useRef, useState, type JSX } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router";
 import { useDispatch } from "react-redux";
 
@@ -35,9 +35,9 @@ import FeatureInfo from "./featureInfo/FeatureInfo";
 /**
  * DeckglMap component renders the Deck.gl map with various layers and controls.
  * @component
- * @returns {JSX.Element} The rendered component
+ * @returns The rendered component
  */
-export default function DeckglMap(): JSX.Element {
+export default function DeckglMap(): React.ReactNode {
     var [searchParams, setSearchParams] = useSearchParams();
 
     const dispatch = useDispatch();
@@ -110,7 +110,7 @@ export default function DeckglMap(): JSX.Element {
         setActivePopups);
 
     // Create layers from the formatted data
-    const layers: Layer[] = useMemo(() => [
+    const layers: Layer[] = useMemo((): Layer[] => [
         ...CreateLayer.LocalTiles(visibility.basemap),
 
         ...hatLayerData.flatMap(filteredHat =>
@@ -132,7 +132,7 @@ export default function DeckglMap(): JSX.Element {
                     `${direk.id}-layer`,
                     direk.data,
                     direk.color,
-                    direk.visibility
+                    direk.visibility,
                 )
             )
         ),
@@ -169,7 +169,7 @@ export default function DeckglMap(): JSX.Element {
     // Fly to a given feature
     const flyTo = useCallback((
         feature: GeoJSON.Feature,
-    ) => {
+    ): void => {
         flyToFeature(feature, mapViewState, setMapViewState);
     }, [mapViewState])
 

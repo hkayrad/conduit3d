@@ -1,4 +1,3 @@
-import type { JSX } from "react";
 import { useAppSelector } from "../../../../lib/hooks";
 import { selectExtent } from "../mapSlice";
 import AdrBinaComponent from "./buildings/AdrBinaComponent";
@@ -26,9 +25,9 @@ type Props = {
  * DataComponent is responsible for rendering all data-related components.
  * @component
  * @param props - The props for the component
- * @returns {JSX.Element} The rendered component
+ * @returns The rendered component
  */
-export default function DataComponent(props: Props): JSX.Element {
+export default function DataComponent(props: Props): React.ReactNode {
     const {
         allPoles,
         setAdrBina,

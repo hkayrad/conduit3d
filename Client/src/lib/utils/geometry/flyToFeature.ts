@@ -1,5 +1,5 @@
 import { FlyToInterpolator, WebMercatorViewport, type MapViewState } from "@deck.gl/core";
-import { DataType } from "../../enums";
+import { FeatureType } from "../../enums";
 import { bbox } from "@turf/turf";
 import { easeInOutCubic } from "..";
 import { MAX_ZOOM } from "../../constants";
@@ -16,8 +16,10 @@ export function flyToFeature(
     setMapViewState: React.Dispatch<React.SetStateAction<MapViewState>>) {
     if (!feature) return;
 
+    // Get the bounding box of the feature using turf.bbox
     const [minLng, minLat, maxLng, maxLat] = bbox(feature);
 
+    // Calculate the new center and zoom level to fit the feature within the viewport
     const { longitude, latitude, zoom } = new WebMercatorViewport(mapViewState).fitBounds(
         [[minLng, minLat], [maxLng, maxLat]],
         {
@@ -25,9 +27,10 @@ export function flyToFeature(
         }
     );
 
-    const zoomLevel = feature.properties!.dataType === DataType.POLE ? 20 :
-        feature.properties!.dataType === DataType.TRAFO ? 23 :
-            feature.properties!.dataType === DataType.LINE || feature.properties!.dataType === DataType.REKORTMAN ? 20 : zoom;
+    // Determine zoom level based on feature type
+    const zoomLevel = feature.properties!.dataType === FeatureType.POLE ? 20 :
+        feature.properties!.dataType === FeatureType.TRAFO ? 23 :
+            feature.properties!.dataType === FeatureType.LINE || feature.properties!.dataType === FeatureType.REKORTMAN ? 20 : zoom;
 
     setMapViewState({
         ...mapViewState,

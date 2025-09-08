@@ -12,7 +12,7 @@ export const COLORS: { [name: string]: [number, number, number, number] } = {
     AG_HAT: [255, 140, 0, 230],        // Dark orange, opaque
     OG_HAT: [138, 43, 226, 230],       // Blue violet, opaque
     REKORTMAN: [255, 0, 255, 230],
-}
+};
 
 export const MAP_STYLE = [
     "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json",
@@ -21,5 +21,4 @@ export const MAP_STYLE = [
     "https://tiles.openfreemap.org/styles/positron",
     "https://tiles.openfreemap.org/styles/bright",
     "https://tiles.openfreemap.org/styles/liberty"
-
-]
+];
