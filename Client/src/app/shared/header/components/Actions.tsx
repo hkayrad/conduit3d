@@ -5,21 +5,20 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearUser, selectUserState } from "../../../layout/auth/authSlice";
 import { UserRoles } from "../../../../lib/enums";
 import { selectViewState } from "../../../layout/map/mapSlice";
-import type { JSX } from "react";
 
 /**
  * Actions component displays user action buttons.
  * @component
- * @returns {JSX.Element} The rendered component
+ * @returns The rendered component
  */
-export default function Actions(): JSX.Element {
+export default function Actions(): React.ReactNode {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const user = useSelector(selectUserState);
     const { lon, lat, z, p, b } = useSelector(selectViewState);
 
-    const handleLogout = async () => {
+    const handleLogout = async (): Promise<void> => {
         try {
             AuthApi.logout();
             dispatch(clearUser());

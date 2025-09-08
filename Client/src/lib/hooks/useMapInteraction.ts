@@ -24,34 +24,56 @@ export function useMapInteraction(
     setMouseLonLat: React.Dispatch<React.SetStateAction<number[]>>,
     setActivePopups: React.Dispatch<React.SetStateAction<PopupState[]>>
 ) {
+    /**
+     * Handle view state changes
+     * @param viewState The new map view state
+     */
     const handleViewStateChange = useCallback((viewState: MapViewState) => {
         setMapViewState(viewState);
         setLineWidth(Number(Math.max((23.5 - viewState.zoom) / 10, 0.01).toFixed(4)));
     }, []);
 
+    /**
+     * Handle mouse move events
+     * @param info The picking info from the mouse move event
+     */
     const handleMouseMove = useCallback((info: PickingInfo) => {
         setHoveredFeature(info.object);
         setMousePos({ x: info.x, y: info.y });
         setMouseLonLat(info.coordinate ? info.coordinate : [0, 0]);
     }, []);
 
+    /**
+     * Handle click events to create popups
+     * @param info The picking info from the click event
+     */
     const handleClick = useCallback((info: PickingInfo) => {
-        if (info.object) {
-            const id = Math.random().toString(36).substring(2, 9);
-            zIndexCounter.current += 1;
-            const newPopup: PopupState = {
-                id: `popup-${id}`,
-                info: info,
-                zIndex: zIndexCounter.current
-            };
-            setActivePopups(prev => [...prev, newPopup]);
+        if (!info.object) {
+            return;
         }
+
+        const id = Math.random().toString(36).substring(2, 9);
+        zIndexCounter.current += 1;
+        const newPopup: PopupState = {
+            id: `popup-${id}`,
+            info: info,
+            zIndex: zIndexCounter.current
+        };
+        setActivePopups(prev => [...prev, newPopup]);
     }, []);
 
+    /**
+     * Handle closing a popup
+     * @param id The ID of the popup to close
+     */
     const handleClosePopup = useCallback((id: string) => {
         setActivePopups(prev => prev.filter(popup => popup.id !== id));
     }, []);
 
+    /**
+     * Handle focusing a popup to bring it to the front
+     * @param id The ID of the popup to focus
+     */
     const handleFocusPopup = useCallback((id: string) => {
         const maxZIndex = Math.max(...activePopups.map(p => p.zIndex));
         const focusedPopup = activePopups.find(p => p.id === id);
@@ -67,8 +89,13 @@ export function useMapInteraction(
         }
     }, [activePopups]);
 
+    /**
+     * Handle key presses for global shortcuts
+     * @param e The keyboard event
+     */
     const handleKeyPresses = useCallback((e: KeyboardEvent) => {
-        if (e.key === "Delete" && e.ctrlKey) {
+        // Close all popups on Ctrl + Delete
+        if (e.ctrlKey && e.key === "Delete") {
             e.preventDefault();
             setActivePopups([]);
         }

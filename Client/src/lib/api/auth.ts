@@ -1,4 +1,4 @@
-import type { ApiResponse, LoginUserDto, User, UserCountsDto } from "../types";
+import type { ApiResponse, LoginUserDto, User, UserCounts } from "../types";
 import instance from "../instance";
 import Cookies from "js-cookie";
 import { capitalizeFirstLetter } from "../utils";
@@ -11,7 +11,7 @@ export class AuthApi {
     /**
      * Login a user.
      * @param {LoginUserDto} user The user credentials.
-     * @returns The logged-in user data.
+     * @returns A promise that resolves to the user data.
      */
     static async login(user: LoginUserDto) {
         const { username, password } = user;
@@ -30,7 +30,12 @@ export class AuthApi {
 
     /**
      * Get all users.
-     * @returns An array of users.
+     * @param pageSize Number of users per page.
+     * @param pageNumber The page number to fetch.
+     * @param sortBy The field to sort by.
+     * @param ascending Whether to sort in ascending order.
+     * @param query Optional search query to filter users.
+     * @returns A promise that resolves to the list of users.
      */
     static async fetchAll(
         pageSize: number = 10,
@@ -52,10 +57,11 @@ export class AuthApi {
 
     /**
      * Get the count of users.
-     * @returns The count of users.
+     * @param query Optional search query to filter users.
+     * @returns A promise that resolves to the user counts.
      */
     static async fetchCount(query: string = null!) {
-        const response = await instance.get<ApiResponse<UserCountsDto>>("/auth/count", {
+        const response = await instance.get<ApiResponse<UserCounts>>("/auth/count", {
             params: {
                 query: query
             }
@@ -73,11 +79,22 @@ export class AuthApi {
         return response.data;
     }
 
+    /**
+     * Update a user.
+     * @param userId ID of the user to update
+     * @param user The user object with updated information.
+     * @returns A promise that resolves to the updated user data.
+     */
     static async updateUser(userId: number, user: User) {
         const response = await instance.put<ApiResponse<User>>(`/auth/${userId}`, user);
         return response.data;
     }
 
+    /**
+     * Create a new user.   
+     * @param user The user object to create.
+     * @returns A promise that resolves to the created user data.
+     */
     static async createUser(user: User) {
         const response = await instance.post<ApiResponse<User>>(`/auth`, user);
         return response.data;

@@ -1,13 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../../lib/store";
+import { ListDataType } from "../../../lib/enums";
 
 export interface ListState {
     itemsPerPage: number,
     pageNumber: number,
     sortBy: string,
     ascending: boolean,
-    featureType: string
+    featureType: ListDataType
 }
 
 const initialState: ListState = {
@@ -15,7 +16,7 @@ const initialState: ListState = {
     pageNumber: 1,
     sortBy: 'id',
     ascending: true,
-    featureType: 'AdrBina'
+    featureType: ListDataType.AdrBina
 };
 
 export const listSlice = createSlice({

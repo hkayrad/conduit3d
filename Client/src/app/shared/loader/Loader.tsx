@@ -2,14 +2,13 @@ import "./style/loader.css";
 import { LoaderIcon } from "lucide-react";
 import { useAppSelector } from "../../../lib/hooks";
 import { selectIsDataLoading } from "../../layout/map/mapSlice";
-import type { JSX } from "react";
 
 /**
  * Loader component displays a loading spinner when data is being loaded.
  * @component
- * @returns {JSX.Element} The rendered component
+ * @returns The rendered component
  */
-export default function Loader(): JSX.Element {
+export default function Loader(): React.ReactNode {
     const isDataLoading = useAppSelector(selectIsDataLoading);
 
     return (

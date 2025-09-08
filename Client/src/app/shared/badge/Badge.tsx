@@ -5,7 +5,13 @@ type Props = {
     color: string
 }
 
-export default function Badge(props: Props) {
+/**
+ * Badge component displays a colored label.
+ * @component
+ * @param props The props for the Badge component.
+ * @returns The rendered component
+ */
+export default function Badge(props: Props): React.ReactNode {
     const { label, color } = props;
 
     return (

@@ -1,4 +1,4 @@
-import { useState, type JSX } from "react";
+import React, { useState } from "react";
 import "./style/layerControlDropdown.css";
 import { ChevronDown, Eye, EyeClosed } from "lucide-react";
 
@@ -14,9 +14,9 @@ type Props = {
  * LayerControlDropdown component displays a dropdown for layer controls.
  * @component
  * @param props - The props for the component
- * @returns {JSX.Element} The rendered component
+ * @returns The rendered component
  */
-export default function LayerControlDropdown(props: Props): JSX.Element {
+export default function LayerControlDropdown(props: Props): React.ReactNode {
     const { icon, name, isLayerVisible, toggleLayer, children } = props;
 
     const [isOpen, setIsOpen] = useState(false);

@@ -94,7 +94,7 @@ body::-webkit-scrollbar-thumb {
 #list-page .feature-type-selector .feature-type-sections .feature-type-section {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
 }
 #list-page .feature-type-selector .feature-type-sections .feature-type-section h3 {
   color: #FFFFFF;
@@ -109,6 +109,9 @@ body::-webkit-scrollbar-thumb {
   border-radius: 4px;
   text-align: left;
   transition: all ease 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 #list-page .feature-type-selector .feature-type-sections .feature-type-section button:hover {
   cursor: pointer;

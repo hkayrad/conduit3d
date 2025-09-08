@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef, useState, type JSX } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import "./style/hoverCard.css";
-import { DataType } from "../../../../lib/enums";
+import { FeatureType } from "../../../../lib/enums";
 import { selectIsHoverInfoVisible } from "../mapSlice";
 import { useAppSelector } from "../../../../lib/hooks";
 import InfoContent from "../../../shared/infoContent/InfoContent";
@@ -11,7 +11,7 @@ type Props = {
 }
 
 type FeatureProperties = {
-    dataType: DataType;
+    dataType: FeatureType;
     name?: string;
     height?: number;
     floorCount?: number;
@@ -28,9 +28,9 @@ type FeatureProperties = {
  * HoverCard component displays information about a hovered map feature.
  * @component
  * @param props - The props for the component
- * @returns {JSX.Element} The rendered component
+ * @returns The rendered component
  */
-export default function HoverCard(props: Props): JSX.Element {
+export default function HoverCard(props: Props): React.ReactNode {
     const { hoveredFeature, mousePos } = props;
 
     const properties = hoveredFeature?.properties as FeatureProperties | undefined;

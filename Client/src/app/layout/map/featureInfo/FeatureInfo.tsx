@@ -1,6 +1,6 @@
 import { LucideArrowRight, LucideX } from "lucide-react";
 import "./style/featureInfo.css"
-import { useCallback, useEffect, useMemo, useRef, useState, type JSX } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { PickingInfo } from "deck.gl";
 import InfoContent from "../../../shared/infoContent/InfoContent";
 
@@ -16,9 +16,9 @@ type Props = {
  * FeatureInfo component displays information about a selected map feature.
  * @component
  * @param props - The props for the component
- * @returns {JSX.Element} The rendered component
+ * @returns The rendered component
  */
-export default function FeatureInfo(props: Props): JSX.Element {
+export default function FeatureInfo(props: Props): React.ReactNode {
     const { info, zIndex, onClose, onFocus, onFlyTo } = props;
     const { object, coordinate, x, y } = info;
     const { properties } = object || {};

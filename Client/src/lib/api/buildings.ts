@@ -8,7 +8,12 @@ import { capitalizeFirstLetter } from "../utils";
 export class AdrBinaApi {
     /**
      * Fetch all ADR buildings within the specified extent.
-     * @param {Extent} extent The geographical extent to filter the buildings.
+     * @param pageSize Number of buildings per page.
+     * @param pageNumber The page number to fetch.
+     * @param sortBy The field to sort by.
+     * @param ascending Whether to sort in ascending order.
+     * @param query Optional search query to filter buildings.
+     * @param extent The geographical extent to filter the buildings.
      * @returns A promise that resolves to the list of ADR buildings.
      */
     static async fetchAll(
@@ -16,6 +21,7 @@ export class AdrBinaApi {
         pageNumber: number = 1,
         sortBy: string = 'id',
         ascending: boolean = true,
+        query: string = null!,
         extent?: Extent
     ) {
         const response = await instance.get<ApiResponse<AdrBina[]>>("adrBina", {
@@ -24,14 +30,26 @@ export class AdrBinaApi {
                 pageNumber: pageNumber,
                 sortBy: capitalizeFirstLetter(sortBy),
                 ascending: ascending,
+                query: query,
                 ...extent
             }
         });
         return response.data;
     }
 
-    static async fetchCount() {
-        const response = await instance.get<ApiResponse<number>>("adrBina/count");
+    /**
+     * Fetch the count of ADR buildings.
+     * @param query Optional search query to filter features.
+     * @returns A promise that resolves to the count of ADR buildings.
+     */
+    static async fetchCount(
+        query: string = null!
+    ) {
+        const response = await instance.get<ApiResponse<number>>("adrBina/count", {
+            params: {
+                query
+            }
+        });
         return response.data;
     }
 }
@@ -42,7 +60,12 @@ export class AdrBinaApi {
 export class TrafoBinaApi {
     /**
      * Fetch all transformer stations within the specified extent.
-     * @param {Extent} extent The geographical extent to filter the buildings.
+     * @param pageSize Number of buildings per page.
+     * @param pageNumber The page number to fetch.
+     * @param sortBy The field to sort by.
+     * @param ascending Whether to sort in ascending order.
+     * @param query Optional search query to filter buildings.
+     * @param extent The geographical extent to filter the buildings.
      * @returns A promise that resolves to the list of transformer stations.
      */
     static async fetchAll(
@@ -50,6 +73,7 @@ export class TrafoBinaApi {
         pageNumber: number = 1,
         sortBy: string = 'id',
         ascending: boolean = true,
+        query: string = null!,
         extent?: Extent
     ) {
         const response = await instance.get<ApiResponse<TrafoBina[]>>("trafoBina", {
@@ -58,14 +82,26 @@ export class TrafoBinaApi {
                 pageNumber,
                 sortBy: capitalizeFirstLetter(sortBy),
                 ascending,
+                query,
                 ...extent
             }
         });
         return response.data;
     }
 
-    static async fetchCount() {
-        const response = await instance.get<ApiResponse<number>>("trafoBina/count");
+    /**
+     * Fetch the count of transformer stations.
+     * @param query Optional search query to filter features.
+     * @returns A promise that resolves to the count of transformer stations.
+     */
+    static async fetchCount(
+        query: string = null!
+    ) {
+        const response = await instance.get<ApiResponse<number>>("trafoBina/count", {
+            params: {
+                query
+            }
+        });
         return response.data;
     }
 }

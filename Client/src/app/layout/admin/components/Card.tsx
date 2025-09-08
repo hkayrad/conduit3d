@@ -12,7 +12,7 @@ type Props = {
  * @param props - The properties for the card component.
  * @returns The rendered card component.
  */
-export default function Card(props: Props) {
+export default function Card(props: Props): React.ReactNode {
     const { title, icon, number, info, numberColor } = props;
 
     return (

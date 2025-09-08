@@ -21,6 +21,10 @@ export function useDirek(
     filters: MapState["filters"],
     visibility: MapState["visibility"]
 ) {
+    /**
+     * Formatted AG Direk data for rendering on the map.
+     * @memoized to optimize performance and avoid unnecessary recalculations.
+     */
     const agDirekFormatted = useMemo(() => {
         if (agDirek)
             return types.agDirek.map(type => {
@@ -36,6 +40,11 @@ export function useDirek(
         else
             return [];
     }, [agDirek, visibility.agDirek, filters.agDirek.tipi]);
+
+    /**
+     * Formatted OG Mus Direk data for rendering on the map.
+     * @memoized to optimize performance and avoid unnecessary recalculations.
+     */
     const ogMusDirekFormatted = useMemo(() => {
         if (ogMusDirek)
             return types.ogMusDirek.map(type => {
@@ -51,6 +60,11 @@ export function useDirek(
         else
             return [];
     }, [ogMusDirek, visibility.ogMusDirek, filters.ogMusDirek.tipi]);
+
+    /**
+     * Formatted AYD Direk data for rendering on the map.
+     * @memoized to optimize performance and avoid unnecessary recalculations.
+     */
     const aydDirekFormatted = useMemo(() => {
         if (aydDirek)
             return types.aydDirek.map(type => {
@@ -67,10 +81,15 @@ export function useDirek(
             return [];
     }, [aydDirek, visibility.aydDirek, filters.aydDirek.tipi]);
 
+    /**
+     * All poles combined into a single array for easy access.
+     * @memoized to optimize performance and avoid unnecessary recalculations.
+     */
     const allPoles: GeoJSON.Feature[] = useMemo(() => {
         if (agDirek && ogMusDirek && aydDirek)
             return [...agDirek.features, ...ogMusDirek.features, ...aydDirek.features]
-        else return [];
+        else
+            return [];
     }, [agDirek, ogMusDirek, aydDirek])
 
     return {

@@ -7,7 +7,13 @@ type Props = {
     onClick: () => void;
 }
 
-export default function ActionButton(props: Props) {
+/**
+ * ActionButton component displays a button with various styles.
+ * @component
+ * @param props The props for the ActionButton component.
+ * @returns The rendered component
+ */
+export default function ActionButton(props: Props): React.ReactNode {
     const { onClick, content, style, disabled } = props;
 
     return (

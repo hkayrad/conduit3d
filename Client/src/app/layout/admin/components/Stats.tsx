@@ -1,9 +1,9 @@
 import { UserCheck2Icon, Users2, UserX2Icon } from "lucide-react";
-import type { UserCountsDto } from "../../../../lib/types";
+import type { UserCounts } from "../../../../lib/types";
 import Card from "./Card";
 
 type Props = {
-    userCounts: UserCountsDto
+    userCounts: UserCounts
 }
 
 /**
@@ -12,7 +12,7 @@ type Props = {
  * @param props - The properties for the stats component.
  * @returns The rendered stats component.
  */
-export default function Stats(props: Props) {
+export default function Stats(props: Props): React.ReactNode {
     const { userCounts } = props;
 
     return (

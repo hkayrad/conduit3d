@@ -20,6 +20,11 @@ export function useHat(
     types: MapState["types"],
     filters: MapState["filters"],
     visibility: MapState["visibility"]) {
+
+    /**
+     * Formatted AG Hat data for rendering on the map.
+     * @memoized to optimize performance and avoid unnecessary recalculations.
+     */
     const agHatFormatted = useMemo(() => {
         if (agHat)
             return types.agHat.map(type => {
@@ -37,6 +42,10 @@ export function useHat(
             return [];
     }, [agHat, visibility.agHat, filters.agHat.tipi]);
 
+    /**
+     * Formatted OG Hat data for rendering on the map.
+     * @memoized to optimize performance and avoid unnecessary recalculations.
+     */
     const ogHatFormatted = useMemo(() => {
         if (ogHat)
             return types.ogHat.map(type => {
@@ -54,6 +63,10 @@ export function useHat(
             return [];
     }, [ogHat, visibility.ogHat, filters.ogHat.tipi]);
 
+    /**
+     * Formatted Rekortman data for rendering on the map.
+     * @memoized to optimize performance and avoid unnecessary recalculations.
+     */
     const rekortmanFormatted = useMemo(() => {
         if (rekortman)
             return types.rekortman.map(type => {

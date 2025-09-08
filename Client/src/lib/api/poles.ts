@@ -8,7 +8,12 @@ import { capitalizeFirstLetter } from "../utils";
 export class AgDirekApi {
     /**
      * Fetch all AG Direk features within the specified extent.
-     * @param {Extent} extent The geographical extent to filter the features.
+     * @param pageSize Number of features per page.
+     * @param pageNumber The page number to fetch.
+     * @param sortBy The field to sort by.
+     * @param ascending Whether to sort in ascending order.
+     * @param query Optional search query to filter features.
+     * @param extent The geographical extent to filter the features.
      * @returns A promise that resolves to the list of AG Direk features.
      */
     static async fetchAll(
@@ -16,6 +21,7 @@ export class AgDirekApi {
         pageNumber: number = 1,
         sortBy: string = 'id',
         ascending: boolean = true,
+        query: string = null!,
         extent?: Extent
     ) {
         const response = await instance.get<ApiResponse<Direk[]>>("agDirek", {
@@ -24,6 +30,7 @@ export class AgDirekApi {
                 pageNumber,
                 sortBy: capitalizeFirstLetter(sortBy),
                 ascending,
+                query,
                 ...extent
             }
         });
@@ -39,8 +46,19 @@ export class AgDirekApi {
         return response.data;
     }
 
-    static async fetchCount() {
-        const response = await instance.get<ApiResponse<number>>("agDirek/count");
+    /**
+     * Fetch the count of AG Direk features.
+     * @param query Optional search query to filter features.
+     * @returns A promise that resolves to the count of AG Direk features.
+     */
+    static async fetchCount(
+        query: string = null!
+    ) {
+        const response = await instance.get<ApiResponse<number>>("agDirek/count", {
+            params: {
+                query
+            }
+        });
         return response.data;
     }
 }
@@ -51,7 +69,12 @@ export class AgDirekApi {
 export class OgMusDirekApi {
     /**
      * Fetch all OG Mus Direk features within the specified extent.
-     * @param {Extent} extent The geographical extent to filter the features.
+     * @param pageSize Number of features per page.
+     * @param pageNumber The page number to fetch.
+     * @param sortBy The field to sort by.
+     * @param ascending Whether to sort in ascending order.
+     * @param query Optional search query to filter features.
+     * @param extent The geographical extent to filter the features.
      * @returns A promise that resolves to the list of OG Mus Direk features.
      */
     static async fetchAll(
@@ -59,6 +82,7 @@ export class OgMusDirekApi {
         pageNumber: number = 1,
         sortBy: string = 'id',
         ascending: boolean = true,
+        query: string = null!,
         extent?: Extent) {
         const response = await instance.get<ApiResponse<Direk[]>>("ogMusDirek", {
             params: {
@@ -66,6 +90,7 @@ export class OgMusDirekApi {
                 pageNumber,
                 sortBy: capitalizeFirstLetter(sortBy),
                 ascending,
+                query,
                 ...extent
             }
         });
@@ -81,8 +106,19 @@ export class OgMusDirekApi {
         return response.data;
     }
 
-    static async fetchCount() {
-        const response = await instance.get<ApiResponse<number>>("ogMusDirek/count");
+    /**
+     * Fetch the count of OG Mus Direk features.
+     * @param query Optional search query to filter features.
+     * @returns A promise that resolves to the count of OG Mus Direk features.
+     */
+    static async fetchCount(
+        query: string = null!
+    ) {
+        const response = await instance.get<ApiResponse<number>>("ogMusDirek/count", {
+            params: {
+                query
+            }
+        });
         return response.data;
     }
 }
@@ -93,7 +129,12 @@ export class OgMusDirekApi {
 export class AydDirekApi {
     /**
      * Fetch all Ayd Direk features within the specified extent.
-     * @param {Extent} extent The geographical extent to filter the features.
+     * @param pageSize Number of features per page.
+     * @param pageNumber The page number to fetch.
+     * @param sortBy The field to sort by.
+     * @param ascending Whether to sort in ascending order.
+     * @param query Optional search query to filter features.
+     * @param extent The geographical extent to filter the features.
      * @returns A promise that resolves to the list of Ayd Direk features.
      */
     static async fetchAll(
@@ -101,6 +142,7 @@ export class AydDirekApi {
         pageNumber: number = 1,
         sortBy: string = 'id',
         ascending: boolean = true,
+        query: string = null!,
         extent?: Extent
     ) {
         const response = await instance.get<ApiResponse<Direk[]>>("aydDirek", {
@@ -109,6 +151,7 @@ export class AydDirekApi {
                 pageNumber,
                 sortBy: capitalizeFirstLetter(sortBy),
                 ascending,
+                query,
                 ...extent
             }
         });
@@ -124,8 +167,19 @@ export class AydDirekApi {
         return response.data;
     }
 
-    static async fetchCount() {
-        const response = await instance.get<ApiResponse<number>>("aydDirek/count");
+    /**
+     * Fetch the count of Ayd Direk features.
+     * @param query Optional search query to filter features.
+     * @returns A promise that resolves to the count of Ayd Direk features.
+     */
+    static async fetchCount(
+        query: string = null!
+    ) {
+        const response = await instance.get<ApiResponse<number>>("aydDirek/count", {
+            params: {
+                query
+            }
+        });
         return response.data;
     }
 }

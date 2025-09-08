@@ -1,5 +1,4 @@
-import type { JSX } from "react";
-import { DataType } from "../../../lib/enums";
+import { FeatureType } from "../../../lib/enums";
 import InfoField from "../infoField/InfoField";
 
 /**
@@ -7,13 +6,13 @@ import InfoField from "../infoField/InfoField";
  * @component
  * @param properties - The properties for the component
  * @param coordinate - Optional coordinates to display
- * @returns {JSX.Element} The rendered component
+ * @returns The rendered component
  */
-export default function InfoContent(properties: any, coordinate?: number[]): JSX.Element | null {
+export default function InfoContent(properties: any, coordinate?: number[]): React.ReactNode | null {
     if (!properties) return null;
 
     switch (properties.dataType) {
-        case DataType.BUILDING:
+        case FeatureType.BUILDING:
             return (
                 <>
                     <InfoField
@@ -31,7 +30,7 @@ export default function InfoContent(properties: any, coordinate?: number[]): JSX
                 </>
             );
 
-        case DataType.TRAFO:
+        case FeatureType.TRAFO:
             return (
                 <>
                     <InfoField
@@ -47,7 +46,7 @@ export default function InfoContent(properties: any, coordinate?: number[]): JSX
                 </>
             );
 
-        case DataType.POLE:
+        case FeatureType.POLE:
             return (
                 <>
                     <InfoField label="Pole No" value={properties.direkNo} />
@@ -63,7 +62,7 @@ export default function InfoContent(properties: any, coordinate?: number[]): JSX
                 </>
             );
 
-        case DataType.LINE:
+        case FeatureType.LINE:
             return (
                 <>
                     <InfoField label="Cinsi" value={properties.cinsi} />
@@ -77,7 +76,7 @@ export default function InfoContent(properties: any, coordinate?: number[]): JSX
                 </>
             );
 
-        case DataType.REKORTMAN:
+        case FeatureType.REKORTMAN:
             return (
                 <>
                     <InfoField label="Cinsi" value={properties.tipi} />

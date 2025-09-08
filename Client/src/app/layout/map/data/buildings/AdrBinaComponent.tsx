@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from "react";
 import type { AdrBina, Extent } from "../../../../../lib/types"
 import { AdrBinaApi } from "../../../../../lib/api";
-import { DataType } from "../../../../../lib/enums";
+import { FeatureType } from "../../../../../lib/enums";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
@@ -13,7 +13,7 @@ type Props = {
  * @component
  * @param props - The props for the component
  */
-export default function AdrBinaComponent(props: Props) {
+export default function AdrBinaComponent(props: Props): null {
     const { setData, extent } = props;
 
     const handleAdrBinaFetch = useCallback(async () => {
@@ -31,7 +31,7 @@ export default function AdrBinaComponent(props: Props) {
                     geometry: JSON.parse(rawData.geoJson),
                     properties: {
                         id: rawData.id,
-                        dataType: DataType.BUILDING,
+                        dataType: FeatureType.BUILDING,
                         name: rawData.name,
                         type: rawData.type,
                         floorCount: rawData.floorCount,

@@ -2,14 +2,13 @@ import "./style/header.css"
 import Logo from "./components/Logo";
 import Actions from "./components/Actions";
 import { NavLink } from "react-router";
-import type { JSX } from "react";
 
 /**
  * Header component displays the application header.
  * @component
- * @returns {JSX.Element} The rendered component
+ * @returns The rendered component
  */
-export default function Header(): JSX.Element {
+export default function Header(): React.ReactNode {
 
     return (
         <div id="header">

@@ -4,6 +4,10 @@ import { authSlice } from '../app/layout/auth/authSlice';
 import { adminSlice } from '../app/layout/admin/adminSlice';
 import { listSlice } from '../app/layout/list/listSlice';
 
+/**
+ * Load the user state from localStorage.
+ * @returns The user state loaded from localStorage, or undefined if not found.
+ */
 const loadUserFromLocalStorage = () => {
     try {
         const serializedState = localStorage.getItem('userState');
@@ -19,6 +23,10 @@ const loadUserFromLocalStorage = () => {
     }
 }
 
+/**
+ * Save the user state to localStorage.
+ * @param state The current Redux state.
+ */
 const saveUserToLocalStorage = (state: any) => {
     try {
         const serializedState = JSON.stringify(state.auth.user);

@@ -1,7 +1,6 @@
 import { Circle, CircleCheck } from "lucide-react";
 import type { MapState } from "../../../layout/map/mapSlice";
 import "./style/layerControlFilter.css"
-import type { JSX } from "react";
 
 type Props = {
     label: string,
@@ -15,9 +14,9 @@ type Props = {
  * LayerControlFilter component displays a filter control for map layers.
  * @component
  * @param props - The props for the component
- * @returns {JSX.Element} The rendered component
+ * @returns The rendered component
  */
-export default function LayerControlFilter(props: Props): JSX.Element {
+export default function LayerControlFilter(props: Props): React.ReactNode {
     const { label, typeList, filters, filterKey, setFilters } = props;
 
     return (

@@ -1,11 +1,11 @@
-import { useState, type JSX } from "react";
+import { useState } from "react";
 
 /**
  * UserButton component displays a button for user settings.
  * @component
- * @returns {JSX.Element} The rendered component
+ * @returns The rendered component
  */
-export default function UserButton(): JSX.Element {
+export default function UserButton(): React.ReactNode {
     const [isUserCardOpen, setIsUserCardOpen] = useState<boolean>(false);
 
     return (

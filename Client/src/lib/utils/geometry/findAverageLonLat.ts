@@ -1,3 +1,8 @@
+/**
+ * Find the average longitude and latitude of a GeoJSON geometry.
+ * @param feature GeoJSON Geometry
+ * @returns A tuple containing the average longitude and latitude.
+ */
 export function findAverageLonLat(feature: GeoJSON.Geometry): [number, number] {
     if (!feature) return [0, 0];
 

@@ -1,5 +1,3 @@
-import type { JSX } from "react";
-
 type Props = {
     label: string;
     value: string | number | undefined;
@@ -10,10 +8,11 @@ type Props = {
  * InfoField component displays a label and value pair.
  * @component
  * @param param0 - The props for the component
- * @returns {JSX.Element} The rendered component
+ * @returns The rendered component
  */
-export default function InfoField({ label, value, capitalize = false }: Props): JSX.Element | null {
+export default function InfoField({ label, value, capitalize = false }: Props): React.ReactNode | null {
     if (!value) return null;
+
     return (
         <p key={label} >
             {label}: <span className={capitalize ? "capitalize" : ""}> {value} </span>

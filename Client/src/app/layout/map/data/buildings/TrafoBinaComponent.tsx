@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from "react";
 import { TrafoBinaApi } from "../../../../../lib/api";
 import type { Extent, TrafoBina } from "../../../../../lib/types";
-import { DataType } from "../../../../../lib/enums";
+import { FeatureType } from "../../../../../lib/enums";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
@@ -13,7 +13,7 @@ type Props = {
  * @component
  * @param props - The props for the component
  */
-export default function TrafoBinaComponent(props: Props) {
+export default function TrafoBinaComponent(props: Props): null {
     const { setData, extent } = props;
 
     const handleTrafoBinaFetch = useCallback(async () => {
@@ -31,7 +31,7 @@ export default function TrafoBinaComponent(props: Props) {
                     geometry: JSON.parse(rawData.geoJson),
                     properties: {
                         id: rawData.id,
-                        dataType: DataType.TRAFO,
+                        dataType: FeatureType.TRAFO,
                         name: rawData.name,
                         kodu: rawData.kodu,
                         height: 2

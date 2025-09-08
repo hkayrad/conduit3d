@@ -3,7 +3,7 @@ import { AydDirekApi } from "../../../../../lib/api";
 import type { Direk, Extent } from "../../../../../lib/types";
 import { useDispatch } from "react-redux";
 import { setType } from "../../mapSlice";
-import { DataType } from "../../../../../lib/enums";
+import { FeatureType } from "../../../../../lib/enums";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
@@ -15,7 +15,7 @@ type Props = {
  * @component
  * @param props - The props for the component
  */
-export default function AydDirekComponent(props: Props) {
+export default function AydDirekComponent(props: Props): null {
     const { setData, extent } = props;
 
     const dispatch = useDispatch();
@@ -36,7 +36,7 @@ export default function AydDirekComponent(props: Props) {
                     geometry: JSON.parse(rawData.geoJson),
                     properties: {
                         id: rawData.id,
-                        dataType: DataType.POLE,
+                        dataType: FeatureType.POLE,
                         cinsi: rawData.cinsi,
                         tipi: rawData.tipi,
                         direkNo: rawData.direkNo,
