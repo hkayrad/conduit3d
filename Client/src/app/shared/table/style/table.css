@@ -171,6 +171,10 @@ body::-webkit-scrollbar-thumb {
 .data-table-wrapper .data-table table tr th:first-child,
 .data-table-wrapper .data-table table tr td:first-child {
   border: none;
+  width: 60px;
+}
+.data-table-wrapper .data-table table tr th:nth-child(2),
+.data-table-wrapper .data-table table tr td:nth-child(2) {
   width: 120px;
 }
 .data-table-wrapper .data-table table tr th {

@@ -127,6 +127,10 @@
 
                     &:first-child {
                         border: none;
+                        width: 60px;
+                    }
+
+                    &:nth-child(2) {
                         width: 120px;
                     }
                 }
