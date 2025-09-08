@@ -139,7 +139,7 @@ export default function Admin() {
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
             handleRefreshData();
-        }, 500)
+        }, 250)
 
         return () => clearTimeout(delayDebounceFn)
     }, [query])

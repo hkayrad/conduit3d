@@ -97,6 +97,14 @@ export default function List(): React.ReactNode {
     }, [featureType, itemsPerPage, pageNumber, sortBy, ascending]);
 
     useEffect(() => {
+        const delayDebounceFn = setTimeout(() => {
+            handleRefreshData();
+        }, 250)
+
+        return () => clearTimeout(delayDebounceFn)
+    }, [query])
+
+    useEffect(() => {
         formatData();
     }, [features])
 
