@@ -70,3 +70,291 @@ Implement it using tsvector column for the best searchability.
  - tipi
  - direk_no
  - boy_ozellik
+
+# DB Modifications
+
+- Users
+```sql
+-- Create a custom function to encapsulate the tsvector logic
+CREATE OR REPLACE FUNCTION generate_searchable_text(
+    id_val INT, 
+    is_active_val BOOLEAN, 
+    username_val TEXT, 
+    email_val TEXT, 
+    created_at_val TIMESTAMP WITH TIME ZONE, 
+    user_role_val TEXT, 
+    name_val TEXT
+)
+RETURNS tsvector
+AS $$
+SELECT to_tsvector('simple', 
+    coalesce(cast(id_val as text)) || ' ' ||
+    coalesce((case when is_active_val then 'active' else 'inactive' end), '') || ' ' ||
+    coalesce(username_val, '') || ' ' || 
+    regexp_replace(coalesce(email_val, ''), '[.@]', ' ', 'g') || ' ' || 
+    regexp_replace(coalesce(cast(created_at_val as text), ''), '^(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2}:\d{2})\.(\d{3})\s+([+-]\d{4})$', '\1 \2 \3 \4', 'g') || ' ' ||
+    coalesce(user_role_val, '') || ' ' ||
+    coalesce(name_val, '')
+);
+$$ LANGUAGE SQL IMMUTABLE;
+
+-- Use the custom function 
+ALTER TABLE users ADD COLUMN searchable_text tsvector GENERATED ALWAYS AS (
+    generate_searchable_text(id, is_active, username, email, created_at, user_role, name)
+) STORED;
+```
+- AdrBina
+```sql 
+CREATE OR REPLACE FUNCTION generate_searchable_text_adr_bina(
+    id_val INT, 
+    kodu_val TEXT,
+    site_adi_val TEXT,
+    adi_val TEXT, 
+    bina_kat_sayisi_val FLOAT8,
+    daire_sayisi_val FLOAT8,
+    isyeri_sayisi_val FLOAT8,
+    yukseklik_val FLOAT8
+)
+RETURNS tsvector
+AS $$
+SELECT to_tsvector('simple', 
+    coalesce(cast(id_val as text), '') || ' ' ||
+    coalesce(kodu_val, '') || ' ' ||
+    coalesce(site_adi_val, '') || ' ' ||
+    coalesce(adi_val, '') || ' ' ||
+    coalesce(cast(bina_kat_sayisi_val as text), '') || ' ' ||
+    coalesce(cast(daire_sayisi_val as text), '') || ' ' ||
+    coalesce(cast(isyeri_sayisi_val as text), '') || ' ' ||
+    coalesce(cast(yukseklik_val as text), '')
+);
+$$ LANGUAGE SQL IMMUTABLE;
+
+-- Add the generated column to the adr_bina table
+ALTER TABLE "ADR_BINA" ADD COLUMN searchable_text tsvector GENERATED ALWAYS AS (
+    generate_searchable_text_adr_bina(id, kodu, site_adi, adi, bina_kat_sayisi, daire_sayisi, isyeri_sayisi, yukseklik)
+) STORED;
+
+-- Create GIN index for fast text search
+CREATE INDEX idx_adr_bina_searchable_text ON "ADR_BINA"USING GIN(searchable_text);
+```
+
+- TrafoBina
+```sql 
+CREATE OR REPLACE FUNCTION generate_searchable_text_trafo_bina(
+    id_val INT, 
+    kodu_val TEXT,
+    adi_val TEXT
+)
+RETURNS tsvector
+AS $$
+SELECT to_tsvector('simple', 
+    coalesce(cast(id_val as text), '') || ' ' ||
+    coalesce(kodu_val, '') || ' ' ||
+    coalesce(adi_val, '')
+);
+$$ LANGUAGE SQL IMMUTABLE;
+
+-- Add the generated column to the trafo_bina table
+ALTER TABLE "SBK_TRAFOBINATIP" ADD COLUMN searchable_text tsvector GENERATED ALWAYS AS (
+    generate_searchable_text_trafo_bina(id, kodu, adi)
+) STORED;
+
+-- Create GIN index for fast text search
+CREATE INDEX idx_trafo_bina_searchable_text ON "SBK_TRAFOBINATIP" USING GIN(searchable_text);
+```
+
+- AgHat
+```sql 
+CREATE OR REPLACE FUNCTION generate_searchable_text_ag_hat(
+    id_val INT, 
+    kodu_val TEXT,
+    adi_val TEXT, 
+    cinsi_val TEXT,
+    kesit_val TEXT,
+    tipi_val TEXT
+)
+RETURNS tsvector
+AS $$
+SELECT to_tsvector('simple', 
+    coalesce(cast(id_val as text), '') || ' ' ||
+    coalesce(kodu_val, '') || ' ' ||
+    coalesce(adi_val, '') || ' ' ||
+    coalesce(cinsi_val, '') || ' ' ||
+	coalesce(kesit_val, '') || ' ' ||
+	coalesce(tipi_val, '')
+);
+$$ LANGUAGE SQL IMMUTABLE;
+
+-- Add the generated column to the adr_bina table
+ALTER TABLE "SBK_AGHAT" ADD COLUMN searchable_text tsvector GENERATED ALWAYS AS (
+    generate_searchable_text_ag_hat(id, kodu, adi, cinsi, kesit, tipi)
+) STORED;
+
+-- Create GIN index for fast text search
+CREATE INDEX idx_ag_hat_searchable_text ON "SBK_AGHAT" USING GIN(searchable_text);
+```
+
+- OgHat
+```sql
+CREATE OR REPLACE FUNCTION generate_searchable_text_og_hat(
+    id_val INT, 
+    kodu_val TEXT,
+    adi_val TEXT, 
+    cinsi_val TEXT,
+    kesit_val TEXT,
+    tipi_val TEXT
+)
+RETURNS tsvector
+AS $$
+SELECT to_tsvector('simple', 
+    coalesce(cast(id_val as text), '') || ' ' ||
+    coalesce(kodu_val, '') || ' ' ||
+    coalesce(adi_val, '') || ' ' ||
+    coalesce(cinsi_val, '') || ' ' ||
+	coalesce(kesit_val, '') || ' ' ||
+	coalesce(tipi_val, '')
+);
+$$ LANGUAGE SQL IMMUTABLE;
+
+-- Add the generated column to the adr_bina table
+ALTER TABLE "SBK_OGHAT" ADD COLUMN searchable_text tsvector GENERATED ALWAYS AS (
+    generate_searchable_text_og_hat(id, kodu, adi, cinsi, kesit, tipi)
+) STORED;
+
+-- Create GIN index for fast text search
+create INDEX idx_og_hat_searchable_text ON "SBK_OGHAT" USING GIN(searchable_text);
+```
+
+- Rekortman
+```sql
+CREATE OR REPLACE FUNCTION generate_searchable_text_rekortman(
+    id_val INT, 
+    kodu_val TEXT,
+    adi_val TEXT, 
+    kesit_val TEXT,
+    tipi_val TEXT
+)
+RETURNS tsvector
+AS $$
+SELECT to_tsvector('simple', 
+    coalesce(cast(id_val as text), '') || ' ' ||
+    coalesce(kodu_val, '') || ' ' ||
+    coalesce(adi_val, '') || ' ' ||
+	coalesce(kesit_val, '') || ' ' ||
+	coalesce(tipi_val, '')
+);
+$$ LANGUAGE SQL IMMUTABLE;
+
+-- Add the generated column to the adr_bina table
+ALTER TABLE "SBK_rEKORTMAN" ADD COLUMN searchable_text tsvector GENERATED ALWAYS AS (
+    generate_searchable_text_rekortman(id, kodu, adi, kesit, tipi)
+) STORED;
+
+-- Create GIN index for fast text search
+create INDEX idx_rekortman_searchable_text ON "SBK_rEKORTMAN" USING GIN(searchable_text);
+```
+
+- AgDirek
+```sql 
+CREATE OR REPLACE FUNCTION generate_searchable_text_ag_direk(
+    id_val INT, 
+    kodu_val TEXT,
+    adi_val TEXT, 
+    cinsi_val TEXT,
+    tipi_val TEXT,
+    direk_no_val TEXT,
+    boy_ozellik_val TEXT,
+    direk_boy_id_val FLOAT8
+)
+RETURNS tsvector
+AS $$
+SELECT to_tsvector('simple', 
+    coalesce(cast(id_val as text), '') || ' ' ||
+    coalesce(kodu_val, '') || ' ' ||
+    coalesce(adi_val, '') || ' ' ||
+	coalesce(cinsi_val, '') || ' ' ||
+	coalesce(tipi_val, '') || ' ' ||
+	coalesce(direk_no_val, '') || ' ' ||
+	coalesce(boy_ozellik_val, '') || ' ' ||
+	coalesce(cast(direk_boy_id_val as text), '')
+);
+$$ LANGUAGE SQL IMMUTABLE;
+
+-- Add the generated column to the adr_bina table
+ALTER TABLE "SBK_AGDIREK" ADD COLUMN searchable_text tsvector GENERATED ALWAYS AS (
+    generate_searchable_text_ag_direk(id, kodu, adi, cinsi, tipi, direk_no, boy_ozellik, direk_boy_id)
+) STORED;
+
+-- Create GIN index for fast text search
+create INDEX idx_agdirek_searchable_text ON "SBK_AGDIREK" USING GIN(searchable_text);
+```
+
+- OgMusDirek 
+```sql 
+CREATE OR REPLACE FUNCTION generate_searchable_text_og_mus_direk(
+    id_val INT, 
+    kodu_val TEXT,
+    adi_val TEXT, 
+    cinsi_val TEXT,
+    tipi_val TEXT,
+    direk_no_val TEXT,
+    boy_ozellik_val TEXT,
+    direk_boy_id_val FLOAT8
+)
+RETURNS tsvector
+AS $$
+SELECT to_tsvector('simple', 
+    coalesce(cast(id_val as text), '') || ' ' ||
+    coalesce(kodu_val, '') || ' ' ||
+    coalesce(adi_val, '') || ' ' ||
+	coalesce(cinsi_val, '') || ' ' ||
+	coalesce(tipi_val, '') || ' ' ||
+	coalesce(direk_no_val, '') || ' ' ||
+	coalesce(boy_ozellik_val, '') || ' ' ||
+	coalesce(cast(direk_boy_id_val as text), '')
+);
+$$ LANGUAGE SQL IMMUTABLE;
+
+-- Add the generated column to the adr_bina table
+ALTER TABLE "SBK_OGMUSDIREK" ADD COLUMN searchable_text tsvector GENERATED ALWAYS AS (
+    generate_searchable_text_og_mus_direk(id, kodu, adi, cinsi, tipi, direk_no, boy_ozellik, direk_boy_id)
+) STORED;
+
+-- Create GIN index for fast text search
+create INDEX idx_ogmusdirek_searchable_text ON "SBK_OGMUSDIREK" USING GIN(searchable_text);
+```
+
+- AydDirek
+```sql
+CREATE OR REPLACE FUNCTION generate_searchable_text_ayd_direk(
+    id_val INT, 
+    kodu_val TEXT,
+    adi_val TEXT, 
+    cinsi_val TEXT,
+    tipi_val TEXT,
+    direk_no_val TEXT,
+    boy_ozellik_val TEXT,
+    direk_boy_id_val FLOAT8
+)
+RETURNS tsvector
+AS $$
+SELECT to_tsvector('simple', 
+    coalesce(cast(id_val as text), '') || ' ' ||
+    coalesce(kodu_val, '') || ' ' ||
+    coalesce(adi_val, '') || ' ' ||
+	coalesce(cinsi_val, '') || ' ' ||
+	coalesce(tipi_val, '') || ' ' ||
+	coalesce(direk_no_val, '') || ' ' ||
+	coalesce(boy_ozellik_val, '') || ' ' ||
+	coalesce(cast(direk_boy_id_val as text), '')
+);
+$$ LANGUAGE SQL IMMUTABLE;
+
+-- Add the generated column to the adr_bina table
+ALTER TABLE "SBK_AYDDIREK" ADD COLUMN searchable_text tsvector GENERATED ALWAYS AS (
+    generate_searchable_text_ayd_direk(id, kodu, adi, cinsi, tipi, direk_no, boy_ozellik, direk_boy_id)
+) STORED;
+
+-- Create GIN index for fast text search
+create INDEX idx_ayddirek_searchable_text ON "SBK_AYDDIREK" USING GIN(searchable_text);
+```
