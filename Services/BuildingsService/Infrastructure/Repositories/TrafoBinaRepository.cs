@@ -2,6 +2,7 @@ using System;
 using BuildingsService.Domain;
 using BuildingsService.Infrastructure.Data;
 using Conduit3D.Common.Domain;
+using Conduit3D.Common.Infrastructure.Utilities;
 using Microsoft.EntityFrameworkCore;
 
 namespace BuildingsService.Infrastructure.Repositories;
@@ -41,7 +42,8 @@ public class TrafoBinaRepository(BuildingsContext context) : ITrafoBinaRepositor
                                         id, 
                                         adi, 
                                         kodu,
-                                        ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson
+                                        ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson,
+                                        searchable_text
                                     FROM ""SBK_TRAFOBINATIP""
                                     WHERE ST_Transform(geometry, 4326) @ ST_MakeEnvelope(
                                         {extent.MinX}, 
@@ -50,6 +52,11 @@ public class TrafoBinaRepository(BuildingsContext context) : ITrafoBinaRepositor
                                         {extent.MaxY}, 
                                         4326
                                     )");
+
+        if (!string.IsNullOrWhiteSpace(query))
+            sqlQuery = sqlQuery.Where(u => u.SearchableText.Matches(
+                EF.Functions.ToTsQuery("simple", ParseTsQuery.ConvertToTsQuery(query))
+            ));
 
         if (ascending)
             sqlQuery = sqlQuery.OrderBy(x => EF.Property<object>(x, sortBy));
@@ -81,11 +88,16 @@ public class TrafoBinaRepository(BuildingsContext context) : ITrafoBinaRepositor
     /// <remarks>
     /// Retrieves the count of SBK_TRAFOBINATIP entities within the specified extent using native SQL.
     /// </remarks>
-    public async Task<int> GetCountAsync(Extent extent, CancellationToken cancellationToken)
+    public async Task<int> GetCountAsync(Extent extent, string? query, CancellationToken cancellationToken)
     {
         var sqlQuery = _dbSet.FromSql($@"SELECT *
                     FROM ""SBK_TRAFOBINATIP""
                     WHERE ST_Transform(geometry, 4326) @ ST_MakeEnvelope({extent.MinX}, {extent.MinY}, {extent.MaxX}, {extent.MaxY}, 4326)");
+
+        if (!string.IsNullOrWhiteSpace(query))
+            sqlQuery = sqlQuery.Where(u => u.SearchableText.Matches(
+                EF.Functions.ToTsQuery("simple", ParseTsQuery.ConvertToTsQuery(query))
+            ));
 
         return await sqlQuery.CountAsync(cancellationToken);
     }

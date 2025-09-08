@@ -42,5 +42,5 @@ public interface IGenericRepository<T> where T : class
     /// <param name="extent">The extent to which to filter the results.</param>
     /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
     /// <returns>The total count of entities in the data store.</returns>
-    public Task<int> GetCountAsync(Extent extent, CancellationToken cancellationToken);
+    public Task<int> GetCountAsync(Extent extent, string? query, CancellationToken cancellationToken);
 }

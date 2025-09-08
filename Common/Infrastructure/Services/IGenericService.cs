@@ -53,5 +53,5 @@ public interface IGenericService<T> where T : class
     /// <response code="200">Returns the total count of entities in the data store.</response>
     /// <response code="400">If the request is invalid.</response>
     /// <response code="500">If an internal server error occurs.</response>
-    Task<Response<int>> GetCountAsync(Extent? extent, CancellationToken cancellationToken);
+    Task<Response<int>> GetCountAsync(Extent? extent, string? query, CancellationToken cancellationToken);
 }

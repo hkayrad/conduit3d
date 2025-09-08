@@ -1,5 +1,6 @@
 using System;
 using Conduit3D.Common.Domain;
+using Conduit3D.Common.Infrastructure.Utilities;
 using Microsoft.EntityFrameworkCore;
 using PolesService.Domain;
 using PolesService.Infrastructure.Data;
@@ -85,11 +86,16 @@ public class AydDirekRepository(PolesContext context) : IAydDirekRepository
     /// <remarks>
     /// This method retrieves the count of Ayd_Direk entities within a specified spatial extent using native SQL.
     /// </remarks>
-    public async Task<int> GetCountAsync(Extent extent, CancellationToken cancellationToken)
+    public async Task<int> GetCountAsync(Extent extent, string? query, CancellationToken cancellationToken)
     {
         var sqlQuery = _dbSet.FromSql($@"SELECT *
                     FROM ""SBK_AYDDIREK""
                     WHERE ST_Transform(geometry, 4326) @ ST_MakeEnvelope({extent.MinX}, {extent.MinY}, {extent.MaxX}, {extent.MaxY}, 4326)");
+
+        if (!string.IsNullOrWhiteSpace(query))
+            sqlQuery = sqlQuery.Where(u => u.SearchableText.Matches(
+                EF.Functions.ToTsQuery("simple", ParseTsQuery.ConvertToTsQuery(query))
+            ));
 
         return await sqlQuery.CountAsync(cancellationToken);
     }

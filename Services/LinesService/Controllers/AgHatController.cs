@@ -95,10 +95,11 @@ namespace LinesService.Controllers
         [HttpGet("count")]
         public async Task<Response<int>> GetCountAsync(
             [FromQuery] Extent? extent = null,
+            [FromQuery] string? query = null,
             CancellationToken cancellationToken = default
         )
         {
-            return await _agHatService.GetCountAsync(extent, cancellationToken);
+            return await _agHatService.GetCountAsync(extent, query, cancellationToken);
         }
 
         /// <summary>

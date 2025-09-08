@@ -46,6 +46,11 @@ public class LinesContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.GeoJson)
                 .HasComputedColumnSql("ST_AsGeoJSON(ST_Transform(geometry, 4326))")
                 .HasColumnName("geojson");
+            entity.HasGeneratedTsVectorColumn(
+                e => e.SearchableText,
+                "simple",
+                e => new { e.Id, e.Cinsi, e.Tipi, e.Kesit }
+            );
         });
 
         modelBuilder.Entity<OgHat>(entity =>
@@ -67,6 +72,11 @@ public class LinesContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.GeoJson)
                 .HasComputedColumnSql("ST_AsGeoJSON(ST_Transform(geometry, 4326))")
                 .HasColumnName("geojson");
+            entity.HasGeneratedTsVectorColumn(
+                e => e.SearchableText,
+                "simple",
+                e => new { e.Id, e.Cinsi, e.Tipi, e.Kesit }
+            );
         });
 
         modelBuilder.Entity<Rekortman>(entity =>
@@ -85,6 +95,11 @@ public class LinesContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.GeoJson)
                 .HasComputedColumnSql("ST_AsGeoJSON(ST_Transform(geometry, 4326))")
                 .HasColumnName("geojson");
+            entity.HasGeneratedTsVectorColumn(
+                e => e.SearchableText,
+                "simple",
+                e => new { e.Id, e.Tipi, e.Kesit }
+            );
         });
     }
 }

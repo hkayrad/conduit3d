@@ -94,7 +94,9 @@ if (string.IsNullOrEmpty(postgresqlConnectionString))
 // Connect to the db if the connection string is valid
 builder.Services.AddDbContext<BuildingsContext>(options =>
 {
-    options.UseNpgsql(postgresqlConnectionString);
+    options.UseNpgsql(postgresqlConnectionString,
+    o => o.UseNetTopologySuite()
+        );
 });
 
 // Inject dependencies

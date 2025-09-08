@@ -65,6 +65,11 @@ public class BuildingsContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.GeoJson)
                 .HasComputedColumnSql("ST_AsGeoJSON(ST_Transform(geometry, 4326))")
                 .HasColumnName("geojson");
+            entity.HasGeneratedTsVectorColumn(
+                e => e.SearchableText,
+                "simple",
+                e => new { e.Id, e.Name, e.FloorCount }
+            );
         });
 
         modelBuilder.Entity<TrafoBina>(entity =>
@@ -82,6 +87,11 @@ public class BuildingsContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.GeoJson)
                 .HasComputedColumnSql("ST_AsGeoJSON(ST_Transform(geometry, 4326))")
                 .HasColumnName("geojson");
+            entity.HasGeneratedTsVectorColumn(
+                e => e.SearchableText,
+                "simple",
+                e => new { e.Id, e.Name, e.Kodu }
+            );
         });
 
     }

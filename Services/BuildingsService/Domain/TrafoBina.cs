@@ -1,5 +1,8 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+using NpgsqlTypes;
 
 namespace BuildingsService.Domain;
 
@@ -31,4 +34,11 @@ public class TrafoBina
     /// </summary>
     [Required]
     public required string GeoJson { get; set; }
+
+    /// <summary>
+    /// TsVector column for full-text search.
+    /// </summary>
+    [Column("searchable_text")]
+    [JsonIgnore]
+    public NpgsqlTsVector SearchableText { get; set; } = null!;
 }

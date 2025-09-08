@@ -49,6 +49,11 @@ public class PolesContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.GeoJson)
                 .HasComputedColumnSql("ST_AsGeoJSON(ST_Transform(geometry, 4326))")
                 .HasColumnName("geojson");
+            entity.HasGeneratedTsVectorColumn(
+                p => p.SearchableText,
+                "simple",
+                p => new { p.Id, p.Cinsi, p.Tipi, p.BoyOzellik, p.DirekNo }
+            );
         });
 
         modelBuilder.Entity<AydDirek>(entity =>
@@ -73,6 +78,11 @@ public class PolesContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.GeoJson)
                 .HasComputedColumnSql("ST_AsGeoJSON(ST_Transform(geometry, 4326))")
                 .HasColumnName("geojson");
+            entity.HasGeneratedTsVectorColumn(
+                p => p.SearchableText,
+                "simple",
+                p => new { p.Id, p.Cinsi, p.Tipi, p.BoyOzellik, p.DirekNo }
+            );
         });
 
         modelBuilder.Entity<OgMusDirek>(entity =>
@@ -97,6 +107,11 @@ public class PolesContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.GeoJson)
                 .HasComputedColumnSql("ST_AsGeoJSON(ST_Transform(geometry, 4326))")
                 .HasColumnName("geojson");
+            entity.HasGeneratedTsVectorColumn(
+                p => p.SearchableText,
+                "simple",
+                p => new { p.Id, p.Cinsi, p.Tipi, p.BoyOzellik, p.DirekNo }
+            );
         });
     }
 }

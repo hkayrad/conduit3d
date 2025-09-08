@@ -96,10 +96,11 @@ namespace BuildingsService.Controllers
         [HttpGet("count")]
         public async Task<Response<int>> GetCountAsync(
             [FromQuery] Extent? extent = null,
+            [FromQuery] string? query = null,
             CancellationToken cancellationToken = default
         )
         {
-            return await _adrBuildingsService.GetCountAsync(extent, cancellationToken);
+            return await _adrBuildingsService.GetCountAsync(extent, query, cancellationToken);
         }
     }
 }
