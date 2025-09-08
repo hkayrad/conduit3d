@@ -1,10 +1,9 @@
-import { Pencil, Trash2 } from "lucide-react";
 import "./style/admin.css";
 import { useCallback, useEffect, useState } from "react";
-import type { TableData, User, UserCountsDto, UserSortBy } from "../../../lib/types";
-import { AuthApi } from "../../../lib/api";
+import { Pencil, Trash2 } from "lucide-react";
+import type { AdminModalStatus, TableData, User, UserCounts, UserSortBy } from "../../../lib/types";
 import { useDispatch } from "react-redux";
-import { useAppSelector } from "../../../lib/hooks";
+import { useAdmin, useAppSelector } from "../../../lib/hooks";
 import { selectAdminState, setItemsPerPage, setPageNumber, setSortBy, setAscending } from "./adminSlice";
 import Table from "../../shared/table/Table";
 import Badge from "../../shared/badge/Badge";
@@ -13,9 +12,13 @@ import ActionButton from "../../shared/actionButton/ActionButton";
 import Stats from "./components/Stats";
 import { selectUserState } from "../auth/authSlice";
 import Modal from "../../shared/modal/Modal";
-import UserActionModalContent from "./components/UserModalContent";
+import UserActionModalContent from "./components/UserAddEditModalContent";
 import UserDeleteModalContent from "./components/UserDeleteModalContent";
 
+/**
+ * Admin component for user management.
+ * @returns The Admin component for user management.
+ */
 export default function Admin() {
     const dispatch = useDispatch();
     const { itemsPerPage, pageNumber, sortBy, ascending } = useAppSelector(selectAdminState)
@@ -26,152 +29,59 @@ export default function Admin() {
         headers: [],
         rows: []
     });
-    const [userCounts, setUserCounts] = useState<UserCountsDto>({
+    const [userCounts, setUserCounts] = useState<UserCounts>({
         totalUsers: 0,
         activeUsers: 0,
         inactiveUsers: 0
     });
-    const [editingUser, setEditingUser] = useState<User>({} as User);
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const [newUser, setNewUser] = useState<User>({} as User);
-    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
     const [errorText, setErrorText] = useState("");
-    const [iseDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [userToDelete, setUserToDelete] = useState<User>({} as User);
     const [query, setQuery] = useState<string>("");
 
-    const handleFetchUsers = async () => {
-        const response = await AuthApi.fetchAll(itemsPerPage, pageNumber, sortBy, ascending, query);
+    const [userToAddModify, setUserToAddModify] = useState<User>({} as User);
+    const [modalStatus, setModalStatus] = useState<AdminModalStatus>({
+        isEditModalOpen: false,
+        isAddModalOpen: false,
+        isDeleteModalOpen: false
+    });
 
-        if (response.isSuccess) {
-            setUsers(response.data);
-            return;
-        }
+    const {
+        handleFetchUsers,
+        handleFetchUserCount,
+        handleAddUser,
+        handleDeleteUser,
+        handleEditUser,
+        handleCloseModal,
+        handleEditUserButtonClick,
+        handleAddUserButtonClick,
+        handleDeleteUserButtonClick
+    } = useAdmin(
+        itemsPerPage,
+        pageNumber,
+        sortBy,
+        ascending,
+        query,
+        setUsers,
+        setUserCounts,
+        setErrorText,
+        setUserToAddModify,
+        setModalStatus
+    );
 
-        setUsers([]);
-    }
-
-    const handleFetchUserCount = async () => {
-        const response = await AuthApi.fetchCount(query);
-
-        if (response.isSuccess) {
-            setUserCounts(response.data);
-        }
-    }
-
-    const handleDeleteUser = async (userId: number) => {
-        const response = await AuthApi.deleteUser(userId);
-
-        if (response.isSuccess) {
-            await handleFetchUsers();
-            await handleFetchUserCount();
-            setIsDeleteModalOpen(false);
-            setUserToDelete({} as User);
-            setErrorText("");
-            return;
-        }
-    }
-
-    const handleEditUser = async (updatedUser: User) => {
-        const response = await AuthApi.updateUser(updatedUser.id, updatedUser) as any;
-
-        if (response.isSuccess) {
-            await handleFetchUsers();
-            await handleFetchUserCount();
-            setIsEditModalOpen(false);
-            setEditingUser({} as User);
-            setErrorText("");
-            return;
-        }
-
-        setErrorText(response.message)
-
-
-    }
-
-    const handleAddUser = async (newUser: User) => {
-        const response = await AuthApi.createUser(newUser);
-
-        if (response.isSuccess) {
-            await handleFetchUsers();
-            await handleFetchUserCount();
-            setIsAddModalOpen(false);
-            setNewUser({} as User);
-            setErrorText("");
-            return;
-        }
-
-        setErrorText(response.message)
-    }
-
-    const handleEditUserButtonClick = useCallback((user: User) => {
-        setEditingUser(user);
-        setIsEditModalOpen(true);
-    }, []);
-
-    const handleAddUserButtonClick = useCallback(() => {
-        setIsAddModalOpen(true);
-    }, []);
-
-    const handleDeleteUserButtonClick = useCallback((user: User) => {
-        setUserToDelete(user);
-        setIsDeleteModalOpen(true);
-    }, []);
-
-    const handleCloseEditModal = useCallback(() => {
-        setErrorText("");
-        setIsEditModalOpen(false);
-        setEditingUser({} as User);
-    }, []);
-
-    const handleCloseAddModal = useCallback(() => {
-        setErrorText("");
-        setIsAddModalOpen(false);
-        setNewUser({} as User);
-    }, []);
-
-    const handleCloseDeleteModal = useCallback(() => {
-        setErrorText("");
-        setIsDeleteModalOpen(false);
-        setUserToDelete({} as User);
-    }, []);
-
-    const formatData = useCallback(() => {
+    const formatData = useCallback((): void => {
         const headers = [
-            {
-                id: "id",
-                label: "Id"
-            },
-            {
-                id: "username",
-                label: "Username"
-            },
-            {
-                id: "name",
-                label: "Name"
-            },
-            {
-                id: "email",
-                label: "Email"
-            },
-            {
-                id: "userRole",
-                label: "Role"
-            },
-            {
-                id: "isActive",
-                label: "Status"
-            },
-            {
-                id: "createdAt",
-                label: "Created At"
-            },
-            {
-                id: "actions",
-                label: "Actions"
-            }
+            { id: 'index', label: '#' },
+            { id: "id", label: "Id" },
+            { id: "username", label: "Username" },
+            { id: "name", label: "Name" },
+            { id: "email", label: "Email" },
+            { id: "userRole", label: "Role" },
+            { id: "isActive", label: "Status" },
+            { id: "createdAt", label: "Created At" },
+            { id: "actions", label: "Actions" }
         ];
-        const rows = users.map((user) => [
+        const rows = users.map((user, index) => [
+            index + 1,
             user.id,
             user.username,
             user.name,
@@ -200,24 +110,24 @@ export default function Admin() {
         setTableData({ headers, rows });
     }, [users]);
 
-    const handleChangeItemsPerPage = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    const handleChangeItemsPerPage = useCallback((e: React.ChangeEvent<HTMLSelectElement>): void => {
         const newItemsPerPage = parseInt(e.target.value);
         dispatch(setItemsPerPage(newItemsPerPage));
     }, []);
 
-    const handleSetPageNumber = useCallback((newPageNumber: number) => {
+    const handleSetPageNumber = useCallback((newPageNumber: number): void => {
         dispatch(setPageNumber(newPageNumber));
     }, []);
 
-    const handleSetSortBy = useCallback((newSortBy: string) => {
+    const handleSetSortBy = useCallback((newSortBy: string): void => {
         dispatch(setSortBy(newSortBy as UserSortBy));
     }, []);
 
-    const handleSetAscending = useCallback((newSortOrder: boolean) => {
+    const handleSetAscending = useCallback((newSortOrder: boolean): void => {
         dispatch(setAscending(newSortOrder));
     }, []);
 
-    const handleRefreshData = useCallback(() => {
+    const handleRefreshData = useCallback((): void => {
         handleFetchUsers();
         handleFetchUserCount();
     }, [handleFetchUsers, handleFetchUserCount]);
@@ -257,36 +167,36 @@ export default function Admin() {
             data={tableData}
             totalDataCount={userCounts.totalUsers}
         />
-        {isEditModalOpen && editingUser && (
+        {modalStatus.isEditModalOpen && userToAddModify && (
             <Modal>
                 <UserActionModalContent
-                    user={editingUser}
-                    setUser={setEditingUser}
+                    user={userToAddModify}
+                    setUser={setUserToAddModify}
                     handleSubmit={handleEditUser}
-                    handleCloseModal={handleCloseEditModal}
+                    handleCloseModal={handleCloseModal}
                     errorText={errorText}
                     isPasswordRequired
                 />
             </Modal>
         )}
-        {isAddModalOpen && (
+        {modalStatus.isAddModalOpen && (
             <Modal>
                 <UserActionModalContent
-                    user={newUser}
-                    setUser={setNewUser}
+                    user={userToAddModify}
+                    setUser={setUserToAddModify}
                     handleSubmit={handleAddUser}
-                    handleCloseModal={handleCloseAddModal}
+                    handleCloseModal={handleCloseModal}
                     errorText={errorText}
                     isPasswordRequired
                 />
             </Modal>
         )}
-        {iseDeleteModalOpen &&
+        {modalStatus.isDeleteModalOpen && userToAddModify &&
             <Modal>
                 <UserDeleteModalContent
-                    user={userToDelete}
+                    user={userToAddModify}
                     handleDelete={handleDeleteUser}
-                    handleCloseModal={handleCloseDeleteModal}
+                    handleCloseModal={handleCloseModal}
                 />
             </Modal>}
     </div >

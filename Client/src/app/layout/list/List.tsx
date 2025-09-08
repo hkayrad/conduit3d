@@ -3,15 +3,20 @@ import { useDispatch } from "react-redux";
 import Table from "../../shared/table/Table";
 import React, { useCallback, useEffect, useState } from "react";
 import type { TableData } from "../../../lib/types";
-import { useAppSelector } from "../../../lib/hooks";
+import { useAppSelector, useList } from "../../../lib/hooks";
 import { selectListState, setAscending, setFeatureType, setItemsPerPage, setPageNumber, setSortBy } from "./listSlice";
-import { AdrBinaApi, AgDirekApi, AgHatApi, AydDirekApi, OgHatApi, OgMusDirekApi, RekortmanApi, TrafoBinaApi } from "../../../lib/api";
 import { capitalizeFirstLetter, findAverageLonLat } from "../../../lib/utils";
-import { MapPin } from "lucide-react";
+import { Building, MapPin, PlugZap, UtilityPole } from "lucide-react";
 import ActionButton from "../../shared/actionButton/ActionButton";
 import { useNavigate } from "react-router";
+import { ListDataType } from "../../../lib/enums";
 
-export default function List() {
+/**
+ * List component for displaying a list of features with pagination, sorting, and filtering capabilities.
+ * @component
+ * @returns The List component renders a list of features with pagination, sorting, and filtering capabilities.
+ */
+export default function List(): React.ReactNode {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { itemsPerPage, pageNumber, sortBy, ascending, featureType } = useAppSelector(selectListState)
@@ -25,97 +30,21 @@ export default function List() {
         rows: []
     });
 
-    const handleFetchFeatures = async (featureToFetch: string) => {
-        var dataResponse;
-        var countResponse;
-        switch (featureToFetch) {
-            case "AdrBina":
-                dataResponse = await AdrBinaApi.fetchAll(itemsPerPage, pageNumber, sortBy, ascending)
-                if (dataResponse.isSuccess) {
-                    setFeatures(dataResponse.data);
-                }
-                countResponse = await AdrBinaApi.fetchCount()
-                if (countResponse.isSuccess) {
-                    setFeatureCount(countResponse.data);
-                }
-                break;
-            case "Trafo":
-                dataResponse = await TrafoBinaApi.fetchAll(itemsPerPage, pageNumber, sortBy, ascending)
-                if (dataResponse.isSuccess) {
-                    setFeatures(dataResponse.data);
-                }
-                countResponse = await TrafoBinaApi.fetchCount()
-                if (countResponse.isSuccess) {
-                    setFeatureCount(countResponse.data);
-                }
-                break;
-            case "AgDirek":
-                dataResponse = await AgDirekApi.fetchAll(itemsPerPage, pageNumber, sortBy, ascending)
-                if (dataResponse.isSuccess) {
-                    setFeatures(dataResponse.data);
-                }
-                countResponse = await AgDirekApi.fetchCount()
-                if (countResponse.isSuccess) {
-                    setFeatureCount(countResponse.data);
-                }
-                break;
-            case "OgMusDirek":
-                dataResponse = await OgMusDirekApi.fetchAll(itemsPerPage, pageNumber, sortBy, ascending)
-                if (dataResponse.isSuccess) {
-                    setFeatures(dataResponse.data);
-                }
-                countResponse = await OgMusDirekApi.fetchCount()
-                if (countResponse.isSuccess) {
-                    setFeatureCount(countResponse.data);
-                }
-                break;
-            case "AydDirek":
-                dataResponse = await AydDirekApi.fetchAll(itemsPerPage, pageNumber, sortBy, ascending)
-                if (dataResponse.isSuccess) {
-                    setFeatures(dataResponse.data);
-                }
-                countResponse = await AydDirekApi.fetchCount()
-                if (countResponse.isSuccess) {
-                    setFeatureCount(countResponse.data);
-                }
-                break;
-            case "AgHat":
-                dataResponse = await AgHatApi.fetchAll(itemsPerPage, pageNumber, sortBy, ascending)
-                if (dataResponse.isSuccess) {
-                    setFeatures(dataResponse.data);
-                }
-                countResponse = await AgHatApi.fetchCount()
-                if (countResponse.isSuccess) {
-                    setFeatureCount(countResponse.data);
-                }
-                break;
-            case "OgHat":
-                dataResponse = await OgHatApi.fetchAll(itemsPerPage, pageNumber, sortBy, ascending)
-                if (dataResponse.isSuccess) {
-                    setFeatures(dataResponse.data);
-                }
-                countResponse = await OgHatApi.fetchCount()
-                if (countResponse.isSuccess) {
-                    setFeatureCount(countResponse.data);
-                }
-                break;
-            case "Rekortman":
-                dataResponse = await RekortmanApi.fetchAll(itemsPerPage, pageNumber, sortBy, ascending)
-                if (dataResponse.isSuccess) {
-                    setFeatures(dataResponse.data);
-                }
-                countResponse = await RekortmanApi.fetchCount()
-                if (countResponse.isSuccess) {
-                    setFeatureCount(countResponse.data);
-                }
-                break;
-            default:
-                break;
-        }
-    }
+    const {
+        handleFetchFeatures
+    } = useList(
+        itemsPerPage,
+        pageNumber,
+        sortBy,
+        ascending,
+        query,
+        setFeatures,
+        setFeatureCount
+    )
 
-    const formatData = useCallback(() => {
+    const formatData = useCallback((): void => {
         const headers = [
+            { id: 'index', label: '#' },
             ...features[0] ? Object.keys(features[0]).map(k => ({
                 id: k,
                 label: capitalizeFirstLetter(k),
@@ -123,7 +52,8 @@ export default function List() {
             { id: 'actions', label: 'Actions' }
         ]
         const rows = [
-            ...features.map(f => [
+            ...features.map((f, index) => [
+                index + 1,
                 ...Object.entries(f).filter(([key, _]) => key !== 'geoJson').map(([_, value]) => value === "" ? "-" : value),
                 <div className="action-button-wrapper">
                     <ActionButton
@@ -141,24 +71,24 @@ export default function List() {
         setTableData({ headers, rows });
     }, [features]);
 
-    const handleChangeItemsPerPage = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    const handleChangeItemsPerPage = useCallback((e: React.ChangeEvent<HTMLSelectElement>): void => {
         const newItemsPerPage = parseInt(e.target.value);
         dispatch(setItemsPerPage(newItemsPerPage));
     }, []);
 
-    const handleSetPageNumber = useCallback((newPageNumber: number) => {
+    const handleSetPageNumber = useCallback((newPageNumber: number): void => {
         dispatch(setPageNumber(newPageNumber));
     }, []);
 
-    const handleSetSortBy = useCallback((newSortBy: string) => {
+    const handleSetSortBy = useCallback((newSortBy: string): void => {
         dispatch(setSortBy(newSortBy));
     }, []);
 
-    const handleSetAscending = useCallback((newSortOrder: boolean) => {
+    const handleSetAscending = useCallback((newSortOrder: boolean): void => {
         dispatch(setAscending(newSortOrder));
     }, []);
 
-    const handleRefreshData = useCallback(() => {
+    const handleRefreshData = useCallback((): void => {
         handleFetchFeatures(featureType);
     }, [handleFetchFeatures, featureType]);
 
@@ -182,23 +112,27 @@ export default function List() {
             <div className="feature-type-sections">
                 {[{
                     sectionLabel: "Binalar",
-                    types: ["AdrBina", "Trafo"]
+                    sectionIcon: <Building />,
+                    types: [ListDataType.AdrBina, ListDataType.TrafoBina]
                 }, {
                     sectionLabel: "Direkler",
-                    types: ["AgDirek", "OgMusDirek", "AydDirek"]
+                    sectionIcon: <UtilityPole />,
+                    types: [ListDataType.AgDirek, ListDataType.OgMusDirek, ListDataType.AydDirek]
                 }, {
                     sectionLabel: "Hatlar",
-                    types: ["AgHat", "OgHat", "Rekortman"]
-                }].map((section, index) => (
-                    <div key={index} className="feature-type-section">
+                    sectionIcon: <PlugZap />,
+                    types: [ListDataType.AgHat, ListDataType.OgHat, ListDataType.Rekortman]
+                }].map((section, _) => (
+                    <div key={`div-${section.sectionLabel}`} className="feature-type-section">
                         <h3>{section.sectionLabel}</h3>
                         {section.types.map((type, _) => (
                             <button
-                                key={index}
+                                key={`btn-${type}`}
                                 className={featureType === type ? "selected" : ""}
                                 onClick={() => dispatch(setFeatureType(type))}
                             >
-                                {type}
+                                {section.sectionIcon}
+                                {capitalizeFirstLetter(type)}
                             </button>
                         ))}
                     </div>
