@@ -1,6 +1,7 @@
 import type { MapViewState, PickingInfo } from "deck.gl";
 import { useCallback } from "react";
 import type { PopupState } from "../types";
+import { MAX_POPUP_COUNT } from "../constants";
 
 /**
  * Map interaction handlers
@@ -52,14 +53,30 @@ export function useMapInteraction(
             return;
         }
 
-        const id = Math.random().toString(36).substring(2, 9);
-        zIndexCounter.current += 1;
-        const newPopup: PopupState = {
-            id: `popup-${id}`,
-            info: info,
-            zIndex: zIndexCounter.current
-        };
-        setActivePopups(prev => [...prev, newPopup]);
+        setActivePopups(prev => {
+            if (!info.object)
+                return prev;
+
+            let popups = prev.filter(
+                p => JSON.stringify(p.info.object.properties) != JSON.stringify(info.object.properties)
+            );
+
+            // Create a unique ID for the popup
+            const id = Math.random().toString(36).substring(2, 9);
+            zIndexCounter.current += 1;
+            const newPopup: PopupState = {
+                id: `popup-${id}`,
+                info: info,
+                zIndex: zIndexCounter.current
+            };
+
+            popups = [...popups, newPopup];
+
+            if (popups.length > MAX_POPUP_COUNT)
+                popups.shift(); // Remove the oldest popup if exceeding max count
+
+            return popups;
+        })
     }, []);
 
     /**

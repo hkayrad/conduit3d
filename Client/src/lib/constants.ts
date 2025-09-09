@@ -2,6 +2,8 @@ export const DEBOUNCE_TIME_MS = 500;
 
 export const MAX_ZOOM = 25;
 
+export const MAX_POPUP_COUNT = 10;
+
 export const COLORS: { [name: string]: [number, number, number, number] } = {
     HOVER: [222, 98, 27, 128],
     ADR_BINA: [200, 200, 200, 255],
