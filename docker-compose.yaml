@@ -161,7 +161,9 @@ services:
     restart: unless-stopped
 
   api_gateway:
-    image: caddy_gateway:latest
+    build:
+      context: .
+      dockerfile: ApiGateway/Dockerfile
     container_name: api_gateway
     environment:
       - JWT_SECRET_BASE64=${JWT_SECRET_BASE64}

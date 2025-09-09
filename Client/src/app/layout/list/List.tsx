@@ -109,6 +109,7 @@ export default function List(): React.ReactNode {
     }, [query])
 
     useEffect(() => {
+        /* Reset pagination and sorting on feature type change */
         dispatch(setPageNumber(1));
         dispatch(setSortBy("id"));
         dispatch(setAscending(true));

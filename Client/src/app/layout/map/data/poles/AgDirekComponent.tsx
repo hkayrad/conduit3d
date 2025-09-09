@@ -23,41 +23,42 @@ export default function AgDirekComponent(props: Props): null {
     const handleAgDirekFetch = useCallback(async () => {
         const response = await AgDirekApi.fetchAll(200000, 1, 'id', true, null!, extent);
 
-        if (response.isSuccess) {
-            var dataList: GeoJSON.FeatureCollection = {
-                type: "FeatureCollection",
-                features: []
-            };
+        if (!response.isSuccess)
+            return;
 
-            response.data.forEach((rawData: Direk) => {
-                const height = Number(rawData.boyOzellik.split("/")[1]);
-                const feature = {
-                    type: "Feature",
-                    geometry: JSON.parse(rawData.geoJson),
-                    properties: {
-                        id: rawData.id,
-                        dataType: FeatureType.POLE,
-                        cinsi: rawData.cinsi,
-                        tipi: rawData.tipi,
-                        direkNo: rawData.direkNo,
-                        boyOzellik: rawData.boyOzellik,
-                        height: Number.isNaN(height) ? 10 : height,
-                    }
-                } as GeoJSON.Feature;
-                dataList.features.push(feature);
-            });
+        var dataList: GeoJSON.FeatureCollection = {
+            type: "FeatureCollection",
+            features: []
+        };
 
-            setData(dataList);
-        }
+        response.data.forEach((rawData: Direk) => {
+            const height = Number(rawData.boyOzellik.split("/")[1]);
+            const feature = {
+                type: "Feature",
+                geometry: JSON.parse(rawData.geoJson),
+                properties: {
+                    id: rawData.id,
+                    dataType: FeatureType.POLE,
+                    cinsi: rawData.cinsi,
+                    tipi: rawData.tipi,
+                    direkNo: rawData.direkNo,
+                    boyOzellik: rawData.boyOzellik,
+                    height: Number.isNaN(height) ? 10 : height,
+                }
+            } as GeoJSON.Feature;
+            dataList.features.push(feature);
+        });
+
+        setData(dataList);
     }, [extent]);
 
     const handleAgDirekTypesFetch = useCallback(async () => {
         const response = await AgDirekApi.fetchTypes();
 
-        if (response.isSuccess) {
-            dispatch(setType({ key: "agDirek", types: response.data }));
-            // dispatch(setFilter({ filter: "agDirek", tipi: response.data }));
-        }
+        if (!response.isSuccess)
+            return;
+
+        dispatch(setType({ key: "agDirek", types: response.data }));
     }, []);
 
     useEffect(() => {

@@ -25,43 +25,48 @@ export default function RekortmanComponent(props: Props): null {
     const handleRekortmanFetch = useCallback(async () => {
         const response = await RekortmanApi.fetchAll(200000, 1, 'id', true, null!, extent);
 
-        if (response.isSuccess) {
-            var dataList: GeoJSON.FeatureCollection = {
-                type: "FeatureCollection",
-                features: []
-            };
+        if (!response.isSuccess)
+            return;
 
-            response.data.forEach((rawData: Rekortman) => {
-                const feature = {
-                    type: "Feature",
-                    geometry: JSON.parse(rawData.geoJson),
-                    properties: {
-                        id: rawData.id,
-                        dataType: FeatureType.REKORTMAN,
-                        tipi: rawData.tipi,
-                        kesit: rawData.kesit
-                    }
-                } as GeoJSON.Feature;
-                const segments = lineStringToSegments(feature, rawData.tipi, allPoles, -.1);
-                dataList.features.push(...segments);
-            })
+        var dataList: GeoJSON.FeatureCollection = {
+            type: "FeatureCollection",
+            features: []
+        };
 
-            setData(dataList);
-        }
+        response.data.forEach((rawData: Rekortman) => {
+            const feature = {
+                type: "Feature",
+                geometry: JSON.parse(rawData.geoJson),
+                properties: {
+                    id: rawData.id,
+                    dataType: FeatureType.REKORTMAN,
+                    tipi: rawData.tipi,
+                    kesit: rawData.kesit
+                }
+            } as GeoJSON.Feature;
+            const segments = lineStringToSegments(feature, rawData.tipi, allPoles, -.1);
+            dataList.features.push(...segments);
+        })
+
+        setData(dataList);
     }, [extent]);
 
     const handleRekortmanTypesFetch = useCallback(async () => {
         const response = await RekortmanApi.fetchTypes();
 
-        if (response.isSuccess) {
-            dispatch(setType({ key: "rekortman", types: response.data }));
-            // dispatch(setFilter({ filter: "rekortman", tipi: response.data }));
+        if (!response.isSuccess) {
+            return;
         }
+
+        dispatch(setType({ key: "rekortman", types: response.data }));
+        // dispatch(setFilter({ filter: "rekortman", tipi: response.data }));
     }, []);
 
     useEffect(() => {
-        if (allPoles.length > 0)
-            handleRekortmanFetch();
+        if (allPoles.length <= 0)
+            return;
+
+        handleRekortmanFetch();
     }, [allPoles, extent]);
 
     useEffect(() => {

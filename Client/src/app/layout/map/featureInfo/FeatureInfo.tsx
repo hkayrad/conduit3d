@@ -32,22 +32,25 @@ export default function FeatureInfo(props: Props): React.ReactNode {
     const content = useMemo(() => InfoContent(properties, coordinate!), [coordinate, properties]);
 
     const handleMouseDown = useCallback((e: React.MouseEvent) => {
-        if (windowRef.current) {
-            const rect = windowRef.current.getBoundingClientRect();
-            setOffset({
-                x: e.clientX - rect.left,
-                y: e.clientY - rect.top
-            });
-            setIsDragging(true);
-        }
+        if (!windowRef.current)
+            return;
+
+        const rect = windowRef.current.getBoundingClientRect();
+        setOffset({
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top
+        });
+        setIsDragging(true);
     }, []);
 
     const handleMouseMove = useCallback((e: MouseEvent) => {
-        if (isDragging)
-            setPosition({
-                x: e.clientX - offset.x,
-                y: e.clientY - offset.y
-            });
+        if (!isDragging)
+            return;
+
+        setPosition({
+            x: e.clientX - offset.x,
+            y: e.clientY - offset.y
+        });
     }, [isDragging, offset]);
 
     const handleMouseUp = useCallback(() => {
@@ -57,10 +60,11 @@ export default function FeatureInfo(props: Props): React.ReactNode {
     }, [handleMouseMove]);
 
     useEffect(() => {
-        if (isDragging) {
-            document.addEventListener("mousemove", handleMouseMove);
-            document.addEventListener("mouseup", handleMouseUp);
-        }
+        if (!isDragging)
+            return;
+
+        document.addEventListener("mousemove", handleMouseMove);
+        document.addEventListener("mouseup", handleMouseUp);
 
         return () => {
             document.removeEventListener("mousemove", handleMouseMove);

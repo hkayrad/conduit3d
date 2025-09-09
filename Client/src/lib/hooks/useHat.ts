@@ -26,20 +26,20 @@ export function useHat(
      * @memoized to optimize performance and avoid unnecessary recalculations.
      */
     const agHatFormatted = useMemo(() => {
-        if (agHat)
-            return types.agHat.map(type => {
-                return {
-                    id: `ag-hat-${type}`,
-                    color: COLORS.AG_HAT,
-                    visibility:
-                        visibility.agHat &&
-                        (filters.agHat.tipi.includes(type) || filters.agHat.tipi.length === 0),
-                    cinsi: type,
-                    data: filterFeature(agHat, "cinsi", type)
-                }
-            })
-        else
+        if (!agHat)
             return [];
+
+        return types.agHat.map(type => {
+            return {
+                id: `ag-hat-${type}`,
+                color: COLORS.AG_HAT,
+                visibility:
+                    visibility.agHat &&
+                    (filters.agHat.tipi.includes(type) || filters.agHat.tipi.length === 0),
+                cinsi: type,
+                data: filterFeature(agHat, "cinsi", type)
+            }
+        })
     }, [agHat, visibility.agHat, filters.agHat.tipi]);
 
     /**
@@ -47,20 +47,20 @@ export function useHat(
      * @memoized to optimize performance and avoid unnecessary recalculations.
      */
     const ogHatFormatted = useMemo(() => {
-        if (ogHat)
-            return types.ogHat.map(type => {
-                return {
-                    id: `og-hat-${type}`,
-                    color: COLORS.OG_HAT,
-                    visibility:
-                        visibility.ogHat &&
-                        (filters.ogHat.tipi.includes(type) || filters.ogHat.tipi.length === 0),
-                    cinsi: type,
-                    data: filterFeature(ogHat, "cinsi", type)
-                }
-            })
-        else
+        if (!ogHat)
             return [];
+
+        return types.ogHat.map(type => {
+            return {
+                id: `og-hat-${type}`,
+                color: COLORS.OG_HAT,
+                visibility:
+                    visibility.ogHat &&
+                    (filters.ogHat.tipi.includes(type) || filters.ogHat.tipi.length === 0),
+                cinsi: type,
+                data: filterFeature(ogHat, "cinsi", type)
+            }
+        })
     }, [ogHat, visibility.ogHat, filters.ogHat.tipi]);
 
     /**
@@ -68,20 +68,20 @@ export function useHat(
      * @memoized to optimize performance and avoid unnecessary recalculations.
      */
     const rekortmanFormatted = useMemo(() => {
-        if (rekortman)
-            return types.rekortman.map(type => {
-                return {
-                    id: `rekortman-${type}`,
-                    color: COLORS.REKORTMAN,
-                    visibility:
-                        visibility.rekortman &&
-                        (filters.rekortman.tipi.includes(type) || filters.rekortman.tipi.length === 0),
-                    cinsi: type,
-                    data: filterFeature(rekortman, "tipi", type)
-                }
-            })
-        else
+        if (!rekortman)
             return [];
+
+        return types.rekortman.map(type => {
+            return {
+                id: `rekortman-${type}`,
+                color: COLORS.REKORTMAN,
+                visibility:
+                    visibility.rekortman &&
+                    (filters.rekortman.tipi.includes(type) || filters.rekortman.tipi.length === 0),
+                cinsi: type,
+                data: filterFeature(rekortman, "tipi", type)
+            }
+        })
     }, [rekortman, visibility.rekortman, filters.rekortman.tipi]);
 
     return { hatLayerData: [agHatFormatted, ogHatFormatted, rekortmanFormatted] };

@@ -44,6 +44,7 @@ export default function HoverCard(props: Props): React.ReactNode {
 
     const isHoverInfoVisible = useAppSelector(selectIsHoverInfoVisible);
 
+    // Calculate mouse velocity for hover card visibility
     useEffect(() => {
         const currentTime = performance.now();
 
@@ -72,37 +73,39 @@ export default function HoverCard(props: Props): React.ReactNode {
     }, [mousePos]);
 
     useEffect(() => {
-        if (hoverCardRef.current && hoveredFeature) {
-            const card = hoverCardRef.current;
+        if (!hoverCardRef.current || !hoveredFeature)
+            return;
 
-            // Use requestAnimationFrame to ensure the card has rendered
-            requestAnimationFrame(() => {
-                const cardRect = card.getBoundingClientRect();
+        const card = hoverCardRef.current;
 
-                // Only proceed if we have valid dimensions
-                if (cardRect.width === 0 || cardRect.height === 0) {
-                    return;
-                }
+        // Use requestAnimationFrame to ensure the card has rendered
+        requestAnimationFrame(() => {
+            const cardRect = card.getBoundingClientRect();
 
-                let left = mousePos.x + 10;
-                let top = mousePos.y + 10;
+            // Only proceed if we have valid dimensions
+            if (cardRect.width === 0 || cardRect.height === 0) {
+                return;
+            }
 
-                // Adjust position if card would overflow viewport
-                if (left + cardRect.width > window.innerWidth) {
-                    left = mousePos.x - cardRect.width - 10;
-                }
-                if (top + cardRect.height > window.innerHeight) {
-                    top = mousePos.y - cardRect.height - 10;
-                }
+            let left = mousePos.x + 10;
+            let top = mousePos.y + 10;
 
-                // Ensure coordinates are never negative or NaN
-                left = Math.max(0, left || 0);
-                top = Math.max(0, top || 0);
+            // Adjust position if card would overflow viewport
+            if (left + cardRect.width > window.innerWidth) {
+                left = mousePos.x - cardRect.width - 10;
+            }
+            if (top + cardRect.height > window.innerHeight) {
+                top = mousePos.y - cardRect.height - 10;
+            }
 
-                card.style.left = `${left}px`;
-                card.style.top = `${top}px`;
-            });
-        }
+            // Ensure coordinates are never negative or NaN
+            left = Math.max(0, left || 0);
+            top = Math.max(0, top || 0);
+
+            card.style.left = `${left}px`;
+            card.style.top = `${top}px`;
+        });
+
     }, [mousePos, hoveredFeature]);
 
     const content = useMemo(() => InfoContent(properties), [properties])

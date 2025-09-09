@@ -25,45 +25,49 @@ export default function AgHatComponent(props: Props): null {
     const handleAgHatFetch = useCallback(async () => {
         const response = await AgHatApi.fetchAll(200000, 1, 'id', true, null!, extent);
 
-        if (response.isSuccess) {
-            var dataList: GeoJSON.FeatureCollection = {
-                type: "FeatureCollection",
-                features: []
-            };
+        if (!response.isSuccess)
+            return;
+
+        var dataList: GeoJSON.FeatureCollection = {
+            type: "FeatureCollection",
+            features: []
+        };
 
 
-            response.data.forEach((rawData: Hat) => {
-                const feature = {
-                    type: "Feature",
-                    geometry: JSON.parse(rawData.geoJson),
-                    properties: {
-                        id: rawData.id,
-                        dataType: FeatureType.LINE,
-                        cinsi: rawData.cinsi,
-                        tipi: rawData.tipi,
-                        kesit: rawData.kesit
-                    }
-                } as GeoJSON.Feature;
-                const segments = lineStringToSegments(feature, rawData.cinsi, allPoles, -1);
-                dataList.features.push(...segments);
-            })
+        response.data.forEach((rawData: Hat) => {
+            const feature = {
+                type: "Feature",
+                geometry: JSON.parse(rawData.geoJson),
+                properties: {
+                    id: rawData.id,
+                    dataType: FeatureType.LINE,
+                    cinsi: rawData.cinsi,
+                    tipi: rawData.tipi,
+                    kesit: rawData.kesit
+                }
+            } as GeoJSON.Feature;
+            const segments = lineStringToSegments(feature, rawData.cinsi, allPoles, -1);
+            dataList.features.push(...segments);
+        })
 
-            setData(dataList);
-        }
+        setData(dataList);
     }, [extent]);
 
     const handleAgHatTypesFetch = useCallback(async () => {
         const response = await AgHatApi.fetchTypes();
 
-        if (response.isSuccess) {
-            dispatch(setType({ key: "agHat", types: response.data }));
-            // dispatch(setFilter({ filter: "agHat", tipi: response.data }));
-        }
+        if (!response.isSuccess)
+            return;
+
+        dispatch(setType({ key: "agHat", types: response.data }));
+        // dispatch(setFilter({ filter: "agHat", tipi: response.data }));
     }, []);
 
     useEffect(() => {
-        if (allPoles.length > 0)
-            handleAgHatFetch();
+        if (allPoles.length <= 0)
+            return;
+
+        handleAgHatFetch();
     }, [allPoles, extent]);
 
     useEffect(() => {

@@ -25,7 +25,7 @@ instance.interceptors.response.use((response: AxiosResponse) => {
 }, (error) => {
     console.error(error.response?.data);
     store.dispatch(setIsDataLoading(false));
-    return error.response.data;
+    return error.response;
 })
 
 export default instance;

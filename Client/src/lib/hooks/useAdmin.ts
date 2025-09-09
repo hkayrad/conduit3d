@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { AuthApi } from "../api";
-import type { AdminModalStatus, User, UserCounts, UserSortBy } from "../types";
+import type { AdminModalStatus, ApiResponse, User, UserCounts, UserSortBy } from "../types";
 import { AdminModalType } from "../enums";
 import { setAscending, setItemsPerPage, setPageNumber, setQuery, setSortBy } from "../../app/layout/admin/adminSlice";
 import { useDispatch } from "react-redux";
@@ -69,10 +69,12 @@ export function useAdmin(
      * @returns void
      */
     const handleDeleteUser = async (userId: number) => {
-        const response = await AuthApi.deleteUser(userId);
+        const response = await AuthApi.deleteUser(userId) as ApiResponse<any>;
 
         if (!response.isSuccess) {
-            setErrorText(response.message);
+            // Parse and display the first error message
+            const errors = Object.values(response.data || {}).flat();
+            setErrorText(errors[0] as string || response.message);
             return;
         }
 
@@ -89,10 +91,12 @@ export function useAdmin(
      * @returns void
      */
     const handleEditUser = async (updatedUser: User) => {
-        const response = await AuthApi.updateUser(updatedUser.id, updatedUser) as any;
+        const response = await AuthApi.updateUser(updatedUser.id, updatedUser) as ApiResponse<any>;
 
         if (!response.isSuccess) {
-            setErrorText(response.message)
+            // Parse and display the first error message
+            const errors = Object.values(response.data || {}).flat();
+            setErrorText(errors[0] as string || response.message);
             return;
         }
 
@@ -109,10 +113,12 @@ export function useAdmin(
      * @returns void
      */
     const handleAddUser = async (newUser: User) => {
-        const response = await AuthApi.createUser(newUser);
+        const response = await AuthApi.createUser(newUser) as ApiResponse<any>;
 
         if (!response.isSuccess) {
-            setErrorText(response.message)
+            // Parse and display the first error message
+            const errors = Object.values(response.data || {}).flat();
+            setErrorText(errors[0] as string || response.message);
             return;
         }
 
@@ -146,17 +152,15 @@ export function useAdmin(
      * @returns void
      */
     const handleOpenModal = useCallback((type: AdminModalType, user?: User) => {
-        setErrorText("");
+        if (user) {
+            setUserToAddModify(user);
+        }
 
         setModalStatus({
             isEditModalOpen: type === AdminModalType.Edit,
             isAddModalOpen: type === AdminModalType.Add,
             isDeleteModalOpen: type === AdminModalType.Delete
         });
-
-        if (user) {
-            setUserToAddModify(user);
-        }
     }, []);
 
     /**
@@ -196,7 +200,7 @@ export function useAdmin(
     const handleChangeItemsPerPage = useCallback((e: React.ChangeEvent<HTMLSelectElement>): void => {
         const newItemsPerPage = parseInt(e.target.value);
         dispatch(setItemsPerPage(newItemsPerPage));
-        dispatch(setPageNumber(1)); // Reset to first page on items per page change
+        handleSetPageNumber(1); // Reset to first page on items per page change
     }, []);
 
     /**
