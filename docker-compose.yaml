@@ -178,7 +178,6 @@ services:
       - "80:80"
     volumes:
       - ./ApiGateway/Caddyfile:/etc/caddy/Caddyfile
-      - ./ApiGateway/default.html:/usr/share/caddy/default.html
       - ./ApiGateway/docs.html:/usr/share/caddy/docs.html
       - ./ApiGateway/localhost.pem:/usr/share/caddy/localhost.pem
       - ./ApiGateway/localhost-key.pem:/usr/share/caddy/localhost-key.pem
