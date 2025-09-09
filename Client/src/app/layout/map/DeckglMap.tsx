@@ -38,13 +38,16 @@ import FeatureInfo from "./featureInfo/FeatureInfo";
  * @returns The rendered component
  */
 export default function DeckglMap(): React.ReactNode {
-    var [searchParams, setSearchParams] = useSearchParams();
-
-    const dispatch = useDispatch();
-
-    // Global Map State
+    // Redux State
     const { visibility, filters, types } = useAppSelector(selectMapState);
 
+    // React-Router State
+    var [searchParams, setSearchParams] = useSearchParams();
+
+    // Refs
+    const zIndexCounter = useRef(1000);
+
+    // Local State
     const [mapViewState, setMapViewState] = useState<MapViewState>({
         longitude: searchParams.get("lon") ? parseFloat(searchParams.get("lon")!) : 41.287,
         latitude: searchParams.get("lat") ? parseFloat(searchParams.get("lat")!) : 39.9,
@@ -54,9 +57,7 @@ export default function DeckglMap(): React.ReactNode {
         bearing: searchParams.get("b") ? parseFloat(searchParams.get("b")!) : 0
     });
 
-    const [lineWidth, setLineWidth] = useState<number>(1);
-
-    // Map data
+    // GeoJSON Data States
     const [adrBina, setAdrBina] = useState<GeoJSON.FeatureCollection>(null!);
     const [trafoBina, setTrafoBina] = useState<GeoJSON.FeatureCollection>(null!);
     const [agDirek, setAgDirek] = useState<GeoJSON.FeatureCollection>(null!);
@@ -66,15 +67,18 @@ export default function DeckglMap(): React.ReactNode {
     const [ogHat, setOgHat] = useState<GeoJSON.FeatureCollection>(null!);
     const [rekortman, setRekortman] = useState<GeoJSON.FeatureCollection>(null!);
 
+    const [lineWidth, setLineWidth] = useState<number>(1);
     const [hoveredFeature, setHoveredFeature] = useState<GeoJSON.Feature | null>(null);
 
     const [activePopups, setActivePopups] = useState<PopupState[]>([]);
-    const zIndexCounter = useRef(1000);
 
     const [mousePos, setMousePos] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
     const [mouseLonLat, setMouseLonLat] = useState<number[]>([0, 0]);
 
-    // Formatted Hat Layer Data
+    // Redux hooks
+    const dispatch = useDispatch();
+
+    // Hat hook
     const { hatLayerData } = useHat(
         agHat,
         ogHat,
@@ -83,7 +87,7 @@ export default function DeckglMap(): React.ReactNode {
         filters,
         visibility);
 
-    // Formatted Direk Layer Data and All Poles
+    // Direk hook
     const { direkLayerData, allPoles } = useDirek(
         agDirek,
         ogMusDirek,
@@ -92,7 +96,7 @@ export default function DeckglMap(): React.ReactNode {
         filters,
         visibility);
 
-    // Map Interaction Handlers
+    // Map interaction hook
     const { handleViewStateChange,
         handleMouseMove,
         handleClick,
@@ -109,7 +113,7 @@ export default function DeckglMap(): React.ReactNode {
         setMouseLonLat,
         setActivePopups);
 
-    // Create layers from the formatted data
+    // Mmemoized layers from the current data
     const layers: Layer[] = useMemo((): Layer[] => [
         ...CreateLayer.LocalTiles(visibility.basemap),
 
@@ -164,7 +168,19 @@ export default function DeckglMap(): React.ReactNode {
             diskResolution: 4,
             visible: visibility.trafoBina,
         })
-    ], [filters, visibility, adrBina, trafoBina, agDirek, ogMusDirek, aydDirek, agHat, ogHat, rekortman, lineWidth]);
+    ], [
+        filters,
+        visibility,
+        adrBina,
+        trafoBina,
+        agDirek,
+        ogMusDirek,
+        aydDirek,
+        agHat,
+        ogHat,
+        rekortman,
+        lineWidth
+    ]);
 
     // Fly to a given feature
     const flyTo = useCallback((
