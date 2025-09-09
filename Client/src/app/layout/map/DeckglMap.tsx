@@ -31,6 +31,7 @@ import MousePosition from "./mousePosition/MousePosition";
 import Attribution from "./attribution/Attribution";
 import HoverCard from "./hoverCard/HoverCard";
 import FeatureInfo from "./featureInfo/FeatureInfo";
+import ShortcutsInfo from "./shortcutsInfo/ShortcutsInfo";
 
 /**
  * DeckglMap component renders the Deck.gl map with various layers and controls.
@@ -278,6 +279,7 @@ export default function DeckglMap(): React.ReactNode {
                     mousePos={mousePos}
                 />
                 <Attribution />
+                <ShortcutsInfo />
                 <DeckGL
                     controller
                     views={new MapView()}

@@ -1,0 +1,101 @@
+@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Lexend", sans-serif;
+  font-size: 16px;
+}
+
+body::-webkit-scrollbar {
+  width: 8px;
+}
+body::-webkit-scrollbar-track {
+  background: none;
+}
+body::-webkit-scrollbar-thumb {
+  background: #4B4E73;
+}
+
+.lucide {
+  width: 16px;
+  height: 16px;
+}
+
+.error-fg {
+  color: #D32F2F !important;
+}
+
+.warning-fg {
+  color: #FFC107 !important;
+}
+
+.success-fg {
+  color: #4CAF50 !important;
+}
+
+.white-fg {
+  color: #FFFFFF !important;
+}
+
+.error-bg {
+  background: #D32F2F !important;
+}
+
+.warning-bg {
+  background: #FFC107 !important;
+}
+
+.success-bg {
+  background: #4CAF50 !important;
+}
+
+.white-bg {
+  background: #FFFFFF !important;
+}
+
+.shadow {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.icon {
+  position: absolute;
+  bottom: 48px;
+  left: 16px;
+  z-index: 10;
+  display: flex;
+  background: #2B2D42;
+  color: #FFFFFF;
+  padding: 8px;
+  border-radius: 12px;
+}
+
+.shortcuts-info {
+  position: absolute;
+  bottom: 84px;
+  left: 16px;
+  z-index: 10;
+  display: none;
+  flex-direction: column;
+  background: #2B2D42;
+  color: #FFFFFF;
+  padding: 12px;
+  border-radius: 12px;
+  gap: 4px;
+}
+.shortcuts-info.visible {
+  display: flex;
+}
+.shortcuts-info kbd {
+  background-color: #eeeeee;
+  border-radius: 3px;
+  border: 1px solid #b4b4b4;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), 0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
+  color: #333333;
+  display: inline-block;
+  font-size: 0.85em;
+  font-weight: 700;
+  line-height: 1;
+  padding: 2px 4px;
+  white-space: nowrap;
+}/*# sourceMappingURL=shortcutsInfo.css.map */
