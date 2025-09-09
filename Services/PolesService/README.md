@@ -47,18 +47,14 @@ Host=localhost;Database=poles_db;Username=poles_user;Password=your_password
 
 ```
 PolesService/
-├── Controllers/          # API controllers
-│   ├── AgDirekController.cs
-│   ├── OgMusDirekController.cs
-│   └── AydDirekController.cs
-├── Domain/              # Domain entities
-│   ├── AgDirek.cs
-│   ├── OgMusDirek.cs
-│   └── AydDirek.cs
-├── Infrastructure/      # Data access layer
+├── Controllers/        # API controllers
+├── Domain/             # Domain entities
+├── Infrastructure/     # Data access layer
 │   ├── Data/           # Database context
 │   ├── Repositories/   # Repository pattern implementation
-│   └── Services/       # Business logic services
+│   ├── Services/       # Business logic services
+│   ├── Utilities/      # Helper utilities
+│   └── UnitOfWork.cs   # Unit Of Work
 ├── Properties/         # Launch settings
 └── Resources/          # Localization resources
 ```

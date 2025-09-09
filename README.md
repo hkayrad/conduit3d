@@ -1,86 +1,271 @@
-# Conduit3D
+# Conduit3D Platform
 
-Conduit3D is a modular .NET solution for managing geospatial infrastructure data, including authentication, buildings, lines, and poles. It uses ASP.NET Core, Entity Framework Core, PostgreSQL/PostGIS, and Caddy for API gateway and JWT authentication.
+A microservices-based platform for managing geospatial electrical infrastructure data. Built with modern .NET technologies, React, and PostgreSQL/PostGIS for scalable 3D visualization and data management.
 
-## Project Structure
+## 🚀 Overview
 
-- [Common](Common/Common.csproj): Shared domain models and utilities.
-- [Services/AuthService](Services/AuthService/AuthService.csproj): User authentication and management API.
-- [Services/BuildingsService](Services/BuildingsService/BuildingsService.csproj): Buildings data API.
-- [Services/LinesService](Services/LinesService/LinesService.csproj): Lines data API.
-- [Services/PolesService](Services/PolesService/PolesService.csproj): Poles data API.
-- [ApiGateway](ApiGateway): Caddy-based API gateway with JWT authentication and static file serving.
-- [docker-compose.yaml](docker-compose.yaml): Multi-service orchestration for databases, APIs, and gateway.
+Conduit3D is a modular platform designed for electrical utility companies to manage and visualize their infrastructure assets including buildings, electrical poles, power lines, and related geospatial data through an interactive 3D interface.
 
-## Features
+## 🏗️ Architecture
 
-- **Authentication:** JWT-based, role-aware user management.
-- **Geospatial APIs:** CRUD and query endpoints for buildings, lines, and poles.
-- **API Gateway:** Caddy reverse proxy with JWT validation.
-- **PostgreSQL/PostGIS:** Spatial queries and storage.
-- **Versioned REST APIs:** Using Asp.Versioning.
-- **Centralized Error Handling:** Consistent response models.
+### Microservices
+- **[AuthService](Services/AuthService/)** - User authentication and authorization with JWT
+- **[BuildingsService](Services/BuildingsService/)** - Building data management with PostGIS
+- **[LinesService](Services/LinesService/)** - Electrical line infrastructure management
+- **[PolesService](Services/PolesService/)** - Electrical pole infrastructure management
 
-## Getting Started
+### Frontend
+- **[Client](Client/)** - React TypeScript application with 3D geospatial visualization
+
+### Infrastructure
+- **[ApiGateway](ApiGateway/)** - Caddy-based reverse proxy with JWT validation
+- **[Common](Common/)** - Shared domain models and utilities
+- **[TileService](TileService/)** - Map tile serving for geospatial visualization
+
+## 🔧 Tech Stack
+
+### Backend Services
+- **ASP.NET Core 8.0** - Web API framework
+- **Entity Framework Core** - ORM with PostgreSQL provider
+- **PostgreSQL/PostGIS** - Spatial database for geospatial data
+- **JWT Authentication** - Secure token-based authentication
+- **Swagger/OpenAPI** - API documentation
+
+### Frontend [(Dependency List)](Client/package.json)
+- **React 19** - Modern UI framework
+- **TypeScript** - Type-safe development
+- **Vite** - Fast build tool and development server
+- **Redux Toolkit** - State management
+- **Deck.gl** - Interactive geospatial visualization
+
+### Infrastructure
+- **Docker & Docker Compose** - Containerization and orchestration
+- **Caddy** - Modern web server and reverse proxy
+- **PostGIS** - Spatial database extensions
+
+## 🚦 Getting Started
 
 ### Prerequisites
-
-- [.NET 8 SDK](https://dotnet.microsoft.com/download)
 - [Docker](https://www.docker.com/products/docker-desktop)
+- [.NET 8 SDK](https://dotnet.microsoft.com/download) (for local development)
+- [Node.js 18+](https://nodejs.org/) (for frontend development)
 
-### Build & Run Locally
+### Quick Start with Docker
 
-1. **Clone the repository:**
-    ```sh
-    git clone <repo-url>
-    cd conduit3d
-    ```
-
-2. **Set environment variables:**
-   - Copy `.env.example` to `.env` and fill in secrets (DB credentials, JWT secrets, etc).
-
-3. **Build the Caddy API Server Image:**
-   ```sh
-   cd ApiGateway
-   docker build -t caddy_gateway .
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd conduit3d
    ```
 
-4. **Start all services with Docker Compose:**
-    ```sh
-    docker compose --build -d
-    ```
+2. **Set up environment variables**
+   ```bash
+   # Copy and configure environment variables
+   cp .env.example .env
+   # Edit .env with your database passwords and JWT secrets
+   ```
 
-5. **Access APIs:**
-   - API Gateway: [https://localhost](https://localhost)
-   - AuthService: `/api/v1/auth`
-   - BuildingsService: `/api/v1/buildings`
-   - LinesService: `/api/v1/lines`
-   - PolesService: `/api/v1/poles`
+3. **Start all services**
+   ```bash
+   # Build and start all services
+   docker compose up --build -d
+   ```
 
-6. **Access Swagger Documentation:**
-   - AuthService: `/docs/auth/swagger`
-   - BuildingsService: `/docs/buildings/swagger`
-   - PolesService: `/docs/poles/swagger`
-   - LinesService: `/docs/lines/swagger`
+4. **Access the application**
+   - **Main Application**: https://\<domain>
+   - **API Gateway**: https://\<domain>/api
+   - **API Documentation**: 
+     - Auth: https://\<domain>/api/docs/auth/swagger
+     - Buildings: https://\<domain>/api/docs/buildings/swagger
+     - Lines: https://\<domain>/api/docs/lines/swagger
+     - Poles: https://\<domain>/api/docs/poles/swagger
 
-### Development
+## 📋 API Endpoints
 
-- Each service can be run/debugged individually using Visual Studio or VS Code.
-- API docs available via Swagger UI at `/swagger` for each service in development mode.
+### Authentication (`/api/v1/auth`)
+- `POST /login` - User authentication
+- `GET /` - List users (paginated)
+- `GET /count` - Get user count
+- `GET /{id}` - Get user details
+- `POST /` - Create user
+- `PUT /{id}` - Update user
+- `DELETE /{id}` - Delete user
 
-## Coding Conventions
+### Buildings
 
-See [CODING_CONVENTION.md](CODING_CONVENTION.md) for .NET style and architecture guidelines.
+> Address Buildings (`/api/v1/adrBina`) <br/>
+> Transformer Buildings (`/api/v1/trafoBina`) <br/>
+> General Buildings (`/api/v1/buildings`)
 
-## Security
+- `GET /` - List buildings (paginated)
+- `GET /{id}` - Get building details
+- `GET /count` - Get building count
 
-- Secrets are managed via environment variables.
-- JWT authentication enforced at the gateway level, and authorization is checked at the service level.
+### Lines
 
-## License
+> Low Voltage Lines (`/api/v1/agHat`) <br/>
+> Medium Voltage Lines (`/api/v1/ogHat`) <br/>
+> Service Lines (`/api/v1/rekortman`)
 
-Specify your license here.
+- `GET /` - List lines (paginated)
+- `GET /{id}` - Get line details
+- `GET /count` - Get line count
+- `GET /types` - Get line types
 
-## Contributing
+### Poles
 
-Pull requests and issues are welcome. Please follow the coding conventions and submit changes with clear commit messages.
+> Low Voltage Poles (`/api/v1/agDirek`) <br/>
+> Medium Voltage Poles (`/api/v1/ogMusDirek`) <br/>
+> Lighting Poles (`/api/v1/aydDirek`)
+
+- `GET /` - List poles (paginated)
+- `GET /{id}` - Get pole details
+- `GET /count` - Get pole count
+- `GET /types` - Get pole types
+
+## 🔧 Development
+
+### Local Development Setup
+
+1. **Backend Services**
+   ```bash
+   # Start databases only
+   docker compose up auth_database buildings_database lines_database poles_database -d
+   
+   # Run services locally
+   cd Services/AuthService
+   dotnet run
+   ```
+
+2. **Frontend Development**
+   ```bash
+   cd Client
+   npm install
+   npm run dev
+   ```
+
+3. **API Gateway**
+   ```bash
+   cd ApiGateway
+   docker build -t caddy_gateway .
+   docker run -p 80:80 -p 443:443 caddy_gateway
+   ```
+
+### Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `JWT_ISSUER` | JWT Issuer for signing |
+| `JWT_AUDIENCE` | JWT Audience for signing |
+| `JWT_SIGNING_ALGORITHM` | Algorithm |
+| `JWT_SECRET` | JWT Secret for signing |
+| `JWT_SECRET_BASE64` | JWT Secret in BASE64 |
+| `JWT_EXPIRATION_TIME_HRS` | JWT Expiration Time in hours |
+| `AUTH_DB_NAME` | Auth database name |
+| `AUTH_DB_USER` | Auth database user |
+| `AUTH_DB_PASS` | Auth database password |
+| `BUILDINGS_DB_NAME` | Buildings database name |
+| `BUILDINGS_DB_USER` | Buildings database user |
+| `BUILDINGS_DB_PASS` | Buildings database password |
+| `LINES_DB_NAME` | Lines database name |
+| `LINES_DB_USER` | Lines database user |
+| `LINES_DB_PASS` | Lines database password |
+| `POLES_DB_NAME` | Poles database name |
+| `POLES_DB_USER` | Poles database user |
+| `POLES_DB_PASS` | Poles database password |
+| `VITE_API_URL` | API url to use in client |
+| `VITE_TILE_SERVER_URL` | Tile server to use in client |
+
+## 🗺️ Key Features
+
+### 3D Geospatial Visualization
+- Interactive 3D maps for electrical infrastructure
+- Real-time data visualization
+- Spatial query capabilities
+
+### User Management
+- Role-based access control
+- JWT-based authentication
+- Admin panel for user administration
+
+### Infrastructure Management
+- CRUD operations for all asset types
+- Geospatial data with PostGIS integration
+- RESTful APIs with OpenAPI documentation
+
+### Scalable Architecture
+- Microservices-based design
+- Docker containerization
+- API Gateway
+
+## 🐳 Docker Services
+
+```yaml
+# Database Services
+- auth_database (PostgreSQL)
+- buildings_database (PostGIS)
+- lines_database (PostGIS)
+- poles_database (PostGIS)
+
+# Application Services
+- auth_service
+- buildings_service
+- lines_service
+- poles_service
+- client
+- tile_server
+- api_gateway
+```
+
+<!-- ## 🧪 Testing
+
+```bash
+# Run all service tests
+docker compose -f docker-compose.test.yml up --build
+
+# Individual service testing
+cd Services/AuthService
+dotnet test
+
+# Frontend testing
+cd Client
+npm test
+``` -->
+
+<!-- ## 📊 Monitoring & Health Checks
+
+- Health endpoints available at `/health` for each service
+- Centralized logging through Docker
+- Performance metrics and monitoring capabilities -->
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Follow the [coding conventions](CODING_CONVENTION.md)
+4. Add tests for new functionality
+5. Commit your changes (`git commit -m 'Add amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
+
+## 🔒 Security
+
+- JWT-based authentication at gateway level
+- Role-based authorization in services
+- Environment-based secret management
+- HTTPS enforcement through Caddy
+- Input validation
+
+## 📄 License
+
+This project is proprietary software. All rights reserved.
+
+## 📞 Support
+
+For support and questions, please contact the development team or create an issue in the repository.
+
+---
+
+**Conduit3D Platform** - Modern electrical infrastructure
+
+Initially developed by Hakan Kayra Doğan - [hkayrad.tr](https://hkayrad.tr)

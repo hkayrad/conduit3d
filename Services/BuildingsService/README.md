@@ -47,18 +47,14 @@ Host=localhost;Database=buildings_db;Username=buildings_user;Password=your_passw
 
 ```
 BuildingsService/
-├── Controllers/          # API controllers
-│   ├── AdrBinaController.cs
-│   ├── TrafoBinaController.cs
-│   └── BuildingsController.cs
-├── Domain/              # Domain entities
-│   ├── AdrBina.cs
-│   ├── TrafoBina.cs
-│   └── Building.cs
-├── Infrastructure/      # Data access layer
+├── Controllers/        # API controllers
+├── Domain/             # Domain entities
+├── Infrastructure/     # Data access layer
 │   ├── Data/           # Database context
 │   ├── Repositories/   # Repository pattern implementation
-│   └── Services/       # Business logic services
+│   ├── Services/       # Business logic services
+│   ├── Utilities/      # Helper utilities
+│   └── UnitOfWork.cs   # Unit Of Work
 ├── Properties/         # Launch settings
 └── Resources/          # Localization resources
 ```

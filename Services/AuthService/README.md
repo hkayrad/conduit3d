@@ -50,14 +50,15 @@ Host=localhost;Database=auth_db;Username=auth_user;Password=your_password
 
 ```
 AuthService/
-├── Controllers/          # API controllers
-├── Domain/              # Domain entities
-├── Infrastructure/      # Data access layer
+├── Controllers/        # API controllers
+├── Domain/             # Domain entities
+├── Infrastructure/     # Data access layer
 │   ├── Data/           # Database context
 │   ├── DTOs/           # Data transfer objects
 │   ├── Repositories/   # Repository pattern implementation
 │   ├── Services/       # Business logic services
-│   └── Utilities/      # Helper utilities
+│   ├── Utilities/      # Helper utilities
+│   └── UnitOfWork.cs   # Unit Of Work
 ├── Properties/         # Launch settings
 └── Resources/          # Localization resources
 ```

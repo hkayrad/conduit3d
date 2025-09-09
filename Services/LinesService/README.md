@@ -47,18 +47,14 @@ Host=localhost;Database=lines_db;Username=lines_user;Password=your_password
 
 ```
 LinesService/
-├── Controllers/          # API controllers
-│   ├── AgHatController.cs
-│   ├── OgHatController.cs
-│   └── RekortmanController.cs
-├── Domain/              # Domain entities
-│   ├── AgHat.cs
-│   ├── OgHat.cs
-│   └── Rekortman.cs
-├── Infrastructure/      # Data access layer
+├── Controllers/        # API controllers
+├── Domain/             # Domain entities
+├── Infrastructure/     # Data access layer
 │   ├── Data/           # Database context
 │   ├── Repositories/   # Repository pattern implementation
-│   └── Services/       # Business logic services
+│   ├── Services/       # Business logic services
+│   ├── Utilities/      # Helper utilities
+│   └── UnitOfWork.cs   # Unit Of Work
 ├── Properties/         # Launch settings
 └── Resources/          # Localization resources
 ```
