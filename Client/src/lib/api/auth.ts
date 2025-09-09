@@ -15,10 +15,15 @@ export class AuthApi {
      */
     static async login(user: LoginUserDto) {
         const { username, password } = user;
-        // Make API call to login
-        const response = await instance.post<ApiResponse<User>>("/auth/login", { username, password });
+        try {
+            // Make API call to login
+            const response = await instance.post<ApiResponse<User>>("/auth/login", { username, password });
 
-        return response.data;
+            return response.data;
+        } catch (error) {
+            console.error("Login error:", error);
+            throw error;
+        }
     }
 
     /**
@@ -43,16 +48,21 @@ export class AuthApi {
         sortBy: string = 'id',
         ascending: boolean = true,
         query: string = null!) {
-        const response = await instance.get<ApiResponse<User[]>>("/auth", {
-            params: {
-                pageSize: pageSize,
-                pageNumber: pageNumber,
-                sortBy: capitalizeFirstLetter(sortBy),
-                ascending: ascending,
-                query: query
-            }
-        });
-        return response.data;
+        try {
+            const response = await instance.get<ApiResponse<User[]>>("/auth", {
+                params: {
+                    pageSize: pageSize,
+                    pageNumber: pageNumber,
+                    sortBy: capitalizeFirstLetter(sortBy),
+                    ascending: ascending,
+                    query: query
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Fetch users error:", error);
+            throw error;
+        }
     }
 
     /**
@@ -61,12 +71,17 @@ export class AuthApi {
      * @returns A promise that resolves to the user counts.
      */
     static async fetchCount(query: string = null!) {
-        const response = await instance.get<ApiResponse<UserCounts>>("/auth/count", {
-            params: {
-                query: query
-            }
-        });
-        return response.data;
+        try {
+            const response = await instance.get<ApiResponse<UserCounts>>("/auth/count", {
+                params: {
+                    query: query
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Fetch user count error:", error);
+            throw error;
+        }
     }
 
     /**
@@ -75,8 +90,13 @@ export class AuthApi {
      * @returns A promise that resolves when the user is deleted.
      */
     static async deleteUser(userId: number) {
-        const response = await instance.delete<ApiResponse<void>>(`/auth/${userId}`);
-        return response.data;
+        try {
+            const response = await instance.delete<ApiResponse<void>>(`/auth/${userId}`);
+            return response.data;
+        } catch (error) {
+            console.error("Delete user error:", error);
+            throw error;
+        }
     }
 
     /**
@@ -86,8 +106,13 @@ export class AuthApi {
      * @returns A promise that resolves to the updated user data.
      */
     static async updateUser(userId: number, user: User) {
-        const response = await instance.put<ApiResponse<User>>(`/auth/${userId}`, user);
-        return response.data;
+        try {
+            const response = await instance.put<ApiResponse<User>>(`/auth/${userId}`, user);
+            return response.data;
+        } catch (error) {
+            console.error("Update user error:", error);
+            throw error;
+        }
     }
 
     /**
@@ -96,7 +121,12 @@ export class AuthApi {
      * @returns A promise that resolves to the created user data.
      */
     static async createUser(user: User) {
-        const response = await instance.post<ApiResponse<User>>(`/auth`, user);
-        return response.data;
+        try {
+            const response = await instance.post<ApiResponse<User>>(`/auth`, user);
+            return response.data;
+        } catch (error) {
+            console.error("Create user error:", error);
+            throw error;
+        }
     }
 }

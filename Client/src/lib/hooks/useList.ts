@@ -47,19 +47,25 @@ export function useList(
         const api = apiMap[featureToFetch];
         if (!api) return;
 
-        const [dataResponse, countResponse] = await Promise.all([
-            api.fetchAll(itemsPerPage, pageNumber, sortBy, ascending, query),
-            api.fetchCount(query)
-        ]);
+        try {
+            const [dataResponse, countResponse] = await Promise.all([
+                api.fetchAll(itemsPerPage, pageNumber, sortBy, ascending, query),
+                api.fetchCount(query)
+            ]);
 
-        if (!dataResponse.isSuccess || !countResponse.isSuccess) {
+            if (!dataResponse.isSuccess || !countResponse.isSuccess) {
+                setFeatures([]);
+                setFeatureCount(0);
+                return;
+            }
+
+            setFeatures(dataResponse.data);
+            setFeatureCount(countResponse.data);
+        } catch (error) {
+            console.error(`Error fetching ${featureToFetch}:`, error);
             setFeatures([]);
             setFeatureCount(0);
-            return;
         }
-
-        setFeatures(dataResponse.data);
-        setFeatureCount(countResponse.data);
     }
 
     /**

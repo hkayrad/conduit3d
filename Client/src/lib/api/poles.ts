@@ -24,17 +24,23 @@ export class AgDirekApi {
         query: string = null!,
         extent?: Extent
     ) {
-        const response = await instance.get<ApiResponse<Direk[]>>("agDirek", {
-            params: {
-                pageSize,
-                pageNumber,
-                sortBy: capitalizeFirstLetter(sortBy),
-                ascending,
-                query,
-                ...extent
-            }
-        });
-        return response.data;
+        try {
+            const response = await instance.get<ApiResponse<Direk[]>>("agDirek", {
+                params: {
+                    pageSize,
+                    pageNumber,
+                    sortBy: capitalizeFirstLetter(sortBy),
+                    ascending,
+                    query,
+                    ...extent
+                }
+            });
+
+            return response.data;
+        } catch (error) {
+            console.error("Fetch AgDirek error:", error);
+            throw error;
+        }
     }
 
     /**
@@ -42,8 +48,13 @@ export class AgDirekApi {
      * @returns A promise that resolves to the list of AG Direk feature types.
      */
     static async fetchTypes() {
-        const response = await instance.get<ApiResponse<string[]>>("agDirek/types");
-        return response.data;
+        try {
+            const response = await instance.get<ApiResponse<string[]>>("agDirek/types");
+            return response.data;
+        } catch (error) {
+            console.error("Fetch AgDirek types error:", error);
+            throw error;
+        }
     }
 
     /**
@@ -54,12 +65,18 @@ export class AgDirekApi {
     static async fetchCount(
         query: string = null!
     ) {
-        const response = await instance.get<ApiResponse<number>>("agDirek/count", {
-            params: {
-                query
-            }
-        });
-        return response.data;
+        try {
+            const response = await instance.get<ApiResponse<number>>("agDirek/count", {
+                params: {
+                    query
+                }
+            });
+            return response.data;
+        }
+        catch (error) {
+            console.error("Fetch AgDirek count error:", error);
+            throw error;
+        }
     }
 }
 
@@ -84,17 +101,22 @@ export class OgMusDirekApi {
         ascending: boolean = true,
         query: string = null!,
         extent?: Extent) {
-        const response = await instance.get<ApiResponse<Direk[]>>("ogMusDirek", {
-            params: {
-                pageSize,
-                pageNumber,
-                sortBy: capitalizeFirstLetter(sortBy),
-                ascending,
-                query,
-                ...extent
-            }
-        });
-        return response.data;
+        try {
+            const response = await instance.get<ApiResponse<Direk[]>>("ogMusDirek", {
+                params: {
+                    pageSize,
+                    pageNumber,
+                    sortBy: capitalizeFirstLetter(sortBy),
+                    ascending,
+                    query,
+                    ...extent
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Fetch OgMusDirek error:", error);
+            throw error;
+        }
     }
 
     /**
@@ -102,8 +124,13 @@ export class OgMusDirekApi {
      * @returns A promise that resolves to the list of OG Mus Direk feature types.
      */
     static async fetchTypes() {
-        const response = await instance.get<ApiResponse<string[]>>("ogMusDirek/types");
-        return response.data;
+        try {
+            const response = await instance.get<ApiResponse<string[]>>("ogMusDirek/types");
+            return response.data;
+        } catch (error) {
+            console.error("Fetch OgMusDirek types error:", error);
+            throw error;
+        }
     }
 
     /**
@@ -114,12 +141,17 @@ export class OgMusDirekApi {
     static async fetchCount(
         query: string = null!
     ) {
-        const response = await instance.get<ApiResponse<number>>("ogMusDirek/count", {
-            params: {
-                query
-            }
-        });
-        return response.data;
+        try {
+            const response = await instance.get<ApiResponse<number>>("ogMusDirek/count", {
+                params: {
+                    query
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Fetch OgMusDirek count error:", error);
+            throw error;
+        }
     }
 }
 
@@ -145,17 +177,22 @@ export class AydDirekApi {
         query: string = null!,
         extent?: Extent
     ) {
-        const response = await instance.get<ApiResponse<Direk[]>>("aydDirek", {
-            params: {
-                pageSize,
-                pageNumber,
-                sortBy: capitalizeFirstLetter(sortBy),
-                ascending,
-                query,
-                ...extent
-            }
-        });
-        return response.data;
+        try {
+            const response = await instance.get<ApiResponse<Direk[]>>("aydDirek", {
+                params: {
+                    pageSize,
+                    pageNumber,
+                    sortBy: capitalizeFirstLetter(sortBy),
+                    ascending,
+                    query,
+                    ...extent
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Fetch AydDirek error:", error);
+            throw error;
+        }
     }
 
     /**
@@ -163,8 +200,13 @@ export class AydDirekApi {
      * @returns A promise that resolves to the list of Ayd Direk feature types.
      */
     static async fetchTypes() {
-        const response = await instance.get<ApiResponse<string[]>>("aydDirek/types");
-        return response.data;
+        try {
+            const response = await instance.get<ApiResponse<string[]>>("aydDirek/types");
+            return response.data;
+        } catch (error) {
+            console.error("Fetch AydDirek types error:", error);
+            throw error;
+        }
     }
 
     /**
@@ -175,11 +217,16 @@ export class AydDirekApi {
     static async fetchCount(
         query: string = null!
     ) {
-        const response = await instance.get<ApiResponse<number>>("aydDirek/count", {
-            params: {
-                query
-            }
-        });
-        return response.data;
+        try {
+            const response = await instance.get<ApiResponse<number>>("aydDirek/count", {
+                params: {
+                    query
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Fetch AydDirek count error:", error);
+            throw error;
+        }
     }
 }

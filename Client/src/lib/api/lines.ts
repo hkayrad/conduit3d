@@ -24,20 +24,25 @@ export class AgHatApi {
         query: string = null!,
         extent?: Extent
     ) {
-        const response = await instance.get<ApiResponse<Hat[]>>(
-            "agHat",
-            {
-                params: {
-                    pageSize,
-                    pageNumber,
-                    sortBy: capitalizeFirstLetter(sortBy),
-                    ascending,
-                    query,
-                    ...extent
+        try {
+            const response = await instance.get<ApiResponse<Hat[]>>(
+                "agHat",
+                {
+                    params: {
+                        pageSize,
+                        pageNumber,
+                        sortBy: capitalizeFirstLetter(sortBy),
+                        ascending,
+                        query,
+                        ...extent
+                    }
                 }
-            }
-        );
-        return response.data;
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Fetch AgHat error:", error);
+            throw error;
+        }
     }
 
     /**
@@ -45,10 +50,15 @@ export class AgHatApi {
      * @returns A promise that resolves to the list of AG Hat feature types.
      */
     static async fetchTypes() {
-        const response = await instance.get<ApiResponse<string[]>>(
-            "agHat/types"
-        );
-        return response.data;
+        try {
+            const response = await instance.get<ApiResponse<string[]>>(
+                "agHat/types"
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Fetch AgHat types error:", error);
+            throw error;
+        }
     }
 
     /**
@@ -59,12 +69,17 @@ export class AgHatApi {
     static async fetchCount(
         query: string = null!
     ) {
-        const response = await instance.get<ApiResponse<number>>("agHat/count", {
-            params: {
-                query
-            }
-        });
-        return response.data;
+        try {
+            const response = await instance.get<ApiResponse<number>>("agHat/count", {
+                params: {
+                    query
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Fetch AgHat count error:", error);
+            throw error;
+        }
     }
 }
 
@@ -90,20 +105,26 @@ export class OgHatApi {
         query: string = null!,
         extent?: Extent
     ) {
-        const response = await instance.get<ApiResponse<Hat[]>>(
-            "ogHat",
-            {
-                params: {
-                    pageSize,
-                    pageNumber,
-                    sortBy: capitalizeFirstLetter(sortBy),
-                    ascending,
-                    query,
-                    ...extent
+        try {
+            const response = await instance.get<ApiResponse<Hat[]>>(
+                "ogHat",
+                {
+                    params: {
+                        pageSize,
+                        pageNumber,
+                        sortBy: capitalizeFirstLetter(sortBy),
+                        ascending,
+                        query,
+                        ...extent
+                    }
                 }
-            });
+            );
 
-        return response.data;
+            return response.data;
+        } catch (error) {
+            console.error("Fetch OgHat error:", error);
+            throw error;
+        }
     }
 
     /**
@@ -111,10 +132,15 @@ export class OgHatApi {
      * @returns A promise that resolves to the list of OG Hat feature types.
      */
     static async fetchTypes() {
-        const response = await instance.get<ApiResponse<string[]>>(
-            "ogHat/types"
-        );
-        return response.data;
+        try {
+            const response = await instance.get<ApiResponse<string[]>>(
+                "ogHat/types"
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Fetch OgHat types error:", error);
+            throw error;
+        }
     }
 
     /**
@@ -125,12 +151,17 @@ export class OgHatApi {
     static async fetchCount(
         query: string = null!
     ) {
-        const response = await instance.get<ApiResponse<number>>("ogHat/count", {
-            params: {
-                query
-            }
-        });
-        return response.data;
+        try {
+            const response = await instance.get<ApiResponse<number>>("ogHat/count", {
+                params: {
+                    query
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Fetch OgHat count error:", error);
+            throw error;
+        }
     }
 }
 
@@ -156,20 +187,25 @@ export class RekortmanApi {
         query: string = null!,
         extent?: Extent
     ) {
-        const response = await instance.get<ApiResponse<Rekortman[]>>(
-            "rekortman",
-            {
-                params: {
-                    pageSize,
-                    pageNumber,
-                    sortBy: capitalizeFirstLetter(sortBy),
-                    ascending,
-                    query,
-                    ...extent
+        try {
+            const response = await instance.get<ApiResponse<Rekortman[]>>(
+                "rekortman",
+                {
+                    params: {
+                        pageSize,
+                        pageNumber,
+                        sortBy: capitalizeFirstLetter(sortBy),
+                        ascending,
+                        query,
+                        ...extent
+                    }
                 }
-            }
-        );
-        return response.data;
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Fetch Rekortman error:", error);
+            throw error;
+        }
     }
 
     /**
@@ -177,10 +213,15 @@ export class RekortmanApi {
      * @returns A promise that resolves to the list of Rekortman feature types.
      */
     static async fetchTypes() {
-        const response = await instance.get<ApiResponse<string[]>>(
-            "rekortman/types"
-        );
-        return response.data;
+        try {
+            const response = await instance.get<ApiResponse<string[]>>(
+                "rekortman/types"
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Fetch Rekortman types error:", error);
+            throw error;
+        }
     }
 
     /**
@@ -191,11 +232,16 @@ export class RekortmanApi {
     static async fetchCount(
         query: string = null!
     ) {
-        const response = await instance.get<ApiResponse<number>>("rekortman/count", {
-            params: {
-                query
-            }
-        });
-        return response.data;
+        try {
+            const response = await instance.get<ApiResponse<number>>("rekortman/count", {
+                params: {
+                    query
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Fetch Rekortman count error:", error);
+            throw error;
+        }
     }
 }

@@ -24,33 +24,43 @@ export class AdrBinaApi {
         query: string = null!,
         extent?: Extent
     ) {
-        const response = await instance.get<ApiResponse<AdrBina[]>>("adrBina", {
-            params: {
-                pageSize: pageSize,
-                pageNumber: pageNumber,
-                sortBy: capitalizeFirstLetter(sortBy),
-                ascending: ascending,
-                query: query,
-                ...extent
-            }
-        });
-        return response.data;
+        try {
+            const response = await instance.get<ApiResponse<AdrBina[]>>("adrBina", {
+                params: {
+                    pageSize: pageSize,
+                    pageNumber: pageNumber,
+                    sortBy: capitalizeFirstLetter(sortBy),
+                    ascending: ascending,
+                    query: query,
+                    ...extent
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Fetch AdrBina error:", error);
+            throw error;
+        }
     }
 
     /**
-     * Fetch the count of ADR buildings.
+     * Fetch the count of AdrBina.
      * @param query Optional search query to filter features.
-     * @returns A promise that resolves to the count of ADR buildings.
+     * @returns A promise that resolves to the count of AdrBina.
      */
     static async fetchCount(
         query: string = null!
     ) {
-        const response = await instance.get<ApiResponse<number>>("adrBina/count", {
-            params: {
-                query
-            }
-        });
-        return response.data;
+        try {
+            const response = await instance.get<ApiResponse<number>>("adrBina/count", {
+                params: {
+                    query
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Fetch AdrBina count error:", error);
+            throw error;
+        }
     }
 }
 
@@ -76,17 +86,23 @@ export class TrafoBinaApi {
         query: string = null!,
         extent?: Extent
     ) {
-        const response = await instance.get<ApiResponse<TrafoBina[]>>("trafoBina", {
-            params: {
-                pageSize,
-                pageNumber,
-                sortBy: capitalizeFirstLetter(sortBy),
-                ascending,
-                query,
-                ...extent
-            }
-        });
-        return response.data;
+        try {
+
+            const response = await instance.get<ApiResponse<TrafoBina[]>>("trafoBina", {
+                params: {
+                    pageSize,
+                    pageNumber,
+                    sortBy: capitalizeFirstLetter(sortBy),
+                    ascending,
+                    query,
+                    ...extent
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Fetch TrafoBina error:", error);
+            throw error;
+        }
     }
 
     /**
@@ -97,11 +113,16 @@ export class TrafoBinaApi {
     static async fetchCount(
         query: string = null!
     ) {
-        const response = await instance.get<ApiResponse<number>>("trafoBina/count", {
-            params: {
-                query
-            }
-        });
-        return response.data;
+        try {
+            const response = await instance.get<ApiResponse<number>>("trafoBina/count", {
+                params: {
+                    query
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Fetch TrafoBina count error:", error);
+            throw error;
+        }
     }
 }

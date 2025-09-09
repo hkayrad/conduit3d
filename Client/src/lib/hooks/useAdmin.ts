@@ -38,14 +38,20 @@ export function useAdmin(
      * @returns void
      */
     const handleFetchUsers = async () => {
-        const response = await AuthApi.fetchAll(itemsPerPage, pageNumber, sortBy, ascending, query);
+        try {
+            const response = await AuthApi.fetchAll(itemsPerPage, pageNumber, sortBy, ascending, query);
 
-        if (!response.isSuccess) {
+            if (!response.isSuccess) {
+                setUsers([]);
+                return;
+            }
+
+            setUsers(response.data);
+        } catch (error) {
+            console.error("Error fetching users:", error);
             setUsers([]);
-            return;
+            setErrorText("An error occurred while fetching users.");
         }
-
-        setUsers(response.data);
     }
 
     /**
@@ -53,14 +59,20 @@ export function useAdmin(
      * @returns void
      */
     const handleFetchUserCount = async () => {
-        const response = await AuthApi.fetchCount(query);
+        try {
+            const response = await AuthApi.fetchCount(query);
 
-        if (!response.isSuccess) {
+            if (!response.isSuccess) {
+                setUserCounts({ totalUsers: 0, activeUsers: 0, inactiveUsers: 0 });
+                return;
+            }
+
+            setUserCounts(response.data);
+        } catch (error) {
+            console.error("Error fetching user count:", error);
             setUserCounts({ totalUsers: 0, activeUsers: 0, inactiveUsers: 0 });
-            return;
+            setErrorText("An error occurred while fetching user count.");
         }
-
-        setUserCounts(response.data);
     }
 
     /**
@@ -69,20 +81,25 @@ export function useAdmin(
      * @returns void
      */
     const handleDeleteUser = async (userId: number) => {
-        const response = await AuthApi.deleteUser(userId) as ApiResponse<any>;
+        try {
+            const response = await AuthApi.deleteUser(userId) as ApiResponse<any>;
 
-        if (!response.isSuccess) {
-            // Parse and display the first error message
-            const errors = Object.values(response.data || {}).flat();
-            setErrorText(errors[0] as string || response.message);
-            return;
+            if (!response.isSuccess) {
+                // Parse and display the first error message
+                const errors = Object.values(response.data || {}).flat();
+                setErrorText(errors[0] as string || response.message);
+                return;
+            }
+
+            await handleFetchUsers();
+            await handleFetchUserCount();
+            handleCloseModal();
+            setUserToAddModify({} as User);
+            setErrorText("");
+        } catch (error) {
+            console.error("Error deleting user:", error);
+            setErrorText("An error occurred while deleting the user.");
         }
-
-        await handleFetchUsers();
-        await handleFetchUserCount();
-        handleCloseModal();
-        setUserToAddModify({} as User);
-        setErrorText("");
     }
 
     /**
@@ -91,20 +108,25 @@ export function useAdmin(
      * @returns void
      */
     const handleEditUser = async (updatedUser: User) => {
-        const response = await AuthApi.updateUser(updatedUser.id, updatedUser) as ApiResponse<any>;
+        try {
+            const response = await AuthApi.updateUser(updatedUser.id, updatedUser) as ApiResponse<any>;
 
-        if (!response.isSuccess) {
-            // Parse and display the first error message
-            const errors = Object.values(response.data || {}).flat();
-            setErrorText(errors[0] as string || response.message);
-            return;
+            if (!response.isSuccess) {
+                // Parse and display the first error message
+                const errors = Object.values(response.data || {}).flat();
+                setErrorText(errors[0] as string || response.message);
+                return;
+            }
+
+            await handleFetchUsers();
+            await handleFetchUserCount();
+            handleCloseModal();
+            setUserToAddModify({} as User);
+            setErrorText("");
+        } catch (error) {
+            console.error("Error editing user:", error);
+            setErrorText("An error occurred while editing the user.");
         }
-
-        await handleFetchUsers();
-        await handleFetchUserCount();
-        handleCloseModal();
-        setUserToAddModify({} as User);
-        setErrorText("");
     }
 
     /**
@@ -113,20 +135,25 @@ export function useAdmin(
      * @returns void
      */
     const handleAddUser = async (newUser: User) => {
-        const response = await AuthApi.createUser(newUser) as ApiResponse<any>;
+        try {
+            const response = await AuthApi.createUser(newUser) as ApiResponse<any>;
 
-        if (!response.isSuccess) {
-            // Parse and display the first error message
-            const errors = Object.values(response.data || {}).flat();
-            setErrorText(errors[0] as string || response.message);
-            return;
+            if (!response.isSuccess) {
+                // Parse and display the first error message
+                const errors = Object.values(response.data || {}).flat();
+                setErrorText(errors[0] as string || response.message);
+                return;
+            }
+
+            await handleFetchUsers();
+            await handleFetchUserCount();
+            handleCloseModal();
+            setUserToAddModify({} as User);
+            setErrorText("");
+        } catch (error) {
+            console.error("Error adding user:", error);
+            setErrorText("An error occurred while adding the user.");
         }
-
-        await handleFetchUsers();
-        await handleFetchUserCount();
-        handleCloseModal();
-        setUserToAddModify({} as User);
-        setErrorText("");
     }
 
     /**
