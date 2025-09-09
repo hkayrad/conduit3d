@@ -56,7 +56,6 @@ export default function Login(): React.ReactNode {
             setLoading(false);
             setLoginError("An error occurred while trying to log in");
         }
-
     }
 
     return (

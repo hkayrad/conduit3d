@@ -21,10 +21,11 @@ export default function OgMusDirekComponent(props: Props): null {
     const dispatch = useDispatch();
 
     const handleOgMusDirekFetch = useCallback(async () => {
-        const response = await OgMusDirekApi.fetchAll(200000, 1, 'id', true, null!, extent);
+        try {
+            const response = await OgMusDirekApi.fetchAll(200000, 1, 'id', true, null!, extent);
 
-        if (!response.isSuccess)
-            return;
+            if (!response.isSuccess)
+                return;
 
             var dataList: GeoJSON.FeatureCollection = {
                 type: "FeatureCollection",
@@ -50,16 +51,22 @@ export default function OgMusDirekComponent(props: Props): null {
             });
 
             setData(dataList);
+        } catch (error) {
+            console.error("Error fetching OgMusDirek data:", error);
+        }
     }, [extent]);
 
     const handleOgMusDirekTypesFetch = useCallback(async () => {
-        const response = await OgMusDirekApi.fetchTypes();
+        try {
+            const response = await OgMusDirekApi.fetchTypes();
 
-        if (!response.isSuccess)
-            return;
+            if (!response.isSuccess)
+                return;
 
             dispatch(setType({ key: "ogMusDirek", types: response.data }));
-            // dispatch(setFilter({ filter: "ogMusDirek", tipi: response.data }));
+        } catch (error) {
+            console.error("Error fetching OgMusDirek types:", error);
+        }
     }, []);
 
     useEffect(() => {

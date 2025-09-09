@@ -17,35 +17,39 @@ export default function AdrBinaComponent(props: Props): null {
     const { setData, extent } = props;
 
     const handleAdrBinaFetch = useCallback(async () => {
-        const response = await AdrBinaApi.fetchAll(200000, 1, 'id', true, null!, extent);
+        try {
+            const response = await AdrBinaApi.fetchAll(200000, 1, 'id', true, null!, extent);
 
-        if (!response.isSuccess)
-            return;
+            if (!response.isSuccess)
+                return;
 
-        var dataList: GeoJSON.FeatureCollection = {
-            type: "FeatureCollection",
-            features: []
-        };
+            var dataList: GeoJSON.FeatureCollection = {
+                type: "FeatureCollection",
+                features: []
+            };
 
-        response.data.forEach((rawData: AdrBina) => {
-            const feature = {
-                type: "Feature",
-                geometry: JSON.parse(rawData.geoJson),
-                properties: {
-                    id: rawData.id,
-                    dataType: FeatureType.BUILDING,
-                    name: rawData.name,
-                    type: rawData.type,
-                    floorCount: rawData.floorCount,
-                    height: rawData.floorCount * 3,
+            response.data.forEach((rawData: AdrBina) => {
+                const feature = {
+                    type: "Feature",
+                    geometry: JSON.parse(rawData.geoJson),
+                    properties: {
+                        id: rawData.id,
+                        dataType: FeatureType.BUILDING,
+                        name: rawData.name,
+                        type: rawData.type,
+                        floorCount: rawData.floorCount,
+                        height: rawData.floorCount * 3,
+                    }
+                } as GeoJSON.Feature;
+                if (rawData.name !== "SANAL_BINA") {
+                    dataList.features.push(feature);
                 }
-            } as GeoJSON.Feature;
-            if (rawData.name !== "SANAL_BINA") {
-                dataList.features.push(feature);
-            }
-        });
+            });
 
-        setData(dataList);
+            setData(dataList);
+        } catch (error) {
+            console.error("Error fetching AdrBina data:", error);
+        }
     }, [extent]);
 
     useEffect(() => {

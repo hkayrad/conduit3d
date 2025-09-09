@@ -21,45 +21,52 @@ export default function AydDirekComponent(props: Props): null {
     const dispatch = useDispatch();
 
     const handleAydDirekFetch = useCallback(async () => {
-        const response = await AydDirekApi.fetchAll(200000, 1, 'id', true, null!, extent);
+        try {
+            const response = await AydDirekApi.fetchAll(200000, 1, 'id', true, null!, extent);
 
-        if (!response.isSuccess)
-            return;
+            if (!response.isSuccess)
+                return;
 
-        var dataList: GeoJSON.FeatureCollection = {
-            type: "FeatureCollection",
-            features: []
-        };
+            var dataList: GeoJSON.FeatureCollection = {
+                type: "FeatureCollection",
+                features: []
+            };
 
-        response.data.forEach((rawData: Direk) => {
-            const height = Number(rawData.boyOzellik.split("/")[1]);
-            const feature = {
-                type: "Feature",
-                geometry: JSON.parse(rawData.geoJson),
-                properties: {
-                    id: rawData.id,
-                    dataType: FeatureType.POLE,
-                    cinsi: rawData.cinsi,
-                    tipi: rawData.tipi,
-                    direkNo: rawData.direkNo,
-                    boyOzellik: rawData.boyOzellik,
-                    height: Number.isNaN(height) ? 10 : height,
-                }
-            } as GeoJSON.Feature;
-            dataList.features.push(feature);
-        });
+            response.data.forEach((rawData: Direk) => {
+                const height = Number(rawData.boyOzellik.split("/")[1]);
+                const feature = {
+                    type: "Feature",
+                    geometry: JSON.parse(rawData.geoJson),
+                    properties: {
+                        id: rawData.id,
+                        dataType: FeatureType.POLE,
+                        cinsi: rawData.cinsi,
+                        tipi: rawData.tipi,
+                        direkNo: rawData.direkNo,
+                        boyOzellik: rawData.boyOzellik,
+                        height: Number.isNaN(height) ? 10 : height,
+                    }
+                } as GeoJSON.Feature;
+                dataList.features.push(feature);
+            });
 
-        setData(dataList);
+            setData(dataList);
+        } catch (error) {
+            console.error("Error fetching AydDirek data:", error);
+        }
     }, [extent]);
 
     const handleAydDirekTypesFetch = useCallback(async () => {
-        const response = await AydDirekApi.fetchTypes();
+        try {
+            const response = await AydDirekApi.fetchTypes();
 
-        if (!response.isSuccess)
-            return;
+            if (!response.isSuccess)
+                return;
 
-        dispatch(setType({ key: "aydDirek", types: response.data }));
-        // dispatch(setFilter({ filter: "aydDirek", tipi: response.data }));
+            dispatch(setType({ key: "aydDirek", types: response.data }));
+        } catch (error) {
+            console.error("Error fetching AydDirek types:", error);
+        }
     }, []);
 
     useEffect(() => {

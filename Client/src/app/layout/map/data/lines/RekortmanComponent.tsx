@@ -23,43 +23,50 @@ export default function RekortmanComponent(props: Props): null {
     const dispatch = useDispatch();
 
     const handleRekortmanFetch = useCallback(async () => {
-        const response = await RekortmanApi.fetchAll(200000, 1, 'id', true, null!, extent);
+        try {
+            const response = await RekortmanApi.fetchAll(200000, 1, 'id', true, null!, extent);
 
-        if (!response.isSuccess)
-            return;
+            if (!response.isSuccess)
+                return;
 
-        var dataList: GeoJSON.FeatureCollection = {
-            type: "FeatureCollection",
-            features: []
-        };
+            var dataList: GeoJSON.FeatureCollection = {
+                type: "FeatureCollection",
+                features: []
+            };
 
-        response.data.forEach((rawData: Rekortman) => {
-            const feature = {
-                type: "Feature",
-                geometry: JSON.parse(rawData.geoJson),
-                properties: {
-                    id: rawData.id,
-                    dataType: FeatureType.REKORTMAN,
-                    tipi: rawData.tipi,
-                    kesit: rawData.kesit
-                }
-            } as GeoJSON.Feature;
-            const segments = lineStringToSegments(feature, rawData.tipi, allPoles, -.1);
-            dataList.features.push(...segments);
-        })
+            response.data.forEach((rawData: Rekortman) => {
+                const feature = {
+                    type: "Feature",
+                    geometry: JSON.parse(rawData.geoJson),
+                    properties: {
+                        id: rawData.id,
+                        dataType: FeatureType.REKORTMAN,
+                        tipi: rawData.tipi,
+                        kesit: rawData.kesit
+                    }
+                } as GeoJSON.Feature;
+                const segments = lineStringToSegments(feature, rawData.tipi, allPoles, -.1);
+                dataList.features.push(...segments);
+            })
 
-        setData(dataList);
+            setData(dataList);
+        } catch (error) {
+            console.error("Error fetching Rekortman data:", error);
+        }
     }, [extent]);
 
     const handleRekortmanTypesFetch = useCallback(async () => {
-        const response = await RekortmanApi.fetchTypes();
+        try {
+            const response = await RekortmanApi.fetchTypes();
 
-        if (!response.isSuccess) {
-            return;
+            if (!response.isSuccess) {
+                return;
+            }
+
+            dispatch(setType({ key: "rekortman", types: response.data }));
+        } catch (error) {
+            console.error("Error fetching Rekortman types:", error);
         }
-
-        dispatch(setType({ key: "rekortman", types: response.data }));
-        // dispatch(setFilter({ filter: "rekortman", tipi: response.data }));
     }, []);
 
     useEffect(() => {

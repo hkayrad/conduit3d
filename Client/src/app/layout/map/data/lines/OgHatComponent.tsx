@@ -23,43 +23,50 @@ export default function OgHatComponent(props: Props): null {
     const dispatch = useDispatch();
 
     const handleOgHatFetch = useCallback(async () => {
-        const response = await OgHatApi.fetchAll(200000, 1, 'id', true, null!, extent);
+        try {
+            const response = await OgHatApi.fetchAll(200000, 1, 'id', true, null!, extent);
 
-        if (!response.isSuccess)
-            return;
+            if (!response.isSuccess)
+                return;
 
-        var dataList: GeoJSON.FeatureCollection = {
-            type: "FeatureCollection",
-            features: []
-        };
+            var dataList: GeoJSON.FeatureCollection = {
+                type: "FeatureCollection",
+                features: []
+            };
 
-        response.data.forEach((rawData: Hat) => {
-            const feature = {
-                type: "Feature",
-                geometry: JSON.parse(rawData.geoJson),
-                properties: {
-                    id: rawData.id,
-                    dataType: FeatureType.LINE,
-                    cinsi: rawData.cinsi,
-                    tipi: rawData.tipi,
-                    kesit: rawData.kesit
-                }
-            } as GeoJSON.Feature;
-            const segments = lineStringToSegments(feature, rawData.cinsi, allPoles, -.25);
-            dataList.features.push(...segments);
-        })
+            response.data.forEach((rawData: Hat) => {
+                const feature = {
+                    type: "Feature",
+                    geometry: JSON.parse(rawData.geoJson),
+                    properties: {
+                        id: rawData.id,
+                        dataType: FeatureType.LINE,
+                        cinsi: rawData.cinsi,
+                        tipi: rawData.tipi,
+                        kesit: rawData.kesit
+                    }
+                } as GeoJSON.Feature;
+                const segments = lineStringToSegments(feature, rawData.cinsi, allPoles, -.25);
+                dataList.features.push(...segments);
+            })
 
-        setData(dataList);
+            setData(dataList);
+        } catch (error) {
+            console.error("Error fetching OgHat data:", error);
+        }
     }, [extent]);
 
     const handleOgHatTypesFetch = useCallback(async () => {
-        const response = await OgHatApi.fetchTypes();
+        try {
+            const response = await OgHatApi.fetchTypes();
 
-        if (!response.isSuccess)
-            return;
+            if (!response.isSuccess)
+                return;
 
-        dispatch(setType({ key: "ogHat", types: response.data }));
-        // dispatch(setFilter({ filter: "ogHat", tipi: response.data }));
+            dispatch(setType({ key: "ogHat", types: response.data }));
+        } catch (error) {
+            console.error("Error fetching OgHat types:", error);
+        }
     }, []);
 
     useEffect(() => {
