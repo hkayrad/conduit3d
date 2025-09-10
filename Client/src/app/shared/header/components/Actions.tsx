@@ -1,10 +1,10 @@
 import { List, LogOut, Map, ShieldUser } from "lucide-react";
 import { NavLink, useNavigate } from "react-router";
 import { AuthApi } from "../../../../lib/api";
-import { useDispatch, useSelector } from "react-redux";
 import { clearUser, selectUserState } from "../../../layout/auth/authSlice";
 import { UserRoles } from "../../../../lib/enums";
 import { selectViewState } from "../../../layout/map/mapSlice";
+import { useAppDispatch, useAppSelector } from "../../../../lib/hooks";
 
 /**
  * Actions component displays user action buttons.
@@ -12,11 +12,12 @@ import { selectViewState } from "../../../layout/map/mapSlice";
  * @returns The rendered component
  */
 export default function Actions(): React.ReactNode {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const user = useSelector(selectUserState);
-    const { lon, lat, z, p, b } = useSelector(selectViewState);
+    const dispatch = useAppDispatch();
+
+    const user = useAppSelector(selectUserState);
+    const { lon, lat, z, p, b } = useAppSelector(selectViewState);
 
     const handleLogout = async (): Promise<void> => {
         try {

@@ -2,9 +2,9 @@ import { useCallback, useEffect } from "react";
 import type { Extent, Hat } from "../../../../../lib/types";
 import { lineStringToSegments } from "../../../../../lib/utils";
 import { setType } from "../../mapSlice";
-import { useDispatch } from "react-redux";
 import { AgHatApi } from "../../../../../lib/api";
 import { FeatureType } from "../../../../../lib/enums";
+import { useAppDispatch } from "../../../../../lib/hooks";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>
@@ -20,7 +20,7 @@ type Props = {
 export default function AgHatComponent(props: Props): null {
     const { setData, allPoles, extent } = props;
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const handleAgHatFetch = useCallback(async () => {
         try {

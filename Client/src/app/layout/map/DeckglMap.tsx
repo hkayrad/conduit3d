@@ -7,7 +7,7 @@ import { COLORS, DEBOUNCE_TIME_MS, MAX_ZOOM } from "../../../lib/constants";
 
 import type { PopupState } from "../../../lib/types";
 
-import { useAppSelector } from "../../../lib/hooks";
+import { useAppDispatch, useAppSelector } from "../../../lib/hooks";
 import { useHat } from "../../../lib/hooks";
 import { useDirek } from "../../../lib/hooks";
 import { useMapInteraction } from "../../../lib/hooks";
@@ -22,7 +22,6 @@ import { CompassWidget, ZoomWidget } from "@deck.gl/widgets";
 import { Map as MapLibre } from 'react-map-gl/maplibre';
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router";
-import { useDispatch } from "react-redux";
 
 import { selectMapState, setExtent, setViewState } from "./mapSlice";
 import LayerControl from "./layerControl/LayerControl";
@@ -77,7 +76,7 @@ export default function DeckglMap(): React.ReactNode {
     const [mouseLonLat, setMouseLonLat] = useState<number[]>([0, 0]);
 
     // Redux hooks
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     // Hat hook
     const { hatLayerData } = useHat(

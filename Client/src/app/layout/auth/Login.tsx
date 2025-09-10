@@ -7,8 +7,8 @@ import Input from "../../shared/input/Input";
 import { useState } from "react";
 import type { LoginUserDto } from "../../../lib/types";
 import { Info, Loader, LogIn, ShieldX } from "lucide-react";
-import { useDispatch } from "react-redux";
 import { clearUser, setUser } from "./authSlice";
+import { useAppDispatch } from "../../../lib/hooks";
 
 /**
  * Login component is responsible for rendering the login form and handling user authentication.
@@ -23,7 +23,7 @@ export default function Login(): React.ReactNode {
     const [isInfoHovered, setIsInfoHovered] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const navigate = useNavigate();
 

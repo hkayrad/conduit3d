@@ -1,9 +1,9 @@
 import { useCallback, useEffect } from "react";
 import { AydDirekApi } from "../../../../../lib/api";
 import type { Direk, Extent } from "../../../../../lib/types";
-import { useDispatch } from "react-redux";
 import { setType } from "../../mapSlice";
 import { FeatureType } from "../../../../../lib/enums";
+import { useAppDispatch } from "../../../../../lib/hooks";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
@@ -18,7 +18,7 @@ type Props = {
 export default function AydDirekComponent(props: Props): null {
     const { setData, extent } = props;
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const handleAydDirekFetch = useCallback(async () => {
         try {
