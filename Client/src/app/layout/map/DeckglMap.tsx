@@ -41,7 +41,8 @@ import ViewToggle from "./viewToggle/ViewToggle";
  */
 export default function DeckglMap(): React.ReactNode {
     // Redux State
-    const { visibility, filters, types, selectedViewType } = useAppSelector(selectMapState);
+    const { visibility, filters, types, selectedViewType, viewState } = useAppSelector(selectMapState);
+    const { cartesian, firstPerson } = viewState;
 
     // React-Router State
     var [searchParams, setSearchParams] = useSearchParams();
@@ -52,18 +53,18 @@ export default function DeckglMap(): React.ReactNode {
     // Local State
     const [mapViewState, setMapViewState] = useState<C3D_ViewState>({
         [C3D_MapViewType.Cartesian]: {
-            longitude: searchParams.get("cLon") ? parseFloat(searchParams.get("cLon")!) : 41.287,
-            latitude: searchParams.get("cLat") ? parseFloat(searchParams.get("cLat")!) : 39.9,
-            zoom: searchParams.get("cZ") ? parseFloat(searchParams.get("cZ")!) : 15,
+            longitude: searchParams.get("cLon") ? parseFloat(searchParams.get("cLon")!) : cartesian.longitude,
+            latitude: searchParams.get("cLat") ? parseFloat(searchParams.get("cLat")!) : cartesian.latitude,
+            zoom: searchParams.get("cZ") ? parseFloat(searchParams.get("cZ")!) : cartesian.zoom,
             maxZoom: MAX_ZOOM,
-            pitch: searchParams.get("cP") ? parseFloat(searchParams.get("cP")!) : 60,
-            bearing: searchParams.get("cB") ? parseFloat(searchParams.get("cB")!) : 0
+            pitch: searchParams.get("cP") ? parseFloat(searchParams.get("cP")!) : cartesian.pitch,
+            bearing: searchParams.get("cB") ? parseFloat(searchParams.get("cB")!) : cartesian.bearing
         },
         [C3D_MapViewType.FirstPerson]: {
-            longitude: searchParams.get("fpLon") ? parseFloat(searchParams.get("fpLon")!) : 41.287,
-            latitude: searchParams.get("fpLat") ? parseFloat(searchParams.get("fpLat")!) : 39.9,
-            pitch: searchParams.get("fpP") ? parseFloat(searchParams.get("fpP")!) : 0,
-            bearing: searchParams.get("fpB") ? parseFloat(searchParams.get("fpB")!) : 0,
+            longitude: searchParams.get("fpLon") ? parseFloat(searchParams.get("fpLon")!) : firstPerson.longitude,
+            latitude: searchParams.get("fpLat") ? parseFloat(searchParams.get("fpLat")!) : firstPerson.latitude,
+            pitch: searchParams.get("fpP") ? parseFloat(searchParams.get("fpP")!) : firstPerson.pitch,
+            bearing: searchParams.get("fpB") ? parseFloat(searchParams.get("fpB")!) : firstPerson.bearing,
             position: [0, 0, 3],
         }
     });
