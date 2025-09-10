@@ -1,8 +1,8 @@
 import { useCallback } from "react";
 import { AdrBinaApi, AgDirekApi, AgHatApi, AydDirekApi, OgHatApi, OgMusDirekApi, RekortmanApi, TrafoBinaApi } from "../api";
 import { ListDataType } from "../enums";
-import { useDispatch } from "react-redux";
 import { setAscending, setItemsPerPage, setPageNumber, setQuery, setSortBy } from "../../app/layout/list/listSlice";
+import { useAppDispatch } from "./reduxHooks";
 
 /**
  * Custom hook for managing list state and API interactions.
@@ -36,7 +36,7 @@ export function useList(
         [ListDataType.OgHat]: OgHatApi,
         [ListDataType.Rekortman]: RekortmanApi,
     };
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     /**
      * Fetch features from the API.

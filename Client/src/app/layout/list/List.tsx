@@ -1,9 +1,8 @@
 import "./style/list.css";
-import { useDispatch } from "react-redux";
 import Table from "../../shared/table/Table";
 import React, { useEffect, useMemo, useState } from "react";
 import type { TableData } from "../../../lib/types";
-import { useAppSelector, useList } from "../../../lib/hooks";
+import { useAppDispatch, useAppSelector, useList } from "../../../lib/hooks";
 import { selectListState, setAscending, setFeatureType, setPageNumber, setQuery, setSortBy } from "./listSlice";
 import { capitalizeFirstLetter, findAverageLonLat } from "../../../lib/utils";
 import { Building, MapPin, PlugZap, UtilityPole } from "lucide-react";
@@ -29,7 +28,7 @@ export default function List(): React.ReactNode {
     });
 
     // Redux hooks
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
     // List hook

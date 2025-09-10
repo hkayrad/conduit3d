@@ -1,14 +1,12 @@
 # TODO
 
- - Add keybindings overlay to show the users all of the keybinds.
  - Add auto windows adjustment
- - FIX: HOVER POPUP FLICKERS +
- - Add deletion confirmation
- - Fix npgsql error handling
+ - Add feature highligt on goto button click
+ - Add tsvector functions to the service documentations
 
 ### Optimization Notes
 
- > ***DONT CHECK THE PERFORMANCE WHILE THE NETWORK TAB IS OPEN IN THE DEV TOOLS, IT CAUSES MAJOR PERFORMANCE PROBLEMS WHILE LOADING TILES FROM THE SERVER***
+ > ***DON'T CHECK THE PERFORMANCE WHILE THE NETWORK TAB IS OPEN IN THE DEV TOOLS, IT CAUSES MAJOR PERFORMANCE PROBLEMS WHILE LOADING TILES FROM THE SERVER***
 
  > [Performance optimizations for Deck.gl](https://deck.gl/docs/developer-guide/performance)
 
@@ -25,7 +23,7 @@
  - **MUST** avoid creating new arrays in the accessor fields. Use constant arrays that are defined outside of the layer.
  - Set `boxZoom`to false on MapLibre component to disable `Shift + Click` selection box.
  - Interleaved Binary Data's can be used to render poles to increase efficiency by doing every calculation on the GPU. (Cannot be used for buildings beacuse of their different shapes and varying point amounts.) (It can be used for lines if broken in to singular line segments before creating the lines.) (**MUST** find a way to bind the strings to the line, they cannot be sent to he ArrayBuffer [Can get them using the original list])
- - *Natively using the GPU currently does not work for creating column layers.*
+ - *Natively using the GPU currently does not work for creating extruded column layers.*
  - Divide the lines before using in a layer, it causes **MAJOR** performance problems.
 
 

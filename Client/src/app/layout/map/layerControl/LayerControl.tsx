@@ -1,8 +1,7 @@
 import "./style/layerControl.css"
 import { Building, ChevronRight, Eye, EyeClosed, Layers2, PlugZap, UtilityPole, Zap } from "lucide-react";
 import { selectMapState, setFilter, setIsHoverInfoVisible, setIsLayerControlsOpen, setMapLayerVisibility, type MapState } from "../mapSlice";
-import { useAppSelector } from "../../../../lib/hooks";
-import { useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../../../lib/hooks";
 import LayerControlSection from "../../../shared/layerControl/layerControlSection/LayerControlSection";
 import LayerControlDropdown from "../../../shared/layerControl/layerControlDropdown/LayerControlDropdown";
 import LayerControlFilter from "../../../shared/layerControl/layerControlFilter/LayerControlFilter";
@@ -15,7 +14,7 @@ import SettingToggleButton from "../../../shared/layerControl/settingToggleButto
  */
 export default function LayerControl(): React.ReactNode {
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const { isLayerControlsOpen, isHoverInfoVisible, visibility, types, filters } = useAppSelector(selectMapState);
 
     const handleControlsToggle = () => {
@@ -48,6 +47,14 @@ export default function LayerControl(): React.ReactNode {
                     <SettingToggleButton
                         active={isHoverInfoVisible}
                         toggle={handleHoverInfoToggle}
+                        hideLabel={<><EyeClosed /> Hide</>}
+                        showLabel={<><Eye /> Show</>}
+                    />
+                </LayerControlSection>
+                <LayerControlSection title="basemap">
+                    <SettingToggleButton
+                        active={visibility.basemap}
+                        toggle={() => handleLayerToggle("basemap")}
                         hideLabel={<><EyeClosed /> Hide</>}
                         showLabel={<><Eye /> Show</>}
                     />
@@ -154,7 +161,7 @@ export default function LayerControl(): React.ReactNode {
                         />
                     </LayerControlDropdown>
                 </LayerControlSection>
-            </div>
+            </div >
         </>
     )
 }

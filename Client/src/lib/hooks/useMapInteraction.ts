@@ -1,14 +1,17 @@
-import type { MapViewState, PickingInfo } from "deck.gl";
+import type { FirstPersonViewState, MapViewState, PickingInfo } from "deck.gl";
 import { useCallback } from "react";
-import type { PopupState } from "../types";
+import type { C3D_ViewState, PopupState } from "../types";
 import { MAX_POPUP_COUNT } from "../constants";
+import { C3D_MapViewType } from "../enums";
+import { useAppDispatch } from "./reduxHooks";
+import { setSelectedViewType } from "../../app/layout/map/mapSlice";
 
 /**
  * Map interaction handlers
  * @param zIndexCounter Counter for z-index handling
  * @param activePopups Array of active popups
  * @param setMapViewState Function to update the map view state
- * @param setLineWidth Function to update the line width
+ * @param setOvergroundLineWidth Function to update the line width
  * @param setHoveredFeature Function to update the hovered feature
  * @param setMousePos Function to update the mouse position
  * @param setMouseLonLat Function to update the mouse longitude and latitude
@@ -18,21 +21,24 @@ import { MAX_POPUP_COUNT } from "../constants";
 export function useMapInteraction(
     zIndexCounter: React.RefObject<number>,
     activePopups: PopupState[],
-    setMapViewState: React.Dispatch<React.SetStateAction<MapViewState>>,
-    setLineWidth: React.Dispatch<React.SetStateAction<number>>,
+    setMapViewState: React.Dispatch<React.SetStateAction<C3D_ViewState>>,
     setHoveredFeature: React.Dispatch<React.SetStateAction<GeoJSON.Feature | null>>,
     setMousePos: React.Dispatch<React.SetStateAction<{ x: number; y: number }>>,
     setMouseLonLat: React.Dispatch<React.SetStateAction<number[]>>,
-    setActivePopups: React.Dispatch<React.SetStateAction<PopupState[]>>
+    setActivePopups: React.Dispatch<React.SetStateAction<PopupState[]>>,
 ) {
+    const dispatch = useAppDispatch();
+
     /**
      * Handle view state changes
      * @param viewState The new map view state
      */
-    const handleViewStateChange = useCallback((viewState: MapViewState) => {
-        setMapViewState(viewState);
-        setLineWidth(Number(Math.max((23.5 - viewState.zoom) / 10, 0.01).toFixed(4)));
-    }, []);
+    const handleViewStateChange = (viewId: C3D_MapViewType, viewState: MapViewState | FirstPersonViewState) => {
+        setMapViewState((prevState) => ({
+            ...prevState,
+            [viewId]: { ...viewState }
+        }));
+    };
 
     /**
      * Handle mouse move events
@@ -115,6 +121,17 @@ export function useMapInteraction(
         if (e.ctrlKey && e.key === "Delete") {
             e.preventDefault();
             setActivePopups([]);
+        }
+
+        // Toggle between Cartesian and First Person views
+        if (e.shiftKey && e.code === "KeyC") {
+            e.preventDefault();
+            dispatch(setSelectedViewType(C3D_MapViewType.Cartesian));
+        }
+
+        if (e.shiftKey && e.code === "KeyF") {
+            e.preventDefault();
+            dispatch(setSelectedViewType(C3D_MapViewType.FirstPerson));
         }
     }, [])
 

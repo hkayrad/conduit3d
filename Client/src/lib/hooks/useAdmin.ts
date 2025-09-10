@@ -3,7 +3,7 @@ import { AuthApi } from "../api";
 import type { AdminModalStatus, ApiResponse, User, UserCounts, UserSortBy } from "../types";
 import { AdminModalType } from "../enums";
 import { setAscending, setItemsPerPage, setPageNumber, setQuery, setSortBy } from "../../app/layout/admin/adminSlice";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "./reduxHooks";
 
 /**
  * Returns admin related functions and handlers.
@@ -31,7 +31,7 @@ export function useAdmin(
     setUserToAddModify: React.Dispatch<React.SetStateAction<User>>,
     setModalStatus: React.Dispatch<React.SetStateAction<AdminModalStatus>>,
 ) {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     /**
      * Fetch all users with the given parameters and update the users state.

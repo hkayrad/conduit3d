@@ -33,3 +33,8 @@ export enum ListDataType {
     OgMusDirek = "OgMusDirek",
     AydDirek = "AydDirek"
 }
+
+export enum C3D_MapViewType {
+    Cartesian = "cartesian",
+    FirstPerson = "firstPerson"
+}

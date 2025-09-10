@@ -1,10 +1,10 @@
 import { List, LogOut, Map, ShieldUser } from "lucide-react";
 import { NavLink, useNavigate } from "react-router";
 import { AuthApi } from "../../../../lib/api";
-import { useDispatch, useSelector } from "react-redux";
 import { clearUser, selectUserState } from "../../../layout/auth/authSlice";
 import { UserRoles } from "../../../../lib/enums";
 import { selectViewState } from "../../../layout/map/mapSlice";
+import { useAppDispatch, useAppSelector } from "../../../../lib/hooks";
 
 /**
  * Actions component displays user action buttons.
@@ -12,11 +12,13 @@ import { selectViewState } from "../../../layout/map/mapSlice";
  * @returns The rendered component
  */
 export default function Actions(): React.ReactNode {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const user = useSelector(selectUserState);
-    const { lon, lat, z, p, b } = useSelector(selectViewState);
+    const dispatch = useAppDispatch();
+
+    const user = useAppSelector(selectUserState);
+    const { cartesian } = useAppSelector(selectViewState);
+    const {longitude, latitude, zoom, pitch, bearing} = cartesian;
 
     const handleLogout = async (): Promise<void> => {
         try {
@@ -33,7 +35,7 @@ export default function Actions(): React.ReactNode {
             <NavLink
                 id="action-button"
                 className={({ isActive }) => (isActive ? "active" : "")}
-                to={`/?lon=${lon}&lat=${lat}&z=${z}&p=${p}&b=${b}`}
+                to={`/?lon=${longitude}&lat=${latitude}&z=${zoom}&p=${pitch}&b=${bearing}`}
             >
                 <Map /> Map
             </NavLink>
