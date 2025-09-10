@@ -1,4 +1,5 @@
-import type { HatCinsi } from "./enums"
+import type { FirstPersonViewState, MapViewState } from "deck.gl"
+import type { C3D_MapViewType, HatCinsi } from "./enums"
 
 export type ApiResponse<T> = {
     isSuccess: boolean,
@@ -92,4 +93,9 @@ export type PopupState = {
     id: string;
     info: PickingInfo;
     zIndex: number;
+}
+
+export type C3D_ViewState = {
+    [C3D_MapViewType.Cartesian]: MapViewState,
+    [C3D_MapViewType.FirstPerson]: FirstPersonViewState
 }
