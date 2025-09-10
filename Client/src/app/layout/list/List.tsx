@@ -8,7 +8,7 @@ import { capitalizeFirstLetter, findAverageLonLat } from "../../../lib/utils";
 import { Building, MapPin, PlugZap, UtilityPole } from "lucide-react";
 import ActionButton from "../../shared/actionButton/ActionButton";
 import { useNavigate } from "react-router";
-import { ListDataType } from "../../../lib/enums";
+import { C3D_MapViewType, ListDataType } from "../../../lib/enums";
 
 /**
  * List component for displaying a list of features with pagination, sorting, and filtering capabilities.
@@ -86,7 +86,7 @@ export default function List(): React.ReactNode {
                     style="success"
                     onClick={() => {
                         const coords = findAverageLonLat(JSON.parse(f.geoJson));
-                        navigate(`/?lon=${coords[0]}&lat=${coords[1]}&z=20`);
+                        navigate(`/?cLon=${coords[0]}&cLat=${coords[1]}&cZ=20&viewType=${C3D_MapViewType.Cartesian}`);
                     }}
                 />
             </div>
