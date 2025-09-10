@@ -17,7 +17,8 @@ export default function Actions(): React.ReactNode {
     const dispatch = useAppDispatch();
 
     const user = useAppSelector(selectUserState);
-    const { lon, lat, z, p, b } = useAppSelector(selectViewState);
+    const { cartesian } = useAppSelector(selectViewState);
+    const {longitude, latitude, zoom, pitch, bearing} = cartesian;
 
     const handleLogout = async (): Promise<void> => {
         try {
@@ -34,7 +35,7 @@ export default function Actions(): React.ReactNode {
             <NavLink
                 id="action-button"
                 className={({ isActive }) => (isActive ? "active" : "")}
-                to={`/?lon=${lon}&lat=${lat}&z=${z}&p=${p}&b=${b}`}
+                to={`/?lon=${longitude}&lat=${latitude}&z=${zoom}&p=${pitch}&b=${bearing}`}
             >
                 <Map /> Map
             </NavLink>

@@ -17,6 +17,8 @@ export default function ShortcutsInfo() {
             <div className={`shortcuts-info ${isShortcutsInfoHovered ? "visible" : ""}`}>
                 <h3>Keyboard Shortcuts</h3>
                 <p><kbd>Ctrl</kbd> + <kbd>Del</kbd> : Close Popup Windows</p>
+                <p><kbd>Shift</kbd> + <kbd>C</kbd> : Cartesian View</p>
+                <p><kbd>Shift</kbd> + <kbd>F</kbd> : First Person Viwe</p>
             </div>
         </>
     );

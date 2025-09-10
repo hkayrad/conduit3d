@@ -51,6 +51,14 @@ export default function LayerControl(): React.ReactNode {
                         showLabel={<><Eye /> Show</>}
                     />
                 </LayerControlSection>
+                <LayerControlSection title="basemap">
+                    <SettingToggleButton
+                        active={visibility.basemap}
+                        toggle={() => handleLayerToggle("basemap")}
+                        hideLabel={<><EyeClosed /> Hide</>}
+                        showLabel={<><Eye /> Show</>}
+                    />
+                </LayerControlSection>
                 <LayerControlSection title="buildings">
                     <LayerControlDropdown
                         icon={<Building />}
@@ -153,7 +161,7 @@ export default function LayerControl(): React.ReactNode {
                         />
                     </LayerControlDropdown>
                 </LayerControlSection>
-            </div>
+            </div >
         </>
     )
 }

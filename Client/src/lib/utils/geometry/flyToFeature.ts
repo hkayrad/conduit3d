@@ -1,8 +1,9 @@
 import { FlyToInterpolator, WebMercatorViewport, type MapViewState } from "@deck.gl/core";
-import { FeatureType } from "../../enums";
+import { C3D_MapViewType, FeatureType } from "../../enums";
 import { bbox } from "@turf/turf";
 import { easeInOutCubic } from "..";
 import { MAX_ZOOM } from "../../constants";
+import type { C3D_ViewState } from "../../types";
 
 /**
  * Fly to a specific feature on the map.
@@ -13,7 +14,7 @@ import { MAX_ZOOM } from "../../constants";
 export function flyToFeature(
     feature: GeoJSON.Feature,
     mapViewState: MapViewState,
-    setMapViewState: React.Dispatch<React.SetStateAction<MapViewState>>) {
+    setMapViewState: React.Dispatch<React.SetStateAction<C3D_ViewState>>) {
     if (!feature) return;
 
     // Get the bounding box of the feature using turf.bbox
@@ -32,14 +33,17 @@ export function flyToFeature(
         feature.properties!.dataType === FeatureType.TRAFO ? 23 :
             feature.properties!.dataType === FeatureType.LINE || feature.properties!.dataType === FeatureType.REKORTMAN ? 20 : zoom;
 
-    setMapViewState({
-        ...mapViewState,
-        longitude,
-        latitude,
-        zoom: zoomLevel,
-        maxZoom: MAX_ZOOM,
-        transitionInterpolator: new FlyToInterpolator({ speed: 2 }),
-        transitionDuration: 2000,
-        transitionEasing: t => easeInOutCubic(t),
-    })
+    setMapViewState((prevState) => ({
+        ...prevState,
+        [C3D_MapViewType.Cartesian]: {
+            ...mapViewState,
+            longitude,
+            latitude,
+            zoom: zoomLevel,
+            maxZoom: MAX_ZOOM,
+            transitionInterpolator: new FlyToInterpolator({ speed: 2 }),
+            transitionDuration: 2000,
+            transitionEasing: t => easeInOutCubic(t),
+        }
+    }))
 }

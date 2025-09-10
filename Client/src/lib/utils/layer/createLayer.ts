@@ -1,6 +1,6 @@
 import { BitmapLayer, ColumnLayer, PathLayer, TileLayer } from "deck.gl";
 import { PathStyleExtension } from "@deck.gl/extensions";
-import { HatCinsi } from "../../enums";
+import { C3D_MapViewType, HatCinsi } from "../../enums";
 import { COLORS } from "../../constants";
 
 /**
@@ -13,11 +13,12 @@ export class CreateLayer {
      * @returns An array of TileLayer instances.
      */
     static LocalTiles(
+        layerFor: C3D_MapViewType,
         visibility: boolean
     ) {
         return ["turkey", "eskisehir", "erzurum"].map(city =>
             new TileLayer<ImageBitmap>({
-                id: `${city}-basemap`,
+                id: `${layerFor}-${city}-basemap`,
                 data: [`${import.meta.env.VITE_TILE_SERVER_URL}/${city}/{z}/{x}/{y}`],
                 minZoom: 0,
                 maxZoom: city === "turkey" ? 12 : 18,

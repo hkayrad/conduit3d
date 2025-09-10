@@ -1,11 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../../lib/store";
+import type { FirstPersonViewState, MapViewState } from "deck.gl";
+import { C3D_MapViewType } from "../../../lib/enums";
 
 export interface MapState {
     isDataLoading: boolean,
     isLayerControlsOpen: boolean,
     isHoverInfoVisible: boolean,
+    selectedViewType: C3D_MapViewType,
     visibility: {
         basemap: boolean,
         adrBina: boolean,
@@ -46,11 +49,8 @@ export interface MapState {
         rekortman: string[]
     },
     viewState: {
-        lon: number,
-        lat: number,
-        z: number,
-        p: number,
-        b: number
+        [C3D_MapViewType.Cartesian]: MapViewState,
+        [C3D_MapViewType.FirstPerson]: FirstPersonViewState
     },
     extent: {
         minX: number,
@@ -64,6 +64,7 @@ const initialState: MapState = {
     isDataLoading: false,
     isLayerControlsOpen: false,
     isHoverInfoVisible: true,
+    selectedViewType: C3D_MapViewType.Cartesian,
     visibility: {
         basemap: true,
         adrBina: true,
@@ -104,11 +105,19 @@ const initialState: MapState = {
         rekortman: []
     },
     viewState: {
-        lon: 41.287,
-        lat: 39.9,
-        z: 15,
-        p: 60,
-        b: 0
+        [C3D_MapViewType.Cartesian]: {
+            longitude: 41.287,
+            latitude: 39.9,
+            zoom: 15,
+            pitch: 60,
+            bearing: 0
+        },
+        [C3D_MapViewType.FirstPerson]: {
+            longitude: 41.287,
+            latitude: 39.9,
+            pitch: 60,
+            bearing: 0
+        }
     },
     extent: {
         minX: 26,
@@ -130,6 +139,9 @@ export const mapSlice = createSlice({
         },
         setIsHoverInfoVisible: (state, action: PayloadAction<boolean>) => {
             state.isHoverInfoVisible = action.payload;
+        },
+        setSelectedViewType: (state, action: PayloadAction<C3D_MapViewType>) => {
+            state.selectedViewType = action.payload;
         },
         setMapLayerVisibility: (
             state,
@@ -167,10 +179,14 @@ export const mapSlice = createSlice({
         },
         setViewState: (
             state,
-            action: PayloadAction<{ viewState: MapState["viewState"] }>
+            action: PayloadAction<{ viewId: C3D_MapViewType, viewState: MapViewState | FirstPersonViewState }>
         ) => {
-            const { viewState } = action.payload;
-            state.viewState = viewState;
+            const { viewId, viewState } = action.payload;
+            if (viewId === C3D_MapViewType.Cartesian) {
+                state.viewState[viewId] = viewState as MapViewState;
+            } else if (viewId === C3D_MapViewType.FirstPerson) {
+                state.viewState[viewId] = viewState as FirstPersonViewState;
+            }
         },
         setExtent: (
             state,
@@ -187,6 +203,7 @@ export const {
     setIsLayerControlsOpen,
     setIsHoverInfoVisible,
     setMapLayerVisibility,
+    setSelectedViewType,
     setFilter,
     setViewState,
     setExtent,
@@ -198,6 +215,7 @@ export const selectMapState = (state: RootState) => state.map;
 export const selectIsDataLoading = (state: RootState) => state.map.isDataLoading;
 export const selectIsLayerControlsOpen = (state: RootState) => state.map.isLayerControlsOpen;
 export const selectIsHoverInfoVisible = (state: RootState) => state.map.isHoverInfoVisible;
+export const selectSelectedViewType = (state: RootState) => state.map.selectedViewType;
 export const selectVisibility = (state: RootState) => state.map.visibility;
 export const selectFilters = (state: RootState) => state.map.filters;
 export const selectTypes = (state: RootState) => state.map.types;
