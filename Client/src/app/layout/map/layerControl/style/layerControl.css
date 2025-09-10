@@ -7,21 +7,51 @@
   font-size: 16px;
 }
 
+body::-webkit-scrollbar {
+  width: 8px;
+}
+body::-webkit-scrollbar-track {
+  background: none;
+}
+body::-webkit-scrollbar-thumb {
+  background: #4B4E73;
+}
+
 .lucide {
   width: 16px;
   height: 16px;
 }
 
-.error {
+.error-fg {
   color: #D32F2F !important;
 }
 
-.warning {
+.warning-fg {
   color: #FFC107 !important;
 }
 
-.success {
+.success-fg {
   color: #4CAF50 !important;
+}
+
+.white-fg {
+  color: #FFFFFF !important;
+}
+
+.error-bg {
+  background: #D32F2F !important;
+}
+
+.warning-bg {
+  background: #FFC107 !important;
+}
+
+.success-bg {
+  background: #4CAF50 !important;
+}
+
+.white-bg {
+  background: #FFFFFF !important;
 }
 
 .shadow {
@@ -30,7 +60,7 @@
 
 #layer-control-toggle {
   position: absolute;
-  top: 76px;
+  top: 72px;
   right: 16px;
   z-index: 1;
   transition: all 0.3s ease;
@@ -53,7 +83,7 @@
 .layer-control-content {
   z-index: 1;
   position: absolute;
-  top: 76px;
+  top: 72px;
   right: -320px;
   width: 304px;
   transition: all 0.3s ease;
@@ -64,7 +94,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-height: 740px;
+  max-height: calc(100vh - 72px - 88px);
   overflow-y: scroll;
   -webkit-user-select: none;
      -moz-user-select: none;

@@ -62,7 +62,7 @@ body::-webkit-scrollbar-thumb {
   position: absolute;
   z-index: 1000;
   bottom: 48px;
-  left: 56px;
+  right: 16px;
   display: flex;
   gap: 2px;
   background-color: #2B2D42;
@@ -72,16 +72,16 @@ body::-webkit-scrollbar-thumb {
 .view-toggle .selector {
   position: absolute;
   background: #4B4E73;
-  height: 28px;
-  width: 28px;
-  top: 2px;
-  left: 2px;
-  border-radius: 10px;
+  height: 24px;
+  width: 24px;
+  top: 4px;
+  left: 4px;
+  border-radius: 8px;
   z-index: -1;
   transition: left 0.3s ease;
 }
 .view-toggle .selector.active {
-  left: 36px;
+  left: 38px;
 }
 .view-toggle .toggle-button {
   display: flex;
