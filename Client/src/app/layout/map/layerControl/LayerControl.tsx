@@ -39,7 +39,9 @@ export default function LayerControl(): React.ReactNode {
             <button
                 id="layer-control-toggle"
                 className={`shadow ${isLayerControlsOpen ? "open" : "closed"}`}
-                onClick={handleControlsToggle}>
+                onClick={handleControlsToggle}
+                title={isLayerControlsOpen ? "Close Layer Controls" : "Open Layer Controls"}
+            >
                 {isLayerControlsOpen ? <ChevronRight /> : <Layers2 />}
             </button>
             <div className={`layer-control-content shadow ${isLayerControlsOpen ? "open" : "closed"}`}>
@@ -49,6 +51,8 @@ export default function LayerControl(): React.ReactNode {
                         toggle={handleHoverInfoToggle}
                         hideLabel={<><EyeClosed /> Hide</>}
                         showLabel={<><Eye /> Show</>}
+                        hideTitle="Hide Hover Info"
+                        showTitle="Show Hover Info"
                     />
                 </LayerControlSection>
                 <LayerControlSection title="basemap">
@@ -57,6 +61,8 @@ export default function LayerControl(): React.ReactNode {
                         toggle={() => handleLayerToggle("basemap")}
                         hideLabel={<><EyeClosed /> Hide</>}
                         showLabel={<><Eye /> Show</>}
+                        hideTitle="Hide Basemap"
+                        showTitle="Show Basemap"
                     />
                 </LayerControlSection>
                 <LayerControlSection title="buildings">

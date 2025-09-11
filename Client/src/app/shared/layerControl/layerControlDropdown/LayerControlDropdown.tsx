@@ -36,7 +36,8 @@ export default function LayerControlDropdown(props: Props): React.ReactNode {
                     <button onClick={(e) => {
                         e.stopPropagation();
                         toggleLayer();
-                    }}>
+                    }}
+                        title={isLayerVisible ? "Hide Layer" : "Show Layer"}>
                         {isLayerVisible ? <Eye /> : <EyeClosed />}
                     </button>
                     {children && <ChevronDown className={isOpen && children ? "open" : "closed"} />}

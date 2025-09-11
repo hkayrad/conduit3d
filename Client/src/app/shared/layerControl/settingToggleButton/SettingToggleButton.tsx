@@ -5,6 +5,8 @@ type Props = {
     toggle: (state: boolean) => void;
     hideLabel: React.ReactNode;
     showLabel: React.ReactNode;
+    hideTitle?: string;
+    showTitle?: string;
 }
 
 /**
@@ -14,12 +16,12 @@ type Props = {
  * @returns The rendered component
  */
 export default function SettingToggleButton(props: Props): React.ReactNode {
-    const { active, toggle, hideLabel, showLabel } = props;
-    
+    const { active, toggle, hideLabel, showLabel, hideTitle, showTitle } = props;
+
     return (
         <div className="layer-control-toggle-switch">
-            <button className={`toggle-button`} onClick={() => toggle(false)}>{hideLabel}</button>
-            <button className={`toggle-button`} onClick={() => toggle(true)}>{showLabel}</button>
+            <button className={`toggle-button`} title={hideTitle} onClick={() => toggle(false)}>{hideLabel}</button>
+            <button className={`toggle-button`} title={showTitle} onClick={() => toggle(true)}>{showLabel}</button>
             <div className={`toggle-slider ${active ? "active" : ""}`} />
         </div>
     )

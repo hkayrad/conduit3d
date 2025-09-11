@@ -115,8 +115,8 @@ const initialState: MapState = {
         [C3D_MapViewType.FirstPerson]: {
             longitude: 41.287,
             latitude: 39.9,
-            pitch: 60,
-            bearing: 0
+            pitch: 0,
+            bearing: 50
         }
     },
     extent: {

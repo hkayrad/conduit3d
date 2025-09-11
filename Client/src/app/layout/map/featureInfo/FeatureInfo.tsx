@@ -3,6 +3,9 @@ import "./style/featureInfo.css"
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { PickingInfo } from "deck.gl";
 import InfoContent from "../../../shared/infoContent/InfoContent";
+import { useAppSelector } from "../../../../lib/hooks";
+import { selectSelectedViewType } from "../mapSlice";
+import { C3D_MapViewType } from "../../../../lib/enums";
 
 type Props = {
     info: PickingInfo;
@@ -22,6 +25,8 @@ export default function FeatureInfo(props: Props): React.ReactNode {
     const { info, zIndex, onClose, onFocus, onFlyTo } = props;
     const { object, coordinate, x, y } = info;
     const { properties } = object || {};
+
+    const selectedViewType = useAppSelector(selectSelectedViewType);
 
     const [position, setPosition] = useState<{ x: number; y: number }>({ x, y });
     const [offset, setOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -86,7 +91,9 @@ export default function FeatureInfo(props: Props): React.ReactNode {
             <div className="header" onMouseDown={onMouseDown} style={{ cursor: isDragging ? "grabbing" : "grab" }}>
                 <p>Feature Details: {properties!.id}</p>
                 <div className="dragger-buttons">
-                    <button onClick={onFlyTo}><LucideArrowRight /></button>
+                    {selectedViewType === C3D_MapViewType.Cartesian &&
+                        <button onClick={onFlyTo}><LucideArrowRight /></button>
+                    }
                     <button onClick={onClose}><LucideX /></button>
                 </div>
             </div>

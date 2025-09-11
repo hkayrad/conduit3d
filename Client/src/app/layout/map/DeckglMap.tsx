@@ -406,7 +406,7 @@ export default function DeckglMap(): React.ReactNode {
                     onViewStateChange={({ viewId, viewState }) => handleViewStateChange(viewId as C3D_MapViewType, viewState)}
                     layers={layers}
                     layerFilter={layerFilter}
-                    widgets={[new ZoomWidget({}), new CompassWidget({})]}
+                    widgets={selectedViewType === C3D_MapViewType.Cartesian ? [new ZoomWidget({}), new CompassWidget({})] : []}
                     onClick={handleClick}
                     onHover={handleMouseMove}
                 >

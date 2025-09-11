@@ -36,7 +36,14 @@ export function useMapInteraction(
     const handleViewStateChange = (viewId: C3D_MapViewType, viewState: MapViewState | FirstPersonViewState) => {
         setMapViewState((prevState) => ({
             ...prevState,
-            [viewId]: { ...viewState }
+            [viewId]: {
+                ...viewState,
+                // position: [
+                //     viewState.position![0],
+                //     viewState.position![1],
+                //     3
+                // ]
+            },
         }));
     };
 
