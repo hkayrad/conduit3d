@@ -13,7 +13,6 @@ import { useDirek } from "../../../lib/hooks";
 import { useMapInteraction } from "../../../lib/hooks";
 
 import { CreateLayer } from "../../../lib/utils";
-import { flyToFeature } from "../../../lib/utils";
 
 import { FirstPersonView, FirstPersonViewport, Layer, MapView, Viewport, WebMercatorViewport, type DeckProps } from "@deck.gl/core";
 import { ColumnLayer, GeoJsonLayer } from "deck.gl";
@@ -21,7 +20,7 @@ import { DeckGL } from "@deck.gl/react";
 import { CompassWidget, ZoomWidget } from "@deck.gl/widgets";
 import { Map as MapLibre } from 'react-map-gl/maplibre';
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useSearchParams } from "react-router";
+import { Outlet, useLocation, useSearchParams } from "react-router";
 
 import { selectMapState, setExtent, setSelectedViewType, setViewState } from "./mapSlice";
 import LayerControl from "./layerControl/LayerControl";
@@ -45,7 +44,8 @@ export default function DeckglMap(): React.ReactNode {
     const { cartesian, firstPerson } = viewState;
 
     // React-Router State
-    var [searchParams, setSearchParams] = useSearchParams();
+    // const [searchParams, setSearchParams] = useSearchParams();
+    const location = useLocation();
 
     // Refs
     const zIndexCounter = useRef(1000);
@@ -53,18 +53,18 @@ export default function DeckglMap(): React.ReactNode {
     // Local State
     const [mapViewState, setMapViewState] = useState<C3D_ViewState>({
         [C3D_MapViewType.Cartesian]: {
-            longitude: searchParams.get("cLon") ? parseFloat(searchParams.get("cLon")!) : cartesian.longitude,
-            latitude: searchParams.get("cLat") ? parseFloat(searchParams.get("cLat")!) : cartesian.latitude,
-            zoom: searchParams.get("cZ") ? parseFloat(searchParams.get("cZ")!) : cartesian.zoom,
+            longitude: /* searchParams.get("cLon") ? parseFloat(searchParams.get("cLon")!) :  */cartesian.longitude,
+            latitude: /* searchParams.get("cLat") ? parseFloat(searchParams.get("cLat")!) :  */cartesian.latitude,
+            zoom: /* searchParams.get("cZ") ? parseFloat(searchParams.get("cZ")!) :  */cartesian.zoom,
             maxZoom: MAX_ZOOM,
-            pitch: searchParams.get("cP") ? parseFloat(searchParams.get("cP")!) : cartesian.pitch,
-            bearing: searchParams.get("cB") ? parseFloat(searchParams.get("cB")!) : cartesian.bearing
+            pitch: /* searchParams.get("cP") ? parseFloat(searchParams.get("cP")!) :  */cartesian.pitch,
+            bearing: /* searchParams.get("cB") ? parseFloat(searchParams.get("cB")!) :  */cartesian.bearing
         },
         [C3D_MapViewType.FirstPerson]: {
-            longitude: searchParams.get("fpLon") ? parseFloat(searchParams.get("fpLon")!) : firstPerson.longitude,
-            latitude: searchParams.get("fpLat") ? parseFloat(searchParams.get("fpLat")!) : firstPerson.latitude,
-            pitch: searchParams.get("fpP") ? parseFloat(searchParams.get("fpP")!) : firstPerson.pitch,
-            bearing: searchParams.get("fpB") ? parseFloat(searchParams.get("fpB")!) : firstPerson.bearing,
+            longitude: /* searchParams.get("fpLon") ? parseFloat(searchParams.get("fpLon")!) :  */firstPerson.longitude,
+            latitude: /* searchParams.get("fpLat") ? parseFloat(searchParams.get("fpLat")!) :  */firstPerson.latitude,
+            pitch: /* searchParams.get("fpP") ? parseFloat(searchParams.get("fpP")!) :  */firstPerson.pitch,
+            bearing: /* searchParams.get("fpB") ? parseFloat(searchParams.get("fpB")!) :  */firstPerson.bearing,
             position: [0, 0, 3],
         }
     });
@@ -116,10 +116,13 @@ export default function DeckglMap(): React.ReactNode {
         handleClick,
         handleClosePopup,
         handleFocusPopup,
-        handleKeyPresses
+        handleKeyPresses,
+        flyTo
     } = useMapInteraction(
         zIndexCounter,
         activePopups,
+        selectedViewType,
+        mapViewState,
         setMapViewState,
         setHoveredFeature,
         setMousePos,
@@ -232,20 +235,10 @@ export default function DeckglMap(): React.ReactNode {
         }
     }, [selectedViewType, mapViewState]);
 
-    // Fly to a given feature
-    const flyTo = useCallback((
-        feature: GeoJSON.Feature,
-    ): void => {
-        if (selectedViewType !== C3D_MapViewType.Cartesian)
-            return;
-
-        flyToFeature(feature, mapViewState.cartesian, setMapViewState);
-    }, [mapViewState, selectedViewType])
-
     // Add keyboard event listener
     useEffect(() => {
-        if (searchParams.has("viewType"))
-            dispatch(setSelectedViewType(searchParams.get("viewType") as C3D_MapViewType))
+        // if (searchParams.has("viewType"))
+        //     dispatch(setSelectedViewType(searchParams.get("viewType") as C3D_MapViewType))
 
         document.addEventListener("keypress", (e) => handleKeyPresses(e));
 
@@ -279,6 +272,9 @@ export default function DeckglMap(): React.ReactNode {
     // Handle view state changes
     useEffect(() => {
         const handler = setTimeout(() => {
+            if (location.pathname !== "/")
+                return;
+
             let viewport;
 
             if (selectedViewType === C3D_MapViewType.Cartesian) {
@@ -292,20 +288,20 @@ export default function DeckglMap(): React.ReactNode {
                     height: window.innerHeight
                 });
 
-                setSearchParams(
-                    {
-                        cLon: mapViewState.cartesian.longitude.toString(),
-                        cLat: mapViewState.cartesian.latitude.toString(),
-                        cZ: mapViewState.cartesian.zoom.toFixed(2),
-                        cP: mapViewState.cartesian.pitch!.toFixed(2),
-                        cB: mapViewState.cartesian.bearing!.toFixed(2),
-                        viewType: selectedViewType
-                    },
-                    {
-                        preventScrollReset: true,
-                        replace: true
-                    }
-                );
+                // setSearchParams(
+                //     {
+                //         cLon: mapViewState.cartesian.longitude.toString(),
+                //         cLat: mapViewState.cartesian.latitude.toString(),
+                //         cZ: mapViewState.cartesian.zoom.toFixed(2),
+                //         cP: mapViewState.cartesian.pitch!.toFixed(2),
+                //         cB: mapViewState.cartesian.bearing!.toFixed(2),
+                //         viewType: selectedViewType
+                //     },
+                //     {
+                //         preventScrollReset: true,
+                //         replace: true
+                //     }
+                // );
 
                 dispatch(setViewState({
                     viewId: C3D_MapViewType.Cartesian,
@@ -325,20 +321,20 @@ export default function DeckglMap(): React.ReactNode {
                     height: window.innerHeight
                 });
 
-                setSearchParams(
-                    {
-                        fpLon: mapViewState.firstPerson.longitude!.toString(),
-                        fpLat: mapViewState.firstPerson.latitude!.toString(),
-                        fpZ: "0",
-                        fpP: mapViewState.firstPerson.pitch!.toFixed(2),
-                        fpB: mapViewState.firstPerson.bearing!.toFixed(2),
-                        viewType: selectedViewType
-                    },
-                    {
-                        preventScrollReset: true,
-                        replace: true
-                    }
-                );
+                // setSearchParams(
+                //     {
+                //         fpLon: mapViewState.firstPerson.longitude!.toString(),
+                //         fpLat: mapViewState.firstPerson.latitude!.toString(),
+                //         fpZ: "0",
+                //         fpP: mapViewState.firstPerson.pitch!.toFixed(2),
+                //         fpB: mapViewState.firstPerson.bearing!.toFixed(2),
+                //         viewType: selectedViewType
+                //     },
+                //     {
+                //         preventScrollReset: true,
+                //         replace: true
+                //     }
+                // );
 
                 dispatch(setViewState({
                     viewId: C3D_MapViewType.FirstPerson,
@@ -367,6 +363,7 @@ export default function DeckglMap(): React.ReactNode {
 
     return (
         <>
+            <Outlet context={{ flyTo }} />
             <DataComponent
                 allPoles={allPoles}
                 setAdrBina={setAdrBina}
@@ -378,7 +375,7 @@ export default function DeckglMap(): React.ReactNode {
                 setOgHat={setOgHat}
                 setRekortman={setRekortman}
             />
-            <div id="map-page">
+            <div id="map-page" className={location.pathname !== "/" ? "hide" : ""}>
                 {/* Dynamically create the FeatureInfo components */}
                 {activePopups.map(popup => (
                     <FeatureInfo

@@ -28,10 +28,14 @@ export function flyToFeature(
         }
     );
 
-    // Determine zoom level based on feature type
-    const zoomLevel = feature.properties!.dataType === FeatureType.POLE ? 20 :
-        feature.properties!.dataType === FeatureType.TRAFO ? 23 :
-            feature.properties!.dataType === FeatureType.LINE || feature.properties!.dataType === FeatureType.REKORTMAN ? 20 : zoom;
+    const dataType = feature.properties!.dataType as FeatureType;
+
+    console.log(feature);
+
+
+    const zoomLevel = dataType === FeatureType.POLE ? 20 :
+        dataType === FeatureType.TRAFO ? 23 :
+            dataType === FeatureType.LINE || dataType === FeatureType.REKORTMAN ? 20 : zoom;
 
     setMapViewState((prevState) => ({
         ...prevState,

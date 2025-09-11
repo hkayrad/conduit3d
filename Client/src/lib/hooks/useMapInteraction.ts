@@ -5,6 +5,7 @@ import { MAX_POPUP_COUNT } from "../constants";
 import { C3D_MapViewType } from "../enums";
 import { useAppDispatch } from "./reduxHooks";
 import { setSelectedViewType } from "../../app/layout/map/mapSlice";
+import { flyToFeature } from "../utils";
 
 /**
  * Map interaction handlers
@@ -21,11 +22,14 @@ import { setSelectedViewType } from "../../app/layout/map/mapSlice";
 export function useMapInteraction(
     zIndexCounter: React.RefObject<number>,
     activePopups: PopupState[],
+    selectedViewType: C3D_MapViewType,
+    mapViewState: C3D_ViewState,
     setMapViewState: React.Dispatch<React.SetStateAction<C3D_ViewState>>,
     setHoveredFeature: React.Dispatch<React.SetStateAction<GeoJSON.Feature | null>>,
     setMousePos: React.Dispatch<React.SetStateAction<{ x: number; y: number }>>,
     setMouseLonLat: React.Dispatch<React.SetStateAction<number[]>>,
     setActivePopups: React.Dispatch<React.SetStateAction<PopupState[]>>,
+
 ) {
     const dispatch = useAppDispatch();
 
@@ -140,7 +144,17 @@ export function useMapInteraction(
             e.preventDefault();
             dispatch(setSelectedViewType(C3D_MapViewType.FirstPerson));
         }
-    }, [])
+    }, []);
+
+    // Fly to a given feature
+    const flyTo = useCallback((
+        feature: GeoJSON.Feature,
+    ): void => {
+        if (selectedViewType !== C3D_MapViewType.Cartesian)
+            return;
+
+        flyToFeature(feature, mapViewState.cartesian, setMapViewState);
+    }, [mapViewState, selectedViewType])
 
     return {
         handleViewStateChange,
@@ -148,6 +162,7 @@ export function useMapInteraction(
         handleClick,
         handleClosePopup,
         handleFocusPopup,
-        handleKeyPresses
+        handleKeyPresses,
+        flyTo
     }
 }

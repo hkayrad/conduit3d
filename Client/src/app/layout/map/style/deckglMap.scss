@@ -6,6 +6,10 @@
     position: relative;
     overflow: hidden;
 
+    &.hide {
+        display: none;
+    }
+
     .top-left {
         top: 76px !important;
         left: 16px !important;

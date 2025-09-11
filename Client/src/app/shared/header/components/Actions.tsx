@@ -17,16 +17,11 @@ export default function Actions(): React.ReactNode {
     const dispatch = useAppDispatch();
 
     const user = useAppSelector(selectUserState);
-    const selectedViewType = useAppSelector(selectSelectedViewType);
 
     const handleLogout = async (): Promise<void> => {
-        try {
-            AuthApi.logout();
-            dispatch(clearUser());
-            navigate("/login", { replace: true });
-        } catch (error) {
-            console.error("Logout failed:", error);
-        }
+        AuthApi.logout();
+        navigate("/login", { replace: true });
+        dispatch(clearUser());
     }
 
     return (
@@ -34,10 +29,7 @@ export default function Actions(): React.ReactNode {
             <NavLink
                 id="action-button"
                 className={({ isActive }) => (isActive ? "active" : "")}
-                to={selectedViewType === C3D_MapViewType.Cartesian ?
-                    `/?viewType=${C3D_MapViewType.Cartesian}` :
-                    `/?viewType=${C3D_MapViewType.FirstPerson}`
-                }
+                to="/"
             >
                 <Map /> Map
             </NavLink>
