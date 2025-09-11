@@ -108,7 +108,7 @@ export class CreateLayer {
             id: id,
             data: data ? data : [],
             getPosition: d => d.geometry.coordinates,
-            getElevation: d => d.properties.height,
+            getElevation: d => d.properties.yukseklik,
             getFillColor: color,
             extruded: true,
             pickable: true,

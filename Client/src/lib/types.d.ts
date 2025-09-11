@@ -90,10 +90,13 @@ export type Rekortman = {
 
 export type Direk = {
     id: number,
+    kodu: string,
+    adi: string,
     cinsi: string,
     tipi: string,
-    boyOzellik: string,
     direkNo: string,
+    boyOzellik: string,
+    direkBoyId: number,
     geoJson: string
 }
 

@@ -52,11 +52,12 @@ export default function InfoContent(properties: any, coordinate?: number[]): Rea
         case FeatureType.POLE:
             return (
                 <>
-                    <InfoField label="Pole No" value={properties.direkNo} />
+                    <InfoField label="Adi" value={properties.adi} />
                     <InfoField label="Cinsi" value={properties.cinsi} />
-                    <InfoField label="Type" value={properties.tipi} />
-                    <InfoField label="Height" value={`${properties.height} m`} />
-                    <InfoField label="Pole Features" value={properties.boyOzellik} />
+                    <InfoField label="Tipi" value={properties.tipi} />
+                    <InfoField label="Direk No" value={properties.direkNo} />
+                    <InfoField label="Boy Ozellik" value={properties.boyOzellik} />
+                    <InfoField label="Direk Boy Id" value={properties.direkBoyId} />
                     {
                         coordinate && (
                             <InfoField label="Position" value={`${coordinate[1].toFixed(5)}, ${coordinate[0].toFixed(5)}`} />

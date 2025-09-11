@@ -40,11 +40,14 @@ export default function AgDirekComponent(props: Props): null {
                     properties: {
                         id: rawData.id,
                         dataType: FeatureType.POLE,
+                        kodu: rawData.kodu,
+                        adi: rawData.adi,
                         cinsi: rawData.cinsi,
                         tipi: rawData.tipi,
                         direkNo: rawData.direkNo,
                         boyOzellik: rawData.boyOzellik,
-                        height: Number.isNaN(height) ? 10 : height,
+                        direkBoyId: rawData.direkBoyId,
+                        yukseklik: Number.isNaN(height) ? 10 : height,
                     }
                 } as GeoJSON.Feature;
                 dataList.features.push(feature);

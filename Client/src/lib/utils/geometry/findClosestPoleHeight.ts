@@ -14,7 +14,7 @@ export function findClosestPoleHeight(coord: number[], poleFeatures: any[]): num
         const dist = Math.hypot(coord[0] - x, coord[1] - y);
         if (dist < minDist) {
             minDist = dist;
-            height = pole.properties.height;
+            height = pole.properties.yukseklik;
         }
     }
     return height;
