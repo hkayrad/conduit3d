@@ -24,7 +24,6 @@ export default function InfoContent(properties: any, coordinate?: number[]): Rea
                     <InfoField label="Bina Kat Sayisi" value={properties.binaKatSayisi} />
                     <InfoField label="Daire Sayisi" value={properties.daireSayisi} />
                     <InfoField label="Isyeri Sayisi" value={properties.isyeriSayisi} />
-                    <InfoField label="Yukseklik" value={`${properties.yukseklik} m`} />
                     {
                         coordinate && (
                             <InfoField label="Position" value={`${coordinate[1].toFixed(5)}, ${coordinate[0].toFixed(5)}`} />
