@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using NpgsqlTypes;
 
 namespace PolesService.Domain;
@@ -14,37 +15,62 @@ public class AgDirek
     /// <summary>
     /// The unique identifier for the low voltage pole.
     /// </summary>
-    [Required]
+    [Key]
+    [Column("id")]
     public required int Id { get; set; }
 
     /// <summary>
+    /// The code of the low voltage pole.
+    /// </summary>
+    [Column("kodu")]
+    [MaxLength(50)]
+    public string Kodu { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The name of the low voltage pole.
+    /// </summary>
+    [Column("adi")]
+    [MaxLength(50)]
+    public string Adi { get; set; } = string.Empty;
+
+    /// <summary> 
     /// The type of the low voltage pole.
     /// </summary>
-    [Required]
-    public required string Cinsi { get; set; }
+    [Column("cinsi")]
+    [MaxLength(20)]
+    public string Cinsi { get; set; } = string.Empty;
 
     /// <summary>
     /// The type of the low voltage pole.
     /// </summary>
-    [Required]
-    public required string Tipi { get; set; }
-
-    /// <summary>
-    /// The height characteristics of the low voltage pole.
-    /// </summary>
-    [Required]
-    public required string BoyOzellik { get; set; }
+    [Column("tipi")]
+    [MaxLength(50)]
+    public string Tipi { get; set; } = string.Empty;
 
     /// <summary>
     /// The unique identifier for the low voltage pole.
     /// </summary>
-    [Required]
-    public required string DirekNo { get; set; }
+    [Column("direk_no")]
+    [MaxLength(40)]
+    public string DirekNo { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The height characteristics of the low voltage pole.
+    /// </summary>
+    [Column("boy_ozellik")]
+    [MaxLength(20)]
+    public string BoyOzellik { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The height identifier for the low voltage pole.
+    /// </summary>
+    [Column("direk_boy_id")]
+    public double DirekBoyId { get; set; }
 
     /// <summary>
     /// The geographical representation of the low voltage pole.
     /// </summary>
-    [Required]
+    [Column("geojson")]
     public required string GeoJson { get; set; }
 
     /// <summary>

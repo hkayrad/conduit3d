@@ -39,11 +39,14 @@ public class AgDirekRepository(PolesContext context) : IAgDirekRepository
                                         CancellationToken cancellationToken)
     {
         var sqlQuery = _dbSet.FromSql($@"SELECT 
-                                        id, 
-                                        cinsi, 
+                                        id,
+                                        kodu,
+                                        adi,
+                                        cinsi,
                                         tipi,
                                         direk_no,
                                         boy_ozellik,
+                                        direk_boy_id,
                                         ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson,
                                         searchable_text
                                     FROM ""SBK_AGDIREK""
@@ -77,11 +80,14 @@ public class AgDirekRepository(PolesContext context) : IAgDirekRepository
     public async Task<AgDirek?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         var sqlQuery = _dbSet.FromSql($@"SELECT 
-                                        id, 
-                                        cinsi, 
+                                        id,
+                                        kodu,
+                                        adi,
+                                        cinsi,
                                         tipi,
                                         direk_no,
                                         boy_ozellik,
+                                        direk_boy_id,
                                         ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson
                                     FROM ""SBK_AGDIREK""
                                     WHERE id = {id}");

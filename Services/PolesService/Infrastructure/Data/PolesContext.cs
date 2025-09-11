@@ -34,25 +34,43 @@ public class PolesContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.Id)
                 .ValueGeneratedOnAdd()
                 .HasColumnName("id");
+            entity.Property(e => e.Kodu)
+                .HasMaxLength(50)
+                .HasColumnName("kodu");
+            entity.Property(e => e.Adi)
+                .HasMaxLength(50)
+                .HasColumnName("adi");
             entity.Property(e => e.Cinsi)
                 .HasMaxLength(20)
                 .HasColumnName("cinsi");
             entity.Property(e => e.Tipi)
                 .HasMaxLength(20)
                 .HasColumnName("tipi");
+            entity.Property(e => e.DirekNo)
+                .HasMaxLength(40)
+                .HasColumnName("direk_no");
             entity.Property(e => e.BoyOzellik)
                 .HasMaxLength(20)
                 .HasColumnName("boy_ozellik");
-            entity.Property(e => e.DirekNo)
-                .HasMaxLength(20)
-                .HasColumnName("direk_no");
+            entity.Property(e => e.DirekBoyId)
+                .HasColumnName("direk_boy_id");
             entity.Property(e => e.GeoJson)
                 .HasComputedColumnSql("ST_AsGeoJSON(ST_Transform(geometry, 4326))")
                 .HasColumnName("geojson");
             entity.HasGeneratedTsVectorColumn(
                 p => p.SearchableText,
                 "simple",
-                p => new { p.Id, p.Cinsi, p.Tipi, p.BoyOzellik, p.DirekNo }
+                p => new
+                {
+                    p.Id,
+                    p.Kodu,
+                    p.Adi,
+                    p.Cinsi,
+                    p.Tipi,
+                    p.DirekNo,
+                    p.BoyOzellik,
+                    p.DirekBoyId
+                }
             );
         });
 
@@ -63,25 +81,43 @@ public class PolesContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.Id)
                 .ValueGeneratedOnAdd()
                 .HasColumnName("id");
+            entity.Property(e => e.Kodu)
+                .HasMaxLength(50)
+                .HasColumnName("kodu");
+            entity.Property(e => e.Adi)
+                .HasMaxLength(50)
+                .HasColumnName("adi");
             entity.Property(e => e.Cinsi)
                 .HasMaxLength(20)
                 .HasColumnName("cinsi");
             entity.Property(e => e.Tipi)
                 .HasMaxLength(20)
                 .HasColumnName("tipi");
+            entity.Property(e => e.DirekNo)
+                .HasMaxLength(40)
+                .HasColumnName("direk_no");
             entity.Property(e => e.BoyOzellik)
                 .HasMaxLength(20)
                 .HasColumnName("boy_ozellik");
-            entity.Property(e => e.DirekNo)
-                .HasMaxLength(20)
-                .HasColumnName("direk_no");
+            entity.Property(e => e.DirekBoyId)
+                .HasColumnName("direk_boy_id");
             entity.Property(e => e.GeoJson)
                 .HasComputedColumnSql("ST_AsGeoJSON(ST_Transform(geometry, 4326))")
                 .HasColumnName("geojson");
             entity.HasGeneratedTsVectorColumn(
                 p => p.SearchableText,
                 "simple",
-                p => new { p.Id, p.Cinsi, p.Tipi, p.BoyOzellik, p.DirekNo }
+                p => new
+                {
+                    p.Id,
+                    p.Kodu,
+                    p.Adi,
+                    p.Cinsi,
+                    p.Tipi,
+                    p.DirekNo,
+                    p.BoyOzellik,
+                    p.DirekBoyId
+                }
             );
         });
 
@@ -92,25 +128,43 @@ public class PolesContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.Id)
                 .ValueGeneratedOnAdd()
                 .HasColumnName("id");
+            entity.Property(e => e.Kodu)
+                .HasMaxLength(50)
+                .HasColumnName("kodu");
+            entity.Property(e => e.Adi)
+                .HasMaxLength(50)
+                .HasColumnName("adi");
             entity.Property(e => e.Cinsi)
                 .HasMaxLength(20)
                 .HasColumnName("cinsi");
             entity.Property(e => e.Tipi)
                 .HasMaxLength(20)
                 .HasColumnName("tipi");
-            entity.Property(e => e.BoyOzellik)
-                .HasMaxLength(20)
-                .HasColumnName("boy_ozellik");
             entity.Property(e => e.DirekNo)
                 .HasMaxLength(20)
                 .HasColumnName("direk_no");
+            entity.Property(e => e.BoyOzellik)
+                .HasMaxLength(20)
+                .HasColumnName("boy_ozellik");
+            entity.Property(e => e.DirekBoyId)
+                .HasColumnName("direk_boy_id");
             entity.Property(e => e.GeoJson)
                 .HasComputedColumnSql("ST_AsGeoJSON(ST_Transform(geometry, 4326))")
                 .HasColumnName("geojson");
             entity.HasGeneratedTsVectorColumn(
                 p => p.SearchableText,
                 "simple",
-                p => new { p.Id, p.Cinsi, p.Tipi, p.BoyOzellik, p.DirekNo }
+                p => new
+                {
+                    p.Id,
+                    p.Kodu,
+                    p.Adi,
+                    p.Cinsi,
+                    p.Tipi,
+                    p.DirekNo,
+                    p.BoyOzellik,
+                    p.DirekBoyId
+                }
             );
         });
     }

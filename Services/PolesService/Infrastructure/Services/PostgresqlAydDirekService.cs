@@ -32,7 +32,17 @@ public class PostgresqlAydDirekService(IUnitOfWork unitOfWork) : IAydDirekServic
         if (pageNumber < 1)
             return Response<List<AydDirek>>.ValidationError(PolesResources.GetString("invalidPageNumber"));
 
-        var allowedSortColumns = new[] { "Id", "Cinsi", "Tipi", "BoyOzellik", "DirekNo", "GeoJson" };
+        string[] allowedSortColumns = [
+            "Id",
+            "Kodu",
+            "Adi",
+            "Cinsi",
+            "Tipi",
+            "DirekNo",
+            "BoyOzellik",
+            "DirekBoyId"
+        ];
+
         if (!allowedSortColumns.Contains(sortBy))
             return Response<List<AydDirek>>.ValidationError(PolesResources.GetString("invalidSortBy"));
 
