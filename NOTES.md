@@ -3,6 +3,10 @@
  - Add auto windows adjustment
  - Add feature highligt on goto button click
  - Add tsvector functions to the service documentations
+ - CACHE CONTROL 
+ - PROTOBUF
+ - (maybe) Height constraint on first person view
+ - Column toggle
 
 ### Optimization Notes
 
