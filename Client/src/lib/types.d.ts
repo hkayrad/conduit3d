@@ -71,16 +71,20 @@ export type TrafoBina = {
 
 export type Hat = {
     id: number,
+    kodu: string,
+    adi: string,
     cinsi: HatCinsi,
-    tipi: string,
     kesit: string,
+    tipi: string,
     geoJson: string
 }
 
 export type Rekortman = {
     id: number,
-    tipi: HatCinsi,
+    kodu: string,
+    adi: string,
     kesit: string,
+    tipi: string,
     geoJson: string
 }
 

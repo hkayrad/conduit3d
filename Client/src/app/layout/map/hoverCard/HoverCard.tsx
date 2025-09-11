@@ -22,8 +22,8 @@ type FeatureProperties = {
     direkNo?: string;
     cinsi?: string;
     tipi?: string;
-    boyOzellik?: string;
     kesit?: string;
+    boyOzellik?: string;
 }
 
 /**

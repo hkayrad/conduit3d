@@ -6,6 +6,7 @@ import InfoContent from "../../../shared/infoContent/InfoContent";
 import { useAppSelector } from "../../../../lib/hooks";
 import { selectSelectedViewType } from "../mapSlice";
 import { C3D_MapViewType } from "../../../../lib/enums";
+import { capitalizeFirstLetter } from "../../../../lib/utils";
 
 type Props = {
     info: PickingInfo;
@@ -89,7 +90,7 @@ export default function FeatureInfo(props: Props): React.ReactNode {
             ref={windowRef}
         >
             <div className="header" onMouseDown={onMouseDown} style={{ cursor: isDragging ? "grabbing" : "grab" }}>
-                <p>Feature Details: {properties!.id}</p>
+                <p>{capitalizeFirstLetter(properties.dataType)}: {properties.id}</p>
                 <div className="dragger-buttons">
                     {selectedViewType === C3D_MapViewType.Cartesian &&
                         <button onClick={onFlyTo}><LucideArrowRight /></button>

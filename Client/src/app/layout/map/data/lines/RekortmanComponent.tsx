@@ -3,7 +3,7 @@ import { RekortmanApi } from "../../../../../lib/api";
 import type { Extent, Rekortman } from "../../../../../lib/types";
 import { lineStringToSegments } from "../../../../../lib/utils";
 import { setType } from "../../mapSlice";
-import { FeatureType } from "../../../../../lib/enums";
+import { FeatureType, HatCinsi } from "../../../../../lib/enums";
 import { useAppDispatch } from "../../../../../lib/hooks";
 
 type Props = {
@@ -40,12 +40,14 @@ export default function RekortmanComponent(props: Props): null {
                     geometry: JSON.parse(rawData.geoJson),
                     properties: {
                         id: rawData.id,
-                        dataType: FeatureType.REKORTMAN,
+                        kodu: rawData.kodu,
+                        adi: rawData.adi,
+                        kesit: rawData.kesit,
                         tipi: rawData.tipi,
-                        kesit: rawData.kesit
+                        dataType: FeatureType.REKORTMAN
                     }
                 } as GeoJSON.Feature;
-                const segments = lineStringToSegments(feature, rawData.tipi, allPoles, -.1);
+                const segments = lineStringToSegments(feature, rawData.tipi as HatCinsi, allPoles, -.1);
                 dataList.features.push(...segments);
             })
 

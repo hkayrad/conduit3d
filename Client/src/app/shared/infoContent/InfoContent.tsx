@@ -68,9 +68,10 @@ export default function InfoContent(properties: any, coordinate?: number[]): Rea
         case FeatureType.LINE:
             return (
                 <>
+                    <InfoField label="Adi" value={properties.adi} />
                     <InfoField label="Cinsi" value={properties.cinsi} />
-                    <InfoField label="Type" value={properties.tipi} />
-                    <InfoField label="Section" value={properties.kesit} />
+                    <InfoField label="Tipi" value={properties.tipi} />
+                    <InfoField label="Kesit" value={properties.kesit} />
                     {
                         coordinate && (
                             <InfoField label="Position" value={`${coordinate[1].toFixed(5)}, ${coordinate[0].toFixed(5)}`} />
@@ -82,8 +83,8 @@ export default function InfoContent(properties: any, coordinate?: number[]): Rea
         case FeatureType.REKORTMAN:
             return (
                 <>
-                    <InfoField label="Cinsi" value={properties.tipi} />
-                    <InfoField label="Section" value={properties.kesit} />
+                    <InfoField label="Tipi" value={properties.tipi} />
+                    <InfoField label="Kesit" value={properties.kesit} />
                     {
                         coordinate && (
                             <InfoField label="Position" value={`${coordinate[1].toFixed(5)}, ${coordinate[0].toFixed(5)}`} />

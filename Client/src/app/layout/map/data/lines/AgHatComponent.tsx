@@ -41,10 +41,12 @@ export default function AgHatComponent(props: Props): null {
                     geometry: JSON.parse(rawData.geoJson),
                     properties: {
                         id: rawData.id,
-                        dataType: FeatureType.LINE,
+                        kodu: rawData.kodu,
+                        adi: rawData.adi,
                         cinsi: rawData.cinsi,
+                        kesit: rawData.kesit,
                         tipi: rawData.tipi,
-                        kesit: rawData.kesit
+                        dataType: FeatureType.LINE
                     }
                 } as GeoJSON.Feature;
                 const segments = lineStringToSegments(feature, rawData.cinsi, allPoles, -1);
