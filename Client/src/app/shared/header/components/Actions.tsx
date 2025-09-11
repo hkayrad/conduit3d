@@ -2,8 +2,7 @@ import { List, LogOut, Map, ShieldUser } from "lucide-react";
 import { NavLink, useNavigate } from "react-router";
 import { AuthApi } from "../../../../lib/api";
 import { clearUser, selectUserState } from "../../../layout/auth/authSlice";
-import { C3D_MapViewType, UserRoles } from "../../../../lib/enums";
-import { selectSelectedViewType } from "../../../layout/map/mapSlice";
+import { UserRoles } from "../../../../lib/enums";
 import { useAppDispatch, useAppSelector } from "../../../../lib/hooks";
 
 /**

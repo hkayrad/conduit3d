@@ -30,9 +30,6 @@ export function flyToFeature(
 
     const dataType = feature.properties!.dataType as FeatureType;
 
-    console.log(feature);
-
-
     const zoomLevel = dataType === FeatureType.POLE ? 20 :
         dataType === FeatureType.TRAFO ? 23 :
             dataType === FeatureType.LINE || dataType === FeatureType.REKORTMAN ? 20 : zoom;

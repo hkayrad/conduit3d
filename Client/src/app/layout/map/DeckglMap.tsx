@@ -20,9 +20,9 @@ import { DeckGL } from "@deck.gl/react";
 import { CompassWidget, ZoomWidget } from "@deck.gl/widgets";
 import { Map as MapLibre } from 'react-map-gl/maplibre';
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Outlet, useLocation, useSearchParams } from "react-router";
+import { Outlet, useLocation } from "react-router";
 
-import { selectMapState, setExtent, setSelectedViewType, setViewState } from "./mapSlice";
+import { selectMapState, setExtent, setViewState } from "./mapSlice";
 import LayerControl from "./layerControl/LayerControl";
 import DataComponent from "./data/DataComponent";
 import MousePosition from "./mousePosition/MousePosition";
@@ -43,8 +43,7 @@ export default function DeckglMap(): React.ReactNode {
     const { visibility, filters, types, selectedViewType, viewState } = useAppSelector(selectMapState);
     const { cartesian, firstPerson } = viewState;
 
-    // React-Router State
-    // const [searchParams, setSearchParams] = useSearchParams();
+    // React-Router Hooks
     const location = useLocation();
 
     // Refs
@@ -288,21 +287,6 @@ export default function DeckglMap(): React.ReactNode {
                     height: window.innerHeight
                 });
 
-                // setSearchParams(
-                //     {
-                //         cLon: mapViewState.cartesian.longitude.toString(),
-                //         cLat: mapViewState.cartesian.latitude.toString(),
-                //         cZ: mapViewState.cartesian.zoom.toFixed(2),
-                //         cP: mapViewState.cartesian.pitch!.toFixed(2),
-                //         cB: mapViewState.cartesian.bearing!.toFixed(2),
-                //         viewType: selectedViewType
-                //     },
-                //     {
-                //         preventScrollReset: true,
-                //         replace: true
-                //     }
-                // );
-
                 dispatch(setViewState({
                     viewId: C3D_MapViewType.Cartesian,
                     viewState: {
@@ -320,21 +304,6 @@ export default function DeckglMap(): React.ReactNode {
                     width: window.innerWidth,
                     height: window.innerHeight
                 });
-
-                // setSearchParams(
-                //     {
-                //         fpLon: mapViewState.firstPerson.longitude!.toString(),
-                //         fpLat: mapViewState.firstPerson.latitude!.toString(),
-                //         fpZ: "0",
-                //         fpP: mapViewState.firstPerson.pitch!.toFixed(2),
-                //         fpB: mapViewState.firstPerson.bearing!.toFixed(2),
-                //         viewType: selectedViewType
-                //     },
-                //     {
-                //         preventScrollReset: true,
-                //         replace: true
-                //     }
-                // );
 
                 dispatch(setViewState({
                     viewId: C3D_MapViewType.FirstPerson,

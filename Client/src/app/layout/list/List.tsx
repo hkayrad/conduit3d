@@ -4,11 +4,12 @@ import React, { useEffect, useMemo, useState } from "react";
 import type { TableData } from "../../../lib/types";
 import { useAppDispatch, useAppSelector, useList } from "../../../lib/hooks";
 import { selectListState, setAscending, setFeatureType, setPageNumber, setQuery, setSortBy } from "./listSlice";
-import { capitalizeFirstLetter, findAverageLonLat, flyToFeature } from "../../../lib/utils";
+import { capitalizeFirstLetter } from "../../../lib/utils";
 import { Building, MapPin, PlugZap, UtilityPole } from "lucide-react";
 import ActionButton from "../../shared/actionButton/ActionButton";
 import { useNavigate, useOutletContext } from "react-router";
-import { FeatureType, ListDataType } from "../../../lib/enums";
+import { C3D_MapViewType, FeatureType, ListDataType } from "../../../lib/enums";
+import { setSelectedViewType } from "../map/mapSlice";
 
 /**
  * List component for displaying a list of features with pagination, sorting, and filtering capabilities.
@@ -98,6 +99,7 @@ export default function List(): React.ReactNode {
         } as GeoJSON.Feature;
 
         navigate("/", { replace: false });
+        dispatch(setSelectedViewType(C3D_MapViewType.Cartesian));
         flyTo(feature);
 
         // const coords = findAverageLonLat(JSON.parse(feature.geoJson));
