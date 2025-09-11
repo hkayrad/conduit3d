@@ -14,25 +14,28 @@ public class TrafoBina
     /// <summary>
     /// The unique identifier for the transformer station.
     /// </summary>
-    [Required]
+    [Key]
+    [Column("id")]
     public required int Id { get; set; }
 
     /// <summary>
     /// The name of the transformer station.
     /// </summary>
-    [Required]
-    public required string Name { get; set; }
+    [Column("adi")]
+    [MaxLength(100)]
+    public string Adi { get; set; } = string.Empty;
 
     /// <summary>
     /// The code of the transformer station.
     /// </summary>
-    [Required]
-    public required string Kodu { get; set; }
+    [Column("kodu")]
+    [MaxLength(100)]
+    public string Kodu { get; set; } = string.Empty;
 
     /// <summary>
     /// The geographical representation of the transformer station.
     /// </summary>
-    [Required]
+    [Column("geojson")]
     public required string GeoJson { get; set; }
 
     /// <summary>

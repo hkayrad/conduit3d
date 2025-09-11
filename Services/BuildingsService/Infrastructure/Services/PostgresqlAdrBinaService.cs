@@ -32,7 +32,18 @@ public class PostgresqlAdrBinaService(IUnitOfWork unitOfWork) : IAdrBinaService
         if (pageNumber < 1)
             return Response<List<AdrBina>>.ValidationError(BuildingsResources.GetString("invalidPageNumber"));
 
-        var allowedSortColumns = new[] { "Id", "Name", "FloorCount", "Type", "GeoJson" };
+        string[] allowedSortColumns =
+        [
+            "Id",
+            "Kodu",
+            "SiteAdi",
+            "Adi",
+            "BinaKatSayisi",
+            "DaireSayisi",
+            "IsyeriSayisi",
+            "Yukseklik"
+        ];
+
         if (!allowedSortColumns.Contains(sortBy))
             return Response<List<AdrBina>>.ValidationError(BuildingsResources.GetString("invalidSortBy"));
 

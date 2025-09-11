@@ -39,10 +39,14 @@ public class AdrBinaRepository(BuildingsContext context) : IAdrBinaRepository
                                             CancellationToken cancellationToken)
     {
         var sqlQuery = _dbSet.FromSql($@"SELECT 
-                                        id, 
-                                        adi, 
-                                        COALESCE(NULLIF(bina_kat_sayisi, 0), 5) as ""bina_kat_sayisi"",
-                                        'residential' as type,
+                                        id,
+                                        kodu,
+                                        site_adi,
+                                        adi,
+                                        bina_kat_sayisi,
+                                        daire_sayisi,
+                                        isyeri_sayisi,
+                                        yukseklik,
                                         ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson,
                                         searchable_text
                                     FROM ""ADR_BINA""
@@ -76,10 +80,14 @@ public class AdrBinaRepository(BuildingsContext context) : IAdrBinaRepository
     public async Task<AdrBina?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         var sqlQuery = _dbSet.FromSql($@"SELECT 
-                                        id, 
-                                        adi, 
-                                        COALESCE(NULLIF(bina_kat_sayisi, 0), 5) as ""bina_kat_sayisi"",
-                                        'residential' as type,
+                                        id,
+                                        kodu,
+                                        site_adi,
+                                        adi,
+                                        bina_kat_sayisi,
+                                        daire_sayisi,
+                                        isyeri_sayisi,
+                                        yukseklik,
                                         ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson
                                     FROM ""ADR_BINA""
                                     WHERE id = {id}");

@@ -32,7 +32,8 @@ public class PostgresqlTrafoBinaService(IUnitOfWork unitOfWork) : ITrafoBinaServ
         if (pageNumber < 1)
             return Response<List<TrafoBina>>.ValidationError(BuildingsResources.GetString("invalidPageNumber"));
 
-        var allowedSortColumns = new[] { "Id", "Name", "Kodu", "GeoJson" };
+        string[] allowedSortColumns = ["Id", "Adi", "Kodu", "GeoJson"];
+
         if (!allowedSortColumns.Contains(sortBy))
             return Response<List<TrafoBina>>.ValidationError(BuildingsResources.GetString("invalidSortBy"));
 

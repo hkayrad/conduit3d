@@ -53,22 +53,40 @@ public class BuildingsContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.Id)
                 .ValueGeneratedOnAdd()
                 .HasColumnName("id");
-            entity.Property(e => e.Name)
+            entity.Property(e => e.Adi)
                 .HasMaxLength(100)
                 .HasColumnName("adi");
-            entity.Property(e => e.Type)
-                .HasMaxLength(20)
-                .HasColumnName("type");
-            entity.Property(e => e.FloorCount)
-                .HasComputedColumnSql("COALESCE(NULLIF(bina_kat_sayisi, 0), 5)")
+            entity.Property(e => e.Kodu)
+                .HasMaxLength(100)
+                .HasColumnName("kodu");
+            entity.Property(e => e.SiteAdi)
+                .HasMaxLength(100)
+                .HasColumnName("site_adi");
+            entity.Property(e => e.BinaKatSayisi)
                 .HasColumnName("bina_kat_sayisi");
+            entity.Property(e => e.DaireSayisi)
+                .HasColumnName("daire_sayisi");
+            entity.Property(e => e.IsyeriSayisi)
+                .HasColumnName("isyeri_sayisi");
+            entity.Property(e => e.Yukseklik)
+                .HasColumnName("yukseklik");
             entity.Property(e => e.GeoJson)
-                .HasComputedColumnSql("ST_AsGeoJSON(ST_Transform(geometry, 4326))")
-                .HasColumnName("geojson");
+            .HasComputedColumnSql("ST_AsGeoJSON(ST_Transform(geometry, 4326))")
+            .HasColumnName("geojson");
             entity.HasGeneratedTsVectorColumn(
                 e => e.SearchableText,
                 "simple",
-                e => new { e.Id, e.Name, e.FloorCount }
+                e => new
+                {
+                    e.Id,
+                    e.Kodu,
+                    e.SiteAdi,
+                    e.Adi,
+                    e.BinaKatSayisi,
+                    e.DaireSayisi,
+                    e.IsyeriSayisi,
+                    e.Yukseklik
+                }
             );
         });
 
@@ -78,7 +96,7 @@ public class BuildingsContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.Id)
                 .ValueGeneratedOnAdd()
                 .HasColumnName("id");
-            entity.Property(e => e.Name)
+            entity.Property(e => e.Adi)
                 .HasMaxLength(100)
                 .HasColumnName("adi");
             entity.Property(e => e.Kodu)
@@ -90,7 +108,7 @@ public class BuildingsContext(DbContextOptions options) : DbContext(options)
             entity.HasGeneratedTsVectorColumn(
                 e => e.SearchableText,
                 "simple",
-                e => new { e.Id, e.Name, e.Kodu }
+                e => new { e.Id, e.Adi, e.Kodu }
             );
         });
 
