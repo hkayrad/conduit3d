@@ -40,8 +40,10 @@ public class RekortmanRepository(LinesContext context) : IRekortmanRepository
     {
         var sqlQuery = _dbSet.FromSql($@"SELECT 
                                         id, 
-                                        tipi,
+                                        kodu,
+                                        adi,
                                         kesit,
+                                        tipi,
                                         ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson,
                                         searchable_text
                                     FROM ""SBK_rEKORTMAN""
@@ -76,8 +78,10 @@ public class RekortmanRepository(LinesContext context) : IRekortmanRepository
     {
         var sqlQuery = _dbSet.FromSql($@"SELECT 
                                         id, 
-                                        tipi,
+                                        kodu,
+                                        adi,
                                         kesit,
+                                        tipi,
                                         ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson
                                     FROM ""SBK_rEKORTMAN""
                                     WHERE id = {id}");

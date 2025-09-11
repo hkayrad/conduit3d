@@ -40,9 +40,11 @@ public class OgHatRepository(LinesContext context) : IOgHatRepository
     {
         var sqlQuery = _dbSet.FromSql($@"SELECT 
                                         id, 
-                                        cinsi, 
-                                        tipi,
+                                        kodu,
+                                        adi,
+                                        cinsi,
                                         kesit,
+                                        tipi,
                                         ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson,
                                         searchable_text
                                     FROM ""SBK_OGHAT""
@@ -77,9 +79,11 @@ public class OgHatRepository(LinesContext context) : IOgHatRepository
     {
         var sqlQuery = _dbSet.FromSql($@"SELECT 
                                         id, 
-                                        cinsi, 
-                                        tipi,
+                                        kodu,
+                                        adi,
+                                        cinsi,
                                         kesit,
+                                        tipi,
                                         ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson
                                     FROM ""SBK_OGHAT""
                                     WHERE id = {id}");

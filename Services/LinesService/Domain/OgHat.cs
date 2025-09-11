@@ -14,31 +14,50 @@ public class OgHat
     /// <summary>
     /// The unique identifier for the transmission line.
     /// </summary>
-    [Required]
+    [Key]
+    [Column("id")]
     public required int Id { get; set; }
 
     /// <summary>
-    /// The type of the transmission line.
+    /// The name of the transmission line.
     /// </summary>
-    [Required]
-    public required string Cinsi { get; set; }
+    [Column("adi")]
+    [MaxLength(200)]
+    public string Adi { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The code of the transmission line.
+    /// </summary>
+    [Column("kodu")]
+    [MaxLength(50)]
+    public string Kodu { get; set; } = string.Empty;
 
     /// <summary>
     /// The type of the transmission line.
     /// </summary>
-    [Required]
-    public required string Tipi { get; set; }
+    [Column("cinsi")]
+    [MaxLength(20)]
+    public string Cinsi { get; set; } = string.Empty;
 
     /// <summary>
     /// The cross-section of the transmission line.
     /// </summary>
-    [Required]
-    public required string Kesit { get; set; }
+    [Column("kesit")]
+    [MaxLength(40)]
+    public string Kesit { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The type of the transmission line.
+    /// </summary>
+    [Column("tipi")]
+    [MaxLength(4)]
+    public string Tipi { get; set; } = string.Empty;
 
     /// <summary>
     /// The geographical representation of the transmission line.
     /// </summary>
     [Required]
+    [Column("geojson")]
     public required string GeoJson { get; set; }
 
     /// <summary>

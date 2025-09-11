@@ -40,9 +40,11 @@ public class AgHatRepository(LinesContext context) : IAgHatRepository
     {
         var sqlQuery = _dbSet.FromSql($@"SELECT 
                                         id, 
-                                        cinsi, 
-                                        tipi,
+                                        kodu,
+                                        adi,
+                                        cinsi,
                                         kesit,
+                                        tipi,
                                         ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson,
                                         searchable_text
                                     FROM ""SBK_AGHAT""
@@ -77,9 +79,11 @@ public class AgHatRepository(LinesContext context) : IAgHatRepository
     {
         var sqlQuery = _dbSet.FromSql($@"SELECT 
                                         id, 
-                                        cinsi, 
-                                        tipi,
+                                        kodu,
+                                        adi,
+                                        cinsi,
                                         kesit,
+                                        tipi,
                                         ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson
                                     FROM ""SBK_AGHAT""
                                     WHERE id = {id}");

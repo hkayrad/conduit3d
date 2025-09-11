@@ -34,6 +34,12 @@ public class LinesContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.Id)
                 .ValueGeneratedOnAdd()
                 .HasColumnName("id");
+            entity.Property(e => e.Kodu)
+                .HasMaxLength(150)
+                .HasColumnName("kodu");
+            entity.Property(e => e.Adi)
+                .HasMaxLength(50)
+                .HasColumnName("adi");
             entity.Property(e => e.Cinsi)
                 .HasMaxLength(20)
                 .HasColumnName("cinsi");
@@ -49,7 +55,15 @@ public class LinesContext(DbContextOptions options) : DbContext(options)
             entity.HasGeneratedTsVectorColumn(
                 e => e.SearchableText,
                 "simple",
-                e => new { e.Id, e.Cinsi, e.Tipi, e.Kesit }
+                e => new
+                {
+                    e.Id,
+                    e.Kodu,
+                    e.Adi,
+                    e.Cinsi,
+                    e.Kesit,
+                    e.Tipi
+                }
             );
         });
 
@@ -60,6 +74,12 @@ public class LinesContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.Id)
                 .ValueGeneratedOnAdd()
                 .HasColumnName("id");
+            entity.Property(e => e.Adi)
+                .HasMaxLength(200)
+                .HasColumnName("adi");
+            entity.Property(e => e.Kodu)
+                .HasMaxLength(50)
+                .HasColumnName("kodu");
             entity.Property(e => e.Cinsi)
                 .HasMaxLength(20)
                 .HasColumnName("cinsi");
@@ -67,7 +87,7 @@ public class LinesContext(DbContextOptions options) : DbContext(options)
                 .HasMaxLength(40)
                 .HasColumnName("kesit");
             entity.Property(e => e.Tipi)
-                .HasMaxLength(20)
+                .HasMaxLength(4)
                 .HasColumnName("tipi");
             entity.Property(e => e.GeoJson)
                 .HasComputedColumnSql("ST_AsGeoJSON(ST_Transform(geometry, 4326))")
@@ -75,7 +95,15 @@ public class LinesContext(DbContextOptions options) : DbContext(options)
             entity.HasGeneratedTsVectorColumn(
                 e => e.SearchableText,
                 "simple",
-                e => new { e.Id, e.Cinsi, e.Tipi, e.Kesit }
+                e => new
+                {
+                    e.Id,
+                    e.Kodu,
+                    e.Adi,
+                    e.Cinsi,
+                    e.Kesit,
+                    e.Tipi
+                }
             );
         });
 
@@ -86,6 +114,12 @@ public class LinesContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.Id)
                 .ValueGeneratedOnAdd()
                 .HasColumnName("id");
+            entity.Property(e => e.Adi)
+                .HasMaxLength(50)
+                .HasColumnName("adi");
+            entity.Property(e => e.Kodu)
+                .HasMaxLength(50)
+                .HasColumnName("kodu");
             entity.Property(e => e.Kesit)
                 .HasMaxLength(40)
                 .HasColumnName("kesit");
@@ -98,7 +132,14 @@ public class LinesContext(DbContextOptions options) : DbContext(options)
             entity.HasGeneratedTsVectorColumn(
                 e => e.SearchableText,
                 "simple",
-                e => new { e.Id, e.Tipi, e.Kesit }
+                e => new
+                {
+                    e.Id,
+                    e.Kodu,
+                    e.Adi,
+                    e.Tipi,
+                    e.Kesit
+                }
             );
         });
     }

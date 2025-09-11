@@ -32,7 +32,15 @@ public class PostgresqlAgHatService(IUnitOfWork unitOfWork) : IAgHatService
         if (pageNumber < 1)
             return Response<List<AgHat>>.ValidationError(LinesResources.GetString("invalidPageNumber"));
 
-        var allowedSortColumns = new[] { "Id", "Cinsi", "Tipi", "Kesit", "GeoJson" };
+        string[] allowedSortColumns = [
+                "Id",
+                "Kodu",
+                "Adi",
+                "Cinsi",
+                "Kesit",
+                "Tipi"
+            ];
+
         if (!allowedSortColumns.Contains(sortBy))
             return Response<List<AgHat>>.ValidationError(LinesResources.GetString("invalidSortBy"));
 

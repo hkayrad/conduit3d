@@ -14,20 +14,37 @@ public class Rekortman
     /// <summary>
     /// The unique identifier for the connection line.
     /// </summary>
-    [Required]
+    [Key]
+    [Column("id")]
     public required int Id { get; set; }
+
+    /// <summary>
+    /// The name of the connection line.
+    /// </summary>
+    [Column("adi")]
+    [MaxLength(50)]
+    public string Adi { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The code of the connection line.
+    /// </summary>
+    [Column("kodu")]
+    [MaxLength(50)]
+    public string Kodu { get; set; } = string.Empty;
 
     /// <summary>
     /// The type of the connection line.
     /// </summary>
-    [Required]
-    public required string Tipi { get; set; }
+    [Column("kesit")]
+    [MaxLength(40)]
+    public string Kesit { get; set; } = string.Empty;
 
     /// <summary>
-    /// The cross-section of the connection line.
+    /// The type of the connection line.
     /// </summary>
-    [Required]
-    public required string Kesit { get; set; }
+    [Column("tipi")]
+    [MaxLength(20)]
+    public string Tipi { get; set; } = string.Empty;
 
     /// <summary>
     /// The geographical representation of the connection line.

@@ -32,7 +32,14 @@ public class PostgresqlRekortmanService(IUnitOfWork unitOfWork) : IRekortmanServ
         if (pageNumber < 1)
             return Response<List<Rekortman>>.ValidationError(LinesResources.GetString("invalidPageNumber"));
 
-        var allowedSortColumns = new[] { "Id", "Tipi", "Kesit", "GeoJson" };
+        string[] allowedSortColumns = [
+                "Id",
+                "Kodu",
+                "Adi",
+                "Kesit",
+                "Tipi"
+            ];
+
         if (!allowedSortColumns.Contains(sortBy))
             return Response<List<Rekortman>>.ValidationError(LinesResources.GetString("invalidSortBy"));
 
