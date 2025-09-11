@@ -4,11 +4,12 @@ import React, { useEffect, useMemo, useState } from "react";
 import type { TableData } from "../../../lib/types";
 import { useAppDispatch, useAppSelector, useList } from "../../../lib/hooks";
 import { selectListState, setAscending, setFeatureType, setPageNumber, setQuery, setSortBy } from "./listSlice";
-import { capitalizeFirstLetter, findAverageLonLat } from "../../../lib/utils";
+import { capitalizeFirstLetter } from "../../../lib/utils";
 import { Building, MapPin, PlugZap, UtilityPole } from "lucide-react";
 import ActionButton from "../../shared/actionButton/ActionButton";
-import { useNavigate } from "react-router";
-import { C3D_MapViewType, ListDataType } from "../../../lib/enums";
+import { useNavigate, useOutletContext } from "react-router";
+import { C3D_MapViewType, FeatureType, ListDataType } from "../../../lib/enums";
+import { setSelectedViewType } from "../map/mapSlice";
 
 /**
  * List component for displaying a list of features with pagination, sorting, and filtering capabilities.
@@ -16,6 +17,8 @@ import { C3D_MapViewType, ListDataType } from "../../../lib/enums";
  * @returns The List component renders a list of features with pagination, sorting, and filtering capabilities.
  */
 export default function List(): React.ReactNode {
+    const { flyTo } = useOutletContext<{ flyTo: (feature: GeoJSON.Feature) => void }>();
+
     // Redux state
     const { itemsPerPage, pageNumber, sortBy, ascending, featureType, query } = useAppSelector(selectListState)
 
@@ -65,6 +68,17 @@ export default function List(): React.ReactNode {
         types: [ListDataType.AgHat, ListDataType.OgHat, ListDataType.Rekortman]
     }], []);
 
+    const mappedFeatureTypes = useMemo(() => ({
+        [ListDataType.AdrBina]: FeatureType.BUILDING,
+        [ListDataType.TrafoBina]: FeatureType.TRAFO,
+        [ListDataType.AgDirek]: FeatureType.POLE,
+        [ListDataType.OgMusDirek]: FeatureType.POLE,
+        [ListDataType.AydDirek]: FeatureType.POLE,
+        [ListDataType.AgHat]: FeatureType.LINE,
+        [ListDataType.OgHat]: FeatureType.LINE,
+        [ListDataType.Rekortman]: FeatureType.REKORTMAN,
+    }), [])
+
     // Memoized table headers
     const headers = useMemo(() => [
         { id: 'index', label: '#' },
@@ -75,6 +89,31 @@ export default function List(): React.ReactNode {
         { id: 'actions', label: 'Actions' }
     ], [features]);
 
+    const handleGoToFeature = (f: any) => {
+        const feature = {
+            type: "Feature",
+            geometry: JSON.parse(f.geoJson),
+            properties: {
+                dataType: mappedFeatureTypes[featureType],
+            }
+        } as GeoJSON.Feature;
+
+        navigate("/", { replace: false });
+        dispatch(setSelectedViewType(C3D_MapViewType.Cartesian));
+        flyTo(feature);
+
+        // const coords = findAverageLonLat(JSON.parse(feature.geoJson));
+        // dispatch(setViewState({
+        //     viewId: C3D_MapViewType.Cartesian,
+        //     viewState: {
+        //         longitude: coords[0],
+        //         latitude: coords[1],
+        //         zoom: 20,
+        //     }
+        // }))
+        // navigate("/", { replace: false });
+    }
+
     // Memoized table rows
     const rows = useMemo(() => [
         ...features.map((f, index) => [
@@ -84,10 +123,7 @@ export default function List(): React.ReactNode {
                 <ActionButton
                     content={<MapPin />}
                     style="success"
-                    onClick={() => {
-                        const coords = findAverageLonLat(JSON.parse(f.geoJson));
-                        navigate(`/?cLon=${coords[0]}&cLat=${coords[1]}&cZ=20&viewType=${C3D_MapViewType.Cartesian}`);
-                    }}
+                    onClick={() => handleGoToFeature(f)}
                 />
             </div>
         ] as React.ReactNode[])

@@ -48,6 +48,10 @@ export function RequireNoAuth({ children }: Props): React.ReactNode {
  * @returns The rendered component
  */
 export function RequireAdmin({ children }: Props): React.ReactNode {
+    if (!hasUserSession()) {
+        return <Navigate to="/login" replace />
+    }
+
     const user = useSelector(selectUserState);
 
     if (user?.userRole !== UserRoles.ADMIN) {
