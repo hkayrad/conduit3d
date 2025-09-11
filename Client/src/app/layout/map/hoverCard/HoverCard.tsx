@@ -12,11 +12,13 @@ type Props = {
 
 type FeatureProperties = {
     dataType: FeatureType;
-    name?: string;
-    height?: number;
-    floorCount?: number;
-    type?: string;
+    adi?: string;
     kodu?: string;
+    siteAdi?: string;
+    binaKatSayisi?: number;
+    daireSayisi?: number;
+    isyeriSayisi?: number;
+    yukseklik?: number;
     direkNo?: string;
     cinsi?: string;
     tipi?: string;

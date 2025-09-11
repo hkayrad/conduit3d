@@ -165,7 +165,7 @@ export default function DeckglMap(): React.ReactNode {
         new GeoJsonLayer({
             id: "adr-bina-layer",
             data: adrBina ?? { type: "FeatureCollection", features: [] },
-            getElevation: (d) => d.properties.height,
+            getElevation: (d) => d.properties.yukseklik,
             getFillColor: COLORS.ADR_BINA,
             filled: true,
             extruded: true,
@@ -178,7 +178,7 @@ export default function DeckglMap(): React.ReactNode {
             id: "trafo-bina-layer",
             data: trafoBina ? trafoBina.features : [],
             getPosition: d => d.geometry.coordinates,
-            getElevation: d => d.properties.height,
+            getElevation: d => d.properties.yukseklik,
             getFillColor: COLORS.TRAFO_BINA,
             extruded: true,
             pickable: true,

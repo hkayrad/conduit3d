@@ -52,16 +52,20 @@ export type UserSortBy = 'id' | 'username' | 'email' | 'userRole' | 'name' | 'cr
 
 export type AdrBina = {
     id: number,
-    name: string | null,
-    type: string | null,
-    floorCount: number,
+    adi: string,
+    siteAdi: string,
+    kodu: string,
+    binaKatSayisi: number,
+    daireSayisi: number,
+    isyeriSayisi: number,
+    yukseklik: number,
     geoJson: string
 }
 
 export type TrafoBina = {
     id: number,
-    name: string | null,
-    kodu: string | null,
+    adi: string,
+    kodu: string,
     geoJson: string
 }
 

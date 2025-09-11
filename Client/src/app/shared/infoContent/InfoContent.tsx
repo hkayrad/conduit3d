@@ -16,12 +16,15 @@ export default function InfoContent(properties: any, coordinate?: number[]): Rea
             return (
                 <>
                     <InfoField
-                        label="Name"
-                        value={properties.name} capitalize={true}
+                        label="Adi"
+                        value={properties.adi} capitalize={true}
                     />
-                    <InfoField label="Height" value={`${properties.height} m`} />
-                    <InfoField label="Floor Count" value={properties.floorCount} />
-                    <InfoField label="Type" value={properties.type} capitalize={true} />
+                    <InfoField label="Site Adi" value={properties.siteAdi} />
+                    <InfoField label="Kodu" value={properties.kodu} />
+                    <InfoField label="Bina Kat Sayisi" value={properties.binaKatSayisi} />
+                    <InfoField label="Daire Sayisi" value={properties.daireSayisi} />
+                    <InfoField label="Isyeri Sayisi" value={properties.isyeriSayisi} />
+                    <InfoField label="Yukseklik" value={`${properties.yukseklik} m`} />
                     {
                         coordinate && (
                             <InfoField label="Position" value={`${coordinate[1].toFixed(5)}, ${coordinate[0].toFixed(5)}`} />
@@ -34,10 +37,10 @@ export default function InfoContent(properties: any, coordinate?: number[]): Rea
             return (
                 <>
                     <InfoField
-                        label="Name"
-                        value={properties.name} capitalize={true}
+                        label="Adi"
+                        value={properties.adi} capitalize={true}
                     />
-                    <InfoField label="Code" value={properties.kodu} />
+                    <InfoField label="Kodu" value={properties.kodu} />
                     {
                         coordinate && (
                             <InfoField label="Position" value={`${coordinate[1].toFixed(5)}, ${coordinate[0].toFixed(5)}`} />

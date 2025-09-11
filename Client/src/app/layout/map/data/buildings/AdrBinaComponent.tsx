@@ -35,13 +35,19 @@ export default function AdrBinaComponent(props: Props): null {
                     properties: {
                         id: rawData.id,
                         dataType: FeatureType.BUILDING,
-                        name: rawData.name,
-                        type: rawData.type,
-                        floorCount: rawData.floorCount,
-                        height: rawData.floorCount * 3,
+                        adi: rawData.adi,
+                        kodu: rawData.kodu,
+                        siteAdi: rawData.siteAdi,
+                        binaKatSayisi: rawData.binaKatSayisi,
+                        daireSayisi: rawData.daireSayisi,
+                        isyeriSayisi: rawData.isyeriSayisi,
+                        // Assumed average floor count as 5 and floor height as 2.5 meters if not provided
+                        yukseklik: rawData.yukseklik || ((rawData.binaKatSayisi || 5) * 2.5),
                     }
                 } as GeoJSON.Feature;
-                if (rawData.name !== "SANAL_BINA") {
+
+                // Exclude "SANAL_BINA" from the dataset because they show trafo or poles
+                if (rawData.adi !== "SANAL_BINA") {
                     dataList.features.push(feature);
                 }
             });

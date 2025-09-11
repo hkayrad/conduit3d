@@ -20,30 +20,30 @@ export default function TrafoBinaComponent(props: Props): null {
         try {
             const response = await TrafoBinaApi.fetchAll(200000, 1, 'id', true, null!, extent);
 
-        if (!response.isSuccess)
-            return;
+            if (!response.isSuccess)
+                return;
 
-        var dataList: GeoJSON.FeatureCollection = {
-            type: "FeatureCollection",
-            features: []
-        };
+            var dataList: GeoJSON.FeatureCollection = {
+                type: "FeatureCollection",
+                features: []
+            };
 
-        response.data.forEach((rawData: TrafoBina) => {
-            const feature = {
-                type: "Feature",
-                geometry: JSON.parse(rawData.geoJson),
-                properties: {
-                    id: rawData.id,
-                    dataType: FeatureType.TRAFO,
-                    name: rawData.name,
-                    kodu: rawData.kodu,
-                    height: 2
-                }
-            } as GeoJSON.Feature;
-            dataList.features.push(feature);
-        });
+            response.data.forEach((rawData: TrafoBina) => {
+                const feature = {
+                    type: "Feature",
+                    geometry: JSON.parse(rawData.geoJson),
+                    properties: {
+                        id: rawData.id,
+                        dataType: FeatureType.TRAFO,
+                        adi: rawData.adi,
+                        kodu: rawData.kodu,
+                        yukseklik: 2
+                    }
+                } as GeoJSON.Feature;
+                dataList.features.push(feature);
+            });
 
-        setData(dataList);
+            setData(dataList);
         } catch (error) {
             console.error("Error fetching TrafoBina data:", error);
         }
