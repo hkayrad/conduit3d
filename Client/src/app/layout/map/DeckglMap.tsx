@@ -32,6 +32,7 @@ import FeatureInfo from "./featureInfo/FeatureInfo";
 import ShortcutsInfo from "./shortcutsInfo/ShortcutsInfo";
 import { C3D_MapViewType } from "../../../lib/enums";
 import ViewToggle from "./viewToggle/ViewToggle";
+import GlobalSearch from "./globalSearch/GlobalSearch";
 
 /**
  * DeckglMap component renders the Deck.gl map with various layers and controls.
@@ -356,6 +357,7 @@ export default function DeckglMap(): React.ReactNode {
                         onFlyTo={() => flyTo(popup.info.object)}
                     />
                 ))}
+                <GlobalSearch flyTo={flyTo} />
                 <LayerControl />
                 <MousePosition mouseLonLat={mouseLonLat} />
                 <HoverCard

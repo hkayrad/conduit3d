@@ -26,7 +26,7 @@ export default function InfoContent(properties: any, coordinate?: number[]): Rea
                     <InfoField label="Isyeri Sayisi" value={properties.isyeriSayisi} />
                     {
                         coordinate && (
-                            <InfoField label="Position" value={`${coordinate[1].toFixed(5)}, ${coordinate[0].toFixed(5)}`} />
+                            <InfoField label="Position" value={`${coordinate[0].toFixed(5)}, ${coordinate[1].toFixed(5)}`} />
                         )
                     }
                 </>
@@ -42,7 +42,7 @@ export default function InfoContent(properties: any, coordinate?: number[]): Rea
                     <InfoField label="Kodu" value={properties.kodu} />
                     {
                         coordinate && (
-                            <InfoField label="Position" value={`${coordinate[1].toFixed(5)}, ${coordinate[0].toFixed(5)}`} />
+                            <InfoField label="Position" value={`${coordinate[0].toFixed(5)}, ${coordinate[1].toFixed(5)}`} />
                         )
                     }
                 </>
@@ -59,7 +59,7 @@ export default function InfoContent(properties: any, coordinate?: number[]): Rea
                     <InfoField label="Direk Boy Id" value={properties.direkBoyId} />
                     {
                         coordinate && (
-                            <InfoField label="Position" value={`${coordinate[1].toFixed(5)}, ${coordinate[0].toFixed(5)}`} />
+                            <InfoField label="Position" value={`${coordinate[0].toFixed(5)}, ${coordinate[1].toFixed(5)}`} />
                         )
                     }
                 </>
@@ -74,7 +74,7 @@ export default function InfoContent(properties: any, coordinate?: number[]): Rea
                     <InfoField label="Kesit" value={properties.kesit} />
                     {
                         coordinate && (
-                            <InfoField label="Position" value={`${coordinate[1].toFixed(5)}, ${coordinate[0].toFixed(5)}`} />
+                            <InfoField label="Position" value={`${coordinate[0].toFixed(5)}, ${coordinate[1].toFixed(5)}`} />
                         )
                     }
                 </>
@@ -87,7 +87,7 @@ export default function InfoContent(properties: any, coordinate?: number[]): Rea
                     <InfoField label="Kesit" value={properties.kesit} />
                     {
                         coordinate && (
-                            <InfoField label="Position" value={`${coordinate[1].toFixed(5)}, ${coordinate[0].toFixed(5)}`} />
+                            <InfoField label="Position" value={`${coordinate[0].toFixed(5)}, ${coordinate[1].toFixed(5)}`} />
                         )
                     }
                 </>

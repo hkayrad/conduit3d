@@ -3,7 +3,7 @@
  * @param feature GeoJSON Geometry
  * @returns A tuple containing the average longitude and latitude.
  */
-export function findAverageLonLat(feature: GeoJSON.Geometry): [number, number] {
+export function findAverageLonLat(feature: GeoJSON.Geometry, trimLength: number = 20): [number, number] {
     if (!feature) return [0, 0];
 
     console.log(feature);
@@ -22,5 +22,5 @@ export function findAverageLonLat(feature: GeoJSON.Geometry): [number, number] {
         return acc;
     }, [0, 0]);
 
-    return [sum[0] / coords.length, sum[1] / coords.length];
+    return [Number((sum[0] / coords.length).toFixed(trimLength)), Number((sum[1] / coords.length).toFixed(trimLength))];
 }

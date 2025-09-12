@@ -9,6 +9,7 @@ import type { LoginUserDto } from "../../../lib/types";
 import { Info, Loader, LogIn, ShieldX } from "lucide-react";
 import { clearUser, setUser } from "./authSlice";
 import { useAppDispatch } from "../../../lib/hooks";
+import { InputSanitizer } from "../../../lib/utils";
 
 /**
  * Login component is responsible for rendering the login form and handling user authentication.
@@ -30,7 +31,10 @@ export default function Login(): React.ReactNode {
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
 
-        const user: LoginUserDto = { username, password };
+        const user: LoginUserDto = {
+            username: InputSanitizer.sanitizeText(username),
+            password: InputSanitizer.sanitizeText(password)
+        };
 
         if (!user.username || !user.password) {
             setLoginError("Please fill in all fields");
