@@ -51,7 +51,6 @@ export default function Login(): React.ReactNode {
             }
 
             dispatch(setUser(response.data));
-            setLoading(false);
             navigate("/", { replace: true });
         } catch (error) {
             dispatch(clearUser());
