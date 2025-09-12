@@ -134,6 +134,7 @@ export default function List(): React.ReactNode {
         handleRefreshData();
     }, [featureType, itemsPerPage, pageNumber, sortBy, ascending]);
 
+    // Query handler with debounce
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
             dispatch(setPageNumber(1));
@@ -178,7 +179,7 @@ export default function List(): React.ReactNode {
         </div>
         <div className="divider" />
         <Table
-            tableName="Features"
+            tableName={featureType}
             pageNumber={pageNumber}
             itemsPerPage={itemsPerPage}
             sortBy={sortBy}

@@ -31,6 +31,123 @@
                 }
             }
 
+            .column-toggle-dropdown {
+                position: relative;
+                display: inline-block;
+
+                .column-toggle-button {
+                    display: flex;
+                    align-items: center;
+                    background: global.$primary;
+                    gap: 8px;
+                    padding: 8px 16px;
+                    border-radius: 12px;
+                    cursor: pointer;
+                    transition: background-color 0.2s;
+
+                    &:focus {
+                        outline: none;
+                    }
+
+                    &:hover {
+                        background-color: global.$primary-light;
+                    }
+                }
+
+                .column-toggle-menu {
+                    position: absolute;
+                    top: 100%;
+                    right: 0;
+                    background: global.$white;
+                    border: 1px solid rgba(global.$primary-lighter, .25);
+                    border-radius: 12px;
+                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                    z-index: 1000;
+                    min-width: 200px;
+                    margin-top: 4px;
+
+                    .column-toggle-header {
+                        display: flex;
+                        gap: 4px;
+                        padding: 12px;
+                        border-bottom: 1px solid rgba(global.$primary-lighter, .25);
+
+                        .toggle-all-button {
+                            flex: 1;
+                            text-align: center;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            padding: 8px 8px;
+                            border: 1px solid global.$off-white;
+                            background: global.$primary-light;
+                            border-radius: 8px;
+                            cursor: pointer;
+                            font-size: 12px;
+                            transition: background-color 0.2s;
+
+                            &:hover {
+                                background-color: global.$primary-lighter;
+                            }
+                        }
+                    }
+
+                    .column-toggle-list {
+                        max-height: 450px;
+                        overflow-y: auto;
+
+                        &::-webkit-scrollbar {
+                            width: 8px;
+                        }
+
+                        &::-webkit-scrollbar-track {
+                            background: none;
+                        }
+
+                        &::-webkit-scrollbar-thumb {
+                            background: global.$primary-lighter;
+                        }
+
+                        .column-toggle-item {
+                            display: flex;
+                            align-items: center;
+                            gap: 12px;
+                            padding: 12px;
+                            cursor: pointer;
+                            transition: background-color 0.2s;
+
+                            &:hover {
+                                background-color: #f5f5f5;
+
+                                .checkbox {
+                                    border-color: global.$primary;
+                                }
+                            }
+
+                            .checkbox {
+                                width: 16px;
+                                height: 16px;
+                                border: 2px solid #ddd;
+                                border-radius: 3px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                transition: all 0.2s;
+
+                                svg {
+                                    color: global.$primary;
+                                }
+                            }
+
+                            span {
+                                user-select: none;
+                            }
+                        }
+                    }
+                }
+            }
+
+
             .items-per-page-selector {
                 display: flex;
                 gap: 8px;
@@ -216,9 +333,7 @@
                         }
                     }
                 }
-
             }
-
         }
     }
 

@@ -1,7 +1,7 @@
 import "./style/table.css";
 import type { TableData } from "../../../lib/types";
-import { ChevronLeft, ChevronRight, Loader, Plus, RotateCcw, SortAsc, SortDesc } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Check, ChevronLeft, ChevronRight, Filter, Loader, Plus, RotateCcw, SortAsc, SortDesc } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import Input from "../input/Input";
 
 type Props = {
@@ -49,6 +49,10 @@ export default function Table(props: Props): React.ReactNode {
     const [maxPageCount, setMaxPageCount] = useState(1);
     const [gotoPageInput, setGotoPageInput] = useState('');
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const [visibleColumns, setVisibleColumns] = useState<Set<string>>(new Set());
+    const [showColumnToggle, setShowColumnToggle] = useState(false);
+
+    const [headersInitialized, setHeadersInitialized] = useState(false);
 
     const calculateTotalPages = (): number => {
         return Math.ceil(totalDataCount / itemsPerPage);
@@ -94,9 +98,65 @@ export default function Table(props: Props): React.ReactNode {
         setTimeout(() => setIsRefreshing(false), 250); // Simulate refresh time
     }
 
+    const toggleColumn = (columnId: string): void => {
+        const newVisibleColumns = new Set(visibleColumns);
+        if (newVisibleColumns.has(columnId)) {
+            newVisibleColumns.delete(columnId);
+        } else {
+            newVisibleColumns.add(columnId);
+        }
+        setVisibleColumns(newVisibleColumns);
+    };
+
+    const toggleAllColumns = (show: boolean): void => {
+        if (show) {
+            setVisibleColumns(new Set(data.headers.map(header => header.id)));
+        } else {
+            setVisibleColumns(new Set());
+        }
+    };
+
+    const filteredHeaders = useMemo(() =>
+        data.headers.filter(header =>
+            visibleColumns.has(header.id)
+        ),
+        [data.headers, visibleColumns]
+    );
+
+    const getFilteredRowData = (row: any[]): any[] => {
+        return row.filter((_, index) => visibleColumns.has(data.headers[index].id));
+    };
+
+    // Update max page count when itemsPerPage or totalDataCount changes
     useEffect(() => {
         setMaxPageCount(calculateTotalPages());
     }, [itemsPerPage, totalDataCount])
+
+    // Initialize visible columns when headers are loaded
+    useEffect(() => {
+        if (!headersInitialized && data.headers.length > 2) {
+            // Initialize all columns as visible
+            setVisibleColumns(new Set(data.headers.map(header => header.id)));
+            setHeadersInitialized(true);
+        }
+    }, [data.headers]);
+
+    // Enable column loading when the table name changes.
+    useEffect(() => {
+        setHeadersInitialized(false);
+    }, [tableName])
+
+    useEffect(() => {
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                setShowColumnToggle(false);
+            }
+        })
+
+        return () => {
+            document.removeEventListener("keydown", () => { });
+        }
+    }, [])
 
     return (
         <div className="data-table-wrapper">
@@ -113,6 +173,49 @@ export default function Table(props: Props): React.ReactNode {
                             type="text"
                         />
                     }
+
+                    {/* Column toggle dropdown */}
+                    <div className="column-toggle-dropdown">
+                        <button
+                            onClick={() => setShowColumnToggle(!showColumnToggle)}
+                            className="column-toggle-button"
+                        >
+                            <Filter />
+                            Columns
+                        </button>
+                        {showColumnToggle && (
+                            <div className="column-toggle-menu">
+                                <div className="column-toggle-header">
+                                    <button
+                                        onClick={() => toggleAllColumns(true)}
+                                        className="toggle-all-button"
+                                    >
+                                        Show All
+                                    </button>
+                                    <button
+                                        onClick={() => toggleAllColumns(false)}
+                                        className="toggle-all-button"
+                                    >
+                                        Hide All
+                                    </button>
+                                </div>
+                                <div className="column-toggle-list">
+                                    {data.headers.map((header) => (
+                                        <div
+                                            key={header.id}
+                                            className="column-toggle-item"
+                                            onClick={() => toggleColumn(header.id)}
+                                        >
+                                            <div className="checkbox">
+                                                {visibleColumns.has(header.id) && <Check size={14} />}
+                                            </div>
+                                            <span>{header.label}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
 
                     {/* Show items per page selector if setItemsPerPage is defined */}
                     {setItemsPerPage &&
@@ -147,7 +250,7 @@ export default function Table(props: Props): React.ReactNode {
                 <table>
                     <thead>
                         <tr>
-                            {data.headers.map((header, _) => (
+                            {filteredHeaders.map((header, _) => (
                                 <th id={`header-${header.id}`} key={`header-${header.id}`}>
                                     <div
                                         onClick={() => handleSort(header.id)}
@@ -175,7 +278,7 @@ export default function Table(props: Props): React.ReactNode {
                     <tbody>
                         {data.rows.map((row, rowIndex) => (
                             <tr key={rowIndex}>
-                                {row.map((cell, cellIndex) => (
+                                {getFilteredRowData(row).map((cell, cellIndex) => (
                                     <td key={cellIndex}>{cell}</td>
                                 ))}
                             </tr>

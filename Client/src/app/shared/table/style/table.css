@@ -86,6 +86,106 @@ body::-webkit-scrollbar-thumb {
 .data-table-wrapper .data-table-header .data-table-header-actions .input-container input {
   border-radius: 12px;
 }
+.data-table-wrapper .data-table-header .data-table-header-actions .column-toggle-dropdown {
+  position: relative;
+  display: inline-block;
+}
+.data-table-wrapper .data-table-header .data-table-header-actions .column-toggle-dropdown .column-toggle-button {
+  display: flex;
+  align-items: center;
+  background: #2B2D42;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.data-table-wrapper .data-table-header .data-table-header-actions .column-toggle-dropdown .column-toggle-button:focus {
+  outline: none;
+}
+.data-table-wrapper .data-table-header .data-table-header-actions .column-toggle-dropdown .column-toggle-button:hover {
+  background-color: #3B3E5A;
+}
+.data-table-wrapper .data-table-header .data-table-header-actions .column-toggle-dropdown .column-toggle-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: #FFFFFF;
+  border: 1px solid rgba(75, 78, 115, 0.25);
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  min-width: 200px;
+  margin-top: 4px;
+}
+.data-table-wrapper .data-table-header .data-table-header-actions .column-toggle-dropdown .column-toggle-menu .column-toggle-header {
+  display: flex;
+  gap: 4px;
+  padding: 12px;
+  border-bottom: 1px solid rgba(75, 78, 115, 0.25);
+}
+.data-table-wrapper .data-table-header .data-table-header-actions .column-toggle-dropdown .column-toggle-menu .column-toggle-header .toggle-all-button {
+  flex: 1;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 8px;
+  border: 1px solid #F8F8F8;
+  background: #3B3E5A;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.2s;
+}
+.data-table-wrapper .data-table-header .data-table-header-actions .column-toggle-dropdown .column-toggle-menu .column-toggle-header .toggle-all-button:hover {
+  background-color: #4B4E73;
+}
+.data-table-wrapper .data-table-header .data-table-header-actions .column-toggle-dropdown .column-toggle-menu .column-toggle-list {
+  max-height: 450px;
+  overflow-y: auto;
+}
+.data-table-wrapper .data-table-header .data-table-header-actions .column-toggle-dropdown .column-toggle-menu .column-toggle-list::-webkit-scrollbar {
+  width: 8px;
+}
+.data-table-wrapper .data-table-header .data-table-header-actions .column-toggle-dropdown .column-toggle-menu .column-toggle-list::-webkit-scrollbar-track {
+  background: none;
+}
+.data-table-wrapper .data-table-header .data-table-header-actions .column-toggle-dropdown .column-toggle-menu .column-toggle-list::-webkit-scrollbar-thumb {
+  background: #4B4E73;
+}
+.data-table-wrapper .data-table-header .data-table-header-actions .column-toggle-dropdown .column-toggle-menu .column-toggle-list .column-toggle-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.data-table-wrapper .data-table-header .data-table-header-actions .column-toggle-dropdown .column-toggle-menu .column-toggle-list .column-toggle-item:hover {
+  background-color: #f5f5f5;
+}
+.data-table-wrapper .data-table-header .data-table-header-actions .column-toggle-dropdown .column-toggle-menu .column-toggle-list .column-toggle-item:hover .checkbox {
+  border-color: #2B2D42;
+}
+.data-table-wrapper .data-table-header .data-table-header-actions .column-toggle-dropdown .column-toggle-menu .column-toggle-list .column-toggle-item .checkbox {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ddd;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.data-table-wrapper .data-table-header .data-table-header-actions .column-toggle-dropdown .column-toggle-menu .column-toggle-list .column-toggle-item .checkbox svg {
+  color: #2B2D42;
+}
+.data-table-wrapper .data-table-header .data-table-header-actions .column-toggle-dropdown .column-toggle-menu .column-toggle-list .column-toggle-item span {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
 .data-table-wrapper .data-table-header .data-table-header-actions .items-per-page-selector {
   display: flex;
   gap: 8px;
