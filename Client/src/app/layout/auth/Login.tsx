@@ -42,7 +42,6 @@ export default function Login(): React.ReactNode {
 
         try {
             const response = await AuthApi.login(user);
-            console.log(response);
 
             if (!response.isSuccess) {
                 dispatch(clearUser());
