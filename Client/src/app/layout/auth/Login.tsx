@@ -42,10 +42,13 @@ export default function Login(): React.ReactNode {
 
         try {
             const response = await AuthApi.login(user);
+            console.log(response);
+
             if (!response.isSuccess) {
                 dispatch(clearUser());
                 setLoading(false);
                 setLoginError("Invalid username or password");
+                return;
             }
 
             dispatch(setUser(response.data));
