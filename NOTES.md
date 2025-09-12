@@ -7,6 +7,7 @@
  - PROTOBUF
  - (maybe) Height constraint on first person view
  - Column toggle
+ - Create custom FirstPersonController to handle WASD control
 
 ### Optimization Notes
 
