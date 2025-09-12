@@ -11,11 +11,11 @@ import { NavLink } from "react-router";
 export default function Header(): React.ReactNode {
 
     return (
-        <div id="header">
+        <>
             <NavLink to="/" id="logo-container" className="shadow">
                 <Logo />
             </NavLink>
             <Actions />
-        </div>
+        </>
     );
 }
