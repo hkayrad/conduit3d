@@ -25,7 +25,7 @@
                 color: global.$primary;
                 width: 200px;
                 min-width: 0px !important;
-                
+
                 input {
                     border-radius: 12px;
                 }
@@ -140,7 +140,8 @@
                     color: global.$white;
                     user-select: none;
 
-                    &:last-child {
+                    &:last-child,
+                    &:first-child {
                         .header-content {
                             justify-content: center;
 
@@ -198,6 +199,18 @@
 
                                 &:focus {
                                     outline: none
+                                }
+
+                                &:has(.disabled:hover) {
+                                    background: none;
+                                }
+
+                                .disabled {
+                                    color: rgba(global.$white, .25);
+
+                                    &:hover {
+                                        cursor: not-allowed;
+                                    }
                                 }
                             }
                         }
@@ -289,6 +302,7 @@
     from {
         transform: rotate(0deg);
     }
+
     to {
         transform: rotate(-360deg);
     }

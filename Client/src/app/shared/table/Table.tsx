@@ -162,7 +162,9 @@ export default function Table(props: Props): React.ReactNode {
                                                 disabled={sortBy !== header.id}
                                                 onClick={() => setAscending(!ascending)}
                                             >
-                                                {sortBy === header.id ? (ascending ? <SortDesc /> : <SortAsc />) : ""}
+                                                {sortBy === header.id ?
+                                                    ascending ? <SortAsc /> : <SortDesc /> :
+                                                    <SortAsc className="disabled" />}
                                             </button>
                                         </div>
                                     </div>

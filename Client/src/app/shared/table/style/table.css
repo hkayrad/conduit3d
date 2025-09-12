@@ -184,10 +184,10 @@ body::-webkit-scrollbar-thumb {
      -moz-user-select: none;
           user-select: none;
 }
-.data-table-wrapper .data-table table tr th:last-child .header-content {
+.data-table-wrapper .data-table table tr th:last-child .header-content, .data-table-wrapper .data-table table tr th:first-child .header-content {
   justify-content: center;
 }
-.data-table-wrapper .data-table table tr th:last-child .header-content .header-actions {
+.data-table-wrapper .data-table table tr th:last-child .header-content .header-actions, .data-table-wrapper .data-table table tr th:first-child .header-content .header-actions {
   display: none;
 }
 .data-table-wrapper .data-table table tr th#header-userRole, .data-table-wrapper .data-table table tr th#header-actions, .data-table-wrapper .data-table table tr th#header-isActive {
@@ -231,6 +231,15 @@ body::-webkit-scrollbar-thumb {
 }
 .data-table-wrapper .data-table table tr th .header-content .header-actions button:focus {
   outline: none;
+}
+.data-table-wrapper .data-table table tr th .header-content .header-actions button:has(.disabled:hover) {
+  background: none;
+}
+.data-table-wrapper .data-table table tr th .header-content .header-actions button .disabled {
+  color: rgba(255, 255, 255, 0.25);
+}
+.data-table-wrapper .data-table table tr th .header-content .header-actions button .disabled:hover {
+  cursor: not-allowed;
 }
 .data-table-wrapper .data-table-footer {
   display: flex;
