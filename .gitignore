@@ -485,5 +485,7 @@ $RECYCLE.BIN/
 
 localhost.pem
 localhost-key.pem
+localhost.crt
+localhost.key
 
 TileService/*.mbtiles

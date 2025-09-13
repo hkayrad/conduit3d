@@ -7,16 +7,16 @@ export default defineConfig({
   plugins: [react()],
   server: {
     https: {
-      key: 'localhost-key.pem',
-      cert: 'localhost.pem',
+      key: 'localhost.key',
+      cert: 'localhost.crt',
     },
     host: 'localhost',
     port: 3000
   },
   preview: {
     https: {
-      key: 'localhost-key.pem',
-      cert: 'localhost.pem',
+      key: 'localhost.key',
+      cert: 'localhost.crt',
     },
     host: 'localhost',
     port: 3000

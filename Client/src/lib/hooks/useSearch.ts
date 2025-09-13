@@ -18,7 +18,8 @@ export function useSearch(query: string, maxResults: number = 10) {
         BINA = "bina",
         TRAFO = "trafo",
         DIREK = "direk",
-        HAT = "hat"
+        HAT = "hat",
+        REKORTMAN = "rekortman"
     }
 
     const _wrapInFeature = (geometry: GeoJSON.Geometry): GeoJSON.Feature => {
@@ -30,9 +31,6 @@ export function useSearch(query: string, maxResults: number = 10) {
     }
 
     const _handleAdrBinaSearch = async (binaQuery: string) => {
-        if (binaQuery.length === 0)
-            return [];
-
         const binaResponse = await AdrBinaApi.fetchAll(maxResults, 1, 'id', true, binaQuery);
 
         if (!binaResponse.isSuccess) {
@@ -58,9 +56,6 @@ export function useSearch(query: string, maxResults: number = 10) {
     }
 
     const _handleTrafoSearch = async (trafoQuery: string) => {
-        if (trafoQuery.length === 0)
-            return [];
-
         const trafoResponse = await TrafoBinaApi.fetchAll(maxResults, 1, 'id', true, trafoQuery);
 
         if (!trafoResponse.isSuccess) {
@@ -84,9 +79,6 @@ export function useSearch(query: string, maxResults: number = 10) {
     }
 
     const _handleDirekSearch = async (direkQuery: string) => {
-        if (direkQuery.length === 0)
-            return [];
-
         const [agResponse, aydResponse, ogResponse] = await Promise.all([
             AgDirekApi.fetchAll(maxResults, 1, 'id', true, direkQuery),
             AydDirekApi.fetchAll(maxResults, 1, 'id', true, direkQuery),
@@ -100,7 +92,7 @@ export function useSearch(query: string, maxResults: number = 10) {
                 const geometry: GeoJSON.Geometry = JSON.parse(direk.geoJson);
                 return {
                     id: `direk-ag-${direk.id}`,
-                    title: `${direk.cinsi} ${direk.tipi}`,
+                    title: `${direk.cinsi} ${direk.tipi} (${direk.boyOzellik})`,
                     subtitle: direk.direkNo,
                     type: FeatureType.POLE,
                     position: findAverageLonLat(geometry, 2),
@@ -117,7 +109,7 @@ export function useSearch(query: string, maxResults: number = 10) {
                 const geometry: GeoJSON.Geometry = JSON.parse(direk.geoJson);
                 return {
                     id: `direk-ayd-${direk.id}`,
-                    title: `${direk.cinsi} ${direk.tipi}`,
+                    title: `${direk.cinsi} ${direk.tipi} (${direk.boyOzellik})`,
                     subtitle: direk.direkNo,
                     type: FeatureType.POLE,
                     position: findAverageLonLat(geometry, 2),
@@ -134,7 +126,7 @@ export function useSearch(query: string, maxResults: number = 10) {
                 const geometry: GeoJSON.Geometry = JSON.parse(direk.geoJson);
                 return {
                     id: `direk-og-${direk.id}`,
-                    title: `${direk.cinsi} ${direk.tipi}`,
+                    title: `${direk.cinsi} ${direk.tipi} (${direk.boyOzellik})`,
                     subtitle: direk.direkNo,
                     type: FeatureType.POLE,
                     position: findAverageLonLat(geometry, 2),
@@ -149,15 +141,35 @@ export function useSearch(query: string, maxResults: number = 10) {
         return direkResults;
     }
 
-    const _handleHatSearch = async (hatQuery: string) => {
-        if (hatQuery.length === 0)
-            return [];
+    const _handleRekortmanSearch = async (rekortmanQuery: string) => {
+        const rekortmanResponse = await RekortmanApi.fetchAll(maxResults, 1, 'id', true, rekortmanQuery);
 
-        const [agResponse, rekortmanResponse, ogResponse] = await Promise.all([
+        if (!rekortmanResponse.isSuccess) {
+            console.error("Rekortman API error:", rekortmanResponse.message);
+            return [];
+        }
+
+        const rekortmanResults = rekortmanResponse.data.map(hat => {
+            const geometry: GeoJSON.Geometry = JSON.parse(hat.geoJson);
+            return {
+                id: `hat-ag-${hat.id}`,
+                title: `Rekortman: ${hat.tipi}`,
+                subtitle: hat.kesit,
+                type: FeatureType.REKORTMAN,
+                position: findAverageLonLat(geometry, 2),
+                feature: _wrapInFeature(geometry)
+            }
+        });
+
+        return rekortmanResults;
+    }
+
+    const _handleHatSearch = async (hatQuery: string) => {
+        const [agResponse, ogResponse] = await Promise.all([
             AgHatApi.fetchAll(maxResults, 1, 'id', true, hatQuery),
-            RekortmanApi.fetchAll(maxResults, 1, 'id', true, hatQuery),
             OgHatApi.fetchAll(maxResults, 1, 'id', true, hatQuery)
         ]);
+        const rekortmanResults = await _handleRekortmanSearch(hatQuery);
 
         const hatResults: any[] = [];
 
@@ -167,7 +179,7 @@ export function useSearch(query: string, maxResults: number = 10) {
                 return {
                     id: `hat-ag-${hat.id}`,
                     title: `${hat.tipi} ${hat.cinsi}`,
-                    subtitle: hat.kesit || "Kesitsiz Hat",
+                    subtitle: hat.kesit,
                     type: FeatureType.LINE,
                     position: findAverageLonLat(geometry, 2),
                     feature: _wrapInFeature(geometry)
@@ -178,30 +190,13 @@ export function useSearch(query: string, maxResults: number = 10) {
             console.error("AG Hat API error:", agResponse.message);
         }
 
-        if (rekortmanResponse.isSuccess) {
-            const aydHatResults = rekortmanResponse.data.map(hat => {
-                const geometry: GeoJSON.Geometry = JSON.parse(hat.geoJson);
-                return {
-                    id: `hat-ag-${hat.id}`,
-                    title: `${hat.tipi}`,
-                    subtitle: hat.kesit || "Kesitsiz Hat",
-                    type: FeatureType.REKORTMAN,
-                    position: findAverageLonLat(geometry, 2),
-                    feature: _wrapInFeature(geometry)
-                }
-            });
-            hatResults.push(...aydHatResults);
-        } else {
-            console.error("AYD Hat API error:", rekortmanResponse.message);
-        }
-
         if (ogResponse.isSuccess) {
             const ogHatResults = ogResponse.data.map(hat => {
                 const geometry: GeoJSON.Geometry = JSON.parse(hat.geoJson);
                 return {
                     id: `hat-og-${hat.id}`,
                     title: `${hat.tipi} ${hat.cinsi}`,
-                    subtitle: hat.kesit || "Kesitsiz Hat",
+                    subtitle: hat.kesit,
                     type: FeatureType.LINE,
                     position: findAverageLonLat(geometry, 2),
                     feature: _wrapInFeature(geometry)
@@ -210,6 +205,10 @@ export function useSearch(query: string, maxResults: number = 10) {
             hatResults.push(...ogHatResults);
         } else {
             console.error("OG Hat API error:", ogResponse.message);
+        }
+
+        if (rekortmanResults.length > 0) {
+            hatResults.push(...rekortmanResults);
         }
 
         return hatResults;
@@ -256,6 +255,11 @@ export function useSearch(query: string, maxResults: number = 10) {
                 case QueryKeywords.DIREK:
                     const direkResults = await _handleDirekSearch(queryPart);
                     aggregatedResults = aggregatedResults.concat(direkResults);
+                    break;
+
+                case QueryKeywords.REKORTMAN:
+                    const rekortmanResults = await _handleRekortmanSearch(queryPart);
+                    aggregatedResults = aggregatedResults.concat(rekortmanResults);
                     break;
 
                 case QueryKeywords.HAT:

@@ -2,7 +2,7 @@
 	order jwtauth before basicauth
 }
 {$BASE_URL} {
-    tls /usr/share/caddy/localhost.pem /usr/share/caddy/localhost-key.pem
+    tls /usr/share/caddy/localhost.crt /usr/share/caddy/localhost.key
 
 	header {
         Access-Control-Allow-Origin "{$BASE_URL}:3000"

@@ -41,7 +41,7 @@ public class UserRepository(UsersContext context) : IUserRepository
                     @UserRole, 
                     @Name, 
                     @IsActive,
-                    crypt(@Password, gen_salt('bf'))
+                    crypt(@Password, gen_salt('bf', 13))
                 )
                 RETURNING id, created_at";
 

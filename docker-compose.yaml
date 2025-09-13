@@ -179,8 +179,8 @@ services:
     volumes:
       - ./ApiGateway/Caddyfile:/etc/caddy/Caddyfile
       - ./ApiGateway/docs.html:/usr/share/caddy/docs.html
-      - ./ApiGateway/localhost.pem:/usr/share/caddy/localhost.pem
-      - ./ApiGateway/localhost-key.pem:/usr/share/caddy/localhost-key.pem
+      - ./ApiGateway/localhost.crt:/usr/share/caddy/localhost.crt
+      - ./ApiGateway/localhost.key:/usr/share/caddy/localhost.key
       - caddy_data:/data
     restart: unless-stopped
 
