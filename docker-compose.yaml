@@ -100,7 +100,7 @@ services:
     # ports:
     #   - "5001:8080"
     restart: unless-stopped
-        
+
   poles_service:
     build:
       context: .
@@ -142,6 +142,7 @@ services:
       args:
         VITE_API_URL: ${VITE_API_URL}
         VITE_TILE_SERVER_URL: ${VITE_TILE_SERVER_URL}
+        VITE_ENVIRONMENT: ${VITE_ENVIRONMENT}
     container_name: client
     networks:
       - api_gateway_network
@@ -157,7 +158,7 @@ services:
     volumes:
       - tile_data:/tileData
       - ./TileService/config.yml:/tileData/config.yml
-    command: ["--config", "/tileData/config.yml"]
+    command: [ "--config", "/tileData/config.yml" ]
     restart: unless-stopped
 
   api_gateway:
@@ -199,4 +200,3 @@ volumes:
   auth_data:
   caddy_data:
   tile_data:
-  
