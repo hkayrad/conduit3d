@@ -51,6 +51,8 @@ export default function DeckglMap(): React.ReactNode {
     const zIndexCounter = useRef(1000);
 
     // Local State
+    const [debugBinaVisible, setDebugBinaVisible] = useState<boolean>(false);
+
     const [mapViewState, setMapViewState] = useState<C3D_ViewState>({
         [C3D_MapViewType.Cartesian]: {
             longitude: /* searchParams.get("cLon") ? parseFloat(searchParams.get("cLon")!) :  */cartesian.longitude,
@@ -180,7 +182,7 @@ export default function DeckglMap(): React.ReactNode {
         }),
 
         new GeoJsonLayer({
-            id: "buildings-layer",
+            id: "debug-bina-layer",
             data: buildingBina ?? { type: "FeatureCollection", features: [] },
             getElevation: (d) => d.properties.yukseklik,
             getFillColor: COLORS.ADR_BINA,
@@ -189,7 +191,7 @@ export default function DeckglMap(): React.ReactNode {
             pickable: true,
             autoHighlight: true,
             highlightColor: COLORS.HOVER,
-            visible: visibility.adrBina,
+            visible: debugBinaVisible,
         }),
 
         new ColumnLayer({
@@ -221,6 +223,7 @@ export default function DeckglMap(): React.ReactNode {
         rekortman,
         overgroundLineWidth,
         undergroundLineWidth,
+        debugBinaVisible
     ]);
 
     const layerFilter: DeckProps['layerFilter'] = useCallback(
@@ -375,7 +378,10 @@ export default function DeckglMap(): React.ReactNode {
                     />
                 ))}
                 <GlobalSearch flyTo={flyTo} />
-                <LayerControl />
+                <LayerControl
+                    debugBinaVisible={debugBinaVisible}
+                    setDebugBinaVisible={setDebugBinaVisible}
+                />
                 <MousePosition mouseLonLat={mouseLonLat} />
                 <HoverCard
                     hoveredFeature={hoveredFeature}

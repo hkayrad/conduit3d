@@ -18,7 +18,7 @@ export interface MapState {
         aydDirek: boolean,
         agHat: boolean,
         ogHat: boolean,
-        rekortman: boolean
+        rekortman: boolean,
     },
     filters: {
         agDirek: {

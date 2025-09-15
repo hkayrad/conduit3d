@@ -12,7 +12,13 @@ import SettingToggleButton from "../../../shared/layerControl/settingToggleButto
  * @component
  * @returns The rendered component
  */
-export default function LayerControl(): React.ReactNode {
+export default function LayerControl({
+    debugBinaVisible,
+    setDebugBinaVisible
+}: {
+    debugBinaVisible: boolean;
+    setDebugBinaVisible: React.Dispatch<React.SetStateAction<boolean>>;
+}): React.ReactNode {
 
     const dispatch = useAppDispatch();
     const { isLayerControlsOpen, isHoverInfoVisible, visibility, types, filters } = useAppSelector(selectMapState);
@@ -66,6 +72,12 @@ export default function LayerControl(): React.ReactNode {
                     />
                 </LayerControlSection>
                 <LayerControlSection title="buildings">
+                    <LayerControlDropdown
+                        icon={<Building />}
+                        name="Debug Buildings"
+                        isLayerVisible={debugBinaVisible}
+                        toggleLayer={() => setDebugBinaVisible(!debugBinaVisible)}
+                    />
                     <LayerControlDropdown
                         icon={<Building />}
                         name="Adr Bina"
