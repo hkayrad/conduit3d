@@ -5,6 +5,7 @@ import { setType } from "../../mapSlice";
 import { AgHatApi } from "../../../../../lib/api";
 import { FeatureType } from "../../../../../lib/enums";
 import { useAppDispatch } from "../../../../../lib/hooks";
+import { Logger } from "../../../../../lib/utils/logger";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>
@@ -55,7 +56,7 @@ export default function AgHatComponent(props: Props): null {
 
             setData(dataList);
         } catch (error) {
-            console.error("Error fetching AgHat data:", error);
+            Logger.error("Error fetching AgHat data:", error);
         }
     }, [extent]);
 
@@ -68,7 +69,7 @@ export default function AgHatComponent(props: Props): null {
 
             dispatch(setType({ key: "agHat", types: response.data }));
         } catch (error) {
-            console.error("Error fetching AgHat types:", error);
+            Logger.error("Error fetching AgHat types:", error);
         }
     }, []);
 

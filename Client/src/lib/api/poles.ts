@@ -1,6 +1,7 @@
 import instance from "../instance";
 import type { ApiResponse, Direk, Extent } from "../types";
 import { capitalizeFirstLetter } from "../utils";
+import { Logger } from "../utils/logger";
 
 /** 
  * Class representing the AG Direk API 
@@ -38,7 +39,7 @@ export class AgDirekApi {
 
             return response.data;
         } catch (error) {
-            console.error("Fetch AgDirek error:", error);
+            Logger.error("Fetch AgDirek error:", error);
             throw error;
         }
     }
@@ -52,7 +53,7 @@ export class AgDirekApi {
             const response = await instance.get<ApiResponse<string[]>>("agDirek/types");
             return response.data;
         } catch (error) {
-            console.error("Fetch AgDirek types error:", error);
+            Logger.error("Fetch AgDirek types error:", error);
             throw error;
         }
     }
@@ -74,7 +75,7 @@ export class AgDirekApi {
             return response.data;
         }
         catch (error) {
-            console.error("Fetch AgDirek count error:", error);
+            Logger.error("Fetch AgDirek count error:", error);
             throw error;
         }
     }
@@ -114,7 +115,7 @@ export class OgMusDirekApi {
             });
             return response.data;
         } catch (error) {
-            console.error("Fetch OgMusDirek error:", error);
+            Logger.error("Fetch OgMusDirek error:", error);
             throw error;
         }
     }
@@ -128,7 +129,7 @@ export class OgMusDirekApi {
             const response = await instance.get<ApiResponse<string[]>>("ogMusDirek/types");
             return response.data;
         } catch (error) {
-            console.error("Fetch OgMusDirek types error:", error);
+            Logger.error("Fetch OgMusDirek types error:", error);
             throw error;
         }
     }
@@ -149,7 +150,7 @@ export class OgMusDirekApi {
             });
             return response.data;
         } catch (error) {
-            console.error("Fetch OgMusDirek count error:", error);
+            Logger.error("Fetch OgMusDirek count error:", error);
             throw error;
         }
     }
@@ -190,7 +191,7 @@ export class AydDirekApi {
             });
             return response.data;
         } catch (error) {
-            console.error("Fetch AydDirek error:", error);
+            Logger.error("Fetch AydDirek error:", error);
             throw error;
         }
     }
@@ -204,7 +205,7 @@ export class AydDirekApi {
             const response = await instance.get<ApiResponse<string[]>>("aydDirek/types");
             return response.data;
         } catch (error) {
-            console.error("Fetch AydDirek types error:", error);
+            Logger.error("Fetch AydDirek types error:", error);
             throw error;
         }
     }
@@ -225,7 +226,7 @@ export class AydDirekApi {
             });
             return response.data;
         } catch (error) {
-            console.error("Fetch AydDirek count error:", error);
+            Logger.error("Fetch AydDirek count error:", error);
             throw error;
         }
     }

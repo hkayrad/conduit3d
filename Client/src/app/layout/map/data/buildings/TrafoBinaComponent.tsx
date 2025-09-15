@@ -2,6 +2,7 @@ import { useCallback, useEffect } from "react";
 import { TrafoBinaApi } from "../../../../../lib/api";
 import type { Extent, TrafoBina } from "../../../../../lib/types";
 import { FeatureType } from "../../../../../lib/enums";
+import { Logger } from "../../../../../lib/utils/logger";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
@@ -45,7 +46,7 @@ export default function TrafoBinaComponent(props: Props): null {
 
             setData(dataList);
         } catch (error) {
-            console.error("Error fetching TrafoBina data:", error);
+            Logger.error("Error fetching TrafoBina data:", error);
         }
     }, [extent]);
 

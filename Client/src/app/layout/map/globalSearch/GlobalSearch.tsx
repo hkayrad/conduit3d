@@ -43,11 +43,6 @@ export default function GlobalSearch(props: Props) {
 
     // Effects
     useEffect(() => {
-        // Debounce search input
-        if (query.trim() === "") {
-            return;
-        }
-
         const timeoutId = setTimeout(() => {
             handleSearch();
         }, 300);

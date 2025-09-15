@@ -5,6 +5,7 @@ import { lineStringToSegments } from "../../../../../lib/utils";
 import { setType } from "../../mapSlice";
 import { FeatureType, HatCinsi } from "../../../../../lib/enums";
 import { useAppDispatch } from "../../../../../lib/hooks";
+import { Logger } from "../../../../../lib/utils/logger";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
@@ -53,7 +54,7 @@ export default function RekortmanComponent(props: Props): null {
 
             setData(dataList);
         } catch (error) {
-            console.error("Error fetching Rekortman data:", error);
+            Logger.error("Error fetching Rekortman data:", error);
         }
     }, [extent]);
 
@@ -67,7 +68,7 @@ export default function RekortmanComponent(props: Props): null {
 
             dispatch(setType({ key: "rekortman", types: response.data }));
         } catch (error) {
-            console.error("Error fetching Rekortman types:", error);
+            Logger.error("Error fetching Rekortman types:", error);
         }
     }, []);
 

@@ -5,6 +5,7 @@ import { AdminModalType } from "../enums";
 import { setAscending, setItemsPerPage, setPageNumber, setQuery, setSortBy } from "../../app/layout/admin/adminSlice";
 import { useAppDispatch } from "./reduxHooks";
 import { InputSanitizer } from "../utils";
+import { Logger } from "../utils/logger";
 
 /**
  * Returns admin related functions and handlers.
@@ -55,7 +56,7 @@ export function useAdmin(
             setUsers(dataResponse.data);
             setUserCounts(countResponse.data);
         } catch (error) {
-            console.error("Error fetching users:", error);
+            Logger.error("Error fetching users:", error);
             setUsers([]);
             setUserCounts({ totalUsers: 0, activeUsers: 0, inactiveUsers: 0 });
             setErrorText("An error occurred while fetching users.");
@@ -83,7 +84,7 @@ export function useAdmin(
             setUserToAddModify({} as User);
             setErrorText("");
         } catch (error) {
-            console.error("Error deleting user:", error);
+            Logger.error("Error deleting user:", error);
             setErrorText("An error occurred while deleting the user.");
         }
     }
@@ -109,7 +110,7 @@ export function useAdmin(
             setUserToAddModify({} as User);
             setErrorText("");
         } catch (error) {
-            console.error("Error editing user:", error);
+            Logger.error("Error editing user:", error);
             setErrorText("An error occurred while editing the user.");
         }
     }
@@ -135,7 +136,7 @@ export function useAdmin(
             setUserToAddModify({} as User);
             setErrorText("");
         } catch (error) {
-            console.error("Error adding user:", error);
+            Logger.error("Error adding user:", error);
             setErrorText("An error occurred while adding the user.");
         }
     }

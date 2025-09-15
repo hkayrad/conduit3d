@@ -5,6 +5,7 @@ import { lineStringToSegments } from "../../../../../lib/utils";
 import { setType } from "../../mapSlice";
 import { FeatureType } from "../../../../../lib/enums";
 import { useAppDispatch } from "../../../../../lib/hooks";
+import { Logger } from "../../../../../lib/utils/logger";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
@@ -54,7 +55,7 @@ export default function OgHatComponent(props: Props): null {
 
             setData(dataList);
         } catch (error) {
-            console.error("Error fetching OgHat data:", error);
+            Logger.error("Error fetching OgHat data:", error);
         }
     }, [extent]);
 
@@ -67,7 +68,7 @@ export default function OgHatComponent(props: Props): null {
 
             dispatch(setType({ key: "ogHat", types: response.data }));
         } catch (error) {
-            console.error("Error fetching OgHat types:", error);
+            Logger.error("Error fetching OgHat types:", error);
         }
     }, []);
 

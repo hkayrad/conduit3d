@@ -3,6 +3,7 @@ import { mapSlice } from '../app/layout/map/mapSlice';
 import { authSlice } from '../app/layout/auth/authSlice';
 import { adminSlice } from '../app/layout/admin/adminSlice';
 import { listSlice } from '../app/layout/list/listSlice';
+import { Logger } from './utils/logger';
 
 /**
  * Load the user state from localStorage.
@@ -18,7 +19,7 @@ const loadUserFromLocalStorage = () => {
             }
         };
     } catch (e) {
-        console.error("Error loading state from localStorage:", e);
+        Logger.error("Error loading state from localStorage:", e);
         return undefined;
     }
 }
@@ -32,7 +33,7 @@ const saveUserToLocalStorage = (state: any) => {
         const serializedState = JSON.stringify(state.auth.user);
         localStorage.setItem('userState', serializedState);
     } catch (e) {
-        console.error("Error saving state to localStorage:", e);
+        Logger.error("Error saving state to localStorage:", e);
     }
 }
 

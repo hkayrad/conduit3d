@@ -2,6 +2,7 @@ import type { ApiResponse, LoginUserDto, User, UserCounts } from "../types";
 import instance from "../instance";
 import Cookies from "js-cookie";
 import { capitalizeFirstLetter } from "../utils";
+import { Logger } from "../utils/logger";
 
 /**
  * Class representing the authentication API.
@@ -21,7 +22,7 @@ export class AuthApi {
 
             return response.data;
         } catch (error) {
-            console.error("Login error:", error);
+            Logger.error("Login error:", error);
             throw error;
         }
     }
@@ -60,7 +61,7 @@ export class AuthApi {
             });
             return response.data;
         } catch (error) {
-            console.error("Fetch users error:", error);
+            Logger.error("Fetch users error:", error);
             throw error;
         }
     }
@@ -79,7 +80,7 @@ export class AuthApi {
             });
             return response.data;
         } catch (error) {
-            console.error("Fetch user count error:", error);
+            Logger.error("Fetch user count error:", error);
             throw error;
         }
     }
@@ -94,7 +95,7 @@ export class AuthApi {
             const response = await instance.delete<ApiResponse<void>>(`/auth/${userId}`);
             return response.data;
         } catch (error) {
-            console.error("Delete user error:", error);
+            Logger.error("Delete user error:", error);
             throw error;
         }
     }
@@ -110,7 +111,7 @@ export class AuthApi {
             const response = await instance.put<ApiResponse<User>>(`/auth/${userId}`, user);
             return response.data;
         } catch (error) {
-            console.error("Update user error:", error);
+            Logger.error("Update user error:", error);
             throw error;
         }
     }
@@ -125,7 +126,7 @@ export class AuthApi {
             const response = await instance.post<ApiResponse<User>>(`/auth`, user);
             return response.data;
         } catch (error) {
-            console.error("Create user error:", error);
+            Logger.error("Create user error:", error);
             throw error;
         }
     }

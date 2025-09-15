@@ -4,6 +4,7 @@ import type { Direk, Extent } from "../../../../../lib/types";
 import { setType } from "../../mapSlice";
 import { FeatureType } from "../../../../../lib/enums";
 import { useAppDispatch } from "../../../../../lib/hooks";
+import { Logger } from "../../../../../lib/utils/logger";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
@@ -55,7 +56,7 @@ export default function OgMusDirekComponent(props: Props): null {
 
             setData(dataList);
         } catch (error) {
-            console.error("Error fetching OgMusDirek data:", error);
+            Logger.error("Error fetching OgMusDirek data:", error);
         }
     }, [extent]);
 
@@ -68,7 +69,7 @@ export default function OgMusDirekComponent(props: Props): null {
 
             dispatch(setType({ key: "ogMusDirek", types: response.data }));
         } catch (error) {
-            console.error("Error fetching OgMusDirek types:", error);
+            Logger.error("Error fetching OgMusDirek types:", error);
         }
     }, []);
 

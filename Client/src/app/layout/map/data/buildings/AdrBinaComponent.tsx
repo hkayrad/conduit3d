@@ -2,6 +2,7 @@ import { useCallback, useEffect } from "react";
 import type { AdrBina, Extent } from "../../../../../lib/types"
 import { AdrBinaApi } from "../../../../../lib/api";
 import { FeatureType } from "../../../../../lib/enums";
+import { Logger } from "../../../../../lib/utils/logger";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
@@ -54,7 +55,7 @@ export default function AdrBinaComponent(props: Props): null {
 
             setData(dataList);
         } catch (error) {
-            console.error("Error fetching AdrBina data:", error);
+            Logger.error("Error fetching AdrBina data:", error);
         }
     }, [extent]);
 

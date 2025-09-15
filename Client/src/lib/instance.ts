@@ -1,6 +1,7 @@
 import axios, { type AxiosResponse } from "axios";
 import { store } from "./store";
 import { setIsDataLoading } from "../app/layout/map/mapSlice";
+import { Logger } from "./utils/logger";
 
 // Create an Axios instance with default configuration
 const instance = axios.create({
@@ -23,7 +24,7 @@ instance.interceptors.response.use((response: AxiosResponse) => {
     store.dispatch(setIsDataLoading(false));
     return response;
 }, (error) => {
-    console.error(error.response?.data);
+    Logger.error(error.response?.data);
     store.dispatch(setIsDataLoading(false));
     return error.response;
 })

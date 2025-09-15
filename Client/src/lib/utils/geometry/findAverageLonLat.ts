@@ -6,9 +6,6 @@
 export function findAverageLonLat(feature: GeoJSON.Geometry, trimLength: number = 20): [number, number] {
     if (!feature) return [0, 0];
 
-    console.log(feature);
-
-
     const coords = feature.type === "Point" ? [feature.coordinates] :
         feature.type === "LineString" ? feature.coordinates :
             feature.type === "Polygon" ? feature.coordinates[0] :

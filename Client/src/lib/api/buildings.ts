@@ -1,6 +1,7 @@
 import instance from "../instance";
 import type { AdrBina, ApiResponse, Extent, TrafoBina } from "../types";
 import { capitalizeFirstLetter } from "../utils";
+import { Logger } from "../utils/logger";
 
 /**
  * Class representing the ADR Bina API
@@ -37,7 +38,7 @@ export class AdrBinaApi {
             });
             return response.data;
         } catch (error) {
-            console.error("Fetch AdrBina error:", error);
+            Logger.error("Fetch AdrBina error:", error);
             throw error;
         }
     }
@@ -58,7 +59,7 @@ export class AdrBinaApi {
             });
             return response.data;
         } catch (error) {
-            console.error("Fetch AdrBina count error:", error);
+            Logger.error("Fetch AdrBina count error:", error);
             throw error;
         }
     }
@@ -100,7 +101,7 @@ export class TrafoBinaApi {
             });
             return response.data;
         } catch (error) {
-            console.error("Fetch TrafoBina error:", error);
+            Logger.error("Fetch TrafoBina error:", error);
             throw error;
         }
     }
@@ -121,7 +122,7 @@ export class TrafoBinaApi {
             });
             return response.data;
         } catch (error) {
-            console.error("Fetch TrafoBina count error:", error);
+            Logger.error("Fetch TrafoBina count error:", error);
             throw error;
         }
     }
