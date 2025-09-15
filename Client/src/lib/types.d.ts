@@ -62,6 +62,8 @@ export type AdrBina = {
     geoJson: string
 }
 
+export type Building = AdrBina;
+
 export type TrafoBina = {
     id: number,
     adi: string,

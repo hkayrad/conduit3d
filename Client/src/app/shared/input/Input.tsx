@@ -27,7 +27,7 @@ export default function Input(props: Props): React.ReactNode {
     return (
         <div className="input-container">
             <label className="input-element">
-                {label && <p>{label}{required && <span className="error">*</span>}</p>}
+                {label && <p>{label}{required && <span className="error-fg">*</span>}</p>}
                 <input
                     type={type ? type === "password" && isPasswordVisible ? "text" : type : "text"}
                     id={id}

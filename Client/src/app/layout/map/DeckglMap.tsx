@@ -71,6 +71,7 @@ export default function DeckglMap(): React.ReactNode {
 
     // GeoJSON Data States
     const [adrBina, setAdrBina] = useState<GeoJSON.FeatureCollection>(null!);
+    const [buildingBina, setBuildingBina] = useState<GeoJSON.FeatureCollection>(null!);
     const [trafoBina, setTrafoBina] = useState<GeoJSON.FeatureCollection>(null!);
     const [agDirek, setAgDirek] = useState<GeoJSON.FeatureCollection>(null!);
     const [ogMusDirek, setOgMusDirek] = useState<GeoJSON.FeatureCollection>(null!);
@@ -177,6 +178,20 @@ export default function DeckglMap(): React.ReactNode {
             highlightColor: COLORS.HOVER,
             visible: visibility.adrBina,
         }),
+
+        new GeoJsonLayer({
+            id: "buildings-layer",
+            data: buildingBina ?? { type: "FeatureCollection", features: [] },
+            getElevation: (d) => d.properties.yukseklik,
+            getFillColor: COLORS.ADR_BINA,
+            filled: true,
+            extruded: true,
+            pickable: true,
+            autoHighlight: true,
+            highlightColor: COLORS.HOVER,
+            visible: visibility.adrBina,
+        }),
+
         new ColumnLayer({
             id: "trafo-bina-layer",
             data: trafoBina ? trafoBina.features : [],
@@ -196,6 +211,7 @@ export default function DeckglMap(): React.ReactNode {
         filters,
         visibility,
         adrBina,
+        buildingBina,
         trafoBina,
         agDirek,
         ogMusDirek,
@@ -336,6 +352,7 @@ export default function DeckglMap(): React.ReactNode {
             <Outlet context={{ flyTo }} />
             <DataComponent
                 allPoles={allPoles}
+                setBuildingBina={setBuildingBina}
                 setAdrBina={setAdrBina}
                 setTrafoBina={setTrafoBina}
                 setAgDirek={setAgDirek}

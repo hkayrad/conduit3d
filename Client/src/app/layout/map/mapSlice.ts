@@ -120,10 +120,10 @@ const initialState: MapState = {
         }
     },
     extent: {
-        minX: 26,
-        minY: 36,
-        maxX: 45,
-        maxY: 42,
+        minX: 40,
+        minY: 39,
+        maxX: 41,
+        maxY: 40,
     }
 };
 

@@ -38,7 +38,7 @@ export default function Actions(): React.ReactNode {
                     <NavLink id="action-button" className={({ isActive }) => (isActive ? "active" : "")} to="/admin"><ShieldUser /> Admin</NavLink>
                 )
             }
-            <button className="error" id="action-button" onClick={handleLogout}><LogOut /> Logout</button>
+            <button className="error-fg" id="action-button" onClick={handleLogout}><LogOut /> Logout</button>
         </div>
     )
 }
