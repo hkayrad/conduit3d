@@ -1,6 +1,7 @@
 import instance from "../instance";
 import type { ApiResponse, Extent, Hat, Rekortman } from "../types";
 import { capitalizeFirstLetter } from "../utils";
+import { Logger } from "../utils/logger";
 
 /**
  * Class representing the AG Hat API
@@ -40,7 +41,7 @@ export class AgHatApi {
             );
             return response.data;
         } catch (error) {
-            console.error("Fetch AgHat error:", error);
+            Logger.error("Fetch AgHat error:", error);
             throw error;
         }
     }
@@ -56,7 +57,7 @@ export class AgHatApi {
             );
             return response.data;
         } catch (error) {
-            console.error("Fetch AgHat types error:", error);
+            Logger.error("Fetch AgHat types error:", error);
             throw error;
         }
     }
@@ -77,7 +78,7 @@ export class AgHatApi {
             });
             return response.data;
         } catch (error) {
-            console.error("Fetch AgHat count error:", error);
+            Logger.error("Fetch AgHat count error:", error);
             throw error;
         }
     }
@@ -122,7 +123,7 @@ export class OgHatApi {
 
             return response.data;
         } catch (error) {
-            console.error("Fetch OgHat error:", error);
+            Logger.error("Fetch OgHat error:", error);
             throw error;
         }
     }
@@ -138,7 +139,7 @@ export class OgHatApi {
             );
             return response.data;
         } catch (error) {
-            console.error("Fetch OgHat types error:", error);
+            Logger.error("Fetch OgHat types error:", error);
             throw error;
         }
     }
@@ -159,7 +160,7 @@ export class OgHatApi {
             });
             return response.data;
         } catch (error) {
-            console.error("Fetch OgHat count error:", error);
+            Logger.error("Fetch OgHat count error:", error);
             throw error;
         }
     }
@@ -203,7 +204,7 @@ export class RekortmanApi {
             );
             return response.data;
         } catch (error) {
-            console.error("Fetch Rekortman error:", error);
+            Logger.error("Fetch Rekortman error:", error);
             throw error;
         }
     }
@@ -219,7 +220,7 @@ export class RekortmanApi {
             );
             return response.data;
         } catch (error) {
-            console.error("Fetch Rekortman types error:", error);
+            Logger.error("Fetch Rekortman types error:", error);
             throw error;
         }
     }
@@ -240,7 +241,7 @@ export class RekortmanApi {
             });
             return response.data;
         } catch (error) {
-            console.error("Fetch Rekortman count error:", error);
+            Logger.error("Fetch Rekortman count error:", error);
             throw error;
         }
     }

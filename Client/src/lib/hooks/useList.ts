@@ -4,6 +4,7 @@ import { ListDataType } from "../enums";
 import { setAscending, setItemsPerPage, setPageNumber, setQuery, setSortBy } from "../../app/layout/list/listSlice";
 import { useAppDispatch } from "./reduxHooks";
 import { InputSanitizer } from "../utils";
+import { Logger } from "../utils/logger";
 
 /**
  * Custom hook for managing list state and API interactions.
@@ -64,7 +65,7 @@ export function useList(
             setFeatures(dataResponse.data);
             setFeatureCount(countResponse.data);
         } catch (error) {
-            console.error(`Error fetching ${featureToFetch}:`, error);
+            Logger.error(`Error fetching ${featureToFetch}:`, error);
             setFeatures([]);
             setFeatureCount(0);
         }
