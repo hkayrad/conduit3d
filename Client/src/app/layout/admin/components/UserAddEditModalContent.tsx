@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { CircleAlert, Eye, EyeOff } from "lucide-react";
 
 type Props = {
+    title: string;
     user: User;
     setUser: React.Dispatch<React.SetStateAction<User>>;
     handleSubmit: (user: User) => void;
@@ -17,7 +18,7 @@ type Props = {
  * @returns The rendered component
  */
 export default function UserActionModalContent(props: Props) {
-    const { user, setUser, handleSubmit, handleCloseModal, isPasswordRequired = false, errorText } = props;
+    const { title, user, setUser, handleSubmit, handleCloseModal, isPasswordRequired = false, errorText } = props;
 
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -29,7 +30,7 @@ export default function UserActionModalContent(props: Props) {
 
     return (
         <>
-            <h2>Edit User</h2>
+            <h2>{title}</h2>
             <form onSubmit={(e) => {
                 e.preventDefault();
                 handleSubmit(user);

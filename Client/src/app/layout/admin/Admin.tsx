@@ -158,6 +158,7 @@ export default function Admin() {
         {modalStatus.isEditModalOpen && userToAddModify && (
             <Modal>
                 <UserActionModalContent
+                    title="Edit User"
                     user={userToAddModify}
                     setUser={setUserToAddModify}
                     handleSubmit={handleEditUser}
@@ -172,6 +173,7 @@ export default function Admin() {
         {modalStatus.isAddModalOpen && (
             <Modal>
                 <UserActionModalContent
+                    title="Add User"
                     user={userToAddModify}
                     setUser={setUserToAddModify}
                     handleSubmit={handleAddUser}

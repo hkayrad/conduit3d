@@ -3,6 +3,7 @@ import { AdrBinaApi, AgDirekApi, AgHatApi, AydDirekApi, OgHatApi, OgMusDirekApi,
 import { ListDataType } from "../enums";
 import { setAscending, setItemsPerPage, setPageNumber, setQuery, setSortBy } from "../../app/layout/list/listSlice";
 import { useAppDispatch } from "./reduxHooks";
+import { InputSanitizer } from "../utils";
 
 /**
  * Custom hook for managing list state and API interactions.
@@ -37,6 +38,7 @@ export function useList(
         [ListDataType.Rekortman]: RekortmanApi,
     };
     const dispatch = useAppDispatch();
+    const sanitizedQuery = InputSanitizer.sanitizeSearchQuery(query);
 
     /**
      * Fetch features from the API.
@@ -49,8 +51,8 @@ export function useList(
 
         try {
             const [dataResponse, countResponse] = await Promise.all([
-                api.fetchAll(itemsPerPage, pageNumber, sortBy, ascending, query),
-                api.fetchCount(query)
+                api.fetchAll(itemsPerPage, pageNumber, sortBy, ascending, sanitizedQuery),
+                api.fetchCount(sanitizedQuery)
             ]);
 
             if (!dataResponse.isSuccess || !countResponse.isSuccess) {

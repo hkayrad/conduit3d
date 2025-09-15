@@ -18,10 +18,15 @@ type Props = {
 
 export default function GlobalSearch(props: Props) {
     const { flyTo } = props;
+
+    // Local state
     const [query, setQuery] = useState("");
-    const { results, handleSearch } = useSearch(query, 10);
     const [isFocused, setIsFocused] = useState(false);
 
+    // Custom hook to handle search logic
+    const { results, handleSearch } = useSearch(query, 10);
+
+    // Handlers
     const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setQuery(e.target.value);
     };
@@ -36,7 +41,13 @@ export default function GlobalSearch(props: Props) {
         flyTo(feature)
     }
 
+    // Effects
     useEffect(() => {
+        // Debounce search input
+        if (query.trim() === "") {
+            return;
+        }
+
         const timeoutId = setTimeout(() => {
             handleSearch();
         }, 300);

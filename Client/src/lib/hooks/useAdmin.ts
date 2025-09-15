@@ -4,6 +4,7 @@ import type { AdminModalStatus, ApiResponse, User, UserCounts, UserSortBy } from
 import { AdminModalType } from "../enums";
 import { setAscending, setItemsPerPage, setPageNumber, setQuery, setSortBy } from "../../app/layout/admin/adminSlice";
 import { useAppDispatch } from "./reduxHooks";
+import { InputSanitizer } from "../utils";
 
 /**
  * Returns admin related functions and handlers.
@@ -32,6 +33,7 @@ export function useAdmin(
     setModalStatus: React.Dispatch<React.SetStateAction<AdminModalStatus>>,
 ) {
     const dispatch = useAppDispatch();
+    const sanitizedQuery = InputSanitizer.sanitizeSearchQuery(query);
 
     /**
      * Fetch all users with the given parameters and update the users state.
@@ -39,39 +41,24 @@ export function useAdmin(
      */
     const handleFetchUsers = async () => {
         try {
-            const response = await AuthApi.fetchAll(itemsPerPage, pageNumber, sortBy, ascending, query);
+            const [dataResponse, countResponse] = await Promise.all([
+                AuthApi.fetchAll(itemsPerPage, pageNumber, sortBy, ascending, sanitizedQuery),
+                AuthApi.fetchCount(sanitizedQuery)
+            ])
 
-            if (!response.isSuccess) {
+            if (!dataResponse.isSuccess || !countResponse.isSuccess) {
                 setUsers([]);
-                return;
-            }
-
-            setUsers(response.data);
-        } catch (error) {
-            console.error("Error fetching users:", error);
-            setUsers([]);
-            setErrorText("An error occurred while fetching users.");
-        }
-    }
-
-    /**
-     * Fetch the total user count based on the current query.
-     * @returns void
-     */
-    const handleFetchUserCount = async () => {
-        try {
-            const response = await AuthApi.fetchCount(query);
-
-            if (!response.isSuccess) {
                 setUserCounts({ totalUsers: 0, activeUsers: 0, inactiveUsers: 0 });
                 return;
             }
 
-            setUserCounts(response.data);
+            setUsers(dataResponse.data);
+            setUserCounts(countResponse.data);
         } catch (error) {
-            console.error("Error fetching user count:", error);
+            console.error("Error fetching users:", error);
+            setUsers([]);
             setUserCounts({ totalUsers: 0, activeUsers: 0, inactiveUsers: 0 });
-            setErrorText("An error occurred while fetching user count.");
+            setErrorText("An error occurred while fetching users.");
         }
     }
 
@@ -92,7 +79,6 @@ export function useAdmin(
             }
 
             await handleFetchUsers();
-            await handleFetchUserCount();
             handleCloseModal();
             setUserToAddModify({} as User);
             setErrorText("");
@@ -119,7 +105,6 @@ export function useAdmin(
             }
 
             await handleFetchUsers();
-            await handleFetchUserCount();
             handleCloseModal();
             setUserToAddModify({} as User);
             setErrorText("");
@@ -146,7 +131,6 @@ export function useAdmin(
             }
 
             await handleFetchUsers();
-            await handleFetchUserCount();
             handleCloseModal();
             setUserToAddModify({} as User);
             setErrorText("");
@@ -272,12 +256,10 @@ export function useAdmin(
      */
     const handleRefreshData = useCallback((): void => {
         handleFetchUsers();
-        handleFetchUserCount();
-    }, [handleFetchUsers, handleFetchUserCount]);
+    }, [handleFetchUsers]);
 
     return {
         handleFetchUsers,
-        handleFetchUserCount,
         handleAddUser,
         handleDeleteUser,
         handleEditUser,
