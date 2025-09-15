@@ -2,6 +2,7 @@ using System;
 using BuildingsService.Domain;
 using BuildingsService.Infrastructure.Data;
 using Conduit3D.Common.Domain;
+using Conduit3D.Common.Infrastructure.Utilities;
 using Microsoft.EntityFrameworkCore;
 
 namespace BuildingsService.Infrastructure.Repositories;
@@ -38,11 +39,16 @@ public class BuildingsRepository(BuildingsContext context) : IBuildingsRepositor
                                             CancellationToken cancellationToken)
     {
         var sqlQuery = _dbSet.FromSql($@"SELECT 
-                                        id, 
-                                        name, 
-                                        type,
-                                        floor_count,
-                                        ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson
+                                        id,
+                                        kodu,
+                                        site_adi,
+                                        adi,
+                                        bina_kat_sayisi,
+                                        daire_sayisi,
+                                        isyeri_sayisi,
+                                        yukseklik,
+                                        ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson,
+                                        searchable_text
                                     FROM buildings
                                     WHERE ST_Transform(geometry, 4326) @ ST_MakeEnvelope(
                                         {extent.MinX}, 
@@ -51,6 +57,11 @@ public class BuildingsRepository(BuildingsContext context) : IBuildingsRepositor
                                         {extent.MaxY}, 
                                         4326
                                     )");
+
+        if (!string.IsNullOrWhiteSpace(query))
+            sqlQuery = sqlQuery.Where(u => u.SearchableText.Matches(
+                EF.Functions.ToTsQuery("simple", ParseTsQuery.ConvertToTsQuery(query))
+            ));
 
         if (ascending)
             sqlQuery = sqlQuery.OrderBy(x => EF.Property<object>(x, sortBy));
@@ -69,10 +80,14 @@ public class BuildingsRepository(BuildingsContext context) : IBuildingsRepositor
     public async Task<Building?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         var sqlQuery = _dbSet.FromSql($@"SELECT 
-                                        id, 
-                                        name, 
-                                        type, 
-                                        floor_count,
+                                        id,
+                                        kodu,
+                                        site_adi,
+                                        adi,
+                                        bina_kat_sayisi,
+                                        daire_sayisi,
+                                        isyeri_sayisi,
+                                        yukseklik,
                                         ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson
                                     FROM buildings
                                     WHERE id = {id}");

@@ -34,17 +34,41 @@ public class BuildingsContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.Id)
                 .ValueGeneratedOnAdd()
                 .HasColumnName("id");
-            entity.Property(e => e.Name)
+            entity.Property(e => e.Adi)
                 .HasMaxLength(100)
-                .HasColumnName("name");
-            entity.Property(e => e.Type)
-                .HasMaxLength(20)
-                .HasColumnName("type");
-            entity.Property(e => e.FloorCount)
-                .HasColumnName("floor_count");
+                .HasColumnName("adi");
+            entity.Property(e => e.Kodu)
+                .HasMaxLength(100)
+                .HasColumnName("kodu");
+            entity.Property(e => e.SiteAdi)
+                .HasMaxLength(100)
+                .HasColumnName("site_adi");
+            entity.Property(e => e.BinaKatSayisi)
+                .HasColumnName("bina_kat_sayisi");
+            entity.Property(e => e.DaireSayisi)
+                .HasColumnName("daire_sayisi");
+            entity.Property(e => e.IsyeriSayisi)
+                .HasColumnName("isyeri_sayisi");
+            entity.Property(e => e.Yukseklik)
+                .HasColumnName("yukseklik");
             entity.Property(e => e.GeoJson)
-                .HasComputedColumnSql("ST_AsGeoJSON(ST_Transform(geometry, 4326))")
-                .HasColumnName("geojson");
+            .HasComputedColumnSql("ST_AsGeoJSON(ST_Transform(geometry, 4326))")
+            .HasColumnName("geojson");
+            entity.HasGeneratedTsVectorColumn(
+                e => e.SearchableText,
+                "simple",
+                e => new
+                {
+                    e.Id,
+                    e.Kodu,
+                    e.SiteAdi,
+                    e.Adi,
+                    e.BinaKatSayisi,
+                    e.DaireSayisi,
+                    e.IsyeriSayisi,
+                    e.Yukseklik
+                }
+            );
         });
 
         modelBuilder.Entity<AdrBina>(entity =>

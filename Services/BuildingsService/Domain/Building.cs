@@ -1,5 +1,8 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+using NpgsqlTypes;
 
 namespace BuildingsService.Domain;
 
@@ -16,24 +19,60 @@ public class Building
     public required int Id { get; set; }
 
     /// <summary>
-    /// The name of the building.
+    /// The code of the building.
     /// </summary>
-    public string? Name { get; set; }
+    [Column("kodu")]
+    [MaxLength(100)]
+    public string? Kodu { get; set; } = string.Empty;
 
     /// <summary>
-    /// The type of the building.
+    /// The name of the site where the building is located.
     /// </summary>
-    [MaxLength(20)]
-    public string? Type { get; set; }
+    [Column("site_adi")]
+    [MaxLength(100)]
+    public string SiteAdi { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The name of the building.
+    /// </summary>
+    [Column("adi")]
+    [MaxLength(100)]
+    public string Adi { get; set; } = string.Empty;
 
     /// <summary>
     /// The number of floors in the building.
     /// </summary>
-    public double? FloorCount { get; set; }
+    [Column("bina_kat_sayisi")]
+    public double BinaKatSayisi { get; set; }
+
+    /// <summary>
+    /// The number of apartments in the building.
+    /// </summary>
+    [Column("daire_sayisi")]
+    public double DaireSayisi { get; set; }
+
+    /// <summary>
+    /// The number of workplaces in the building.
+    /// </summary>
+    [Column("isyeri_sayisi")]
+    public double IsyeriSayisi { get; set; }
+
+    /// <summary>
+    /// The height of the building in meters.
+    /// </summary>
+    [Column("yukseklik")]
+    public double Yukseklik { get; set; }
 
     /// <summary>
     /// The geographical representation of the building.
     /// </summary>
     [Required]
     public required string GeoJson { get; set; }
+
+    /// <summary>
+    /// TsVector column for full-text search.
+    /// </summary>
+    [Column("searchable_text")]
+    [JsonIgnore]
+    public NpgsqlTsVector SearchableText { get; set; } = null!;
 }
