@@ -58,7 +58,7 @@ body::-webkit-scrollbar-thumb {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-.icon {
+.shortcut-container-icon {
   position: absolute;
   bottom: 48px;
   left: 16px;

@@ -8,7 +8,7 @@ export default function ShortcutsInfo() {
     return (
         <>
             <div
-                className="icon"
+                className="shortcut-container-icon"
                 onMouseEnter={() => setIsShortcutsInfoHovered(true)}
                 onMouseLeave={() => setIsShortcutsInfoHovered(false)}
             >
