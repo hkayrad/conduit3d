@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from "react";
 import { RekortmanApi } from "../../../../../lib/api";
 import type { Extent, Rekortman } from "../../../../../lib/types";
-import { lineStringToSegments } from "../../../../../lib/utils";
+import { lineStringToSegments, wkbToGeoJSON } from "../../../../../lib/utils";
 import { setType } from "../../mapSlice";
 import { FeatureType, HatCinsi } from "../../../../../lib/enums";
 import { useAppDispatch } from "../../../../../lib/hooks";
@@ -38,7 +38,7 @@ export default function RekortmanComponent(props: Props): null {
             response.data.forEach((rawData: Rekortman) => {
                 const feature = {
                     type: "Feature",
-                    geometry: JSON.parse(rawData.geoJson),
+                    geometry: wkbToGeoJSON(rawData.wkb),
                     properties: {
                         id: rawData.id,
                         kodu: rawData.kodu,
@@ -56,7 +56,7 @@ export default function RekortmanComponent(props: Props): null {
         } catch (error) {
             Logger.error("Error fetching Rekortman data:", error);
         }
-    }, [extent]);
+    }, [extent, allPoles]);
 
     const handleRekortmanTypesFetch = useCallback(async () => {
         try {

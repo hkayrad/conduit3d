@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from "react";
 import { OgHatApi } from "../../../../../lib/api";
 import type { Extent, Hat } from "../../../../../lib/types";
-import { lineStringToSegments } from "../../../../../lib/utils";
+import { lineStringToSegments, wkbToGeoJSON } from "../../../../../lib/utils";
 import { setType } from "../../mapSlice";
 import { FeatureType } from "../../../../../lib/enums";
 import { useAppDispatch } from "../../../../../lib/hooks";
@@ -38,7 +38,7 @@ export default function OgHatComponent(props: Props): null {
             response.data.forEach((rawData: Hat) => {
                 const feature = {
                     type: "Feature",
-                    geometry: JSON.parse(rawData.geoJson),
+                    geometry: wkbToGeoJSON(rawData.wkb),
                     properties: {
                         id: rawData.id,
                         kodu: rawData.kodu,
@@ -57,7 +57,7 @@ export default function OgHatComponent(props: Props): null {
         } catch (error) {
             Logger.error("Error fetching OgHat data:", error);
         }
-    }, [extent]);
+    }, [extent, allPoles]);
 
     const handleOgHatTypesFetch = useCallback(async () => {
         try {

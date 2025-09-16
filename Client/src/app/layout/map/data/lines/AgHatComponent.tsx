@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from "react";
 import type { Extent, Hat } from "../../../../../lib/types";
-import { lineStringToSegments } from "../../../../../lib/utils";
+import { lineStringToSegments, wkbToGeoJSON } from "../../../../../lib/utils";
 import { setType } from "../../mapSlice";
 import { AgHatApi } from "../../../../../lib/api";
 import { FeatureType } from "../../../../../lib/enums";
@@ -35,11 +35,10 @@ export default function AgHatComponent(props: Props): null {
                 features: []
             };
 
-
             response.data.forEach((rawData: Hat) => {
                 const feature = {
                     type: "Feature",
-                    geometry: JSON.parse(rawData.geoJson),
+                    geometry: wkbToGeoJSON(rawData.wkb),
                     properties: {
                         id: rawData.id,
                         kodu: rawData.kodu,
@@ -58,7 +57,7 @@ export default function AgHatComponent(props: Props): null {
         } catch (error) {
             Logger.error("Error fetching AgHat data:", error);
         }
-    }, [extent]);
+    }, [extent, allPoles]);
 
     const handleAgHatTypesFetch = useCallback(async () => {
         try {

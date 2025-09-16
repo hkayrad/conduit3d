@@ -38,6 +38,7 @@ public class AdrBinaRepository(BuildingsContext context) : IAdrBinaRepository
                                             string? query,
                                             CancellationToken cancellationToken)
     {
+        // ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson,
         var sqlQuery = _dbSet.FromSql($@"SELECT 
                                         id,
                                         kodu,
@@ -47,7 +48,7 @@ public class AdrBinaRepository(BuildingsContext context) : IAdrBinaRepository
                                         daire_sayisi,
                                         isyeri_sayisi,
                                         yukseklik,
-                                        ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson,
+                                        ST_AsBinary(ST_Transform(geometry, 4326)) as wkb,
                                         searchable_text
                                     FROM ""ADR_BINA""
                                     WHERE ST_Transform(geometry, 4326) @ ST_MakeEnvelope(
@@ -79,6 +80,8 @@ public class AdrBinaRepository(BuildingsContext context) : IAdrBinaRepository
     /// </remarks>
     public async Task<AdrBina?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
+        // ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson
+
         var sqlQuery = _dbSet.FromSql($@"SELECT 
                                         id,
                                         kodu,
@@ -88,7 +91,7 @@ public class AdrBinaRepository(BuildingsContext context) : IAdrBinaRepository
                                         daire_sayisi,
                                         isyeri_sayisi,
                                         yukseklik,
-                                        ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson
+                                        ST_AsBinary(ST_Transform(geometry, 4326)) as wkb
                                     FROM ""ADR_BINA""
                                     WHERE id = {id}");
         return await sqlQuery.FirstOrDefaultAsync(cancellationToken);

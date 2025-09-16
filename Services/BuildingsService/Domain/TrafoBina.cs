@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using NetTopologySuite.IO;
 using NpgsqlTypes;
 
 namespace BuildingsService.Domain;
@@ -32,11 +33,17 @@ public class TrafoBina
     [MaxLength(100)]
     public string Kodu { get; set; } = string.Empty;
 
+    // /// <summary>
+    // /// The geographical representation of the transformer station.
+    // /// </summary>
+    // [Column("geojson")]
+    // public required string GeoJson { get; set; }
+
     /// <summary>
-    /// The geographical representation of the transformer station.
+    /// The Well-Known Binary (WKB) representation of the building.
     /// </summary>
-    [Column("geojson")]
-    public required string GeoJson { get; set; }
+    [Required]
+    public required byte[] Wkb { get; set; }
 
     /// <summary>
     /// TsVector column for full-text search.

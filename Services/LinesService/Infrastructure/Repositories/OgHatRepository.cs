@@ -38,6 +38,7 @@ public class OgHatRepository(LinesContext context) : IOgHatRepository
                                         string? query,
                                         CancellationToken cancellationToken)
     {
+        // ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson,
         var sqlQuery = _dbSet.FromSql($@"SELECT 
                                         id, 
                                         kodu,
@@ -45,7 +46,7 @@ public class OgHatRepository(LinesContext context) : IOgHatRepository
                                         cinsi,
                                         kesit,
                                         tipi,
-                                        ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson,
+                                        ST_AsBinary(ST_Transform(geometry, 4326)) as wkb,
                                         searchable_text
                                     FROM ""SBK_OGHAT""
                                     WHERE ST_Transform(geometry, 4326) @ ST_MakeEnvelope(
@@ -77,6 +78,7 @@ public class OgHatRepository(LinesContext context) : IOgHatRepository
     /// </remarks>
     public async Task<OgHat?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
+        // ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson
         var sqlQuery = _dbSet.FromSql($@"SELECT 
                                         id, 
                                         kodu,
@@ -84,7 +86,7 @@ public class OgHatRepository(LinesContext context) : IOgHatRepository
                                         cinsi,
                                         kesit,
                                         tipi,
-                                        ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson
+                                        ST_AsBinary(ST_Transform(geometry, 4326)) as wkb
                                     FROM ""SBK_OGHAT""
                                     WHERE id = {id}");
         return await sqlQuery.FirstOrDefaultAsync(cancellationToken);

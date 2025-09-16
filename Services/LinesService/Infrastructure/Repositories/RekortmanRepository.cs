@@ -38,13 +38,14 @@ public class RekortmanRepository(LinesContext context) : IRekortmanRepository
                                         string? query,
                                         CancellationToken cancellationToken)
     {
+        // ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson,
         var sqlQuery = _dbSet.FromSql($@"SELECT 
                                         id, 
                                         kodu,
                                         adi,
                                         kesit,
                                         tipi,
-                                        ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson,
+                                        ST_AsBinary(ST_Transform(geometry, 4326)) as wkb,
                                         searchable_text
                                     FROM ""SBK_rEKORTMAN""
                                     WHERE ST_Transform(geometry, 4326) @ ST_MakeEnvelope(
@@ -76,13 +77,14 @@ public class RekortmanRepository(LinesContext context) : IRekortmanRepository
     /// </remarks>
     public async Task<Rekortman?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
+        // ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson
         var sqlQuery = _dbSet.FromSql($@"SELECT 
                                         id, 
                                         kodu,
                                         adi,
                                         kesit,
                                         tipi,
-                                        ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson
+                                        ST_AsBinary(ST_Transform(geometry, 4326)) as wkb
                                     FROM ""SBK_rEKORTMAN""
                                     WHERE id = {id}");
         return await sqlQuery.FirstOrDefaultAsync(cancellationToken);

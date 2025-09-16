@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { findAverageLonLat, InputSanitizer } from "../utils";
+import { findAverageLonLat, InputSanitizer, wkbToGeoJSON } from "../utils";
 import { AdrBinaApi, AgDirekApi, AgHatApi, AydDirekApi, OgHatApi, OgMusDirekApi, RekortmanApi, TrafoBinaApi } from "../api";
 import { FeatureType } from "../enums";
 import type { Direk } from "../types";
@@ -39,7 +39,7 @@ export function useSearch(query: string, maxResults: number = 10) {
 
     // Feature Converters
     const _convertToDirekFeature = (direkType: string, direk: Direk) => {
-        const geometry: GeoJSON.Geometry = JSON.parse(direk.geoJson);
+        const geometry: GeoJSON.Geometry = wkbToGeoJSON(direk.wkb);
         return {
             id: `direk-${direkType}-${direk.id}`,
             title: `${direk.cinsi} ${direk.tipi} (${direk.boyOzellik})`,
@@ -60,8 +60,7 @@ export function useSearch(query: string, maxResults: number = 10) {
         }
 
         const results = response.data.map(bina => {
-            const geometry: GeoJSON.Geometry = JSON.parse(bina.geoJson);
-            Logger.log(geometry);
+            const geometry: GeoJSON.Geometry = wkbToGeoJSON(bina.wkb);
 
             return {
                 id: `bina-${bina.id}`,
@@ -85,7 +84,7 @@ export function useSearch(query: string, maxResults: number = 10) {
         }
 
         const results = response.data.map(trafo => {
-            const geometry: GeoJSON.Geometry = JSON.parse(trafo.geoJson);
+            const geometry: GeoJSON.Geometry = wkbToGeoJSON(trafo.wkb);
             return {
                 id: `trafo-${trafo.id}`,
                 title: trafo.adi || "İsimsiz Trafo",
@@ -168,7 +167,7 @@ export function useSearch(query: string, maxResults: number = 10) {
         }
 
         const results = response.data.map(hat => {
-            const geometry: GeoJSON.Geometry = JSON.parse(hat.geoJson);
+            const geometry: GeoJSON.Geometry = wkbToGeoJSON(hat.wkb);
             return {
                 id: `hat-ag-${hat.id}`,
                 title: `${hat.tipi} ${hat.cinsi}`,
@@ -191,7 +190,7 @@ export function useSearch(query: string, maxResults: number = 10) {
         }
 
         const results = response.data.map(hat => {
-            const geometry: GeoJSON.Geometry = JSON.parse(hat.geoJson);
+            const geometry: GeoJSON.Geometry = wkbToGeoJSON(hat.wkb);
             return {
                 id: `hat-og-${hat.id}`,
                 title: `${hat.tipi} ${hat.cinsi}`,
@@ -214,7 +213,7 @@ export function useSearch(query: string, maxResults: number = 10) {
         }
 
         const results = response.data.map(hat => {
-            const geometry: GeoJSON.Geometry = JSON.parse(hat.geoJson);
+            const geometry: GeoJSON.Geometry = wkbToGeoJSON(hat.wkb);
             return {
                 id: `hat-rekortman-${hat.id}`,
                 title: `Rekortman: ${hat.tipi}`,

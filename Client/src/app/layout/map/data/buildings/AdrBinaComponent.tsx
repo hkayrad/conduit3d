@@ -3,6 +3,7 @@ import type { AdrBina, Extent } from "../../../../../lib/types"
 import { AdrBinaApi } from "../../../../../lib/api";
 import { FeatureType } from "../../../../../lib/enums";
 import { Logger } from "../../../../../lib/utils/logger";
+import { wkbToGeoJSON } from "../../../../../lib/utils";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
@@ -32,7 +33,7 @@ export default function AdrBinaComponent(props: Props): null {
             response.data.forEach((rawData: AdrBina) => {
                 const feature = {
                     type: "Feature",
-                    geometry: JSON.parse(rawData.geoJson),
+                    geometry: wkbToGeoJSON(rawData.wkb),
                     properties: {
                         id: rawData.id,
                         dataType: FeatureType.BUILDING,

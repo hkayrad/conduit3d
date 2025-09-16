@@ -5,6 +5,7 @@ import { setType } from "../../mapSlice";
 import { FeatureType } from "../../../../../lib/enums";
 import { useAppDispatch } from "../../../../../lib/hooks";
 import { Logger } from "../../../../../lib/utils/logger";
+import { wkbToGeoJSON } from "../../../../../lib/utils";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
@@ -37,7 +38,7 @@ export default function AgDirekComponent(props: Props): null {
                 const height = Number(rawData.boyOzellik.split("/")[1]);
                 const feature = {
                     type: "Feature",
-                    geometry: JSON.parse(rawData.geoJson),
+                    geometry: wkbToGeoJSON(rawData.wkb),
                     properties: {
                         id: rawData.id,
                         dataType: FeatureType.POLE,
