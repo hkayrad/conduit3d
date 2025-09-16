@@ -28,6 +28,7 @@
     "react-map-gl": "^8.0.4",
     "react-redux": "^9.2.0",
     "react-router": "^7.8.2",
+    "ts-proto": "^2.7.7",
     "well-known-parser": "^0.6.1",
     "wkx": "^0.5.0"
   },

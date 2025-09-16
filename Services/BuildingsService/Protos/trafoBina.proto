@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+message TrafoBinaResponse {
+    bool isSuccess = 1;
+    string message = 2;
+    int32 statusCode = 3;
+    repeated TrafoBinaProto data = 4;
+}
+
+message TrafoBinaProto {
+    int32 id = 1;
+    string kodu = 2;
+    string adi = 4;
+    string wkb = 9;
+}

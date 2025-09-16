@@ -20,7 +20,7 @@ export default function TrafoBinaComponent(props: Props): null {
 
     const handleTrafoBinaFetch = useCallback(async () => {
         try {
-            const response = await TrafoBinaApi.fetchAll(200000, 1, 'id', true, null!, extent);
+            const response = await TrafoBinaApi.fetchAllProto(200000, 1, 'id', true, null!, extent);
 
             if (!response.isSuccess)
                 return;

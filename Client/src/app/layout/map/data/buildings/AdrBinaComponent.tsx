@@ -20,7 +20,7 @@ export default function AdrBinaComponent(props: Props): null {
 
     const handleAdrBinaFetch = useCallback(async () => {
         try {
-            const response = await AdrBinaApi.fetchAll(200000, 1, 'id', true, null!, extent);
+            const response = await AdrBinaApi.fetchAllProto(200000, 1, 'id', true, null!, extent);
 
             if (!response.isSuccess)
                 return;

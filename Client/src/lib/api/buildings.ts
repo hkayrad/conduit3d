@@ -2,6 +2,9 @@ import instance from "../instance";
 import type { AdrBina, ApiResponse, Building, Extent, TrafoBina } from "../types";
 import { capitalizeFirstLetter } from "../utils";
 import { Logger } from "../utils/logger";
+import { AdrBinaResponse } from "../utils/protos/adrBinaProto";
+import { BuildingsResponse } from "../utils/protos/buildingsProto";
+import { TrafoBinaResponse } from "../utils/protos/trafoBinaProto";
 
 /**
  * Class representing the ADR Bina API
@@ -60,6 +63,40 @@ export class AdrBinaApi {
             return response.data;
         } catch (error) {
             Logger.error("Fetch AdrBina count error:", error);
+            throw error;
+        }
+    }
+
+    static async fetchAllProto(
+        pageSize: number = 200000,
+        pageNumber: number = 1,
+        sortBy: string = 'id',
+        ascending: boolean = true,
+        query: string = null!,
+        extent?: Extent
+    ): Promise<AdrBinaResponse> {
+        try {
+            const protoResponse = await instance.get<ArrayBuffer>("adrBina/pbf", {
+                params: {
+                    pageSize: pageSize,
+                    pageNumber: pageNumber,
+                    sortBy: capitalizeFirstLetter(sortBy),
+                    ascending: ascending,
+                    query: query,
+                    ...extent
+                },
+                headers: {
+                    'Accept': 'application/x-protobuf'
+                },
+                responseType: 'arraybuffer'
+            });
+
+            const decodedData = AdrBinaResponse.decode(new Uint8Array(protoResponse.data));
+
+            return decodedData;
+
+        } catch (error) {
+            Logger.error("Fetch AdrBina Proto error:", error);
             throw error;
         }
     }
@@ -125,7 +162,41 @@ export class TrafoBinaApi {
             Logger.error("Fetch TrafoBina count error:", error);
             throw error;
         }
-}
+    }
+
+    static async fetchAllProto(
+        pageSize: number = 200000,
+        pageNumber: number = 1,
+        sortBy: string = 'id',
+        ascending: boolean = true,
+        query: string = null!,
+        extent?: Extent
+    ): Promise<TrafoBinaResponse> {
+        try {
+            const protoResponse = await instance.get<ArrayBuffer>("trafoBina/pbf", {
+                params: {
+                    pageSize: pageSize,
+                    pageNumber: pageNumber,
+                    sortBy: capitalizeFirstLetter(sortBy),
+                    ascending: ascending,
+                    query: query,
+                    ...extent
+                },
+                headers: {
+                    'Accept': 'application/x-protobuf'
+                },
+                responseType: 'arraybuffer'
+            });
+
+            const decodedData = TrafoBinaResponse.decode(new Uint8Array(protoResponse.data));
+
+            return decodedData;
+
+        } catch (error) {
+            Logger.error("Fetch TrafoBina Proto error:", error);
+            throw error;
+        }
+    }
 }
 
 /**
@@ -185,6 +256,40 @@ export class BuildingsApi {
             return response.data;
         } catch (error) {
             Logger.error("Fetch AdrBina count error:", error);
+            throw error;
+        }
+    }
+
+    static async fetchAllProto(
+        pageSize: number = 200000,
+        pageNumber: number = 1,
+        sortBy: string = 'id',
+        ascending: boolean = true,
+        query: string = null!,
+        extent?: Extent
+    ): Promise<BuildingsResponse> {
+        try {
+            const protoResponse = await instance.get<ArrayBuffer>("buildings/pbf", {
+                params: {
+                    pageSize: pageSize,
+                    pageNumber: pageNumber,
+                    sortBy: capitalizeFirstLetter(sortBy),
+                    ascending: ascending,
+                    query: query,
+                    ...extent
+                },
+                headers: {
+                    'Accept': 'application/x-protobuf'
+                },
+                responseType: 'arraybuffer'
+            });
+
+            const decodedData = BuildingsResponse.decode(new Uint8Array(protoResponse.data));
+
+            return decodedData;
+
+        } catch (error) {
+            Logger.error("Fetch Buildings Proto error:", error);
             throw error;
         }
     }

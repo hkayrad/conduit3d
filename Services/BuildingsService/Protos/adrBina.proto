@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+message AdrBinaResponse {
+    bool isSuccess = 1;
+    string message = 2;
+    int32 statusCode = 3;
+    repeated AdrBinaProto data = 4;
+}
+
+message AdrBinaProto {
+    int32 id = 1;
+    string kodu = 2;
+    string site_adi = 3;
+    string adi = 4;
+    double bina_kat_sayisi = 5;
+    double daire_sayisi = 6;
+    double isyeri_sayisi = 7;
+    double yukseklik = 8;
+    string wkb = 9;
+}

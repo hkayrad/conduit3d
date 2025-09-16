@@ -20,7 +20,7 @@ export default function BuildingComponent(props: Props): null {
 
     const handleBuildingFetch = useCallback(async () => {
         try {
-            const response = await BuildingsApi.fetchAll(200000, 1, 'id', true, null!, extent);
+            const response = await BuildingsApi.fetchAllProto(200000, 1, 'id', true, null!, extent);
 
             if (!response.isSuccess)
                 return;

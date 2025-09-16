@@ -33,6 +33,7 @@ import ShortcutsInfo from "./shortcutsInfo/ShortcutsInfo";
 import { C3D_MapViewType } from "../../../lib/enums";
 import ViewToggle from "./viewToggle/ViewToggle";
 import GlobalSearch from "./globalSearch/GlobalSearch";
+import { BuildingsApi } from "../../../lib/api";
 
 /**
  * DeckglMap component renders the Deck.gl map with various layers and controls.
