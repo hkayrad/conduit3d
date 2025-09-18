@@ -12,9 +12,9 @@ import OgMusDirekComponent from "./poles/OgMusDirekComponent";
 
 type Props = {
     allPoles: GeoJSON.Feature[];
-    setAdrBina: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>;
-    setBuildingBina: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>;
-    setTrafoBina: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>;
+    setAdrBina: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection[]>>;
+    setBuildingBina: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection[]>>;
+    setTrafoBina: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection[]>>;
     setAgDirek: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>;
     setOgMusDirek: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>;
     setAydDirek: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>;
@@ -24,7 +24,7 @@ type Props = {
 }
 
 /**
- * DataComponent is responsible for rendering all data-related components.
+ * DataComponent is responsible for fetching all data-related components.
  * @component
  * @param props - The props for the component
  * @returns The rendered component

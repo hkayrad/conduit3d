@@ -10,6 +10,7 @@ import ActionButton from "../../shared/actionButton/ActionButton";
 import { useNavigate, useOutletContext } from "react-router";
 import { C3D_MapViewType, FeatureType, ListDataType } from "../../../lib/enums";
 import { setSelectedViewType } from "../map/mapSlice";
+import { wkbToGeometry } from "../../../lib/utils/geometry/wkbToGeometry";
 
 /**
  * List component for displaying a list of features with pagination, sorting, and filtering capabilities.
@@ -85,14 +86,14 @@ export default function List(): React.ReactNode {
         ...features[0] ? Object.keys(features[0]).map(k => ({
             id: k,
             label: capitalizeFirstLetter(k),
-        })).filter(header => header.id !== 'geoJson') : [],
+        })).filter(header => header.id !== 'wkb') : [],
         { id: 'actions', label: 'Actions' }
     ], [features]);
 
     const handleGoToFeature = (f: any) => {
         const feature = {
             type: "Feature",
-            geometry: JSON.parse(f.geoJson),
+            geometry: wkbToGeometry(f.wkb),
             properties: {
                 dataType: mappedFeatureTypes[featureType],
             }
@@ -118,7 +119,7 @@ export default function List(): React.ReactNode {
     const rows = useMemo(() => [
         ...features.map((f, index) => [
             index + 1,
-            ...Object.entries(f).filter(([key, _]) => key !== 'geoJson').map(([_, value]) => value === "" ? "-" : value),
+            ...Object.entries(f).filter(([key, _]) => key !== 'wkb').map(([_, value]) => value === "" ? "-" : value),
             <div className="action-button-wrapper">
                 <ActionButton
                     content={<MapPin />}

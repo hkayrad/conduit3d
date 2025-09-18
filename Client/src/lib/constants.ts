@@ -1,8 +1,25 @@
-export const DEBOUNCE_TIME_MS = 500;
+export const DEBOUNCE_TIME_MS = 200;
 
 export const MAX_ZOOM = 25;
 
 export const MAX_POPUP_COUNT = 10;
+
+export const EXTENT_PADDING = 0.02; // degrees
+export const LON_EXTENT_PADDING = EXTENT_PADDING * 2; // degrees
+export const LAT_EXTENT_PADDING = EXTENT_PADDING; // degrees
+
+export const CHUNK_SIZE = 20000; // Number of records to load into a state at once
+export const MAX_CHUNK_AMOUNT = 15; // Maximum number of chunks to load into a state
+
+export const MIN_ZOOM_THRESHOLD = 12; // Minimum zoom level to start loading detailed data
+
+export const DEFAULT_FLOOR_HEIGHT = 2.5; // meters
+export const DEFAULT_FLOOR_COUNT = 5; // floors
+
+export const EMPTY_GEOMETRY_COLLECTION: GeoJSON.FeatureCollection = {
+    type: "FeatureCollection",
+    features: []
+};
 
 export const COLORS: { [name: string]: [number, number, number, number] } = {
     HOVER: [222, 98, 27, 128],

@@ -58,6 +58,10 @@ export interface MapState {
         maxX: number,
         maxY: number,
     }
+    lastRefreshPosition: {
+        longitude: number,
+        latitude: number
+    }
 }
 
 const initialState: MapState = {
@@ -120,10 +124,14 @@ const initialState: MapState = {
         }
     },
     extent: {
-        minX: 41,
-        minY: 39,
-        maxX: 42,
-        maxY: 40,
+        minX: null!,
+        minY: null!,
+        maxX: null!,
+        maxY: null!,
+    },
+    lastRefreshPosition: {
+        longitude: null!,
+        latitude: null!
     }
 };
 
@@ -194,6 +202,13 @@ export const mapSlice = createSlice({
         ) => {
             const { extent } = action.payload;
             state.extent = extent;
+        },
+        setLastRefreshPosition: (
+            state,
+            action: PayloadAction<{ position: MapState["lastRefreshPosition"] }>
+        ) => {
+            const { position } = action.payload;
+            state.lastRefreshPosition = position;
         }
     }
 });
@@ -207,7 +222,8 @@ export const {
     setFilter,
     setViewState,
     setExtent,
-    setType
+    setType,
+    setLastRefreshPosition,
 } = mapSlice.actions;
 
 export const selectMapState = (state: RootState) => state.map;
@@ -221,5 +237,6 @@ export const selectFilters = (state: RootState) => state.map.filters;
 export const selectTypes = (state: RootState) => state.map.types;
 export const selectViewState = (state: RootState) => state.map.viewState;
 export const selectExtent = (state: RootState) => state.map.extent;
+export const selectLastRefreshPosition = (state: RootState) => state.map.lastRefreshPosition;
 
 export default mapSlice.reducer;

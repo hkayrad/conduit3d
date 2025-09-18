@@ -65,7 +65,7 @@ body::-webkit-scrollbar-thumb {
   overflow: hidden;
 }
 #map-page.hide {
-  display: none;
+  display: none !important;
 }
 #map-page .top-left {
   top: 76px !important;

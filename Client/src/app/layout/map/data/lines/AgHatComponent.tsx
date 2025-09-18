@@ -1,11 +1,11 @@
 import { useCallback, useEffect } from "react";
 import type { Extent, Hat } from "../../../../../lib/types";
-import { lineStringToSegments, wkbToGeoJSON } from "../../../../../lib/utils";
+import { Logger, lineStringToSegments, wkbToGeometry } from "../../../../../lib/utils";
 import { setType } from "../../mapSlice";
 import { AgHatApi } from "../../../../../lib/api";
 import { FeatureType } from "../../../../../lib/enums";
 import { useAppDispatch } from "../../../../../lib/hooks";
-import { Logger } from "../../../../../lib/utils/logger";
+
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>
@@ -38,7 +38,7 @@ export default function AgHatComponent(props: Props): null {
             response.data.forEach((rawData: Hat) => {
                 const feature = {
                     type: "Feature",
-                    geometry: wkbToGeoJSON(rawData.wkb),
+                    geometry: wkbToGeometry(rawData.wkb),
                     properties: {
                         id: rawData.id,
                         kodu: rawData.kodu,

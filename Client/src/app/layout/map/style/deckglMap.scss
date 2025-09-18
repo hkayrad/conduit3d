@@ -7,7 +7,7 @@
     overflow: hidden;
 
     &.hide {
-        display: none;
+        display: none !important;
     }
 
     .top-left {

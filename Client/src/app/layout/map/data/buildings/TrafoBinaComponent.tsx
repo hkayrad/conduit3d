@@ -1,12 +1,12 @@
-import { useCallback, useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { TrafoBinaApi } from "../../../../../lib/api";
-import type { Extent, TrafoBina } from "../../../../../lib/types";
+import type { Extent } from "../../../../../lib/types";
 import { FeatureType } from "../../../../../lib/enums";
-import { Logger } from "../../../../../lib/utils/logger";
-import { wkbToGeoJSON } from "../../../../../lib/utils";
+import { handleDataFetch, Logger, wkbToGeometry } from "../../../../../lib/utils";
+import { CHUNK_SIZE } from "../../../../../lib/constants";
 
 type Props = {
-    setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
+    setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection[]>>,
     extent: Extent
 }
 
@@ -17,23 +17,27 @@ type Props = {
  */
 export default function TrafoBinaComponent(props: Props): null {
     const { setData, extent } = props;
+    const abortControllerRef = useRef<AbortController | null>(null);
+    const isLoadingRef = useRef<boolean>(false);
 
-    const handleTrafoBinaFetch = useCallback(async () => {
+    const fetchNextChunk = async (page: number, signal?: AbortSignal): Promise<GeoJSON.FeatureCollection> => {
         try {
-            const response = await TrafoBinaApi.fetchAllProto(200000, 1, 'id', true, null!, extent);
+            const response = await TrafoBinaApi.fetchAllProto(CHUNK_SIZE, page, 'id', true, null!, extent);
 
-            if (!response.isSuccess)
-                return;
+            if (signal?.aborted) {
+                Logger.debug("Request aborted");
+                return { type: "FeatureCollection", features: [] };
+            }
 
-            var dataList: GeoJSON.FeatureCollection = {
-                type: "FeatureCollection",
-                features: []
-            };
+            if (!response.isSuccess) {
+                Logger.error("Error fetching Building data");
+                return { type: "FeatureCollection", features: [] };
+            }
 
-            response.data.forEach((rawData: TrafoBina) => {
-                const feature = {
+            const formattedData: GeoJSON.Feature[] = response.data.map((rawData) => (
+                {
                     type: "Feature",
-                    geometry: wkbToGeoJSON(rawData.wkb),
+                    geometry: wkbToGeometry(rawData.wkb),
                     properties: {
                         id: rawData.id,
                         dataType: FeatureType.TRAFO,
@@ -41,18 +45,20 @@ export default function TrafoBinaComponent(props: Props): null {
                         kodu: rawData.kodu,
                         yukseklik: 2
                     }
-                } as GeoJSON.Feature;
-                dataList.features.push(feature);
-            });
+                }));
 
-            setData(dataList);
+            return {
+                type: "FeatureCollection",
+                features: formattedData
+            };
         } catch (error) {
-            Logger.error("Error fetching TrafoBina data:", error);
+            Logger.error("Error fetching AdrBina data:", error);
+            throw error;
         }
-    }, [extent]);
+    }
 
     useEffect(() => {
-        handleTrafoBinaFetch();
+        handleDataFetch(isLoadingRef, abortControllerRef, extent, fetchNextChunk, setData);
     }, [extent]);
 
     return null;

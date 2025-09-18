@@ -1,11 +1,10 @@
 import { useCallback, useEffect } from "react";
 import { RekortmanApi } from "../../../../../lib/api";
 import type { Extent, Rekortman } from "../../../../../lib/types";
-import { lineStringToSegments, wkbToGeoJSON } from "../../../../../lib/utils";
+import { Logger, lineStringToSegments, wkbToGeometry } from "../../../../../lib/utils";
 import { setType } from "../../mapSlice";
 import { FeatureType, HatCinsi } from "../../../../../lib/enums";
 import { useAppDispatch } from "../../../../../lib/hooks";
-import { Logger } from "../../../../../lib/utils/logger";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
@@ -38,7 +37,7 @@ export default function RekortmanComponent(props: Props): null {
             response.data.forEach((rawData: Rekortman) => {
                 const feature = {
                     type: "Feature",
-                    geometry: wkbToGeoJSON(rawData.wkb),
+                    geometry: wkbToGeometry(rawData.wkb),
                     properties: {
                         id: rawData.id,
                         kodu: rawData.kodu,
