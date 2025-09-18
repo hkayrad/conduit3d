@@ -3,8 +3,7 @@ import { AdrBinaApi, AgDirekApi, AgHatApi, AydDirekApi, OgHatApi, OgMusDirekApi,
 import { ListDataType } from "../enums";
 import { setAscending, setItemsPerPage, setPageNumber, setQuery, setSortBy } from "../../app/layout/list/listSlice";
 import { useAppDispatch } from "./reduxHooks";
-import { InputSanitizer } from "../utils";
-import { Logger } from "../utils/logger";
+import { Logger, InputSanitizer } from "../utils";
 
 /**
  * Custom hook for managing list state and API interactions.

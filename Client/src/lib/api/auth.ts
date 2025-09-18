@@ -1,8 +1,7 @@
 import type { ApiResponse, LoginUserDto, User, UserCounts } from "../types";
 import instance from "../instance";
 import Cookies from "js-cookie";
-import { capitalizeFirstLetter } from "../utils";
-import { Logger } from "../utils/logger";
+import { Logger, capitalizeFirstLetter } from "../utils";
 
 /**
  * Class representing the authentication API.

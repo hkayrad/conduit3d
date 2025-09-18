@@ -29,7 +29,6 @@ export function useMapInteraction(
     setMousePos: React.Dispatch<React.SetStateAction<{ x: number; y: number }>>,
     setMouseLonLat: React.Dispatch<React.SetStateAction<number[]>>,
     setActivePopups: React.Dispatch<React.SetStateAction<PopupState[]>>,
-
 ) {
     const dispatch = useAppDispatch();
 
@@ -42,11 +41,6 @@ export function useMapInteraction(
             ...prevState,
             [viewId]: {
                 ...viewState,
-                // position: [
-                //     viewState.position![0],
-                //     viewState.position![1],
-                //     3
-                // ]
             },
         }));
     };

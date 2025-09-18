@@ -1,7 +1,7 @@
 export class Logger {
     static isDebug: boolean = import.meta.env.VITE_ENVIRONMENT !== 'production';
 
-    static log(message?: any, ...optionalParams: any[]) {
+    static debug(message?: any, ...optionalParams: any[]) {
         if (Logger.isDebug)
             console.log(message, ...optionalParams);
     }
@@ -14,5 +14,10 @@ export class Logger {
     static warn(message?: any, ...optionalParams: any[]) {
         if (Logger.isDebug)
             console.warn(message, ...optionalParams);
+    }
+
+    static table(tabularData?: any, properties?: string[]) {
+        if (Logger.isDebug)
+            console.table(tabularData, properties);
     }
 }

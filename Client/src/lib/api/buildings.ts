@@ -1,10 +1,11 @@
+import type { CancelTokenSource } from "axios";
 import instance from "../instance";
 import type { AdrBina, ApiResponse, Building, Extent, TrafoBina } from "../types";
-import { capitalizeFirstLetter } from "../utils";
-import { Logger } from "../utils/logger";
+import { Logger, capitalizeFirstLetter } from "../utils";
 import { AdrBinaResponse } from "../utils/protos/adrBinaProto";
 import { BuildingsResponse } from "../utils/protos/buildingsProto";
 import { TrafoBinaResponse } from "../utils/protos/trafoBinaProto";
+import axios from "axios";
 
 /**
  * Class representing the ADR Bina API
@@ -20,6 +21,8 @@ export class AdrBinaApi {
      * @param extent The geographical extent to filter the buildings.
      * @returns A promise that resolves to the list of ADR buildings.
      */
+    private static _cancelTokens: { [key: string]: CancelTokenSource } = {};
+
     static async fetchAll(
         pageSize: number = 200000,
         pageNumber: number = 1,
@@ -28,6 +31,11 @@ export class AdrBinaApi {
         query: string = null!,
         extent?: Extent
     ) {
+        if (this._cancelTokens["fetchAll"])
+            this._cancelTokens["fetchAll"].cancel("Operation canceled due to new request.");
+
+        this._cancelTokens["fetchAll"] = axios.CancelToken.source();
+
         try {
             const response = await instance.get<ApiResponse<AdrBina[]>>("adrBina", {
                 params: {
@@ -36,9 +44,11 @@ export class AdrBinaApi {
                     sortBy: capitalizeFirstLetter(sortBy),
                     ascending: ascending,
                     query: query,
-                    ...extent
-                }
+                    ...extent,
+                },
+                cancelToken: this._cancelTokens["fetchAll"].token,
             });
+
             return response.data;
         } catch (error) {
             Logger.error("Fetch AdrBina error:", error);
@@ -54,11 +64,17 @@ export class AdrBinaApi {
     static async fetchCount(
         query: string = null!
     ) {
+        if (this._cancelTokens["fetchCount"])
+            this._cancelTokens["fetchCount"].cancel("Operation canceled due to new request.");
+
+        this._cancelTokens["fetchCount"] = axios.CancelToken.source();
+
         try {
             const response = await instance.get<ApiResponse<number>>("adrBina/count", {
                 params: {
-                    query
-                }
+                    query,
+                },
+                cancelToken: this._cancelTokens["fetchCount"].token,
             });
             return response.data;
         } catch (error) {
@@ -75,6 +91,11 @@ export class AdrBinaApi {
         query: string = null!,
         extent?: Extent
     ): Promise<AdrBinaResponse> {
+        if (this._cancelTokens["fetchAllProto"])
+            this._cancelTokens["fetchAllProto"].cancel("Operation canceled due to new request.");
+
+        this._cancelTokens["fetchAllProto"] = axios.CancelToken.source();
+
         try {
             const protoResponse = await instance.get<ArrayBuffer>("adrBina/pbf", {
                 params: {
@@ -83,18 +104,18 @@ export class AdrBinaApi {
                     sortBy: capitalizeFirstLetter(sortBy),
                     ascending: ascending,
                     query: query,
-                    ...extent
+                    ...extent,
                 },
+                cancelToken: this._cancelTokens["fetchAllProto"].token,
                 headers: {
                     'Accept': 'application/x-protobuf'
                 },
-                responseType: 'arraybuffer'
+                responseType: 'arraybuffer',
             });
 
             const decodedData = AdrBinaResponse.decode(new Uint8Array(protoResponse.data));
 
             return decodedData;
-
         } catch (error) {
             Logger.error("Fetch AdrBina Proto error:", error);
             throw error;
@@ -116,6 +137,8 @@ export class TrafoBinaApi {
      * @param extent The geographical extent to filter the buildings.
      * @returns A promise that resolves to the list of transformer stations.
      */
+    private static _cancelTokens: { [key: string]: CancelTokenSource } = {};
+
     static async fetchAll(
         pageSize: number = 200000,
         pageNumber: number = 1,
@@ -124,8 +147,12 @@ export class TrafoBinaApi {
         query: string = null!,
         extent?: Extent
     ) {
-        try {
+        if (this._cancelTokens["fetchAll"])
+            this._cancelTokens["fetchAll"].cancel("Operation canceled due to new request.");
 
+        this._cancelTokens["fetchAll"] = axios.CancelToken.source();
+
+        try {
             const response = await instance.get<ApiResponse<TrafoBina[]>>("trafoBina", {
                 params: {
                     pageSize,
@@ -133,8 +160,9 @@ export class TrafoBinaApi {
                     sortBy: capitalizeFirstLetter(sortBy),
                     ascending,
                     query,
-                    ...extent
-                }
+                    ...extent,
+                },
+                cancelToken: this._cancelTokens["fetchAll"].token,
             });
             return response.data;
         } catch (error) {
@@ -151,11 +179,17 @@ export class TrafoBinaApi {
     static async fetchCount(
         query: string = null!
     ) {
+        if (this._cancelTokens["fetchCount"])
+            this._cancelTokens["fetchCount"].cancel("Operation canceled due to new request.");
+
+        this._cancelTokens["fetchCount"] = axios.CancelToken.source();
+
         try {
             const response = await instance.get<ApiResponse<number>>("trafoBina/count", {
                 params: {
-                    query
-                }
+                    query,
+                },
+                cancelToken: this._cancelTokens["fetchCount"].token,
             });
             return response.data;
         } catch (error) {
@@ -172,6 +206,11 @@ export class TrafoBinaApi {
         query: string = null!,
         extent?: Extent
     ): Promise<TrafoBinaResponse> {
+        if (this._cancelTokens["fetchAllProto"])
+            this._cancelTokens["fetchAllProto"].cancel("Operation canceled due to new request.");
+
+        this._cancelTokens["fetchAllProto"] = axios.CancelToken.source();
+
         try {
             const protoResponse = await instance.get<ArrayBuffer>("trafoBina/pbf", {
                 params: {
@@ -180,8 +219,9 @@ export class TrafoBinaApi {
                     sortBy: capitalizeFirstLetter(sortBy),
                     ascending: ascending,
                     query: query,
-                    ...extent
+                    ...extent,
                 },
+                cancelToken: this._cancelTokens["fetchAllProto"].token,
                 headers: {
                     'Accept': 'application/x-protobuf'
                 },
@@ -191,7 +231,6 @@ export class TrafoBinaApi {
             const decodedData = TrafoBinaResponse.decode(new Uint8Array(protoResponse.data));
 
             return decodedData;
-
         } catch (error) {
             Logger.error("Fetch TrafoBina Proto error:", error);
             throw error;
@@ -213,6 +252,8 @@ export class BuildingsApi {
      * @param extent The geographical extent to filter the buildings.
      * @returns A promise that resolves to the list of ADR buildings.
      */
+    private static _cancelTokens: { [key: string]: CancelTokenSource } = {};
+
     static async fetchAll(
         pageSize: number = 200000,
         pageNumber: number = 1,
@@ -221,6 +262,11 @@ export class BuildingsApi {
         query: string = null!,
         extent?: Extent
     ) {
+        if (this._cancelTokens["fetchAll"])
+            this._cancelTokens["fetchAll"].cancel("Operation canceled due to new request.");
+
+        this._cancelTokens["fetchAll"] = axios.CancelToken.source();
+
         try {
             const response = await instance.get<ApiResponse<Building[]>>("buildings", {
                 params: {
@@ -229,8 +275,9 @@ export class BuildingsApi {
                     sortBy: capitalizeFirstLetter(sortBy),
                     ascending: ascending,
                     query: query,
-                    ...extent
-                }
+                    ...extent,
+                },
+                cancelToken: this._cancelTokens["fetchAll"].token,
             });
             return response.data;
         } catch (error) {
@@ -245,13 +292,21 @@ export class BuildingsApi {
      * @returns A promise that resolves to the count of AdrBina.
      */
     static async fetchCount(
+        extent: Extent = null!,
         query: string = null!
     ) {
+        if (this._cancelTokens["fetchCount"])
+            this._cancelTokens["fetchCount"].cancel("Operation canceled due to new request.");
+
+        this._cancelTokens["fetchCount"] = axios.CancelToken.source();
+
         try {
-            const response = await instance.get<ApiResponse<number>>("adrBina/count", {
+            const response = await instance.get<ApiResponse<number>>("buildings/count", {
                 params: {
-                    query
-                }
+                    ...extent,
+                    query,
+                },
+                cancelToken: this._cancelTokens["fetchCount"].token,
             });
             return response.data;
         } catch (error) {
@@ -268,6 +323,11 @@ export class BuildingsApi {
         query: string = null!,
         extent?: Extent
     ): Promise<BuildingsResponse> {
+        if (this._cancelTokens["fetchAllProto"])
+            this._cancelTokens["fetchAllProto"].cancel("Operation canceled due to new request.");
+
+        this._cancelTokens["fetchAllProto"] = axios.CancelToken.source();
+
         try {
             const protoResponse = await instance.get<ArrayBuffer>("buildings/pbf", {
                 params: {
@@ -276,16 +336,17 @@ export class BuildingsApi {
                     sortBy: capitalizeFirstLetter(sortBy),
                     ascending: ascending,
                     query: query,
-                    ...extent
+                    ...extent,
                 },
+                cancelToken: this._cancelTokens["fetchAllProto"].token,
                 headers: {
                     'Accept': 'application/x-protobuf'
                 },
                 responseType: 'arraybuffer'
             });
-
+            Logger.debug("Fetched Buildings Proto:", protoResponse);
             const decodedData = BuildingsResponse.decode(new Uint8Array(protoResponse.data));
-
+            Logger.debug("Decoded Buildings Proto:", decodedData);
             return decodedData;
 
         } catch (error) {

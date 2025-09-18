@@ -3,4 +3,4 @@ export { flyToFeature } from "./flyToFeature";
 export { findClosestPoleHeight } from "./findClosestPoleHeight";
 export { filterFeature } from "./filterFeature";
 export { findAverageLonLat } from "./findAverageLonLat";
-export { wkbToGeoJSON } from "./wkbToGeoJSON";
+export { wkbToGeometry } from "./wkbToGeometry";

@@ -1,7 +1,6 @@
 import instance from "../instance";
 import type { ApiResponse, Extent, Hat, Rekortman } from "../types";
-import { capitalizeFirstLetter } from "../utils";
-import { Logger } from "../utils/logger";
+import { Logger, capitalizeFirstLetter } from "../utils";
 
 /**
  * Class representing the AG Hat API

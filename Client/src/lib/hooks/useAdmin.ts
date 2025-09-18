@@ -4,8 +4,7 @@ import type { AdminModalStatus, ApiResponse, User, UserCounts, UserSortBy } from
 import { AdminModalType } from "../enums";
 import { setAscending, setItemsPerPage, setPageNumber, setQuery, setSortBy } from "../../app/layout/admin/adminSlice";
 import { useAppDispatch } from "./reduxHooks";
-import { InputSanitizer } from "../utils";
-import { Logger } from "../utils/logger";
+import { Logger, InputSanitizer } from "../utils";
 
 /**
  * Returns admin related functions and handlers.
