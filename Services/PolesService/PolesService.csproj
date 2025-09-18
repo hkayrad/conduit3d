@@ -24,4 +24,14 @@
     <ProjectReference Include="..\..\Common\Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Protobuf Include="Protos\agDirek.proto" GrpcServices="Server" />
+  </ItemGroup>
+  <ItemGroup>
+    <Protobuf Include="Protos\ogMusDirek.proto" GrpcServices="Server" />
+  </ItemGroup>
+  <ItemGroup>
+    <Protobuf Include="Protos\aydDirek.proto" GrpcServices="Server" />
+  </ItemGroup>
+
 </Project>

@@ -1,13 +1,14 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { OgMusDirekApi } from "../../../../../lib/api";
-import type { Direk, Extent } from "../../../../../lib/types";
+import type { Extent } from "../../../../../lib/types";
 import { setType } from "../../mapSlice";
 import { FeatureType } from "../../../../../lib/enums";
 import { useAppDispatch } from "../../../../../lib/hooks";
-import { Logger, wkbToGeometry } from "../../../../../lib/utils";
+import { handleDataFetch, Logger, wkbToGeometry } from "../../../../../lib/utils";
+import { CHUNK_SIZE } from "../../../../../lib/constants";
 
 type Props = {
-    setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
+    setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection[]>>,
     extent: Extent
 }
 
@@ -21,21 +22,30 @@ export default function OgMusDirekComponent(props: Props): null {
 
     const dispatch = useAppDispatch();
 
-    const handleOgMusDirekFetch = useCallback(async () => {
+    const abortControllerRef = useRef<AbortController | null>(null);
+    const isLoadingRef = useRef<boolean>(false);
+
+    const fetchNextChunk = async (page: number, signal?: AbortSignal): Promise<GeoJSON.FeatureCollection> => {
         try {
-            const response = await OgMusDirekApi.fetchAll(200000, 1, 'id', true, null!, extent);
+            const response = await OgMusDirekApi.fetchAllProto(CHUNK_SIZE, page, 'id', true, null!, extent);
 
-            if (!response.isSuccess)
-                return;
+            if (signal?.aborted) {
+                Logger.debug("Request aborted");
+                return { type: "FeatureCollection", features: [] };
+            }
 
-            var dataList: GeoJSON.FeatureCollection = {
-                type: "FeatureCollection",
-                features: []
-            };
+            if (!response.isSuccess) {
+                if (response.statusCode === 404) {
+                    Logger.debug("No OgMusDirek data found in the specified extent.");
+                    return { type: "FeatureCollection", features: [] };
+                }
+                Logger.error("Error fetching OgMusDirek data");
+                return { type: "FeatureCollection", features: [] };
+            }
 
-            response.data.forEach((rawData: Direk) => {
+            const formattedData: GeoJSON.Feature[] = response.data.map((rawData) => {
                 const height = Number(rawData.boyOzellik.split("/")[1]);
-                const feature = {
+                return {
                     type: "Feature",
                     geometry: wkbToGeometry(rawData.wkb),
                     properties: {
@@ -50,15 +60,22 @@ export default function OgMusDirekComponent(props: Props): null {
                         direkBoyId: rawData.direkBoyId,
                         yukseklik: Number.isNaN(height) ? 10 : height,
                     }
-                } as GeoJSON.Feature;
-                dataList.features.push(feature);
+                }
             });
 
-            setData(dataList);
+            return {
+                type: "FeatureCollection",
+                features: formattedData
+            };
         } catch (error) {
+            if (error === "Request cancelled") {
+                Logger.warn("Request was cancelled by axios");
+                return Promise.reject(error);
+            }
             Logger.error("Error fetching OgMusDirek data:", error);
+            throw error;
         }
-    }, [extent]);
+    }
 
     const handleOgMusDirekTypesFetch = useCallback(async () => {
         try {
@@ -74,7 +91,7 @@ export default function OgMusDirekComponent(props: Props): null {
     }, []);
 
     useEffect(() => {
-        handleOgMusDirekFetch();
+        handleDataFetch(isLoadingRef, abortControllerRef, extent, fetchNextChunk, setData);
     }, [extent]);
 
     useEffect(() => {

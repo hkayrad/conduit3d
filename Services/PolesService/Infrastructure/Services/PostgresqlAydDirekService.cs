@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using Conduit3D.Common.Domain;
 using Npgsql;
 using PolesService.Domain;
@@ -152,6 +153,129 @@ public class PostgresqlAydDirekService(IUnitOfWork unitOfWork) : IAydDirekServic
         catch (Exception ex)
         {
             return Response<List<string>>.UnhandledError(PolesResources.GetString("tipListRetrievalFailed", ex.Message));
+        }
+    }
+
+    public async Task<AydDirekResponse> GetAllAsProtobufAsync(int pageNumber, int pageSize, string sortBy, bool ascending, Extent? extent, string? query, CancellationToken cancellationToken)
+    {
+        if (pageSize < 1 || pageSize > 200000)
+            return new AydDirekResponse
+            {
+                IsSuccess = false,
+                Message = PolesResources.GetString("invalidPageSize"),
+                StatusCode = (int)HttpStatusCode.BadRequest,
+                Data = { }
+            };
+
+        if (pageNumber < 1)
+            return new AydDirekResponse
+            {
+                IsSuccess = false,
+                Message = PolesResources.GetString("invalidPageNumber"),
+                StatusCode = (int)HttpStatusCode.BadRequest,
+                Data = { }
+            };
+
+        string[] allowedSortColumns =
+        [
+            "Id",
+            "Kodu",
+            "SiteAdi",
+            "Adi",
+            "BinaKatSayisi",
+            "DaireSayisi",
+            "IsyeriSayisi",
+            "Yukseklik"
+        ];
+
+        if (!allowedSortColumns.Contains(sortBy))
+            return new AydDirekResponse
+            {
+                IsSuccess = false,
+                Message = PolesResources.GetString("invalidSortBy"),
+                StatusCode = (int)HttpStatusCode.BadRequest,
+                Data = { }
+            };
+
+        extent ??= new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
+
+        if (extent.MinX == 0 && extent.MinY == 0 && extent.MaxX == 0 && extent.MaxY == 0)
+        {
+            extent = new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
+        }
+
+        if (!extent.IsValid())
+            return new AydDirekResponse
+            {
+                IsSuccess = false,
+                Message = PolesResources.GetString("invalidExtent"),
+                StatusCode = (int)HttpStatusCode.BadRequest,
+                Data = { }
+            };
+
+        try
+        {
+            var buildings = await _unitOfWork.AydDirekRepository.GetAllAsync(pageNumber,
+                                                                    pageSize,
+                                                                    sortBy,
+                                                                    ascending,
+                                                                    extent,
+                                                                    query,
+                                                                    cancellationToken);
+
+            if (buildings == null || buildings.Count == 0)
+                return new AydDirekResponse
+                {
+                    IsSuccess = false,
+                    Message = PolesResources.GetString("noPoleFound"),
+                    StatusCode = (int)HttpStatusCode.NotFound,
+                    Data = { }
+                };
+
+            var buildingsResponse = new AydDirekResponse
+            {
+                IsSuccess = true,
+                Message = PolesResources.GetString("polesRetrieved"),
+                StatusCode = (int)HttpStatusCode.OK,
+            };
+
+            foreach (var building in buildings)
+            {
+                buildingsResponse.Data.Add(new AydDirekProto
+                {
+                    Id = building.Id,
+                    Kodu = building.Kodu ?? string.Empty,
+                    Adi = building.Adi ?? string.Empty,
+                    Cinsi = building.Cinsi ?? string.Empty,
+                    Tipi = building.Tipi ?? string.Empty,
+                    DirekNo = building.DirekNo ?? string.Empty,
+                    BoyOzellik = building.BoyOzellik ?? string.Empty,
+                    DirekBoyId = building.DirekBoyId,
+                    Wkb = Convert.ToBase64String(building.Wkb)
+                });
+            }
+
+            return buildingsResponse;
+        }
+        catch (NpgsqlException ex)
+        {
+            return new AydDirekResponse
+            {
+                IsSuccess = false,
+                Message = PolesResources.GetString("poleRetrievalFailed", ex.Message),
+                StatusCode = (int)HttpStatusCode.InternalServerError,
+                Data = { }
+            };
+        }
+        catch (Exception ex)
+        {
+            return new AydDirekResponse
+            {
+                IsSuccess = false,
+                Message = PolesResources.GetString("poleRetrievalFailed", ex.Message),
+                StatusCode = (int)HttpStatusCode.InternalServerError,
+                Data = { }
+            };
         }
     }
 }

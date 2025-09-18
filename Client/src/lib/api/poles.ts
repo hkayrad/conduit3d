@@ -1,6 +1,11 @@
+import type { CancelTokenSource } from "axios";
 import instance from "../instance";
 import type { ApiResponse, Direk, Extent } from "../types";
 import { Logger, capitalizeFirstLetter } from "../utils";
+import { AgDirekResponse } from "../utils/protos/poles/agDirek";
+import axios from "axios";
+import { OgMusDirekResponse } from "../utils/protos/poles/ogMusDirek";
+import { AydDirekResponse } from "../utils/protos/poles/aydDirek";
 
 /** 
  * Class representing the AG Direk API 
@@ -16,6 +21,9 @@ export class AgDirekApi {
      * @param extent The geographical extent to filter the features.
      * @returns A promise that resolves to the list of AG Direk features.
      */
+
+    private static _cancelTokens: { [key: string]: CancelTokenSource } = {};
+
     static async fetchAll(
         pageSize: number = 200000,
         pageNumber: number = 1,
@@ -78,6 +86,50 @@ export class AgDirekApi {
             throw error;
         }
     }
+
+    static async fetchAllProto(
+        pageSize: number = 200000,
+        pageNumber: number = 1,
+        sortBy: string = 'id',
+        ascending: boolean = true,
+        query: string = null!,
+        extent?: Extent
+    ): Promise<AgDirekResponse> {
+        if (this._cancelTokens["fetchAllProto"])
+            this._cancelTokens["fetchAllProto"].cancel("Operation canceled due to new request.");
+
+        this._cancelTokens["fetchAllProto"] = axios.CancelToken.source();
+
+        try {
+            const protoResponse = await instance.get<ArrayBuffer>("agDirek/pbf", {
+                params: {
+                    pageSize: pageSize,
+                    pageNumber: pageNumber,
+                    sortBy: capitalizeFirstLetter(sortBy),
+                    ascending: ascending,
+                    query: query,
+                    ...extent,
+                },
+                cancelToken: this._cancelTokens["fetchAllProto"].token,
+                headers: {
+                    'Accept': 'application/x-protobuf'
+                },
+                responseType: 'arraybuffer',
+            });
+
+            const decodedData = AgDirekResponse.decode(new Uint8Array(protoResponse.data));
+
+            return decodedData;
+        } catch (error) {
+            if (error === "Request cancelled") {
+                Logger.warn("Request was cancelled by axios");
+                return Promise.reject(error);
+            }
+
+            Logger.error("Fetch AgHat Proto error:", error);
+            throw error;
+        }
+    }
 }
 
 /**
@@ -94,6 +146,9 @@ export class OgMusDirekApi {
      * @param extent The geographical extent to filter the features.
      * @returns A promise that resolves to the list of OG Mus Direk features.
      */
+
+    private static _cancelTokens: { [key: string]: CancelTokenSource } = {};
+
     static async fetchAll(
         pageSize: number = 200000,
         pageNumber: number = 1,
@@ -153,6 +208,50 @@ export class OgMusDirekApi {
             throw error;
         }
     }
+
+    static async fetchAllProto(
+        pageSize: number = 200000,
+        pageNumber: number = 1,
+        sortBy: string = 'id',
+        ascending: boolean = true,
+        query: string = null!,
+        extent?: Extent
+    ): Promise<OgMusDirekResponse> {
+        if (this._cancelTokens["fetchAllProto"])
+            this._cancelTokens["fetchAllProto"].cancel("Operation canceled due to new request.");
+
+        this._cancelTokens["fetchAllProto"] = axios.CancelToken.source();
+
+        try {
+            const protoResponse = await instance.get<ArrayBuffer>("ogMusDirek/pbf", {
+                params: {
+                    pageSize: pageSize,
+                    pageNumber: pageNumber,
+                    sortBy: capitalizeFirstLetter(sortBy),
+                    ascending: ascending,
+                    query: query,
+                    ...extent,
+                },
+                cancelToken: this._cancelTokens["fetchAllProto"].token,
+                headers: {
+                    'Accept': 'application/x-protobuf'
+                },
+                responseType: 'arraybuffer',
+            });
+
+            const decodedData = OgMusDirekResponse.decode(new Uint8Array(protoResponse.data));
+
+            return decodedData;
+        } catch (error) {
+            if (error === "Request cancelled") {
+                Logger.warn("Request was cancelled by axios");
+                return Promise.reject(error);
+            }
+
+            Logger.error("Fetch AgHat Proto error:", error);
+            throw error;
+        }
+    }
 }
 
 /**
@@ -169,6 +268,9 @@ export class AydDirekApi {
      * @param extent The geographical extent to filter the features.
      * @returns A promise that resolves to the list of Ayd Direk features.
      */
+
+    private static _cancelTokens: { [key: string]: CancelTokenSource } = {};
+
     static async fetchAll(
         pageSize: number = 200000,
         pageNumber: number = 1,
@@ -226,6 +328,50 @@ export class AydDirekApi {
             return response.data;
         } catch (error) {
             Logger.error("Fetch AydDirek count error:", error);
+            throw error;
+        }
+    }
+
+    static async fetchAllProto(
+        pageSize: number = 200000,
+        pageNumber: number = 1,
+        sortBy: string = 'id',
+        ascending: boolean = true,
+        query: string = null!,
+        extent?: Extent
+    ): Promise<AydDirekResponse> {
+        if (this._cancelTokens["fetchAllProto"])
+            this._cancelTokens["fetchAllProto"].cancel("Operation canceled due to new request.");
+
+        this._cancelTokens["fetchAllProto"] = axios.CancelToken.source();
+
+        try {
+            const protoResponse = await instance.get<ArrayBuffer>("aydDirek/pbf", {
+                params: {
+                    pageSize: pageSize,
+                    pageNumber: pageNumber,
+                    sortBy: capitalizeFirstLetter(sortBy),
+                    ascending: ascending,
+                    query: query,
+                    ...extent,
+                },
+                cancelToken: this._cancelTokens["fetchAllProto"].token,
+                headers: {
+                    'Accept': 'application/x-protobuf'
+                },
+                responseType: 'arraybuffer',
+            });
+
+            const decodedData = AydDirekResponse.decode(new Uint8Array(protoResponse.data));
+
+            return decodedData;
+        } catch (error) {
+            if (error === "Request cancelled") {
+                Logger.warn("Request was cancelled by axios");
+                return Promise.reject(error);
+            }
+
+            Logger.error("Fetch AgHat Proto error:", error);
             throw error;
         }
     }

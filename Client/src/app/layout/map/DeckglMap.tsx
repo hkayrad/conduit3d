@@ -3,7 +3,7 @@ import "deck.gl/stylesheet.css"
 import "maplibre-gl/dist/maplibre-gl.css"
 import "./style/deckglMap.css"
 
-import { COLORS, DEBOUNCE_TIME_MS, EMPTY_GEOMETRY_COLLECTION, LAT_EXTENT_PADDING, LON_EXTENT_PADDING, MAX_ZOOM_LEVEL, MIN_ZOOM_THRESHOLD } from "../../../lib/constants";
+import { COLORS, DEBOUNCE_TIME_MS, LAT_EXTENT_PADDING, LON_EXTENT_PADDING, MAX_ZOOM_LEVEL, MIN_ZOOM_THRESHOLD } from "../../../lib/constants";
 
 import type { C3D_ViewState, PopupState } from "../../../lib/types";
 
@@ -76,9 +76,9 @@ export default function DeckglMap(): React.ReactNode {
     const [adrBina, setAdrBina] = useState<GeoJSON.FeatureCollection[]>([]);
     const [buildingBina, setBuildingBin] = useState<GeoJSON.FeatureCollection[]>([]);
     const [trafoBina, setTrafoBina] = useState<GeoJSON.FeatureCollection[]>([]);
-    const [agDirek, setAgDirek] = useState<GeoJSON.FeatureCollection>(EMPTY_GEOMETRY_COLLECTION);
-    const [ogMusDirek, setOgMusDirek] = useState<GeoJSON.FeatureCollection>(EMPTY_GEOMETRY_COLLECTION);
-    const [aydDirek, setAydDirek] = useState<GeoJSON.FeatureCollection>(EMPTY_GEOMETRY_COLLECTION);
+    const [agDirek, setAgDirek] = useState<GeoJSON.FeatureCollection[]>([]);
+    const [ogMusDirek, setOgMusDirek] = useState<GeoJSON.FeatureCollection[]>([]);
+    const [aydDirek, setAydDirek] = useState<GeoJSON.FeatureCollection[]>([]);
     const [agHat, setAgHat] = useState<GeoJSON.FeatureCollection[]>([]);
     const [ogHat, setOgHat] = useState<GeoJSON.FeatureCollection[]>([]);
     const [rekortman, setRekortman] = useState<GeoJSON.FeatureCollection[]>([]);
