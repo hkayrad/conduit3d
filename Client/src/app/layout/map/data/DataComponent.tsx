@@ -18,9 +18,9 @@ type Props = {
     setAgDirek: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>;
     setOgMusDirek: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>;
     setAydDirek: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>;
-    setAgHat: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>;
-    setOgHat: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>;
-    setRekortman: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>;
+    setAgHat: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection[]>>;
+    setOgHat: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection[]>>;
+    setRekortman: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection[]>>;
 }
 
 /**

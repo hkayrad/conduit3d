@@ -33,7 +33,7 @@ export const handleDataFetch = async (
 
         while (currentPage <= MAX_CHUNK_AMOUNT) {
             if (signal.aborted) {
-                Logger.debug("Building fetch was cancelled");
+                Logger.debug("Fetch was cancelled");
                 break;
             }
 
@@ -51,7 +51,7 @@ export const handleDataFetch = async (
             // Update data with new chunk
             setData((prevData: GeoJSON.FeatureCollection[]) => prevData.concat([chunk]).slice(-MAX_CHUNK_AMOUNT));
 
-            Logger.debug(`Loaded chunk ${currentPage} with ${chunk.features.length} features`);
+            Logger.debug(`Loaded chunk ${currentPage}/${MAX_CHUNK_AMOUNT} with ${chunk.features.length} features`);
 
             currentPage++;
 
@@ -66,8 +66,12 @@ export const handleDataFetch = async (
         }
     } catch (error) {
         if (abortControllerRef.current?.signal.aborted) {
-            Logger.debug("Fetch was cancelled");
-        } else {
+            Logger.warn("Fetch was cancelled");
+        } else if (error === "Request cancelled") {
+            Logger.warn("Request was cancelled by axios");
+            return;
+        }
+        else {
             Logger.error("Error in fetch:", error);
         }
     } finally {

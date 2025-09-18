@@ -22,8 +22,7 @@ export default function AdrBinaComponent(props: Props): null {
 
     const fetchNextChunk = async (page: number, signal?: AbortSignal): Promise<GeoJSON.FeatureCollection> => {
         try {
-            const response = await AdrBinaApi.fetchAllProto(CHUNK_SIZE, page, 'Id', true, null!, extent);
-            console.log(response);
+            const response = await AdrBinaApi.fetchAllProto(CHUNK_SIZE, page, 'id', true, null!, extent);
 
             if (signal?.aborted) {
                 Logger.debug("Request aborted");
@@ -31,7 +30,11 @@ export default function AdrBinaComponent(props: Props): null {
             }
 
             if (!response.isSuccess) {
-                Logger.error("Error fetching Building data");
+                if (response.statusCode === 404) {
+                    Logger.debug("No AdrBina data found in the specified extent.");
+                    return { type: "FeatureCollection", features: [] };
+                }
+                Logger.error("Error fetching AdrBina data");
                 return { type: "FeatureCollection", features: [] };
             }
 
@@ -59,6 +62,10 @@ export default function AdrBinaComponent(props: Props): null {
                 features: formattedData
             };
         } catch (error) {
+            if (error === "Request cancelled") {
+                Logger.warn("Request was cancelled by axios");
+                return Promise.reject(error);
+            }
             Logger.error("Error fetching AdrBina data:", error);
             throw error;
         }

@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+message RekortmanResponse {
+    bool isSuccess = 1;
+    string message = 2;
+    int32 statusCode = 3;
+    repeated RekortmanProto data = 4;
+}
+
+message RekortmanProto {
+    int32 id = 1;
+    string kodu = 2;
+    string adi = 3;
+    string kesit = 4;
+    string tipi = 5;
+    string wkb = 6;
+}

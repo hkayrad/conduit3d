@@ -2,9 +2,9 @@ import type { CancelTokenSource } from "axios";
 import instance from "../instance";
 import type { AdrBina, ApiResponse, Building, Extent, TrafoBina } from "../types";
 import { Logger, capitalizeFirstLetter } from "../utils";
-import { AdrBinaResponse } from "../utils/protos/adrBinaProto";
-import { BuildingsResponse } from "../utils/protos/buildingsProto";
-import { TrafoBinaResponse } from "../utils/protos/trafoBinaProto";
+import { AdrBinaResponse } from "../utils/protos/buildings/adrBina";
+import { BuildingsResponse } from "../utils/protos/buildings/buildings";
+import { TrafoBinaResponse } from "../utils/protos/buildings/trafoBina";
 import axios from "axios";
 
 /**
@@ -117,6 +117,11 @@ export class AdrBinaApi {
 
             return decodedData;
         } catch (error) {
+            if (error instanceof axios.Cancel) {
+                Logger.warn("Request canceled:", error.message);
+                return Promise.reject(error);
+            }
+
             Logger.error("Fetch AdrBina Proto error:", error);
             throw error;
         }
@@ -232,6 +237,11 @@ export class TrafoBinaApi {
 
             return decodedData;
         } catch (error) {
+            if (error instanceof axios.Cancel) {
+                Logger.warn("Request canceled:", error.message);
+                return Promise.reject(error);
+            }
+
             Logger.error("Fetch TrafoBina Proto error:", error);
             throw error;
         }
@@ -344,12 +354,15 @@ export class BuildingsApi {
                 },
                 responseType: 'arraybuffer'
             });
-            Logger.debug("Fetched Buildings Proto:", protoResponse);
             const decodedData = BuildingsResponse.decode(new Uint8Array(protoResponse.data));
-            Logger.debug("Decoded Buildings Proto:", decodedData);
-            return decodedData;
 
+            return decodedData;
         } catch (error) {
+            if (error instanceof axios.Cancel) {
+                Logger.warn("Request canceled:", error.message);
+                return Promise.reject(error);
+            }
+
             Logger.error("Fetch Buildings Proto error:", error);
             throw error;
         }

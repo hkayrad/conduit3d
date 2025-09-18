@@ -1,6 +1,6 @@
 export const DEBOUNCE_TIME_MS = 200;
 
-export const MAX_ZOOM = 25;
+export const MAX_ZOOM_LEVEL = 25;
 
 export const MAX_POPUP_COUNT = 10;
 

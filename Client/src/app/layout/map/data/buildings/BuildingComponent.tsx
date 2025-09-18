@@ -30,6 +30,10 @@ export default function BuildingComponent(props: Props): null {
             }
 
             if (!response.isSuccess) {
+                if (response.statusCode === 404) {
+                    Logger.debug("No Building data found in the specified extent.");
+                    return { type: "FeatureCollection", features: [] };
+                }
                 Logger.error("Error fetching Building data");
                 return { type: "FeatureCollection", features: [] };
             }
@@ -56,6 +60,10 @@ export default function BuildingComponent(props: Props): null {
                 features: formattedData
             };
         } catch (error) {
+            if (error === "Request cancelled") {
+                Logger.warn("Request was cancelled by axios");
+                return Promise.reject(error);
+            }
             Logger.error("Error fetching AdrBina data:", error);
             throw error;
         }

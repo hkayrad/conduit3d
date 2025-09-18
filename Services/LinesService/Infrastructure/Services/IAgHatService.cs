@@ -11,6 +11,12 @@ namespace LinesService.Infrastructure.Services;
 public interface IAgHatService : IGenericService<AgHat>
 {
     public Task<Response<List<string>>> GetTipListAsync(CancellationToken cancellationToken);
-
+    public Task<AgHatResponse> GetAllAsProtobufAsync(int pageNumber,
+                                            int pageSize,
+                                            string sortBy,
+                                            bool ascending,
+                                            Extent? extent,
+                                            string? query,
+                                            CancellationToken cancellationToken);
 }
 

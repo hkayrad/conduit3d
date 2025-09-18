@@ -2,7 +2,7 @@ import { FlyToInterpolator, WebMercatorViewport, type MapViewState } from "@deck
 import { C3D_MapViewType, FeatureType } from "../../enums";
 import { bbox } from "@turf/turf";
 import { easeInOutCubic } from "..";
-import { MAX_ZOOM } from "../../constants";
+import { MAX_ZOOM_LEVEL } from "../../constants";
 import type { C3D_ViewState } from "../../types";
 
 /**
@@ -41,7 +41,7 @@ export function flyToFeature(
             longitude,
             latitude,
             zoom: zoomLevel,
-            maxZoom: MAX_ZOOM,
+            maxZoom: MAX_ZOOM_LEVEL,
             transitionInterpolator: new FlyToInterpolator({ speed: 2 }),
             transitionDuration: 2000,
             transitionEasing: t => easeInOutCubic(t),

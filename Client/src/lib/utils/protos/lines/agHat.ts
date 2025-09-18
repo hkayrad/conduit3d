@@ -2,57 +2,55 @@
 // versions:
 //   protoc-gen-ts_proto  v2.7.7
 //   protoc               v3.21.12
-// source: buildings.proto
+// source: agHat.proto
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 
 export const protobufPackage = "";
 
-export interface BuildingsResponse {
+export interface AgHatResponse {
   isSuccess: boolean;
   message: string;
-  statusCode: string;
-  data: BuildingsProto[];
+  statusCode: number;
+  data: AgHatProto[];
 }
 
-export interface BuildingsProto {
+export interface AgHatProto {
   id: number;
   kodu: string;
-  siteAdi: string;
   adi: string;
-  binaKatSayisi: number;
-  daireSayisi: number;
-  isyeriSayisi: number;
-  yukseklik: number;
+  cinsi: string;
+  kesit: string;
+  tipi: string;
   wkb: string;
 }
 
-function createBaseBuildingsResponse(): BuildingsResponse {
-  return { isSuccess: false, message: "", statusCode: "", data: [] };
+function createBaseAgHatResponse(): AgHatResponse {
+  return { isSuccess: false, message: "", statusCode: 0, data: [] };
 }
 
-export const BuildingsResponse: MessageFns<BuildingsResponse> = {
-  encode(message: BuildingsResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+export const AgHatResponse: MessageFns<AgHatResponse> = {
+  encode(message: AgHatResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.isSuccess !== false) {
       writer.uint32(8).bool(message.isSuccess);
     }
     if (message.message !== "") {
       writer.uint32(18).string(message.message);
     }
-    if (message.statusCode !== "") {
-      writer.uint32(26).string(message.statusCode);
+    if (message.statusCode !== 0) {
+      writer.uint32(24).int32(message.statusCode);
     }
     for (const v of message.data) {
-      BuildingsProto.encode(v!, writer.uint32(34).fork()).join();
+      AgHatProto.encode(v!, writer.uint32(34).fork()).join();
     }
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): BuildingsResponse {
+  decode(input: BinaryReader | Uint8Array, length?: number): AgHatResponse {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseBuildingsResponse();
+    const message = createBaseAgHatResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -73,11 +71,11 @@ export const BuildingsResponse: MessageFns<BuildingsResponse> = {
           continue;
         }
         case 3: {
-          if (tag !== 26) {
+          if (tag !== 24) {
             break;
           }
 
-          message.statusCode = reader.string();
+          message.statusCode = reader.int32();
           continue;
         }
         case 4: {
@@ -85,7 +83,7 @@ export const BuildingsResponse: MessageFns<BuildingsResponse> = {
             break;
           }
 
-          message.data.push(BuildingsProto.decode(reader, reader.uint32()));
+          message.data.push(AgHatProto.decode(reader, reader.uint32()));
           continue;
         }
       }
@@ -97,16 +95,16 @@ export const BuildingsResponse: MessageFns<BuildingsResponse> = {
     return message;
   },
 
-  fromJSON(object: any): BuildingsResponse {
+  fromJSON(object: any): AgHatResponse {
     return {
       isSuccess: isSet(object.isSuccess) ? globalThis.Boolean(object.isSuccess) : false,
       message: isSet(object.message) ? globalThis.String(object.message) : "",
-      statusCode: isSet(object.statusCode) ? globalThis.String(object.statusCode) : "",
-      data: globalThis.Array.isArray(object?.data) ? object.data.map((e: any) => BuildingsProto.fromJSON(e)) : [],
+      statusCode: isSet(object.statusCode) ? globalThis.Number(object.statusCode) : 0,
+      data: globalThis.Array.isArray(object?.data) ? object.data.map((e: any) => AgHatProto.fromJSON(e)) : [],
     };
   },
 
-  toJSON(message: BuildingsResponse): unknown {
+  toJSON(message: AgHatResponse): unknown {
     const obj: any = {};
     if (message.isSuccess !== false) {
       obj.isSuccess = message.isSuccess;
@@ -114,78 +112,62 @@ export const BuildingsResponse: MessageFns<BuildingsResponse> = {
     if (message.message !== "") {
       obj.message = message.message;
     }
-    if (message.statusCode !== "") {
-      obj.statusCode = message.statusCode;
+    if (message.statusCode !== 0) {
+      obj.statusCode = Math.round(message.statusCode);
     }
     if (message.data?.length) {
-      obj.data = message.data.map((e) => BuildingsProto.toJSON(e));
+      obj.data = message.data.map((e) => AgHatProto.toJSON(e));
     }
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<BuildingsResponse>, I>>(base?: I): BuildingsResponse {
-    return BuildingsResponse.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<AgHatResponse>, I>>(base?: I): AgHatResponse {
+    return AgHatResponse.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<BuildingsResponse>, I>>(object: I): BuildingsResponse {
-    const message = createBaseBuildingsResponse();
+  fromPartial<I extends Exact<DeepPartial<AgHatResponse>, I>>(object: I): AgHatResponse {
+    const message = createBaseAgHatResponse();
     message.isSuccess = object.isSuccess ?? false;
     message.message = object.message ?? "";
-    message.statusCode = object.statusCode ?? "";
-    message.data = object.data?.map((e) => BuildingsProto.fromPartial(e)) || [];
+    message.statusCode = object.statusCode ?? 0;
+    message.data = object.data?.map((e) => AgHatProto.fromPartial(e)) || [];
     return message;
   },
 };
 
-function createBaseBuildingsProto(): BuildingsProto {
-  return {
-    id: 0,
-    kodu: "",
-    siteAdi: "",
-    adi: "",
-    binaKatSayisi: 0,
-    daireSayisi: 0,
-    isyeriSayisi: 0,
-    yukseklik: 0,
-    wkb: "",
-  };
+function createBaseAgHatProto(): AgHatProto {
+  return { id: 0, kodu: "", adi: "", cinsi: "", kesit: "", tipi: "", wkb: "" };
 }
 
-export const BuildingsProto: MessageFns<BuildingsProto> = {
-  encode(message: BuildingsProto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+export const AgHatProto: MessageFns<AgHatProto> = {
+  encode(message: AgHatProto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.id !== 0) {
       writer.uint32(8).int32(message.id);
     }
     if (message.kodu !== "") {
       writer.uint32(18).string(message.kodu);
     }
-    if (message.siteAdi !== "") {
-      writer.uint32(26).string(message.siteAdi);
-    }
     if (message.adi !== "") {
-      writer.uint32(34).string(message.adi);
+      writer.uint32(26).string(message.adi);
     }
-    if (message.binaKatSayisi !== 0) {
-      writer.uint32(40).int32(message.binaKatSayisi);
+    if (message.cinsi !== "") {
+      writer.uint32(34).string(message.cinsi);
     }
-    if (message.daireSayisi !== 0) {
-      writer.uint32(48).int32(message.daireSayisi);
+    if (message.kesit !== "") {
+      writer.uint32(42).string(message.kesit);
     }
-    if (message.isyeriSayisi !== 0) {
-      writer.uint32(56).int32(message.isyeriSayisi);
-    }
-    if (message.yukseklik !== 0) {
-      writer.uint32(64).int32(message.yukseklik);
+    if (message.tipi !== "") {
+      writer.uint32(50).string(message.tipi);
     }
     if (message.wkb !== "") {
-      writer.uint32(74).string(message.wkb);
+      writer.uint32(58).string(message.wkb);
     }
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): BuildingsProto {
+  decode(input: BinaryReader | Uint8Array, length?: number): AgHatProto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseBuildingsProto();
+    const message = createBaseAgHatProto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -210,7 +192,7 @@ export const BuildingsProto: MessageFns<BuildingsProto> = {
             break;
           }
 
-          message.siteAdi = reader.string();
+          message.adi = reader.string();
           continue;
         }
         case 4: {
@@ -218,43 +200,27 @@ export const BuildingsProto: MessageFns<BuildingsProto> = {
             break;
           }
 
-          message.adi = reader.string();
+          message.cinsi = reader.string();
           continue;
         }
         case 5: {
-          if (tag !== 40) {
+          if (tag !== 42) {
             break;
           }
 
-          message.binaKatSayisi = reader.int32();
+          message.kesit = reader.string();
           continue;
         }
         case 6: {
-          if (tag !== 48) {
+          if (tag !== 50) {
             break;
           }
 
-          message.daireSayisi = reader.int32();
+          message.tipi = reader.string();
           continue;
         }
         case 7: {
-          if (tag !== 56) {
-            break;
-          }
-
-          message.isyeriSayisi = reader.int32();
-          continue;
-        }
-        case 8: {
-          if (tag !== 64) {
-            break;
-          }
-
-          message.yukseklik = reader.int32();
-          continue;
-        }
-        case 9: {
-          if (tag !== 74) {
+          if (tag !== 58) {
             break;
           }
 
@@ -270,21 +236,19 @@ export const BuildingsProto: MessageFns<BuildingsProto> = {
     return message;
   },
 
-  fromJSON(object: any): BuildingsProto {
+  fromJSON(object: any): AgHatProto {
     return {
       id: isSet(object.id) ? globalThis.Number(object.id) : 0,
       kodu: isSet(object.kodu) ? globalThis.String(object.kodu) : "",
-      siteAdi: isSet(object.siteAdi) ? globalThis.String(object.siteAdi) : "",
       adi: isSet(object.adi) ? globalThis.String(object.adi) : "",
-      binaKatSayisi: isSet(object.binaKatSayisi) ? globalThis.Number(object.binaKatSayisi) : 0,
-      daireSayisi: isSet(object.daireSayisi) ? globalThis.Number(object.daireSayisi) : 0,
-      isyeriSayisi: isSet(object.isyeriSayisi) ? globalThis.Number(object.isyeriSayisi) : 0,
-      yukseklik: isSet(object.yukseklik) ? globalThis.Number(object.yukseklik) : 0,
+      cinsi: isSet(object.cinsi) ? globalThis.String(object.cinsi) : "",
+      kesit: isSet(object.kesit) ? globalThis.String(object.kesit) : "",
+      tipi: isSet(object.tipi) ? globalThis.String(object.tipi) : "",
       wkb: isSet(object.wkb) ? globalThis.String(object.wkb) : "",
     };
   },
 
-  toJSON(message: BuildingsProto): unknown {
+  toJSON(message: AgHatProto): unknown {
     const obj: any = {};
     if (message.id !== 0) {
       obj.id = Math.round(message.id);
@@ -292,23 +256,17 @@ export const BuildingsProto: MessageFns<BuildingsProto> = {
     if (message.kodu !== "") {
       obj.kodu = message.kodu;
     }
-    if (message.siteAdi !== "") {
-      obj.siteAdi = message.siteAdi;
-    }
     if (message.adi !== "") {
       obj.adi = message.adi;
     }
-    if (message.binaKatSayisi !== 0) {
-      obj.binaKatSayisi = Math.round(message.binaKatSayisi);
+    if (message.cinsi !== "") {
+      obj.cinsi = message.cinsi;
     }
-    if (message.daireSayisi !== 0) {
-      obj.daireSayisi = Math.round(message.daireSayisi);
+    if (message.kesit !== "") {
+      obj.kesit = message.kesit;
     }
-    if (message.isyeriSayisi !== 0) {
-      obj.isyeriSayisi = Math.round(message.isyeriSayisi);
-    }
-    if (message.yukseklik !== 0) {
-      obj.yukseklik = Math.round(message.yukseklik);
+    if (message.tipi !== "") {
+      obj.tipi = message.tipi;
     }
     if (message.wkb !== "") {
       obj.wkb = message.wkb;
@@ -316,19 +274,17 @@ export const BuildingsProto: MessageFns<BuildingsProto> = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<BuildingsProto>, I>>(base?: I): BuildingsProto {
-    return BuildingsProto.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<AgHatProto>, I>>(base?: I): AgHatProto {
+    return AgHatProto.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<BuildingsProto>, I>>(object: I): BuildingsProto {
-    const message = createBaseBuildingsProto();
+  fromPartial<I extends Exact<DeepPartial<AgHatProto>, I>>(object: I): AgHatProto {
+    const message = createBaseAgHatProto();
     message.id = object.id ?? 0;
     message.kodu = object.kodu ?? "";
-    message.siteAdi = object.siteAdi ?? "";
     message.adi = object.adi ?? "";
-    message.binaKatSayisi = object.binaKatSayisi ?? 0;
-    message.daireSayisi = object.daireSayisi ?? 0;
-    message.isyeriSayisi = object.isyeriSayisi ?? 0;
-    message.yukseklik = object.yukseklik ?? 0;
+    message.cinsi = object.cinsi ?? "";
+    message.kesit = object.kesit ?? "";
+    message.tipi = object.tipi ?? "";
     message.wkb = object.wkb ?? "";
     return message;
   },
