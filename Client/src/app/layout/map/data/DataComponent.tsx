@@ -47,10 +47,10 @@ export default function DataComponent(props: Props): React.ReactNode {
 
     return (
         <>
-            {/* <BuildingComponent
+            <BuildingComponent
                 setData={setBuildingBina}
                 extent={extent}
-            /> */}
+            />
             <AdrBinaComponent
                 setData={setAdrBina}
                 extent={extent}
