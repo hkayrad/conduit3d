@@ -38,7 +38,9 @@ export default function AdrBinaComponent(props: Props): null {
                 return { type: "FeatureCollection", features: [] };
             }
 
-            const formattedData: GeoJSON.Feature[] = response.data.map((rawData) => (
+            const formattedData: GeoJSON.Feature[] = response.data
+            .filter(rawData => rawData.adi.trim().toUpperCase() !== "SANAL_BINA")
+            .map((rawData) => (
                 {
                     type: "Feature",
                     geometry: wkbToGeometry(rawData.wkb),

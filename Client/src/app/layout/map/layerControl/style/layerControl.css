@@ -77,7 +77,8 @@ body::-webkit-scrollbar-thumb {
   cursor: pointer;
 }
 #layer-control-toggle.open {
-  right: 320px;
+  right: 304px;
+  border-radius: 8px 0 0 8px;
 }
 
 .layer-control-content {
@@ -111,4 +112,5 @@ body::-webkit-scrollbar-thumb {
 }
 .layer-control-content.open {
   right: 0px;
+  border-radius: 0 0 0 8px;
 }/*# sourceMappingURL=layerControl.css.map */

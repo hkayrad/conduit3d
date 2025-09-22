@@ -20,7 +20,8 @@
     }
 
     &.open {
-        right: 320px;
+        right: 304px;
+        border-radius: 8px 0 0 8px;
     }
 }
 
@@ -42,7 +43,6 @@
     overflow-y: scroll;
     user-select: none;
 
-
     &::-webkit-scrollbar {
         width: 6px;
     }
@@ -57,5 +57,6 @@
 
     &.open {
         right: 0px;
+        border-radius: 0 0 0 8px;
     }
 }

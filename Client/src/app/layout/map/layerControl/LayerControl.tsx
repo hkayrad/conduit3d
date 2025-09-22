@@ -27,8 +27,8 @@ export default function LayerControl({
         dispatch(setIsLayerControlsOpen(!isLayerControlsOpen));
     }
 
-    const handleHoverInfoToggle = (state: boolean) => {
-        dispatch(setIsHoverInfoVisible(state));
+    const handleHoverInfoToggle = () => {
+        dispatch(setIsHoverInfoVisible(!isHoverInfoVisible));
     }
 
     const handleLayerToggle = (layer: keyof MapState["visibility"]) => {
@@ -50,7 +50,7 @@ export default function LayerControl({
             >
                 {isLayerControlsOpen ? <ChevronRight /> : <Layers2 />}
             </button>
-            <div className={`layer-control-content shadow ${isLayerControlsOpen ? "open" : "closed"}`}>
+            <div className={`layer-control-content ${isLayerControlsOpen ? "open" : "closed"}`}>
                 <LayerControlSection title="hover info">
                     <SettingToggleButton
                         active={isHoverInfoVisible}
