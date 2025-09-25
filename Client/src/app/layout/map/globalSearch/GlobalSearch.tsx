@@ -64,7 +64,7 @@ export default function GlobalSearch(props: Props) {
                         value={query}
                         onChange={handleQueryChange}
                         onFocus={() => setIsFocused(true)}
-                        onBlur={() => setIsFocused(false)}
+                        onBlur={() => setTimeout(() => setIsFocused(false), 200)} // Delay to allow click event on results
                     />
                 </div>
                 {results.length > 0 && isFocused && (
