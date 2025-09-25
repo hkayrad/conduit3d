@@ -24,7 +24,7 @@
     aspect-ratio: 3 / 2;
     transition: all .3s ease;
     border-radius: 12px;
-    border: 1px solid rgba(global.$primary-lighter, 0.5);
+    // border: 1px solid rgba(global.$primary-lighter, 0.5);
     transform: translateX(120%);
     opacity: 0;
 
@@ -41,6 +41,7 @@
 
     .toggle-button {
         position: absolute;
+        z-index: 901;
         bottom: 4px;
         right: 4px;
         display: flex;

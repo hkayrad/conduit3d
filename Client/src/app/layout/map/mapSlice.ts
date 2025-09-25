@@ -14,6 +14,7 @@ export interface MapState {
     isWireframe: boolean,
     selectedViewType: C3D_MapViewType,
     visibility: C3D_LayerViewState,
+    focusedView: "deckgl" | "streetview",
     filters: {
         [C3D_MapLayers.AgDirek]: {
             tipi: string[]
@@ -65,6 +66,7 @@ const initialState: MapState = {
     isStreetViewVisible: true,
     isStreetViewPinned: false,
     isWireframe: false,
+    focusedView: "deckgl",
     selectedViewType: C3D_MapViewType.Cartesian,
     visibility: {
         [C3D_MapLayers.Basemap]: true,
@@ -137,6 +139,9 @@ export const mapSlice = createSlice({
     name: 'map',
     initialState,
     reducers: {
+        setFocusedView: (state, action: PayloadAction<"deckgl" | "streetview">) => {
+            state.focusedView = action.payload;
+        },
         setIsDataLoading: (state, action: PayloadAction<boolean>) => {
             state.isDataLoading = action.payload;
         },
@@ -248,6 +253,7 @@ export const {
     setIsStreetViewVisible,
     setIsStreetViewPinned,
     setIsWireframe,
+    setFocusedView,
     setSelectedViewType,
     toggleWireframe,
     toggleStreetView,
@@ -269,6 +275,7 @@ export const selectIsStreetViewVisible = (state: RootState) => state.map.isStree
 export const selectIsStreetViewPinned = (state: RootState) => state.map.isStreetViewPinned;
 export const selectIsWireframe = (state: RootState) => state.map.isWireframe;
 export const selectSelectedViewType = (state: RootState) => state.map.selectedViewType;
+export const selectFocusedView = (state: RootState) => state.map.focusedView;
 export const selectVisibility = (state: RootState) => state.map.visibility;
 export const selectFilters = (state: RootState) => state.map.filters;
 export const selectTypes = (state: RootState) => state.map.types;

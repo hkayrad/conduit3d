@@ -22,7 +22,7 @@ import { Map as MapLibre } from 'react-map-gl/maplibre';
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Outlet, useLocation } from "react-router";
 
-import { selectMapState, setExtent, setLastRefreshPosition, setViewState } from "./mapSlice";
+import { selectMapState, setExtent, setFocusedView, setLastRefreshPosition, setViewState } from "./mapSlice";
 import LayerControl from "./layerControl/LayerControl";
 import DataComponent from "./data/DataComponent";
 import MousePosition from "./mousePosition/MousePosition";
@@ -33,7 +33,9 @@ import ShortcutsInfo from "./shortcutsInfo/ShortcutsInfo";
 import { C3D_MapViewType } from "../../../lib/enums";
 import ViewToggle from "./viewToggle/ViewToggle";
 import GlobalSearch from "./globalSearch/GlobalSearch";
+//@ts-ignore
 import StaticStreetView from "./streetView/StaticStreetView";
+import DynmicStreetView from "./streetView/DynamicStreetView";
 
 
 /**
@@ -43,7 +45,7 @@ import StaticStreetView from "./streetView/StaticStreetView";
  */
 export default function DeckglMap(): React.ReactNode {
     // Redux State
-    const { visibility, filters, types, selectedViewType, viewState, lastRefreshPosition, isWireframe } = useAppSelector(selectMapState);
+    const { visibility, filters, types, selectedViewType, viewState, lastRefreshPosition, isWireframe, focusedView } = useAppSelector(selectMapState);
     const { cartesian, firstPerson } = viewState;
 
     // React-Router Hooks
@@ -431,6 +433,9 @@ export default function DeckglMap(): React.ReactNode {
 
     // Update handler
     const handleUpdate = useCallback(() => {
+        if (focusedView !== "deckgl")
+            return;
+
         if (location.pathname !== "/")
             return;
 
@@ -512,14 +517,59 @@ export default function DeckglMap(): React.ReactNode {
         dispatch(setLastRefreshPosition({
             position: { longitude: mapViewState[selectedViewType].longitude!, latitude: mapViewState[selectedViewType].latitude! }
         }));
-    }, [location, mapViewState, selectedViewType, lastRefreshPosition]);
+    }, [focusedView, location, mapViewState, selectedViewType, lastRefreshPosition]);
+
+    const handleFirstPersonPan = () => {
+        if (selectedViewType !== C3D_MapViewType.FirstPerson) return;
+        if (focusedView !== "deckgl") return;
+
+        dispatch(setViewState({
+            viewId: C3D_MapViewType.FirstPerson,
+            viewState: {
+                ...viewState.firstPerson,
+                bearing: mapViewState.firstPerson.bearing,
+                pitch: mapViewState.firstPerson.pitch,
+                position: mapViewState.firstPerson.position,
+            }
+        }))
+    }
 
     // Add keyboard event listener
     useEffect(() => {
         document.addEventListener("keydown", (e) => handleKeyPresses(e));
 
-        return () => document.removeEventListener("keydown", (e) => handleKeyPresses(e));
+        const deckglContainer = document.getElementById("deckgl-wrapper");
+        deckglContainer?.addEventListener("mousedown", () => {
+            setTimeout(() => {
+                dispatch(setFocusedView("deckgl"));
+            }, 200);
+        });
+
+        return () => {
+            document.removeEventListener("keydown", (e) => handleKeyPresses(e));
+            deckglContainer?.removeEventListener("mousedown", () => {
+                setTimeout(() => {
+                    dispatch(setFocusedView("deckgl"));
+                }, 200);
+            });
+        };
     }, []);
+
+    useEffect(() => {
+        if (focusedView === "streetview") {
+            setMapViewState((prev) => ({
+                ...prev,
+                [C3D_MapViewType.FirstPerson]: {
+                    ...prev.firstPerson,
+                    longitude: firstPerson.longitude,
+                    latitude: firstPerson.latitude,
+                    pitch: firstPerson.pitch,
+                    bearing: firstPerson.bearing,
+                    position: [0, 0, 3],
+                }
+            }));
+        }
+    }, [firstPerson, focusedView]);
 
     // Adjust line widths based on zoom level or camera height
     useEffect(() => {
@@ -550,6 +600,8 @@ export default function DeckglMap(): React.ReactNode {
         const handler = setTimeout(() => {
             handleUpdate();
         }, DEBOUNCE_TIME_MS);
+
+        handleFirstPersonPan();
 
         return () => clearTimeout(handler);
     }, [lastRefreshPosition, mapViewState, selectedViewType]);
@@ -582,11 +634,12 @@ export default function DeckglMap(): React.ReactNode {
                     />
                 ))}
                 <GlobalSearch flyTo={flyTo} searchInputRef={searchInputRef} />
-                <StaticStreetView />
                 <LayerControl
                     debugBinaVisible={debugBinaVisible}
                     setDebugBinaVisible={setDebugBinaVisible}
                 />
+                {/* <StaticStreetView /> */}
+                <DynmicStreetView />
                 <MousePosition mouseLonLat={mouseLonLat} />
                 <HoverCard
                     hoveredFeature={hoveredFeature}

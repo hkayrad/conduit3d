@@ -90,7 +90,6 @@ kbd {
   aspect-ratio: 3/2;
   transition: all 0.3s ease;
   border-radius: 12px;
-  border: 1px solid rgba(75, 78, 115, 0.5);
   transform: translateX(120%);
   opacity: 0;
 }
@@ -104,6 +103,7 @@ kbd {
 }
 .street-view .toggle-button {
   position: absolute;
+  z-index: 901;
   bottom: 4px;
   right: 4px;
   display: flex;
