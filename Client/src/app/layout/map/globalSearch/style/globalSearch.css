@@ -58,6 +58,38 @@ body::-webkit-scrollbar-thumb {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
+kbd {
+  background: #FFFFFF;
+  color: #2B2D42;
+  padding: 1px 4px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: absolute;
+  bottom: 16px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 400px;
+  background: #2B2D42;
+  color: #FFFFFF;
+  border-radius: 12px;
+  padding: 12px;
+  z-index: 900;
+  transition: all 0.3s ease;
+}
+.info.hidden {
+  transform: translateY(150%);
+}
+.info .shortcut {
+  line-height: 1.5;
+}
+
 #global-search {
   position: fixed;
   z-index: 1000;

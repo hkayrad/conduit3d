@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Logger, findAverageLonLat, InputSanitizer, wkbToGeometry } from "../utils";
 import { AdrBinaApi, AgDirekApi, AgHatApi, AydDirekApi, OgHatApi, OgMusDirekApi, RekortmanApi, TrafoBinaApi } from "../api";
-import { FeatureType } from "../enums";
+import { FeatureType, QueryKeywords } from "../enums";
 import type { Direk } from "../types";
 
 export function useSearch(query: string, maxResults: number = 10) {
@@ -14,19 +14,6 @@ export function useSearch(query: string, maxResults: number = 10) {
             position: string;
             feature: GeoJSON.Feature;
         }>>([]);
-
-    enum QueryKeywords {
-        BINA = "bina",
-        TRAFO = "trafo",
-        DIREK = "direk",
-        AG_DIREK = "agdirek",
-        AYD_DIREK = "ayddirek",
-        OG_MUS_DIREK = "ogmusdirek",
-        HAT = "hat",
-        AG_HAT = "aghat",
-        OG_HAT = "oghat",
-        REKORTMAN = "rekortman"
-    }
 
     const _wrapInFeature = (geometry: GeoJSON.Geometry): GeoJSON.Feature => {
         return {
@@ -248,12 +235,12 @@ export function useSearch(query: string, maxResults: number = 10) {
     }
 
     const handleSearch = async () => {
-        
+
         if (query.trim() === "") {
             setResults([]);
             return;
         }
-        
+
         const sanitizedQuery = InputSanitizer.sanitizeSearchQuery(query).toLowerCase();
 
         try {

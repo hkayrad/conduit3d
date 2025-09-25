@@ -1,3 +1,5 @@
+import type { StyleSpecification } from "maplibre-gl";
+
 export const DEBOUNCE_TIME_MS = 200;
 
 export const MAX_ZOOM_LEVEL = 25;
@@ -33,11 +35,73 @@ export const COLORS: { [name: string]: [number, number, number, number] } = {
     REKORTMAN: [255, 0, 255, 255],
 };
 
-export const MAP_STYLE = [
-    "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json",
-    "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
-    "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
-    "https://tiles.openfreemap.org/styles/positron",
-    "https://tiles.openfreemap.org/styles/bright",
-    "https://tiles.openfreemap.org/styles/liberty"
-];
+// export const MAP_STYLE = [
+//     "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json",
+//     "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
+//     "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
+//     "https://tiles.openfreemap.org/styles/positron",
+//     "https://tiles.openfreemap.org/styles/bright",
+//     "https://tiles.openfreemap.org/styles/liberty"
+// ];
+
+export const MAP_STYLE: StyleSpecification = {
+    version: 8,
+    sources: {
+        "osm": {
+            type: "raster",
+            tiles: [
+                "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                "https://b.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                "https://c.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            ],
+            tileSize: 256,
+            attribution: "© OpenStreetMap contributors"
+        },
+        "buildings": {
+            type: "vector",
+            scheme: "tms",
+            tiles: [
+                "https://localhost/geoserver/gwc/service/tms/1.0.0/demoB:buildings@EPSG:900913@pbf/{z}/{x}/{y}.pbf"
+            ]
+        },
+        "ayd-direk-source": {
+            type: "vector",
+            scheme: "tms",
+            tiles: [
+                "https://localhost/geoserver/gwc/service/tms/1.0.0/demoB:ayd_direk@EPSG:900913@pbf/{z}/{x}/{y}.pbf"
+            ],
+            bounds: [30, 39, 31, 40]
+        }
+    },
+    layers: [
+        {
+            id: "osm-layer",
+            type: "raster",
+            source: "osm"
+        },
+        {
+            id: "building-layer",
+            source: "buildings",
+            "source-layer": "buildings",
+            type: "fill-extrusion",
+            paint: {
+                "fill-extrusion-color": "rgba(200, 200, 200, 0.6)", // Light gray with some transparency
+                "fill-extrusion-height": 12.5
+            }
+        },
+        {
+            id: "ayd-direk-layer",
+            source: "ayd-direk-source",
+            "source-layer": "ayd_direk",
+            type: "circle",
+            paint: {
+                "circle-color": "rgba(50, 205, 50, 1)", // Lime green, opaque
+                "circle-radius": 1,
+                "circle-stroke-color": "rgba(0, 0, 0, 1)", // Black border
+                "circle-stroke-width": 1
+            },
+
+        }
+    ]
+
+}

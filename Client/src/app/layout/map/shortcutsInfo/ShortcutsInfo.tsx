@@ -14,11 +14,15 @@ export default function ShortcutsInfo() {
             >
                 <Keyboard />
             </div>
-            <div className={`shortcuts-info ${isShortcutsInfoHovered ? "visible" : ""}`}>
+            <div className={`shortcuts-info ${isShortcutsInfoHovered ? "" : "hidden"}`}>
                 <h3>Keyboard Shortcuts</h3>
-                <p><kbd>Ctrl</kbd> + <kbd>Del</kbd> : Close Popup Windows</p>
-                <p><kbd>Shift</kbd> + <kbd>C</kbd> : Cartesian View</p>
-                <p><kbd>Shift</kbd> + <kbd>F</kbd> : First Person Viwe</p>
+                <p><span><kbd>Ctrl</kbd><kbd>Del</kbd></span> : Close Popup Windows</p>
+                <p><span><kbd>Ctrl</kbd><kbd>/</kbd></span> : Focus Search Bar</p>
+                <p><span><kbd>Esc</kbd></span> : Unfocus Search Bar</p>
+                <p><span><kbd>Shift</kbd><kbd>C</kbd></span> : Cartesian View</p>
+                <p><span><kbd>Shift</kbd><kbd>F</kbd></span> : First Person View</p>
+                <p><span><kbd>Shift</kbd><kbd>1-8</kbd></span> : Toggle Feature Layers</p>
+                <p><span><kbd>Shift</kbd><kbd>0</kbd></span> : Toggle Basemap</p>
             </div>
         </>
     );

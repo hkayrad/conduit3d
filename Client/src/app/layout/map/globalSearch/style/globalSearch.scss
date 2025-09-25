@@ -1,5 +1,31 @@
 @use "../../../../../global.scss";
 
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: absolute;
+    bottom: 16px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 400px;
+    background: global.$primary;
+    color: global.$white;
+    border-radius: 12px;
+    padding: 12px;
+    z-index: 900;
+    transition: all 0.3s ease;
+
+    &.hidden {
+        transform: translateY(150%);
+    }
+
+    .shortcut {
+        line-height: 1.5;
+    }
+}
+
 #global-search {
     position: fixed;
     z-index: 1000;

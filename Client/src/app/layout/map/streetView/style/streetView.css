@@ -66,39 +66,16 @@ kbd {
   white-space: nowrap;
 }
 
-.shortcut-container-icon {
+.street-view {
   position: absolute;
-  bottom: 48px;
-  left: 16px;
-  z-index: 10;
-  display: flex;
-  background: #2B2D42;
-  color: #FFFFFF;
-  padding: 8px;
+  z-index: 100;
+  right: 16px;
+  bottom: 88px;
+  width: 300px;
+  transition: all 0.3s ease;
   border-radius: 12px;
+  border: 1px solid #2B2D42;
 }
-
-.shortcuts-info {
-  position: absolute;
-  bottom: 84px;
-  left: 16px;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  background: #2B2D42;
-  color: #FFFFFF;
-  padding: 12px;
-  border-radius: 12px;
-  gap: 4px;
-}
-.shortcuts-info.hidden {
-  display: none;
-}
-.shortcuts-info p {
-  display: flex;
-  gap: 4px;
-}
-.shortcuts-info p span {
-  display: flex;
-  gap: 4px;
-}/*# sourceMappingURL=shortcutsInfo.css.map */
+.street-view:hover {
+  width: 600px;
+}/*# sourceMappingURL=streetView.css.map */

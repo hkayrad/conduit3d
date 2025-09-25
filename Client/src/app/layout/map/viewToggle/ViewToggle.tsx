@@ -15,14 +15,14 @@ export default function ViewToggle(): React.ReactNode {
             <button
                 className="toggle-button"
                 onClick={() => dispatch({ type: "map/setSelectedViewType", payload: C3D_MapViewType.Cartesian })}
-                title="Cartesian View (C)"
+                title="Cartesian View"
             >
                 <Map />
             </button>
             <button
                 className="toggle-button"
                 onClick={() => dispatch({ type: "map/setSelectedViewType", payload: C3D_MapViewType.FirstPerson })}
-                title="First Person View (F)"
+                title="First Person View"
             >
                 <PersonStanding />
             </button>

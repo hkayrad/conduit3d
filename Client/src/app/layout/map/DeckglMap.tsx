@@ -33,6 +33,7 @@ import ShortcutsInfo from "./shortcutsInfo/ShortcutsInfo";
 import { C3D_MapViewType } from "../../../lib/enums";
 import ViewToggle from "./viewToggle/ViewToggle";
 import GlobalSearch from "./globalSearch/GlobalSearch";
+import StreetView from "./streetView/StreetView";
 
 
 /**
@@ -42,7 +43,7 @@ import GlobalSearch from "./globalSearch/GlobalSearch";
  */
 export default function DeckglMap(): React.ReactNode {
     // Redux State
-    const { visibility, filters, types, selectedViewType, viewState, lastRefreshPosition } = useAppSelector(selectMapState);
+    const { visibility, filters, types, selectedViewType, viewState, lastRefreshPosition, isWireframe } = useAppSelector(selectMapState);
     const { cartesian, firstPerson } = viewState;
 
     // React-Router Hooks
@@ -53,6 +54,94 @@ export default function DeckglMap(): React.ReactNode {
 
     // Local State
     const [debugBinaVisible, setDebugBinaVisible] = useState<boolean>(false);
+
+    // const [agDirekWFS, setAgDirekWFS] = useState<GeoJSON.Feature[] | null>(null);
+    // const [ogDirekWFS, setOgDirekWFS] = useState<GeoJSON.Feature[] | null>(null);
+    // const [aydDirekWFS, setAydDirekWFS] = useState<GeoJSON.Feature[] | null>(null);
+    // const [agHatWFS, setAgHatWFS] = useState<GeoJSON.Feature[] | null>(null);
+    // const [ogHatWFS, setOgHatWFS] = useState<GeoJSON.Feature[] | null>(null);
+    // const [aydHatWFS, setAydHatWFS] = useState<GeoJSON.Feature[] | null>(null);
+
+    // useEffect(() => {
+    //     const fetchAgDirekWFS = async () => {
+    //         try {
+    //             const response = await fetch(
+    //                 "http://localhost:8080/geoserver/demoB/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=demoB:ag_direk&outputFormat=application/json&srsName=EPSG:4326"
+    //             );
+    //             const geojson = await response.json();
+    //             setAgDirekWFS(geojson.features || []);
+    //         } catch (error) {
+    //             console.error('Error fetching AG Direk data:', error);
+    //         }
+    //     }
+
+    //     const fetchOgDirekWFS = async () => {
+    //         try {
+    //             const response = await fetch(
+    //                 "http://localhost:8080/geoserver/demoB/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=demoB:og_direk&outputFormat=application/json&srsName=EPSG:4326"
+    //             );
+    //             const geojson = await response.json();
+    //             setOgDirekWFS(geojson.features || []);
+    //         } catch (error) {
+    //             console.error('Error fetching OG Direk data:', error);
+    //         }
+    //     }
+
+    //     const fetchAydDirekWFS = async () => {
+    //         try {
+    //             const response = await fetch(
+    //                 "http://localhost:8080/geoserver/demoB/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=demoB:ayd_direk&outputFormat=application/json&srsName=EPSG:4326"
+    //             );
+    //             const geojson = await response.json();
+    //             setAydDirekWFS(geojson.features || []);
+    //         } catch (error) {
+    //             console.error('Error fetching Ayd Direk data:', error);
+    //         }
+    //     }
+
+    //     const fetchAgHatWFS = async () => {
+    //         try {
+    //             const response = await fetch(
+    //                 "http://localhost:8080/geoserver/demoB/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=demoB:ag_hat&outputFormat=application/json&srsName=EPSG:4326"
+    //             );
+    //             const geojson = await response.json();
+    //             setAgHatWFS(geojson.features || []);
+    //         } catch (error) {
+    //             console.error('Error fetching AG Hat data:', error);
+    //         }
+    //     }
+
+    //     const fetchOgHatWFS = async () => {
+    //         try {
+    //             const response = await fetch(
+    //                 "http://localhost:8080/geoserver/demoB/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=demoB:og_hat&outputFormat=application/json&srsName=EPSG:4326"
+    //             );
+    //             const geojson = await response.json();
+    //             setOgHatWFS(geojson.features || []);
+    //         } catch (error) {
+    //             console.error('Error fetching OG Hat data:', error);
+    //         }
+    //     }
+
+    //     const fetchAydHatWFS = async () => {
+    //         try {
+    //             const response = await fetch(
+    //                 "http://localhost:8080/geoserver/demoB/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=demoB:ayd_hat&outputFormat=application/json&srsName=EPSG:4326"
+    //             );
+    //             const geojson = await response.json();
+    //             setAydHatWFS(geojson.features || []);
+    //         } catch (error) {
+    //             console.error('Error fetching Ayd Hat data:', error);
+    //         }
+    //     }
+
+    //     // fetchAgDirekWFS();
+    //     // fetchOgDirekWFS();
+    //     // fetchAydDirekWFS();
+    //     // fetchAgHatWFS();
+    //     // fetchOgHatWFS();
+    //     // fetchAydHatWFS();
+    // }, [])
 
     const [mapViewState, setMapViewState] = useState<C3D_ViewState>({
         [C3D_MapViewType.Cartesian]: {
@@ -92,6 +181,8 @@ export default function DeckglMap(): React.ReactNode {
     const [mousePos, setMousePos] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
     const [mouseLonLat, setMouseLonLat] = useState<number[]>([0, 0]);
 
+    const searchInputRef = useRef<HTMLInputElement>(null!);
+
     // Redux hooks
     const dispatch = useAppDispatch();
 
@@ -127,6 +218,7 @@ export default function DeckglMap(): React.ReactNode {
         activePopups,
         selectedViewType,
         mapViewState,
+        searchInputRef,
         setMapViewState,
         setHoveredFeature,
         setMousePos,
@@ -173,27 +265,108 @@ export default function DeckglMap(): React.ReactNode {
             id: `adr-bina-layer-${index}`,
             data: chunk,
             getElevation: (d) => d.properties.yukseklik,
-            getFillColor: COLORS.ADR_BINA,
+            getFillColor: isWireframe ? [0, 0, 0, 0] : COLORS.ADR_BINA,
             filled: true,
             extruded: true,
             pickable: true,
             autoHighlight: true,
             highlightColor: COLORS.HOVER,
             visible: visibility.adrBina,
+            wireframe: isWireframe,
         })),
 
         ...buildingBina.map((chunk, index) => new GeoJsonLayer({
             id: `building-bina-layer-${index}`,
             data: chunk,
             getElevation: (d) => d.properties.yukseklik,
-            getFillColor: COLORS.ADR_BINA,
+            getFillColor: isWireframe ? [0, 0, 0, 0] : COLORS.ADR_BINA,
             filled: true,
             extruded: true,
             pickable: true,
             autoHighlight: true,
             highlightColor: COLORS.HOVER,
             visible: debugBinaVisible,
+            wireframe: isWireframe,
         })),
+
+        // new ColumnLayer({
+        //     id: 'ag-direk-layer-mvt',
+        //     data: agDirekWFS ? agDirekWFS : [],
+        //     getPosition: d => d.geometry.coordinates,
+        //     getElevation: 10,
+        //     getFillColor: COLORS.AG_DIREK,
+        //     extruded: true,
+        //     pickable: true,
+        //     autoHighlight: true,
+        //     highlightColor: COLORS.HOVER,
+        //     radius: .5,
+        //     elevationScale: 1,
+        //     visible: visibility.agDirek,
+        // }),
+        // new ColumnLayer({
+        //     id: 'og-direk-layer-mvt',
+        //     data: ogDirekWFS ? ogDirekWFS : [],
+        //     getPosition: d => d.geometry.coordinates,
+        //     getElevation: 10,
+        //     getFillColor: COLORS.OG_MUS_DIREK,
+        //     extruded: true,
+        //     pickable: true,
+        //     autoHighlight: true,
+        //     highlightColor: COLORS.HOVER,
+        //     radius: .5,
+        //     elevationScale: 1,
+        //     visible: visibility.ogMusDirek,
+        // }),
+        // new ColumnLayer({
+        //     id: 'ayd-direk-layer-mvt',
+        //     data: aydDirekWFS ? aydDirekWFS : [],
+        //     getPosition: d => d.geometry.coordinates,
+        //     getElevation: 10,
+        //     getFillColor: COLORS.AYD_DIREK,
+        //     extruded: true,
+        //     pickable: true,
+        //     autoHighlight: true,
+        //     highlightColor: COLORS.HOVER,
+        //     radius: .5,
+        //     elevationScale: 1,
+        //     visible: visibility.aydDirek,
+        // }),
+        // new PathLayer({
+        //     id: "ag-hat-layer-mvt",
+        //     data: agHatWFS ? agHatWFS : [],
+        //     getPath: d => [[...d.geometry.coordinates[0] as [number, number], 10], [...d.geometry.coordinates[1] as [number, number], 10]],
+        //     getColor: COLORS.AG_HAT,
+        //     getWidth: overgroundLineWidth,
+        //     pickable: true,
+        //     billboard: true,
+        //     autoHighlight: true,
+        //     highlightColor: COLORS.HOVER,
+        //     visible: visibility.agHat,
+        // }),
+        // new PathLayer({
+        //     id: "og-hat-layer-mvt",
+        //     data: ogHatWFS ? ogHatWFS : [],
+        //     getPath: d => [[...d.geometry.coordinates[0] as [number, number], 10], [...d.geometry.coordinates[1] as [number, number], 10]],
+        //     getColor: COLORS.OG_HAT,
+        //     getWidth: overgroundLineWidth,
+        //     pickable: true,
+        //     billboard: true,
+        //     autoHighlight: true,
+        //     highlightColor: COLORS.HOVER,
+        //     visible: visibility.ogHat,
+        // }),
+        // new PathLayer({
+        //     id: "ayd-hat-layer-mvt",
+        //     data: aydHatWFS ? aydHatWFS : [],
+        //     getPath: d => [[...d.geometry.coordinates[0] as [number, number], 10], [...d.geometry.coordinates[1] as [number, number], 10]],
+        //     getColor: COLORS.REKORTMAN,
+        //     getWidth: overgroundLineWidth,
+        //     pickable: true,
+        //     billboard: true,
+        //     autoHighlight: true,
+        //     highlightColor: COLORS.HOVER,
+        //     visible: visibility.rekortman,
+        // }),
 
         ...trafoBina.map((chunk, index) => new ColumnLayer({
             id: `trafo-bina-layer-${index}`,
@@ -213,6 +386,7 @@ export default function DeckglMap(): React.ReactNode {
     ], [
         filters,
         visibility,
+        isWireframe,
         adrBina,
         buildingBina,
         trafoBina,
@@ -342,12 +516,9 @@ export default function DeckglMap(): React.ReactNode {
 
     // Add keyboard event listener
     useEffect(() => {
-        // if (searchParams.has("viewType"))
-        //     dispatch(setSelectedViewType(searchParams.get("viewType") as C3D_MapViewType))
+        document.addEventListener("keydown", (e) => handleKeyPresses(e));
 
-        document.addEventListener("keypress", (e) => handleKeyPresses(e));
-
-        return () => document.removeEventListener("keypress", (e) => handleKeyPresses(e));
+        return () => document.removeEventListener("keydown", (e) => handleKeyPresses(e));
     }, []);
 
     // Adjust line widths based on zoom level or camera height
@@ -410,7 +581,8 @@ export default function DeckglMap(): React.ReactNode {
                         onFlyTo={() => flyTo(popup.info.object)}
                     />
                 ))}
-                <GlobalSearch flyTo={flyTo} />
+                <GlobalSearch flyTo={flyTo} searchInputRef={searchInputRef} />
+                <StreetView />
                 <LayerControl
                     debugBinaVisible={debugBinaVisible}
                     setDebugBinaVisible={setDebugBinaVisible}

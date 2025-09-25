@@ -73,3 +73,11 @@ body {
 .shadow {
     box-shadow: 0 4px 8px rgba(#000000, .15);
 }
+
+kbd {
+    background: $white;
+    color: $primary;
+    padding: 1px 4px;
+    border-radius: 4px;
+    white-space: nowrap;
+}

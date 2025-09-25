@@ -49,9 +49,7 @@ export const handleDataFetch = async (
             }
 
             // Update data with new chunk
-            setData((prevData: GeoJSON.FeatureCollection[]) => prevData.concat([chunk]).slice(-MAX_CHUNK_AMOUNT));
-
-            Logger.debug(`Loaded chunk ${currentPage}/${MAX_CHUNK_AMOUNT} with ${chunk.features.length} features`);
+            setData((prevData: GeoJSON.FeatureCollection[]) => [chunk, ...prevData].slice(0, MAX_CHUNK_AMOUNT));
 
             currentPage++;
 

@@ -118,3 +118,7 @@ export type C3D_ViewState = {
     [C3D_MapViewType.Cartesian]: MapViewState,
     [C3D_MapViewType.FirstPerson]: FirstPersonViewState
 }
+
+export type C3D_LayerViewState = {
+    [key in C3D_MapLayers]: boolean
+}

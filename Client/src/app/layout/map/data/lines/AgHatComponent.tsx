@@ -3,7 +3,7 @@ import type { Extent } from "../../../../../lib/types";
 import { Logger, handleDataFetch, lineStringToSegments, wkbToGeometry } from "../../../../../lib/utils";
 import { setType } from "../../mapSlice";
 import { AgHatApi } from "../../../../../lib/api";
-import { FeatureType, HatCinsi } from "../../../../../lib/enums";
+import { FeatureType, HatCinsi, C3D_MapLayers } from "../../../../../lib/enums";
 import { useAppDispatch } from "../../../../../lib/hooks";
 import { CHUNK_SIZE } from "../../../../../lib/constants";
 
@@ -86,7 +86,7 @@ export default function AgHatComponent(props: Props): null {
             if (!response.isSuccess)
                 return;
 
-            dispatch(setType({ key: "agHat", types: response.data }));
+            dispatch(setType({ key: C3D_MapLayers.AgHat, types: response.data }));
         } catch (error) {
             Logger.error("Error fetching AgHat types:", error);
         }

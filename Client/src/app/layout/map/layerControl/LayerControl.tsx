@@ -6,6 +6,7 @@ import LayerControlSection from "../../../shared/layerControl/layerControlSectio
 import LayerControlDropdown from "../../../shared/layerControl/layerControlDropdown/LayerControlDropdown";
 import LayerControlFilter from "../../../shared/layerControl/layerControlFilter/LayerControlFilter";
 import SettingToggleButton from "../../../shared/layerControl/settingToggleButton/SettingToggleButton";
+import { C3D_MapLayers } from "../../../../lib/enums";
 
 /**
  * LayerControl component manages the visibility and settings of map layers.
@@ -64,7 +65,7 @@ export default function LayerControl({
                 <LayerControlSection title="basemap">
                     <SettingToggleButton
                         active={visibility.basemap}
-                        toggle={() => handleLayerToggle("basemap")}
+                        toggle={() => handleLayerToggle(C3D_MapLayers.Basemap)}
                         hideLabel={<><EyeClosed /> Hide</>}
                         showLabel={<><Eye /> Show</>}
                         hideTitle="Hide Basemap"
@@ -82,13 +83,13 @@ export default function LayerControl({
                         icon={<Building />}
                         name="Adr Bina"
                         isLayerVisible={visibility.adrBina}
-                        toggleLayer={() => handleLayerToggle("adrBina")}
+                        toggleLayer={() => handleLayerToggle(C3D_MapLayers.AdrBina)}
                     />
                     <LayerControlDropdown
                         icon={<Zap />}
                         name="Trafo"
                         isLayerVisible={visibility.trafoBina}
-                        toggleLayer={() => handleLayerToggle("trafoBina")}
+                        toggleLayer={() => handleLayerToggle(C3D_MapLayers.TrafoBina)}
                     />
                 </LayerControlSection>
                 <LayerControlSection title="poles">
@@ -96,13 +97,13 @@ export default function LayerControl({
                         icon={<UtilityPole />}
                         name="Ag Direk"
                         isLayerVisible={visibility.agDirek}
-                        toggleLayer={() => handleLayerToggle("agDirek")}
+                        toggleLayer={() => handleLayerToggle(C3D_MapLayers.AgDirek)}
                     >
                         <LayerControlFilter
                             label="Type"
                             typeList={types.agDirek}
                             filters={filters.agDirek.tipi}
-                            filterKey="agDirek"
+                            filterKey={C3D_MapLayers.AgDirek}
                             setFilters={handleFilterToggle}
                         />
                     </LayerControlDropdown>
@@ -110,13 +111,13 @@ export default function LayerControl({
                         icon={<UtilityPole />}
                         name="Og Mus Direk"
                         isLayerVisible={visibility.ogMusDirek}
-                        toggleLayer={() => handleLayerToggle("ogMusDirek")}
+                        toggleLayer={() => handleLayerToggle(C3D_MapLayers.OgMusDirek)}
                     >
                         <LayerControlFilter
                             label="Type"
                             typeList={types.ogMusDirek}
                             filters={filters.ogMusDirek.tipi}
-                            filterKey="ogMusDirek"
+                            filterKey={C3D_MapLayers.OgMusDirek}
                             setFilters={handleFilterToggle}
                         />
                     </LayerControlDropdown>
@@ -124,13 +125,13 @@ export default function LayerControl({
                         icon={<UtilityPole />}
                         name="Ayd Direk"
                         isLayerVisible={visibility.aydDirek}
-                        toggleLayer={() => handleLayerToggle("aydDirek")}
+                        toggleLayer={() => handleLayerToggle(C3D_MapLayers.AydDirek)}
                     >
                         <LayerControlFilter
                             label="Type"
                             typeList={types.aydDirek}
                             filters={filters.aydDirek.tipi}
-                            filterKey="aydDirek"
+                            filterKey={C3D_MapLayers.AydDirek}
                             setFilters={handleFilterToggle}
                         />
                     </LayerControlDropdown>
@@ -140,13 +141,13 @@ export default function LayerControl({
                         icon={<PlugZap />}
                         name="Ag Hat"
                         isLayerVisible={visibility.agHat}
-                        toggleLayer={() => handleLayerToggle("agHat")}
+                        toggleLayer={() => handleLayerToggle(C3D_MapLayers.AgHat)}
                     >
                         <LayerControlFilter
                             label="Type"
                             typeList={types.agHat}
                             filters={filters.agHat.tipi}
-                            filterKey="agHat"
+                            filterKey={C3D_MapLayers.AgHat}
                             setFilters={handleFilterToggle}
                         />
                     </LayerControlDropdown>
@@ -154,13 +155,13 @@ export default function LayerControl({
                         icon={<PlugZap />}
                         name="Og Hat"
                         isLayerVisible={visibility.ogHat}
-                        toggleLayer={() => handleLayerToggle("ogHat")}
+                        toggleLayer={() => handleLayerToggle(C3D_MapLayers.OgHat)}
                     >
                         <LayerControlFilter
                             label="Type"
                             typeList={types.ogHat}
                             filters={filters.ogHat.tipi}
-                            filterKey="ogHat"
+                            filterKey={C3D_MapLayers.OgHat}
                             setFilters={handleFilterToggle}
                         />
                     </LayerControlDropdown>
@@ -168,13 +169,13 @@ export default function LayerControl({
                         icon={<PlugZap />}
                         name="Rekortman"
                         isLayerVisible={visibility.rekortman}
-                        toggleLayer={() => handleLayerToggle("rekortman")}
+                        toggleLayer={() => handleLayerToggle(C3D_MapLayers.Rekortman)}
                     >
                         <LayerControlFilter
                             label="Type"
                             typeList={types.rekortman}
                             filters={filters.rekortman.tipi}
-                            filterKey="rekortman"
+                            filterKey={C3D_MapLayers.Rekortman}
                             setFilters={handleFilterToggle}
                         />
                     </LayerControlDropdown>

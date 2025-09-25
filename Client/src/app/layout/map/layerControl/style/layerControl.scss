@@ -4,7 +4,7 @@
     position: absolute;
     top: 72px;
     right: 16px;
-    z-index: 1;
+    z-index: 1000;
     transition: all .3s ease;
     border: none;
     border-radius: 8px;
@@ -26,7 +26,7 @@
 }
 
 .layer-control-content {
-    z-index: 1;
+    z-index: 1000;
     position: absolute;
     top: 72px;
     right: -320px;

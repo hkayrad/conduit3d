@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { AgDirekApi } from "../../../../../lib/api";
 import type { Extent } from "../../../../../lib/types";
 import { setType } from "../../mapSlice";
-import { FeatureType } from "../../../../../lib/enums";
+import { FeatureType, C3D_MapLayers } from "../../../../../lib/enums";
 import { useAppDispatch } from "../../../../../lib/hooks";
 import { handleDataFetch, Logger, wkbToGeometry } from "../../../../../lib/utils";
 import { CHUNK_SIZE } from "../../../../../lib/constants";
@@ -84,7 +84,7 @@ export default function AgDirekComponent(props: Props): null {
             if (!response.isSuccess)
                 return;
 
-            dispatch(setType({ key: "agDirek", types: response.data }));
+            dispatch(setType({ key: C3D_MapLayers.AgDirek, types: response.data }));
         } catch (error) {
             Logger.error("Error fetching AgDirek types:", error);
         }

@@ -3,7 +3,7 @@ import { OgHatApi } from "../../../../../lib/api";
 import type { Extent } from "../../../../../lib/types";
 import { Logger, handleDataFetch, lineStringToSegments, wkbToGeometry } from "../../../../../lib/utils";
 import { setType } from "../../mapSlice";
-import { FeatureType, HatCinsi } from "../../../../../lib/enums";
+import { FeatureType, HatCinsi, C3D_MapLayers } from "../../../../../lib/enums";
 import { useAppDispatch } from "../../../../../lib/hooks";
 import { CHUNK_SIZE } from "../../../../../lib/constants";
 
@@ -85,7 +85,7 @@ export default function OgHatComponent(props: Props): null {
             if (!response.isSuccess)
                 return;
 
-            dispatch(setType({ key: "ogHat", types: response.data }));
+            dispatch(setType({ key: C3D_MapLayers.OgHat, types: response.data }));
         } catch (error) {
             Logger.error("Error fetching OgHat types:", error);
         }

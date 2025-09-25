@@ -1,0 +1,16 @@
+@use "../../../../../global.scss";
+
+.street-view {
+    position: absolute;
+    z-index: 100;
+    right: 16px;
+    bottom: 88px;
+    width: 300px;
+    transition: all .3s ease;
+    border-radius: 12px;
+    border: 1px solid global.$primary;
+
+    &:hover {
+        width: 600px;
+    }
+}

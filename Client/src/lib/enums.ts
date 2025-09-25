@@ -34,7 +34,32 @@ export enum ListDataType {
     AydDirek = "AydDirek"
 }
 
+export enum C3D_MapLayers {
+    Basemap = "basemap",
+    AdrBina = "adrBina",
+    TrafoBina = "trafoBina",
+    AgDirek = "agDirek",
+    OgMusDirek = "ogMusDirek",
+    AydDirek = "aydDirek",
+    AgHat = "agHat",
+    OgHat = "ogHat",
+    Rekortman = "rekortman"
+}
+
 export enum C3D_MapViewType {
     Cartesian = "cartesian",
     FirstPerson = "firstPerson"
+}
+
+export enum QueryKeywords {
+    BINA = "bina",
+    TRAFO = "trafo",
+    DIREK = "direk",
+    AG_DIREK = "agdirek",
+    AYD_DIREK = "ayddirek",
+    OG_MUS_DIREK = "ogmusdirek",
+    HAT = "hat",
+    AG_HAT = "aghat",
+    OG_HAT = "oghat",
+    REKORTMAN = "rekortman"
 }

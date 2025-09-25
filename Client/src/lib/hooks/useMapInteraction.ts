@@ -2,9 +2,9 @@ import type { FirstPersonViewState, MapViewState, PickingInfo } from "deck.gl";
 import { useCallback } from "react";
 import type { C3D_ViewState, PopupState } from "../types";
 import { MAX_POPUP_COUNT } from "../constants";
-import { C3D_MapViewType } from "../enums";
+import { C3D_MapViewType, FeatureType, C3D_MapLayers } from "../enums";
 import { useAppDispatch } from "./reduxHooks";
-import { setSelectedViewType } from "../../app/layout/map/mapSlice";
+import { setSelectedViewType, toggleMapLayerVisibility, toggleWireframe } from "../../app/layout/map/mapSlice";
 import { flyToFeature } from "../utils";
 
 /**
@@ -24,6 +24,7 @@ export function useMapInteraction(
     activePopups: PopupState[],
     selectedViewType: C3D_MapViewType,
     mapViewState: C3D_ViewState,
+    searchInputRef: React.RefObject<HTMLInputElement>,
     setMapViewState: React.Dispatch<React.SetStateAction<C3D_ViewState>>,
     setHoveredFeature: React.Dispatch<React.SetStateAction<GeoJSON.Feature | null>>,
     setMousePos: React.Dispatch<React.SetStateAction<{ x: number; y: number }>>,
@@ -43,6 +44,17 @@ export function useMapInteraction(
                 ...viewState,
             },
         }));
+
+        if (viewId === C3D_MapViewType.Cartesian) {
+            setMapViewState((prevState) => ({
+                ...prevState,
+                firstPerson: {
+                    ...prevState.firstPerson,
+                    longitude: viewState.longitude,
+                    latitude: viewState.latitude,
+                }
+            }));
+        }
     };
 
     /**
@@ -50,6 +62,13 @@ export function useMapInteraction(
      * @param info The picking info from the mouse move event
      */
     const handleMouseMove = useCallback((info: PickingInfo) => {
+        if (info.object && info.layer?.id === 'building-bina-mvt-layer') {
+            // Ensure dataType is set for MVT features
+            if (!info.object.properties.dataType) {
+                info.object.properties.dataType = FeatureType.BUILDING;
+            }
+            // Continue with your existing click handling logic
+        }
         setHoveredFeature(info.object);
         setMousePos({ x: info.x, y: info.y });
         setMouseLonLat(info.coordinate ? info.coordinate : [0, 0]);
@@ -67,6 +86,14 @@ export function useMapInteraction(
         setActivePopups(prev => {
             if (!info.object)
                 return prev;
+
+            if (info.object && info.layer?.id === 'building-bina-mvt-layer') {
+                // Ensure dataType is set for MVT features
+                if (!info.object.properties.dataType) {
+                    info.object.properties.dataType = FeatureType.BUILDING;
+                }
+                // Continue with your existing click handling logic
+            }
 
             let popups = prev.filter(
                 p => JSON.stringify(p.info.object.properties) != JSON.stringify(info.object.properties)
@@ -122,23 +149,96 @@ export function useMapInteraction(
      * @param e The keyboard event
      */
     const handleKeyPresses = useCallback((e: KeyboardEvent) => {
+        console.log(e);
+
+        if (e.code === "Escape") {
+            e.preventDefault();
+            if (searchInputRef.current)
+                searchInputRef.current.blur();
+        }
+
+        if (e.ctrlKey && !e.altKey && !e.shiftKey) {
+            if (e.code === "Delete") {
+                e.preventDefault();
+                setActivePopups([]);
+            }
+
+            if (e.code === "Slash") {
+                e.preventDefault();
+                e.stopPropagation();
+                if (searchInputRef.current)
+                    searchInputRef.current.focus();
+            }
+        }
+
         // Close all popups on Ctrl + Delete
-        if (e.ctrlKey && e.key === "Delete") {
-            e.preventDefault();
-            setActivePopups([]);
+        if (e.shiftKey && !e.altKey && !e.ctrlKey) {
+
+            // Toggle Wireframe mode
+            if (e.code === "KeyW") {
+                e.preventDefault();
+                dispatch(toggleWireframe());
+            }
+
+            // Toggle between Cartesian and First Person views
+            if (e.code === "KeyC") {
+                e.preventDefault();
+                dispatch(setSelectedViewType(C3D_MapViewType.Cartesian));
+            }
+
+            if (e.code === "KeyF") {
+                e.preventDefault();
+                dispatch(setSelectedViewType(C3D_MapViewType.FirstPerson));
+            }
+
+            // Toggle layers
+            if (e.code === "Digit1") {
+                e.preventDefault();
+                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.AdrBina }));
+            }
+
+            if (e.code === "Digit2") {
+                e.preventDefault();
+                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.TrafoBina }));
+            }
+
+            if (e.code === "Digit3") {
+                e.preventDefault();
+                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.AgDirek }));
+            }
+
+            if (e.code === "Digit4") {
+                e.preventDefault();
+                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.OgMusDirek }));
+            }
+
+            if (e.code === "Digit5") {
+                e.preventDefault();
+                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.AydDirek }));
+            }
+
+            if (e.code === "Digit6") {
+                e.preventDefault();
+                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.AgHat }));
+            }
+
+            if (e.code === "Digit7") {
+                e.preventDefault();
+                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.OgHat }));
+            }
+
+            if (e.code === "Digit8") {
+                e.preventDefault();
+                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.Rekortman }));
+            }
+
+            if (e.code === "Digit0") {
+                e.preventDefault();
+                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.Basemap }));
+            }
         }
 
-        // Toggle between Cartesian and First Person views
-        if (e.shiftKey && e.code === "KeyC") {
-            e.preventDefault();
-            dispatch(setSelectedViewType(C3D_MapViewType.Cartesian));
-        }
-
-        if (e.shiftKey && e.code === "KeyF") {
-            e.preventDefault();
-            dispatch(setSelectedViewType(C3D_MapViewType.FirstPerson));
-        }
-    }, []);
+    }, [searchInputRef]);
 
     // Fly to a given feature
     const flyTo = useCallback((
