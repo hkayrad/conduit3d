@@ -33,7 +33,7 @@ import ShortcutsInfo from "./shortcutsInfo/ShortcutsInfo";
 import { C3D_MapViewType } from "../../../lib/enums";
 import ViewToggle from "./viewToggle/ViewToggle";
 import GlobalSearch from "./globalSearch/GlobalSearch";
-import StreetView from "./streetView/StreetView";
+import StaticStreetView from "./streetView/StaticStreetView";
 
 
 /**
@@ -582,7 +582,7 @@ export default function DeckglMap(): React.ReactNode {
                     />
                 ))}
                 <GlobalSearch flyTo={flyTo} searchInputRef={searchInputRef} />
-                <StreetView />
+                <StaticStreetView />
                 <LayerControl
                     debugBinaVisible={debugBinaVisible}
                     setDebugBinaVisible={setDebugBinaVisible}

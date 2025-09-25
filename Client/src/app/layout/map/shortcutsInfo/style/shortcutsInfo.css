@@ -90,9 +90,11 @@ kbd {
   padding: 12px;
   border-radius: 12px;
   gap: 4px;
+  transition: all 0.3s ease;
+  transform: translateX(0);
 }
 .shortcuts-info.hidden {
-  display: none;
+  transform: translateX(-120%);
 }
 .shortcuts-info p {
   display: flex;

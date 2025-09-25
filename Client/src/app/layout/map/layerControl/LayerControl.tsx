@@ -6,7 +6,7 @@ import LayerControlSection from "../../../shared/layerControl/layerControlSectio
 import LayerControlDropdown from "../../../shared/layerControl/layerControlDropdown/LayerControlDropdown";
 import LayerControlFilter from "../../../shared/layerControl/layerControlFilter/LayerControlFilter";
 import SettingToggleButton from "../../../shared/layerControl/settingToggleButton/SettingToggleButton";
-import { C3D_MapLayers } from "../../../../lib/enums";
+import { C3D_MapLayers, C3D_MapViewType } from "../../../../lib/enums";
 
 /**
  * LayerControl component manages the visibility and settings of map layers.
@@ -22,7 +22,7 @@ export default function LayerControl({
 }): React.ReactNode {
 
     const dispatch = useAppDispatch();
-    const { isLayerControlsOpen, isHoverInfoVisible, visibility, types, filters } = useAppSelector(selectMapState);
+    const { isLayerControlsOpen, isHoverInfoVisible, visibility, types, filters, selectedViewType, isStreetViewVisible, isStreetViewPinned } = useAppSelector(selectMapState);
 
     const handleControlsToggle = () => {
         dispatch(setIsLayerControlsOpen(!isLayerControlsOpen));
@@ -51,7 +51,7 @@ export default function LayerControl({
             >
                 {isLayerControlsOpen ? <ChevronRight /> : <Layers2 />}
             </button>
-            <div className={`layer-control-content ${isLayerControlsOpen ? "open" : "closed"}`}>
+            <div className={`layer-control-content ${isLayerControlsOpen ? "open" : "closed"} ${selectedViewType === C3D_MapViewType.FirstPerson && isStreetViewVisible ? "short" : ""} ${selectedViewType === C3D_MapViewType.FirstPerson && isStreetViewPinned && isStreetViewVisible ? "pinned" : ""}`}>
                 <LayerControlSection title="hover info">
                     <SettingToggleButton
                         active={isHoverInfoVisible}

@@ -4,7 +4,7 @@ import type { C3D_ViewState, PopupState } from "../types";
 import { MAX_POPUP_COUNT } from "../constants";
 import { C3D_MapViewType, FeatureType, C3D_MapLayers } from "../enums";
 import { useAppDispatch } from "./reduxHooks";
-import { setSelectedViewType, toggleMapLayerVisibility, toggleWireframe } from "../../app/layout/map/mapSlice";
+import { setSelectedViewType, toggleMapLayerVisibility, toggleStreetView, toggleWireframe } from "../../app/layout/map/mapSlice";
 import { flyToFeature } from "../utils";
 
 /**
@@ -180,6 +180,12 @@ export function useMapInteraction(
                 dispatch(toggleWireframe());
             }
 
+            // Toggle Street View Visibility
+            if (e.code === "KeyS") {
+                e.preventDefault();
+                dispatch(toggleStreetView());
+            }
+
             // Toggle between Cartesian and First Person views
             if (e.code === "KeyC") {
                 e.preventDefault();
@@ -245,7 +251,7 @@ export function useMapInteraction(
         feature: GeoJSON.Feature,
     ): void => {
         if (selectedViewType !== C3D_MapViewType.Cartesian)
-            return;
+            dispatch(setSelectedViewType(C3D_MapViewType.Cartesian));
 
         flyToFeature(feature, mapViewState.cartesian, setMapViewState);
     }, [mapViewState, selectedViewType])

@@ -9,6 +9,8 @@ export interface MapState {
     isDataLoading: boolean,
     isLayerControlsOpen: boolean,
     isHoverInfoVisible: boolean,
+    isStreetViewVisible: boolean,
+    isStreetViewPinned: boolean,
     isWireframe: boolean,
     selectedViewType: C3D_MapViewType,
     visibility: C3D_LayerViewState,
@@ -60,6 +62,8 @@ const initialState: MapState = {
     isDataLoading: false,
     isLayerControlsOpen: false,
     isHoverInfoVisible: true,
+    isStreetViewVisible: true,
+    isStreetViewPinned: false,
     isWireframe: false,
     selectedViewType: C3D_MapViewType.Cartesian,
     visibility: {
@@ -142,6 +146,12 @@ export const mapSlice = createSlice({
         setIsHoverInfoVisible: (state, action: PayloadAction<boolean>) => {
             state.isHoverInfoVisible = action.payload;
         },
+        setIsStreetViewVisible: (state, action: PayloadAction<boolean>) => {
+            state.isStreetViewVisible = action.payload;
+        },
+        setIsStreetViewPinned: (state, action: PayloadAction<boolean>) => {
+            state.isStreetViewPinned = action.payload;
+        },
         setIsWireframe: (state, action: PayloadAction<boolean>) => {
             state.isWireframe = action.payload;
         },
@@ -162,6 +172,12 @@ export const mapSlice = createSlice({
         },
         toggleWireframe: (state) => {
             state.isWireframe = !state.isWireframe;
+        },
+        toggleStreetView: (state) => {
+            state.isStreetViewVisible = !state.isStreetViewVisible;
+        },
+        toggleStreetViewPinned: (state) => {
+            state.isStreetViewPinned = !state.isStreetViewPinned;
         },
         toggleMapLayerVisibility: (
             state,
@@ -229,9 +245,13 @@ export const {
     setIsLayerControlsOpen,
     setIsHoverInfoVisible,
     setMapLayerVisibility,
+    setIsStreetViewVisible,
+    setIsStreetViewPinned,
     setIsWireframe,
     setSelectedViewType,
     toggleWireframe,
+    toggleStreetView,
+    toggleStreetViewPinned,
     toggleMapLayerVisibility,
     setFilter,
     setViewState,
@@ -245,6 +265,8 @@ export const selectMapState = (state: RootState) => state.map;
 export const selectIsDataLoading = (state: RootState) => state.map.isDataLoading;
 export const selectIsLayerControlsOpen = (state: RootState) => state.map.isLayerControlsOpen;
 export const selectIsHoverInfoVisible = (state: RootState) => state.map.isHoverInfoVisible;
+export const selectIsStreetViewVisible = (state: RootState) => state.map.isStreetViewVisible;
+export const selectIsStreetViewPinned = (state: RootState) => state.map.isStreetViewPinned;
 export const selectIsWireframe = (state: RootState) => state.map.isWireframe;
 export const selectSelectedViewType = (state: RootState) => state.map.selectedViewType;
 export const selectVisibility = (state: RootState) => state.map.visibility;

@@ -20,7 +20,7 @@
     }
 
     &.open {
-        right: 304px;
+        right: 316px;
         border-radius: 8px 0 0 8px;
     }
 }
@@ -30,11 +30,11 @@
     position: absolute;
     top: 72px;
     right: -320px;
-    width: 304px;
+    width: 316px;
     transition: all .3s ease;
     background: global.$primary;
     padding: 16px 12px 16px 16px;
-    border-radius: 8px 0 0 8px;
+    border-radius: 12px 0 0 12px;
     color: global.$white;
     display: flex;
     flex-direction: column;
@@ -57,6 +57,18 @@
 
     &.open {
         right: 0px;
-        border-radius: 0 0 0 8px;
+        border-radius: 0 0 0 12px;
     }
+
+    &.short {
+        max-height: calc(100vh - 72px - 88px - 208px);
+    }
+
+    &.pinned {
+        max-height: calc(100vh - 72px - 88px - 408px);
+    }
+}
+
+.street-view:hover~.layer-control-content {
+    max-height: calc(100vh - 72px - 88px - 408px);
 }

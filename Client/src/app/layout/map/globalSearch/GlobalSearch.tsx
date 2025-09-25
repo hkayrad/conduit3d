@@ -49,7 +49,7 @@ export default function GlobalSearch(props: Props) {
 
     return (
         <>
-            <div className={`info ${isFocused ? "" : "hidden"}`}>
+            <div className={`info-card ${isFocused ? "" : "hidden"}`}>
                 <div className="shortcut">Press <kbd>Ctrl</kbd> <kbd>/</kbd> to focus the search bar</div>
                 <div className="shortcut">Press <kbd>Esc</kbd> to unfocus the search</div>
                 <div className="hint">Keywords: bina, trafo, direk, agdirek, ogmusdirek, ayddirek, hat, aghat, oghat, rekortman</div>

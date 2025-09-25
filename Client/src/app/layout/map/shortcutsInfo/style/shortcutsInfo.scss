@@ -24,9 +24,11 @@
     padding: 12px;
     border-radius: 12px;
     gap: 4px;
+    transition: all .3s ease;
+    transform: translateX(0);
 
     &.hidden {
-        display: none;
+        transform: translateX(-120%);
     }
 
     p {
