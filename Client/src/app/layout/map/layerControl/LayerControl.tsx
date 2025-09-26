@@ -51,7 +51,13 @@ export default function LayerControl({
             >
                 {isLayerControlsOpen ? <ChevronRight /> : <Layers2 />}
             </button>
-            <div className={`layer-control-content ${isLayerControlsOpen ? "open" : "closed"} ${selectedViewType === C3D_MapViewType.FirstPerson && isStreetViewVisible ? "short" : ""} ${selectedViewType === C3D_MapViewType.FirstPerson && isStreetViewPinned && isStreetViewVisible ? "pinned" : ""}`}>
+            <div
+                className={`layer-control-content 
+                    ${isLayerControlsOpen ? "open" : "closed"} 
+                    ${selectedViewType === C3D_MapViewType.FirstPerson && isStreetViewVisible ? "short" : ""} 
+                    ${selectedViewType === C3D_MapViewType.FirstPerson && isStreetViewPinned && isStreetViewVisible ? "pinned" : ""}
+                    `}
+            >
                 <LayerControlSection title="hover info">
                     <SettingToggleButton
                         active={isHoverInfoVisible}

@@ -262,7 +262,7 @@ export default function DynamicStreetView() {
         {isStreetViewVisible ? <PictureInPicture /> : <PictureInPicture2 />}
       </button>
       <div
-        className={`street-view ${selectedViewType === C3D_MapViewType.FirstPerson && isStreetViewVisible ? "visible" : ""} ${isStreetViewPinned ? "focused" : ""}`}
+        className={`street-view ${selectedViewType === C3D_MapViewType.FirstPerson && isStreetViewVisible ? "visible" : ""} ${isStreetViewPinned ? "pinned" : ""}`}
         ref={containerRef}
       >
         <button className="toggle-button" onClick={onPin} title="Toggle Large View">

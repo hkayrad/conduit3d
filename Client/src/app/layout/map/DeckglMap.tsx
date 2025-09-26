@@ -634,12 +634,12 @@ export default function DeckglMap(): React.ReactNode {
                     />
                 ))}
                 <GlobalSearch flyTo={flyTo} searchInputRef={searchInputRef} />
+                {/* <StaticStreetView /> */}
+                <DynmicStreetView />
                 <LayerControl
                     debugBinaVisible={debugBinaVisible}
                     setDebugBinaVisible={setDebugBinaVisible}
                 />
-                {/* <StaticStreetView /> */}
-                <DynmicStreetView />
                 <MousePosition mouseLonLat={mouseLonLat} />
                 <HoverCard
                     hoveredFeature={hoveredFeature}

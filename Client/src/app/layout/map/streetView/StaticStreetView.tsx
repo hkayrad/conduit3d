@@ -71,7 +71,7 @@ export default function StaticStreetView() {
       <button className="toggle-street-view" onClick={onToggle} title="Toggle Street View">
         {isStreetViewVisible ? <PictureInPicture /> : <PictureInPicture2 />}
       </button>
-      <div className={`street-view ${selectedViewType === C3D_MapViewType.FirstPerson && isStreetViewVisible ? "visible" : ""} ${isStreetViewPinned ? "focused" : ""}`}>
+      <div className={`street-view ${selectedViewType === C3D_MapViewType.FirstPerson && isStreetViewVisible ? "visible" : ""} ${isStreetViewPinned ? "pinned" : ""}`}>
         <button className="toggle-button" onClick={onPin} title="Toggle Large View">
           {
             isStreetViewPinned ? <PinOff /> : <PinIcon style={{ rotate: "45deg" }} />

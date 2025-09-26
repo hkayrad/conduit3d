@@ -93,7 +93,7 @@ kbd {
   transform: translateX(120%);
   opacity: 0;
 }
-.street-view:hover, .street-view.focused {
+.street-view:hover, .street-view.pinned {
   width: 600px;
   height: 400px;
 }

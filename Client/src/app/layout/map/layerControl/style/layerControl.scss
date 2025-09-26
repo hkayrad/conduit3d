@@ -69,6 +69,6 @@
     }
 }
 
-.street-view:hover~.layer-control-content {
+.street-view:hover ~ .layer-control-content {
     max-height: calc(100vh - 72px - 88px - 408px);
 }
