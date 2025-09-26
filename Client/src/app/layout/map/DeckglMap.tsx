@@ -540,17 +540,13 @@ export default function DeckglMap(): React.ReactNode {
 
         const deckglContainer = document.getElementById("deckgl-wrapper");
         deckglContainer?.addEventListener("mousedown", () => {
-            setTimeout(() => {
-                dispatch(setFocusedView("deckgl"));
-            }, 200);
+            dispatch(setFocusedView("deckgl"));
         });
 
         return () => {
             document.removeEventListener("keydown", (e) => handleKeyPresses(e));
             deckglContainer?.removeEventListener("mousedown", () => {
-                setTimeout(() => {
-                    dispatch(setFocusedView("deckgl"));
-                }, 200);
+                dispatch(setFocusedView("deckgl"));
             });
         };
     }, []);

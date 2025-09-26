@@ -121,4 +121,19 @@ kbd {
   border-radius: 12px;
   -o-object-fit: cover;
      object-fit: cover;
+}
+.street-view .gm-fullscreen-control {
+  position: absolute !important;
+  top: 4px !important;
+  right: 4px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 8px !important;
+  background: #2B2D42 !important;
+}
+.street-view .gm-fullscreen-control img {
+  width: 16px !important;
+  height: 16px !important;
 }/*# sourceMappingURL=streetView.css.map */

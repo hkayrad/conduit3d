@@ -133,6 +133,7 @@ import { selectFocusedView, selectIsStreetViewPinned, selectIsStreetViewVisible,
 import { C3D_MapViewType } from "../../../../lib/enums";
 import { PictureInPicture, PictureInPicture2, PinIcon, PinOff } from "lucide-react";
 import { useStreetView } from '../../../../lib/hooks/useStreetView';
+import { Logger } from "../../../../lib/utils";
 
 function convertDeckGLToLatLonWithOffset(
   x: number,
@@ -161,7 +162,7 @@ export default function DynamicStreetView() {
   const focusedView = useAppSelector(selectFocusedView);
   const isStreetViewVisible = useAppSelector(selectIsStreetViewVisible);
   const isStreetViewPinned = useAppSelector(selectIsStreetViewPinned);
-  
+
   // Track the current position that Street View should display
   const [streetViewPosition, setStreetViewPosition] = useState<{ lat: number; lng: number }>({ lat: 0, lng: 0 });
   const lastUpdateRef = useRef<{ lat: number; lng: number; bearing: number; pitch: number } | null>(null);
@@ -171,13 +172,16 @@ export default function DynamicStreetView() {
   // Calculate the target position from DeckGL
   const targetPosition = useMemo(() => {
     if (firstPerson && selectedViewType === "firstPerson" && focusedView === "deckgl") {
+
       const converted = convertDeckGLToLatLonWithOffset(
         firstPerson.position![0],
         firstPerson.position![1],
         firstPerson.latitude!,
         firstPerson.longitude!
       );
-      
+
+      Logger.table([...firstPerson.position!, firstPerson.latitude, firstPerson.latitude, converted.latitude, converted.longitude]);
+
       return {
         lat: converted.latitude,
         lng: converted.longitude,
@@ -211,7 +215,8 @@ export default function DynamicStreetView() {
     apiKey: import.meta.env.VITE_MAPS_API_KEY
   });
 
-  const onPin = () => {
+  const onPin = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     dispatch(toggleStreetViewPinned());
   }
 
@@ -223,24 +228,33 @@ export default function DynamicStreetView() {
   useEffect(() => {
     if (targetPosition && isLoaded && streetView && focusedView === "deckgl") {
       // Check if the position or view has significantly changed
-      const hasSignificantChange = !lastUpdateRef.current ||
+      const hasSignificantChangeOnPos = !lastUpdateRef.current ||
         Math.abs(lastUpdateRef.current.lat - targetPosition.lat) > 0.000001 ||
-        Math.abs(lastUpdateRef.current.lng - targetPosition.lng) > 0.000001 ||
-        Math.abs(lastUpdateRef.current.bearing - targetPosition.bearing) > 1 ||
-        Math.abs(lastUpdateRef.current.pitch - targetPosition.pitch) > 1;
+        Math.abs(lastUpdateRef.current.lng - targetPosition.lng) > 0.000001
 
-      if (hasSignificantChange) {
+      if (hasSignificantChangeOnPos) {
         console.log('Updating Street View:', targetPosition);
-        
+
         // Update position first
         setStreetViewPosition({ lat: targetPosition.lat, lng: targetPosition.lng });
-        
-        // Then update the Street View
         updatePosition({ lat: targetPosition.lat, lng: targetPosition.lng });
-        updatePOV({ 
-          heading: targetPosition.bearing, 
+
+        // Then update the Street View
+
+        lastUpdateRef.current = targetPosition;
+      }
+
+      const hasSignificantChangeOnView = !lastUpdateRef.current ||
+        Math.abs(lastUpdateRef.current.bearing - targetPosition.bearing) > 0.1 ||
+        Math.abs(lastUpdateRef.current.pitch - targetPosition.pitch) > 0.1;
+
+      if (hasSignificantChangeOnView) {
+        console.log('Updating Street View POV:', targetPosition);
+
+        updatePOV({
+          heading: targetPosition.bearing,
           pitch: targetPosition.pitch,
-          zoom: 1 
+          zoom: 1
         });
 
         lastUpdateRef.current = targetPosition;

@@ -18,6 +18,8 @@ export const useStreetView = ({ position, pov, apiKey }: StreetViewOptions) => {
   const focusedView = useAppSelector(selectFocusedView);
   const dispatch = useAppDispatch();
 
+  const shouldIgnoreEventsRef = useRef(false);
+
   useEffect(() => {
     let mounted = true;
 
@@ -29,6 +31,7 @@ export const useStreetView = ({ position, pov, apiKey }: StreetViewOptions) => {
           apiKey,
           version: 'weekly',
           libraries: ["streetView"],
+          region: "TR",
         });
 
         await loader.importLibrary("streetView");
@@ -43,7 +46,7 @@ export const useStreetView = ({ position, pov, apiKey }: StreetViewOptions) => {
               addressControl: false,
               panControl: false,
               zoomControl: false,
-              fullscreenControl: false,
+              fullscreenControl: true,
               motionTracking: false,
               motionTrackingControl: false,
             }
@@ -68,10 +71,17 @@ export const useStreetView = ({ position, pov, apiKey }: StreetViewOptions) => {
   }, [apiKey]);
 
   useEffect(() => {
-    if (!streetViewRef.current) return;
+    shouldIgnoreEventsRef.current = focusedView !== "streetview";
+  }, [focusedView]);
 
-    streetViewRef.current.addListener("position_changed", () => {
-      if (focusedView !== "streetview") return;
+  useEffect(() => {
+    if (!streetViewRef.current || !isLoaded) return;
+
+    const handlePositionChanged = () => {
+      if (shouldIgnoreEventsRef.current) return;
+
+      if (shouldIgnoreEventsRef.current) return;
+
       dispatch(setViewState({
         viewId: C3D_MapViewType.FirstPerson,
         viewState: {
@@ -79,13 +89,17 @@ export const useStreetView = ({ position, pov, apiKey }: StreetViewOptions) => {
           latitude: streetViewRef.current?.getPosition()?.lat() || 0,
           bearing: streetViewRef.current?.getPov().heading || 0,
           pitch: -streetViewRef.current?.getPov().pitch! || 0,
-          position: [0, 0, 3] // Assuming a fixed height of 3 meters
+          position: [0, 0, 3]
         }
-      }))
-    });
+      }));
+    };
 
-    streetViewRef.current.addListener("pov_changed", () => {
-      if (focusedView !== "streetview") return;
+    const handlePovChanged = () => {
+      if (shouldIgnoreEventsRef.current) return;
+
+      // Debounce the update
+      if (shouldIgnoreEventsRef.current) return;
+
       dispatch(setViewState({
         viewId: C3D_MapViewType.FirstPerson,
         viewState: {
@@ -93,23 +107,23 @@ export const useStreetView = ({ position, pov, apiKey }: StreetViewOptions) => {
           latitude: streetViewRef.current?.getPosition()?.lat() || 0,
           bearing: streetViewRef.current?.getPov().heading || 0,
           pitch: -streetViewRef.current?.getPov().pitch! || 0,
-          position: [0, 0, 3] // Assuming a fixed height of 3 meters
+          position: [0, 0, 3]
         }
-      }))
-    })
+      }));
+    };
 
-  }, [focusedView, dispatch]);
+    streetViewRef.current.addListener("position_changed", handlePositionChanged);
+    streetViewRef.current.addListener("pov_changed", handlePovChanged);
+  }, [isLoaded, dispatch]);
 
   const updatePosition = useCallback((newPosition: { lat: number; lng: number }) => {
     if (streetViewRef.current) {
-      console.log('useStreetView: updating position to', newPosition);
       streetViewRef.current.setPosition(new google.maps.LatLng(newPosition.lat, newPosition.lng));
     }
   }, []);
 
   const updatePOV = useCallback((newPov: { heading: number; pitch: number; zoom?: number }) => {
     if (streetViewRef.current) {
-      console.log('useStreetView: updating POV to', newPov);
       streetViewRef.current.setPov({
         heading: newPov.heading,
         pitch: newPov.pitch,
