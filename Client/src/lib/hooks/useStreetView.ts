@@ -7,10 +7,9 @@ import { C3D_MapViewType } from '../enums';
 interface StreetViewOptions {
   position: { lat: number; lng: number };
   pov?: { heading: number; pitch: number; zoom?: number };
-  apiKey: string;
 }
 
-export const useStreetView = ({ position, pov, apiKey }: StreetViewOptions) => {
+export const useStreetView = ({ position, pov }: StreetViewOptions) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const streetViewRef = useRef<google.maps.StreetViewPanorama | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -28,7 +27,7 @@ export const useStreetView = ({ position, pov, apiKey }: StreetViewOptions) => {
 
       try {
         const loader = new Loader({
-          apiKey,
+          apiKey: import.meta.env.VITE_MAPS_API_KEY,
           version: 'weekly',
           libraries: ["streetView"],
           region: "TR",
@@ -68,7 +67,7 @@ export const useStreetView = ({ position, pov, apiKey }: StreetViewOptions) => {
     return () => {
       mounted = false;
     };
-  }, [apiKey]);
+  }, []);
 
   useEffect(() => {
     shouldIgnoreEventsRef.current = focusedView !== "streetview";

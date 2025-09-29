@@ -1,131 +1,3 @@
-// import "./style/streetView.css";
-// import { useEffect, useMemo, useState } from "react"
-// import { useAppDispatch, useAppSelector } from "../../../../lib/hooks"
-// import { selectFocusedView, selectIsStreetViewPinned, selectIsStreetViewVisible, selectSelectedViewType, selectViewState, toggleStreetView, toggleStreetViewPinned } from "../mapSlice"
-// import { C3D_MapViewType } from "../../../../lib/enums";
-// import { PictureInPicture, PictureInPicture2, PinIcon, PinOff } from "lucide-react";
-// import { useStreetView } from '../../../../lib/hooks/useStreetView';
-
-// function convertDeckGLToLatLonWithOffset(
-//   x: number,
-//   y: number,
-//   baseLatitude: number,
-//   baseLongitude: number
-// ) {
-//   // DeckGL genellikle Web Mercator (EPSG:3857) kullanır
-//   // 1 metre = yaklaşık 1/111320 derece (enlem için)
-//   // 1 metre = yaklaşık 1/(111320 * cos(latitude)) derece (boylam için)
-
-//   const METERS_TO_DEGREES_LAT = 1 / 111320;
-//   const METERS_TO_DEGREES_LON = 1 / (111320 * Math.cos(baseLatitude * Math.PI / 180));
-
-//   // X, Y offset'lerini derece cinsinden çevir
-//   const latitudeOffset = y * METERS_TO_DEGREES_LAT;
-//   const longitudeOffset = x * METERS_TO_DEGREES_LON;
-
-//   // Yeni koordinatları hesapla
-//   const newLatitude = baseLatitude + latitudeOffset;
-//   const newLongitude = baseLongitude + longitudeOffset;
-
-//   return {
-//     latitude: newLatitude,
-//     longitude: newLongitude,
-//   };
-// }
-
-// export default function DynmicStreetView() {
-//   const { firstPerson } = useAppSelector(selectViewState);
-//   const selectedViewType = useAppSelector(selectSelectedViewType);
-//   const focusedView = useAppSelector(selectFocusedView);
-//   const isStreetViewVisible = useAppSelector(selectIsStreetViewVisible);
-//   const isStreetViewPinned = useAppSelector(selectIsStreetViewPinned);
-//   const [updatedLonLat, setUpdatedLonLat] = useState<{ latitude: number; longitude: number } | null>(null);
-
-//   const dispatch = useAppDispatch();
-
-//   const {
-//     containerRef,
-//     streetView,
-//     isLoaded,
-//     //@ts-ignore
-//     error,
-//     updatePosition,
-//     updatePOV,
-//   } = useStreetView({
-//     position: { lat: updatedLonLat?.latitude || 0, lng: updatedLonLat?.longitude || 0 },
-//     pov: { heading: firstPerson.bearing!, pitch: -firstPerson.pitch!, zoom: 1 },
-//     apiKey: import.meta.env.VITE_MAPS_API_KEY
-//   });
-
-//   const onPin = () => {
-//     dispatch(toggleStreetViewPinned());
-//   }
-
-//   const onToggle = () => {
-//     dispatch(toggleStreetView())
-//   }
-
-//   // Memoize the position calculation
-//   const calculatedPosition = useMemo(() => {
-//     if (firstPerson && selectedViewType === "firstPerson" && focusedView === "deckgl") {
-//       return convertDeckGLToLatLonWithOffset(
-//         firstPerson.position![0],
-//         firstPerson.position![1],
-//         firstPerson.latitude!,
-//         firstPerson.longitude!
-//       );
-//     }
-//     return null;
-//   }, [
-//     firstPerson?.position?.[0],
-//     firstPerson?.position?.[1],
-//     firstPerson?.latitude,
-//     firstPerson?.longitude,
-//     selectedViewType,
-//     focusedView
-//   ]);
-
-//   // Update position only when calculated position changes
-//   useEffect(() => {
-//     if (calculatedPosition) {
-//       setUpdatedLonLat(prev => {
-//         // Only update if significantly different
-//         if (!prev ||
-//           Math.abs(prev.latitude - calculatedPosition.latitude) > 0.000001 ||
-//           Math.abs(prev.longitude - calculatedPosition.longitude) > 0.000001) {
-//           return calculatedPosition;
-//         }
-//         return prev;
-//       });
-//     }
-//   }, [calculatedPosition]);
-
-//   useEffect(() => {
-//     if (isLoaded && streetView && focusedView === "deckgl") {
-//       updatePosition({ lat: updatedLonLat?.latitude || 0, lng: updatedLonLat?.longitude || 0 });
-//       updatePOV({ heading: firstPerson.bearing! || 0, pitch: -firstPerson.pitch! || 0 });
-//     }
-//   }, [focusedView, updatedLonLat, firstPerson.bearing, firstPerson.pitch, isLoaded, streetView]);
-
-//   return (
-//     <>
-//       <button className="toggle-street-view" onClick={onToggle} title="Toggle Street View">
-//         {isStreetViewVisible ? <PictureInPicture /> : <PictureInPicture2 />}
-//       </button>
-//       <div
-//         className={`street-view ${selectedViewType === C3D_MapViewType.FirstPerson && isStreetViewVisible ? "visible" : ""} ${isStreetViewPinned ? "focused" : ""}`}
-//         ref={containerRef}
-//       >
-//         <button className="toggle-button" onClick={onPin} title="Toggle Large View">
-//           {
-//             isStreetViewPinned ? <PinOff /> : <PinIcon style={{ rotate: "45deg" }} />
-//           }
-//         </button>
-//       </div>
-//     </>
-//   )
-// }
-
 import "./style/streetView.css";
 import { useEffect, useMemo, useState, useRef } from "react"
 import { useAppDispatch, useAppSelector } from "../../../../lib/hooks"
@@ -133,27 +5,7 @@ import { selectFocusedView, selectIsStreetViewPinned, selectIsStreetViewVisible,
 import { C3D_MapViewType } from "../../../../lib/enums";
 import { PictureInPicture, PictureInPicture2, PinIcon, PinOff } from "lucide-react";
 import { useStreetView } from '../../../../lib/hooks/useStreetView';
-
-function convertDeckGLToLatLonWithOffset(
-  x: number,
-  y: number,
-  baseLatitude: number,
-  baseLongitude: number
-) {
-  const METERS_TO_DEGREES_LAT = 1 / 111320;
-  const METERS_TO_DEGREES_LON = 1 / (111320 * Math.cos(baseLatitude * Math.PI / 180));
-
-  const latitudeOffset = y * METERS_TO_DEGREES_LAT;
-  const longitudeOffset = x * METERS_TO_DEGREES_LON;
-
-  const newLatitude = baseLatitude + latitudeOffset;
-  const newLongitude = baseLongitude + longitudeOffset;
-
-  return {
-    latitude: newLatitude,
-    longitude: newLongitude,
-  };
-}
+import { convertDeckGLToLatLonWithOffset } from "../../../../lib/utils";
 
 export default function DynamicStreetView() {
   const { firstPerson } = useAppSelector(selectViewState);
@@ -209,7 +61,6 @@ export default function DynamicStreetView() {
   } = useStreetView({
     position: streetViewPosition,
     pov: { heading: targetPosition?.bearing || 0, pitch: targetPosition?.pitch || 0, zoom: 1 },
-    apiKey: import.meta.env.VITE_MAPS_API_KEY
   });
 
   const onPin = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -265,9 +116,13 @@ export default function DynamicStreetView() {
 
   return (
     <>
-      <button className="toggle-street-view" onClick={onToggle} title="Toggle Street View">
-        {isStreetViewVisible ? <PictureInPicture /> : <PictureInPicture2 />}
-      </button>
+      {
+        selectedViewType === C3D_MapViewType.FirstPerson && (
+          <button className="toggle-street-view" onClick={onToggle} title="Toggle Street View">
+            {isStreetViewVisible ? <PictureInPicture /> : <PictureInPicture2 />}
+          </button>
+        )
+      }
       <div
         className={`street-view ${selectedViewType === C3D_MapViewType.FirstPerson && isStreetViewVisible ? "visible" : ""} ${isStreetViewPinned ? "pinned" : ""}`}
         ref={containerRef}
