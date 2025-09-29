@@ -41,7 +41,7 @@
         transition: all 0.2s ease;
         border-radius: 6px;
 
-        &.error {
+        &.error-fg {
             &:hover {
                 background: global.$error !important;
                 color: global.$white !important;

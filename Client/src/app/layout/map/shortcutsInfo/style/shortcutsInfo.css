@@ -58,6 +58,14 @@ body::-webkit-scrollbar-thumb {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
+kbd {
+  background: #FFFFFF;
+  color: #2B2D42;
+  padding: 1px 4px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
 .shortcut-container-icon {
   position: absolute;
   bottom: 48px;
@@ -68,6 +76,11 @@ body::-webkit-scrollbar-thumb {
   color: #FFFFFF;
   padding: 8px;
   border-radius: 12px;
+  transition: background 0.3s ease !important;
+}
+.shortcut-container-icon:hover {
+  cursor: pointer;
+  background: #3B3E5A !important;
 }
 
 .shortcuts-info {
@@ -75,27 +88,24 @@ body::-webkit-scrollbar-thumb {
   bottom: 84px;
   left: 16px;
   z-index: 10;
-  display: none;
+  display: flex;
   flex-direction: column;
   background: #2B2D42;
   color: #FFFFFF;
   padding: 12px;
   border-radius: 12px;
   gap: 4px;
+  transition: all 0.3s ease;
+  transform: translateX(0);
 }
-.shortcuts-info.visible {
+.shortcuts-info.hidden {
+  transform: translateX(-120%);
+}
+.shortcuts-info p {
   display: flex;
+  gap: 4px;
 }
-.shortcuts-info kbd {
-  background-color: #eeeeee;
-  border-radius: 3px;
-  border: 1px solid #b4b4b4;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), 0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
-  color: #333333;
-  display: inline-block;
-  font-size: 0.85em;
-  font-weight: 700;
-  line-height: 1;
-  padding: 2px 4px;
-  white-space: nowrap;
+.shortcuts-info p span {
+  display: flex;
+  gap: 4px;
 }/*# sourceMappingURL=shortcutsInfo.css.map */

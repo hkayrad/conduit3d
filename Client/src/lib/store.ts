@@ -3,7 +3,7 @@ import { mapSlice } from '../app/layout/map/mapSlice';
 import { authSlice } from '../app/layout/auth/authSlice';
 import { adminSlice } from '../app/layout/admin/adminSlice';
 import { listSlice } from '../app/layout/list/listSlice';
-import { Logger } from './utils/logger';
+import { Logger } from "./utils";
 
 /**
  * Load the user state from localStorage.

@@ -4,10 +4,20 @@
  - Add feature highligt on goto button click
  - Add tsvector functions to the service documentations
  - CACHE CONTROL 
- - PROTOBUF
  - (maybe) Height constraint on first person view
- - Column toggle
  - Create custom FirstPersonController to handle WASD control
+
+|feature|geojson|wkb|diff|%|
+|-|-|-|-|-|
+|adrbina|403kb|323kb|-80kb|%80.14|
+|buildings|2358kb|2077kb|-281kb|%88.08|
+|buildings_200k|65mb|56mb|-9mb|%86.15|
+|aghat|861kb|655kb|-196kb|%76.07|
+|oghat|136kb|105kb|-21kb|%77.21|
+|rekortman|226kb|172kb|-54kb|%76.11|
+|agdirek|70.9kb|57.3kb|-13.6kb|%80.82|
+|ogdirek|22.1kb|17.8kb|-4.3kb|%80.54|
+|ayddirek|57.8kb|47.1kb|-10.7kb|%81.49|
 
 ### Optimization Notes
 

@@ -101,5 +101,27 @@ namespace BuildingsService.Controllers
         {
             return await _buildingsService.GetCountAsync(extent, query, cancellationToken);
         }
+
+        [MapToApiVersion("1.0")]
+        [HttpGet("pbf")]
+        [Produces("application/x-protobuf")]
+        public async Task<BuildingsResponse> GetAllAsProtobufAsync(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 100000,
+            [FromQuery] string sortBy = "Id",
+            [FromQuery] bool ascending = true,
+            [FromQuery] Extent? extent = null,
+            [FromQuery] string? query = null,
+            CancellationToken cancellationToken = default
+        )
+        {
+            return await _buildingsService.GetAllAsProtobufAsync(pageNumber,
+                                                    pageSize,
+                                                    sortBy,
+                                                    ascending,
+                                                    extent,
+                                                    query,
+                                                    cancellationToken);
+        }
     }
 }

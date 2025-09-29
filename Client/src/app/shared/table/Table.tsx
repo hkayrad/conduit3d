@@ -266,7 +266,7 @@ export default function Table(props: Props): React.ReactNode {
                                                 onClick={() => setAscending(!ascending)}
                                             >
                                                 {sortBy === header.id ?
-                                                    ascending ? <SortAsc /> : <SortDesc /> :
+                                                    (ascending ? <SortAsc /> : <SortDesc />) :
                                                     <SortAsc className="disabled" />}
                                             </button>
                                         </div>

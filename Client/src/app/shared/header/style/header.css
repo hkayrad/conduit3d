@@ -98,7 +98,7 @@ body::-webkit-scrollbar-thumb {
   transition: all 0.2s ease;
   border-radius: 6px;
 }
-#actions #action-button.error:hover {
+#actions #action-button.error-fg:hover {
   background: #D32F2F !important;
   color: #FFFFFF !important;
 }

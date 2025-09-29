@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using BuildingsService.Domain;
 using BuildingsService.Resources;
 using Conduit3D.Common.Domain;
@@ -122,6 +123,124 @@ public class PostgresqlTrafoBinaService(IUnitOfWork unitOfWork) : ITrafoBinaServ
         catch (Exception ex)
         {
             return Response<int>.UnhandledError(BuildingsResources.GetString("buildingCountRetrievalFailed", ex.Message));
+        }
+    }
+
+    public async Task<TrafoBinaResponse> GetAllAsProtobufAsync(int pageNumber, int pageSize, string sortBy, bool ascending, Extent? extent, string? query, CancellationToken cancellationToken)
+    {
+        if (pageSize < 1 || pageSize > 200000)
+            return new TrafoBinaResponse
+            {
+                IsSuccess = false,
+                Message = BuildingsResources.GetString("invalidPageSize"),
+                StatusCode = (int)HttpStatusCode.BadRequest,
+                Data = { }
+            };
+
+        if (pageNumber < 1)
+            return new TrafoBinaResponse
+            {
+                IsSuccess = false,
+                Message = BuildingsResources.GetString("invalidPageNumber"),
+                StatusCode = (int)HttpStatusCode.BadRequest,
+                Data = { }
+            };
+
+        string[] allowedSortColumns =
+        [
+            "Id",
+            "Kodu",
+            "SiteAdi",
+            "Adi",
+            "BinaKatSayisi",
+            "DaireSayisi",
+            "IsyeriSayisi",
+            "Yukseklik"
+        ];
+
+        if (!allowedSortColumns.Contains(sortBy))
+            return new TrafoBinaResponse
+            {
+                IsSuccess = false,
+                Message = BuildingsResources.GetString("invalidSortBy"),
+                StatusCode = (int)HttpStatusCode.BadRequest,
+                Data = { }
+            };
+
+        extent ??= new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
+
+        if (extent.MinX == 0 && extent.MinY == 0 && extent.MaxX == 0 && extent.MaxY == 0)
+        {
+            extent = new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
+        }
+
+        if (!extent.IsValid())
+            return new TrafoBinaResponse
+            {
+                IsSuccess = false,
+                Message = BuildingsResources.GetString("invalidExtent"),
+                StatusCode = (int)HttpStatusCode.BadRequest,
+                Data = { }
+            };
+
+        try
+        {
+            var buildings = await _unitOfWork.TrafoBuildingsRepository.GetAllAsync(pageNumber,
+                                                                    pageSize,
+                                                                    sortBy,
+                                                                    ascending,
+                                                                    extent,
+                                                                    query,
+                                                                    cancellationToken);
+
+            if (buildings == null || buildings.Count == 0)
+                return new TrafoBinaResponse
+                {
+                    IsSuccess = false,
+                    Message = BuildingsResources.GetString("noBuildingFound"),
+                    StatusCode = (int)HttpStatusCode.NotFound,
+                    Data = { }
+                };
+
+            var buildingsResponse = new TrafoBinaResponse
+            {
+                IsSuccess = true,
+                Message = BuildingsResources.GetString("buildingsRetrieved"),
+                StatusCode = (int)HttpStatusCode.OK,
+            };
+
+            foreach (var building in buildings)
+            {
+                buildingsResponse.Data.Add(new TrafoBinaProto
+                {
+                    Id = building.Id,
+                    Kodu = building.Kodu ?? string.Empty,
+                    Adi = building.Adi ?? string.Empty,
+                    Wkb = Convert.ToBase64String(building.Wkb)
+                });
+            }
+
+            return buildingsResponse;
+        }
+        catch (NpgsqlException ex)
+        {
+            return new TrafoBinaResponse
+            {
+                IsSuccess = false,
+                Message = BuildingsResources.GetString("buildingRetrievalFailed", ex.Message),
+                StatusCode = (int)HttpStatusCode.InternalServerError,
+                Data = { }
+            };
+        }
+        catch (Exception ex)
+        {
+            return new TrafoBinaResponse
+            {
+                IsSuccess = false,
+                Message = BuildingsResources.GetString("buildingRetrievalFailed", ex.Message),
+                StatusCode = (int)HttpStatusCode.InternalServerError,
+                Data = { }
+            };
         }
     }
 }

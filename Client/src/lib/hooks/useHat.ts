@@ -1,25 +1,19 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { filterFeature } from "../utils/geometry/filterFeature";
-import type { MapState } from "../../app/layout/map/mapSlice";
+import { selectMapState } from "../../app/layout/map/mapSlice";
 import { COLORS } from "../constants";
+import { useAppSelector } from "./reduxHooks";
 
 /**
  * Format the AG Hat feature collection.
- * @param agHat The AG Hat feature collection.
- * @param ogHat The OG Hat feature collection.
- * @param rekortman The Rekortman feature collection.
- * @param types The map state types.
- * @param filters The map state filters.
- * @param visibility The map state visibility.
  * @returns The formatted AG Hat feature collection.
  */
-export function useHat(
-    agHat: GeoJSON.FeatureCollection,
-    ogHat: GeoJSON.FeatureCollection,
-    rekortman: GeoJSON.FeatureCollection,
-    types: MapState["types"],
-    filters: MapState["filters"],
-    visibility: MapState["visibility"]) {
+export function useHat() {
+    const { visibility, filters, types } = useAppSelector(selectMapState)
+
+    const [agHat, setAgHat] = useState<GeoJSON.FeatureCollection[]>([]);
+    const [ogHat, setOgHat] = useState<GeoJSON.FeatureCollection[]>([]);
+    const [rekortman, setRekortman] = useState<GeoJSON.FeatureCollection[]>([]);
 
     /**
      * Formatted AG Hat data for rendering on the map.
@@ -29,6 +23,19 @@ export function useHat(
         if (!agHat)
             return [];
 
+        // Combine all chunks into a single FeatureCollection
+        const combinedFeatures: GeoJSON.Feature[] = [];
+        agHat.forEach(chunk => {
+            if (chunk && chunk.features) {
+                combinedFeatures.push(...chunk.features);
+            }
+        });
+
+        const combinedCollection: GeoJSON.FeatureCollection = {
+            type: "FeatureCollection",
+            features: combinedFeatures
+        };
+
         return types.agHat.map(type => {
             return {
                 id: `ag-hat-${type}`,
@@ -37,7 +44,7 @@ export function useHat(
                     visibility.agHat &&
                     (filters.agHat.tipi.includes(type) || filters.agHat.tipi.length === 0),
                 cinsi: type,
-                data: filterFeature(agHat, "cinsi", type)
+                data: filterFeature(combinedCollection, "cinsi", type)
             }
         })
     }, [agHat, visibility.agHat, filters.agHat.tipi]);
@@ -50,6 +57,19 @@ export function useHat(
         if (!ogHat)
             return [];
 
+        // Combine all chunks into a single FeatureCollection
+        const combinedFeatures: GeoJSON.Feature[] = [];
+        ogHat.forEach(chunk => {
+            if (chunk && chunk.features) {
+                combinedFeatures.push(...chunk.features);
+            }
+        });
+
+        const combinedCollection: GeoJSON.FeatureCollection = {
+            type: "FeatureCollection",
+            features: combinedFeatures
+        };
+
         return types.ogHat.map(type => {
             return {
                 id: `og-hat-${type}`,
@@ -58,7 +78,7 @@ export function useHat(
                     visibility.ogHat &&
                     (filters.ogHat.tipi.includes(type) || filters.ogHat.tipi.length === 0),
                 cinsi: type,
-                data: filterFeature(ogHat, "cinsi", type)
+                data: filterFeature(combinedCollection, "cinsi", type)
             }
         })
     }, [ogHat, visibility.ogHat, filters.ogHat.tipi]);
@@ -71,6 +91,19 @@ export function useHat(
         if (!rekortman)
             return [];
 
+        // Combine all chunks into a single FeatureCollection
+        const combinedFeatures: GeoJSON.Feature[] = [];
+        rekortman.forEach(chunk => {
+            if (chunk && chunk.features) {
+                combinedFeatures.push(...chunk.features);
+            }
+        });
+
+        const combinedCollection: GeoJSON.FeatureCollection = {
+            type: "FeatureCollection",
+            features: combinedFeatures
+        };
+
         return types.rekortman.map(type => {
             return {
                 id: `rekortman-${type}`,
@@ -79,10 +112,18 @@ export function useHat(
                     visibility.rekortman &&
                     (filters.rekortman.tipi.includes(type) || filters.rekortman.tipi.length === 0),
                 cinsi: type,
-                data: filterFeature(rekortman, "tipi", type)
+                data: filterFeature(combinedCollection, "tipi", type)
             }
         })
     }, [rekortman, visibility.rekortman, filters.rekortman.tipi]);
 
-    return { hatLayerData: [agHatFormatted, ogHatFormatted, rekortmanFormatted] };
+    return {
+        agHat,
+        setAgHat,
+        ogHat,
+        setOgHat,
+        rekortman,
+        setRekortman,
+        hatLayerData: [agHatFormatted, ogHatFormatted, rekortmanFormatted]
+    };
 }

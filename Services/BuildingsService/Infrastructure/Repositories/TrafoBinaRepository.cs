@@ -38,11 +38,12 @@ public class TrafoBinaRepository(BuildingsContext context) : ITrafoBinaRepositor
                                             string? query,
                                             CancellationToken cancellationToken)
     {
+        // ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson,
         var sqlQuery = _dbSet.FromSql($@"SELECT 
                                         id, 
                                         adi, 
                                         kodu,
-                                        ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson,
+                                        ST_AsBinary(ST_Transform(geometry, 4326)) as wkb,
                                         searchable_text
                                     FROM ""SBK_TRAFOBINATIP""
                                     WHERE ST_Transform(geometry, 4326) @ ST_MakeEnvelope(
@@ -74,11 +75,12 @@ public class TrafoBinaRepository(BuildingsContext context) : ITrafoBinaRepositor
     /// </remarks>
     public async Task<TrafoBina?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
+        // ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson,
         var sqlQuery = _dbSet.FromSql($@"SELECT 
                                         id, 
                                         adi, 
                                         kodu,
-                                        ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson
+                                        ST_AsBinary(ST_Transform(geometry, 4326)) as wkb
                                     FROM ""SBK_TRAFOBINATIP""
                                     WHERE id = {id}");
         return await sqlQuery.FirstOrDefaultAsync(cancellationToken);

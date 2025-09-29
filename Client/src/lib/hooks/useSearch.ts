@@ -1,11 +1,14 @@
 import { useState } from "react";
-import { findAverageLonLat, InputSanitizer } from "../utils";
+import { Logger, findAverageLonLat, InputSanitizer, wkbToGeometry } from "../utils";
 import { AdrBinaApi, AgDirekApi, AgHatApi, AydDirekApi, OgHatApi, OgMusDirekApi, RekortmanApi, TrafoBinaApi } from "../api";
-import { FeatureType } from "../enums";
+import { FeatureType, QueryKeywords } from "../enums";
 import type { Direk } from "../types";
-import { Logger } from "../utils/logger";
+import { MAX_SEARCH_RESULTS } from "../constants";
 
-export function useSearch(query: string, maxResults: number = 10) {
+export function useSearch() {
+    const [query, setQuery] = useState("");
+    const [isFocused, setIsFocused] = useState(false);
+
     const [results, setResults] = useState<
         Array<{
             id: string;
@@ -15,19 +18,6 @@ export function useSearch(query: string, maxResults: number = 10) {
             position: string;
             feature: GeoJSON.Feature;
         }>>([]);
-
-    enum QueryKeywords {
-        BINA = "bina",
-        TRAFO = "trafo",
-        DIREK = "direk",
-        AG_DIREK = "agdirek",
-        AYD_DIREK = "ayddirek",
-        OG_MUS_DIREK = "ogmusdirek",
-        HAT = "hat",
-        AG_HAT = "aghat",
-        OG_HAT = "oghat",
-        REKORTMAN = "rekortman"
-    }
 
     const _wrapInFeature = (geometry: GeoJSON.Geometry): GeoJSON.Feature => {
         return {
@@ -39,7 +29,7 @@ export function useSearch(query: string, maxResults: number = 10) {
 
     // Feature Converters
     const _convertToDirekFeature = (direkType: string, direk: Direk) => {
-        const geometry: GeoJSON.Geometry = JSON.parse(direk.geoJson);
+        const geometry: GeoJSON.Geometry = wkbToGeometry(direk.wkb);
         return {
             id: `direk-${direkType}-${direk.id}`,
             title: `${direk.cinsi} ${direk.tipi} (${direk.boyOzellik})`,
@@ -52,7 +42,7 @@ export function useSearch(query: string, maxResults: number = 10) {
 
     // Search handlers
     const _handleAdrBinaSearch = async (query: string) => {
-        const response = await AdrBinaApi.fetchAll(maxResults, 1, 'id', true, query);
+        const response = await AdrBinaApi.fetchAll(MAX_SEARCH_RESULTS, 1, 'id', true, query);
 
         if (!response.isSuccess) {
             Logger.error("Bina API error:", response.message);
@@ -60,8 +50,7 @@ export function useSearch(query: string, maxResults: number = 10) {
         }
 
         const results = response.data.map(bina => {
-            const geometry: GeoJSON.Geometry = JSON.parse(bina.geoJson);
-            Logger.log(geometry);
+            const geometry: GeoJSON.Geometry = wkbToGeometry(bina.wkb);
 
             return {
                 id: `bina-${bina.id}`,
@@ -77,7 +66,7 @@ export function useSearch(query: string, maxResults: number = 10) {
     }
 
     const _handleTrafoSearch = async (query: string) => {
-        const response = await TrafoBinaApi.fetchAll(maxResults, 1, 'id', true, query);
+        const response = await TrafoBinaApi.fetchAll(MAX_SEARCH_RESULTS, 1, 'id', true, query);
 
         if (!response.isSuccess) {
             Logger.error("Trafo API error:", response.message);
@@ -85,7 +74,7 @@ export function useSearch(query: string, maxResults: number = 10) {
         }
 
         const results = response.data.map(trafo => {
-            const geometry: GeoJSON.Geometry = JSON.parse(trafo.geoJson);
+            const geometry: GeoJSON.Geometry = wkbToGeometry(trafo.wkb);
             return {
                 id: `trafo-${trafo.id}`,
                 title: trafo.adi || "İsimsiz Trafo",
@@ -100,7 +89,7 @@ export function useSearch(query: string, maxResults: number = 10) {
     }
 
     const _handleAgDirekSearch = async (query: string) => {
-        const response = await AgDirekApi.fetchAll(maxResults, 1, 'id', true, query);
+        const response = await AgDirekApi.fetchAll(MAX_SEARCH_RESULTS, 1, 'id', true, query);
 
         if (!response.isSuccess) {
             Logger.error("AG Direk API error:", response.message);
@@ -113,7 +102,7 @@ export function useSearch(query: string, maxResults: number = 10) {
     }
 
     const _handleOgMusDirekSearch = async (query: string) => {
-        const response = await OgMusDirekApi.fetchAll(maxResults, 1, 'id', true, query);
+        const response = await OgMusDirekApi.fetchAll(MAX_SEARCH_RESULTS, 1, 'id', true, query);
 
         if (!response.isSuccess) {
             Logger.error("OG Mus Direk API error:", response.message);
@@ -126,7 +115,7 @@ export function useSearch(query: string, maxResults: number = 10) {
     }
 
     const _handleAydDirekSearch = async (query: string) => {
-        const response = await AydDirekApi.fetchAll(maxResults, 1, 'id', true, query);
+        const response = await AydDirekApi.fetchAll(MAX_SEARCH_RESULTS, 1, 'id', true, query);
 
         if (!response.isSuccess) {
             Logger.error("AYD Direk API error:", response.message);
@@ -160,7 +149,7 @@ export function useSearch(query: string, maxResults: number = 10) {
     }
 
     const _handleAgHatSearch = async (query: string) => {
-        const response = await AgHatApi.fetchAll(maxResults, 1, 'id', true, query);
+        const response = await AgHatApi.fetchAll(MAX_SEARCH_RESULTS, 1, 'id', true, query);
 
         if (!response.isSuccess) {
             Logger.error("AG Hat API error:", response.message);
@@ -168,7 +157,7 @@ export function useSearch(query: string, maxResults: number = 10) {
         }
 
         const results = response.data.map(hat => {
-            const geometry: GeoJSON.Geometry = JSON.parse(hat.geoJson);
+            const geometry: GeoJSON.Geometry = wkbToGeometry(hat.wkb);
             return {
                 id: `hat-ag-${hat.id}`,
                 title: `${hat.tipi} ${hat.cinsi}`,
@@ -183,7 +172,7 @@ export function useSearch(query: string, maxResults: number = 10) {
     }
 
     const _handleOgHatSearch = async (query: string) => {
-        const response = await OgHatApi.fetchAll(maxResults, 1, 'id', true, query);
+        const response = await OgHatApi.fetchAll(MAX_SEARCH_RESULTS, 1, 'id', true, query);
 
         if (!response.isSuccess) {
             Logger.error("OG Hat API error:", response.message);
@@ -191,7 +180,7 @@ export function useSearch(query: string, maxResults: number = 10) {
         }
 
         const results = response.data.map(hat => {
-            const geometry: GeoJSON.Geometry = JSON.parse(hat.geoJson);
+            const geometry: GeoJSON.Geometry = wkbToGeometry(hat.wkb);
             return {
                 id: `hat-og-${hat.id}`,
                 title: `${hat.tipi} ${hat.cinsi}`,
@@ -206,7 +195,7 @@ export function useSearch(query: string, maxResults: number = 10) {
     }
 
     const _handleRekortmanSearch = async (query: string) => {
-        const response = await RekortmanApi.fetchAll(maxResults, 1, 'id', true, query);
+        const response = await RekortmanApi.fetchAll(MAX_SEARCH_RESULTS, 1, 'id', true, query);
 
         if (!response.isSuccess) {
             Logger.error("Rekortman API error:", response.message);
@@ -214,7 +203,7 @@ export function useSearch(query: string, maxResults: number = 10) {
         }
 
         const results = response.data.map(hat => {
-            const geometry: GeoJSON.Geometry = JSON.parse(hat.geoJson);
+            const geometry: GeoJSON.Geometry = wkbToGeometry(hat.wkb);
             return {
                 id: `hat-rekortman-${hat.id}`,
                 title: `Rekortman: ${hat.tipi}`,
@@ -250,12 +239,12 @@ export function useSearch(query: string, maxResults: number = 10) {
     }
 
     const handleSearch = async () => {
-        
+
         if (query.trim() === "") {
             setResults([]);
             return;
         }
-        
+
         const sanitizedQuery = InputSanitizer.sanitizeSearchQuery(query).toLowerCase();
 
         try {
@@ -272,7 +261,7 @@ export function useSearch(query: string, maxResults: number = 10) {
                     .concat(trafoResults)
                     .concat(direkResults)
                     .concat(hatResults);
-                setResults(aggregatedResults.slice(0, maxResults));
+                setResults(aggregatedResults.slice(0, MAX_SEARCH_RESULTS));
                 return;
             }
 
@@ -329,12 +318,12 @@ export function useSearch(query: string, maxResults: number = 10) {
                     aggregatedResults = aggregatedResults.concat(hatResults);
                     break;
             }
-            setResults(aggregatedResults.slice(0, maxResults));
+            setResults(aggregatedResults.slice(0, MAX_SEARCH_RESULTS));
 
         } catch (error) {
             Logger.error("Search error:", error);
             setResults([]);
         }
     }
-    return { results, handleSearch };
+    return { query, setQuery, results, handleSearch, isFocused, setIsFocused };
 }

@@ -10,4 +10,11 @@ namespace BuildingsService.Infrastructure.Services;
 /// </summary>
 public interface IAdrBinaService : IGenericService<AdrBina>
 {
+    Task<AdrBinaResponse> GetAllAsProtobufAsync(int pageNumber,
+                                            int pageSize,
+                                            string sortBy,
+                                            bool ascending,
+                                            Extent? extent,
+                                            string? query,
+                                            CancellationToken cancellationToken);
 }

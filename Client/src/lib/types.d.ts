@@ -1,5 +1,6 @@
 import type { FirstPersonViewState, MapViewState } from "deck.gl"
 import type { C3D_MapViewType, HatCinsi } from "./enums"
+import wkx from "wkx";
 
 export type ApiResponse<T> = {
     isSuccess: boolean,
@@ -59,7 +60,8 @@ export type AdrBina = {
     daireSayisi: number,
     isyeriSayisi: number,
     yukseklik: number,
-    geoJson: string
+    wkb: string
+    // geoJson: string
 }
 
 export type Building = AdrBina;
@@ -68,7 +70,8 @@ export type TrafoBina = {
     id: number,
     adi: string,
     kodu: string,
-    geoJson: string
+    // geoJson: string,
+    wkb: string
 }
 
 export type Hat = {
@@ -78,7 +81,8 @@ export type Hat = {
     cinsi: HatCinsi,
     kesit: string,
     tipi: string,
-    geoJson: string
+    wkb: any
+    // geoJson: string
 }
 
 export type Rekortman = {
@@ -87,7 +91,8 @@ export type Rekortman = {
     adi: string,
     kesit: string,
     tipi: string,
-    geoJson: string
+    wkb: any
+    // geoJson: string
 }
 
 export type Direk = {
@@ -99,7 +104,8 @@ export type Direk = {
     direkNo: string,
     boyOzellik: string,
     direkBoyId: number,
-    geoJson: string
+    wkb: any
+    // geoJson: string
 }
 
 export type PopupState = {
@@ -111,4 +117,8 @@ export type PopupState = {
 export type C3D_ViewState = {
     [C3D_MapViewType.Cartesian]: MapViewState,
     [C3D_MapViewType.FirstPerson]: FirstPersonViewState
+}
+
+export type C3D_LayerViewState = {
+    [key in C3D_MapLayers]: boolean
 }

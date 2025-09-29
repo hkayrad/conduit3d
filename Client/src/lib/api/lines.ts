@@ -1,7 +1,11 @@
+import type { CancelTokenSource } from "axios";
 import instance from "../instance";
 import type { ApiResponse, Extent, Hat, Rekortman } from "../types";
-import { capitalizeFirstLetter } from "../utils";
-import { Logger } from "../utils/logger";
+import { Logger, capitalizeFirstLetter } from "../utils";
+import { AgHatResponse } from "../utils/protos/lines/agHat";
+import axios from "axios";
+import { OgHatResponse } from "../utils/protos/lines/ogHat";
+import { RekortmanResponse } from "../utils/protos/lines/rekortman";
 
 /**
  * Class representing the AG Hat API
@@ -17,6 +21,9 @@ export class AgHatApi {
      * @param extent The geographical extent to filter the features.
      * @returns A promise that resolves to the list of AG Hat features.
      */
+
+    private static _cancelTokens: { [key: string]: CancelTokenSource } = {};
+
     static async fetchAll(
         pageSize: number = 200000,
         pageNumber: number = 1,
@@ -82,6 +89,50 @@ export class AgHatApi {
             throw error;
         }
     }
+
+    static async fetchAllProto(
+        pageSize: number = 200000,
+        pageNumber: number = 1,
+        sortBy: string = 'id',
+        ascending: boolean = true,
+        query: string = null!,
+        extent?: Extent
+    ): Promise<AgHatResponse> {
+        if (this._cancelTokens["fetchAllProto"])
+            this._cancelTokens["fetchAllProto"].cancel("Operation canceled due to new request.");
+
+        this._cancelTokens["fetchAllProto"] = axios.CancelToken.source();
+
+        try {
+            const protoResponse = await instance.get<ArrayBuffer>("agHat/pbf", {
+                params: {
+                    pageSize: pageSize,
+                    pageNumber: pageNumber,
+                    sortBy: capitalizeFirstLetter(sortBy),
+                    ascending: ascending,
+                    query: query,
+                    ...extent,
+                },
+                cancelToken: this._cancelTokens["fetchAllProto"].token,
+                headers: {
+                    'Accept': 'application/x-protobuf'
+                },
+                responseType: 'arraybuffer',
+            });
+
+            const decodedData = AgHatResponse.decode(new Uint8Array(protoResponse.data));
+
+            return decodedData;
+        } catch (error) {
+            if (error === "Request cancelled") {
+                Logger.warn("Request was cancelled by axios");
+                return Promise.reject(error);
+            }
+
+            Logger.error("Fetch AgHat Proto error:", error);
+            throw error;
+        }
+    }
 }
 
 /**
@@ -98,6 +149,9 @@ export class OgHatApi {
      * @param extent The geographical extent to filter the features.
      * @returns A promise that resolves to the list of OG Hat features.
     */
+
+    private static _cancelTokens: { [key: string]: CancelTokenSource } = {};
+
     static async fetchAll(
         pageSize: number = 200000,
         pageNumber: number = 1,
@@ -164,6 +218,50 @@ export class OgHatApi {
             throw error;
         }
     }
+
+    static async fetchAllProto(
+        pageSize: number = 200000,
+        pageNumber: number = 1,
+        sortBy: string = 'id',
+        ascending: boolean = true,
+        query: string = null!,
+        extent?: Extent
+    ): Promise<OgHatResponse> {
+        if (this._cancelTokens["fetchAllProto"])
+            this._cancelTokens["fetchAllProto"].cancel("Operation canceled due to new request.");
+
+        this._cancelTokens["fetchAllProto"] = axios.CancelToken.source();
+
+        try {
+            const protoResponse = await instance.get<ArrayBuffer>("ogHat/pbf", {
+                params: {
+                    pageSize: pageSize,
+                    pageNumber: pageNumber,
+                    sortBy: capitalizeFirstLetter(sortBy),
+                    ascending: ascending,
+                    query: query,
+                    ...extent,
+                },
+                cancelToken: this._cancelTokens["fetchAllProto"].token,
+                headers: {
+                    'Accept': 'application/x-protobuf'
+                },
+                responseType: 'arraybuffer',
+            });
+
+            const decodedData = OgHatResponse.decode(new Uint8Array(protoResponse.data));
+
+            return decodedData;
+        } catch (error) {
+            if (error === "Request cancelled") {
+                Logger.warn("Request was cancelled by axios");
+                return Promise.reject(error);
+            }
+
+            Logger.error("Fetch OgHat Proto error:", error);
+            throw error;
+        }
+    }
 }
 
 /**
@@ -180,6 +278,9 @@ export class RekortmanApi {
      * @param extent The geographical extent to filter the features.
      * @returns A promise that resolves to the list of Rekortman features.
      */
+
+    private static _cancelTokens: { [key: string]: CancelTokenSource } = {};
+
     static async fetchAll(
         pageSize: number = 200000,
         pageNumber: number = 1,
@@ -242,6 +343,50 @@ export class RekortmanApi {
             return response.data;
         } catch (error) {
             Logger.error("Fetch Rekortman count error:", error);
+            throw error;
+        }
+    }
+
+    static async fetchAllProto(
+        pageSize: number = 200000,
+        pageNumber: number = 1,
+        sortBy: string = 'id',
+        ascending: boolean = true,
+        query: string = null!,
+        extent?: Extent
+    ): Promise<RekortmanResponse> {
+        if (this._cancelTokens["fetchAllProto"])
+            this._cancelTokens["fetchAllProto"].cancel("Operation canceled due to new request.");
+
+        this._cancelTokens["fetchAllProto"] = axios.CancelToken.source();
+
+        try {
+            const protoResponse = await instance.get<ArrayBuffer>("rekortman/pbf", {
+                params: {
+                    pageSize: pageSize,
+                    pageNumber: pageNumber,
+                    sortBy: capitalizeFirstLetter(sortBy),
+                    ascending: ascending,
+                    query: query,
+                    ...extent,
+                },
+                cancelToken: this._cancelTokens["fetchAllProto"].token,
+                headers: {
+                    'Accept': 'application/x-protobuf'
+                },
+                responseType: 'arraybuffer',
+            });
+
+            const decodedData = RekortmanResponse.decode(new Uint8Array(protoResponse.data));
+
+            return decodedData;
+        } catch (error) {
+            if (error === "Request cancelled") {
+                Logger.warn("Request was cancelled by axios");
+                return Promise.reject(error);
+            }
+
+            Logger.error("Fetch OgHat Proto error:", error);
             throw error;
         }
     }

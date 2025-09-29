@@ -59,21 +59,6 @@ LinesService/
 └── Resources/          # Localization resources
 ```
 
-## 🐳 Docker Deployment
-
-### Build Image
-```bash
-docker build -t conduit3d-lines:latest .
-```
-
-### Run Container
-```bash
-docker run -d \
-  -p 8080:8080 \
-  -e POSTGRESQL_CONNECTION_STRING="Host=db;Database=lines_db;Username=user;Password=pass" \
-  conduit3d-lines:latest
-```
-
 ## 🔗 Dependencies
 
 ### Core Dependencies
@@ -117,6 +102,38 @@ docker run -d \
    |NOT NULL|-|-|-|-|-|-|-|
    |AI|-|-|-|-|-|-|(function generated)|
 
+   > Generate the tsvector column
+
+   ```sql 
+   CREATE OR REPLACE FUNCTION generate_searchable_text_ag_hat(
+       id_val INT, 
+       kodu_val TEXT,
+       adi_val TEXT, 
+       cinsi_val TEXT,
+       kesit_val TEXT,
+       tipi_val TEXT
+   )
+   RETURNS tsvector
+   AS $$
+   SELECT to_tsvector('simple', 
+       coalesce(cast(id_val as text), '') || ' ' ||
+       coalesce(kodu_val, '') || ' ' ||
+       coalesce(adi_val, '') || ' ' ||
+       coalesce(cinsi_val, '') || ' ' ||
+   	coalesce(kesit_val, '') || ' ' ||
+   	coalesce(tipi_val, '')
+   );
+   $$ LANGUAGE SQL IMMUTABLE;
+
+   -- Add the generated column to the adr_bina table
+   ALTER TABLE "SBK_AGHAT" ADD COLUMN searchable_text tsvector GENERATED ALWAYS AS (
+       generate_searchable_text_ag_hat(id, kodu, adi, cinsi, kesit, tipi)
+   ) STORED;
+
+   -- Create GIN index for fast text search
+   CREATE INDEX idx_ag_hat_searchable_text ON "SBK_AGHAT" USING GIN(searchable_text);
+   ```
+
    - OgHat
 
    |id|geometry|adi|kodu|cinsi|kesit|tipi|searchable_text|
@@ -125,6 +142,38 @@ docker run -d \
    |NOT NULL|-|-|-|-|-|-|-|
    |AI|-|-|-|-|-|-|(function generated)|
 
+   > Generate the tsvector column
+
+   ```sql
+   CREATE OR REPLACE FUNCTION generate_searchable_text_og_hat(
+       id_val INT, 
+       kodu_val TEXT,
+       adi_val TEXT, 
+       cinsi_val TEXT,
+       kesit_val TEXT,
+       tipi_val TEXT
+   )
+   RETURNS tsvector
+   AS $$
+   SELECT to_tsvector('simple', 
+       coalesce(cast(id_val as text), '') || ' ' ||
+       coalesce(kodu_val, '') || ' ' ||
+       coalesce(adi_val, '') || ' ' ||
+       coalesce(cinsi_val, '') || ' ' ||
+   	coalesce(kesit_val, '') || ' ' ||
+   	coalesce(tipi_val, '')
+   );
+   $$ LANGUAGE SQL IMMUTABLE;
+
+   -- Add the generated column to the adr_bina table
+   ALTER TABLE "SBK_OGHAT" ADD COLUMN searchable_text tsvector GENERATED ALWAYS AS (
+       generate_searchable_text_og_hat(id, kodu, adi, cinsi, kesit, tipi)
+   ) STORED;
+
+   -- Create GIN index for fast text search
+   create INDEX idx_og_hat_searchable_text ON "SBK_OGHAT" USING GIN(searchable_text);
+   ```
+
    - Rekortman
 
    |id|geometry|adi|kodu|kesit|tipi|searchable_text|
@@ -132,6 +181,36 @@ docker run -d \
    |int PK|geometry|varchar(50)|varchar(50)|varchar(40)|varchar(20)|tsvector|
    |NOT NULL|-|-|-|-|-|-|
    |AI|-|-|-|-|-|(function generated)|
+
+   > Generate the tsvector column
+
+   ```sql
+   CREATE OR REPLACE FUNCTION generate_searchable_text_rekortman(
+       id_val INT, 
+       kodu_val TEXT,
+       adi_val TEXT, 
+       kesit_val TEXT,
+       tipi_val TEXT
+   )
+   RETURNS tsvector
+   AS $$
+   SELECT to_tsvector('simple', 
+       coalesce(cast(id_val as text), '') || ' ' ||
+       coalesce(kodu_val, '') || ' ' ||
+       coalesce(adi_val, '') || ' ' ||
+   	coalesce(kesit_val, '') || ' ' ||
+   	coalesce(tipi_val, '')
+   );
+   $$ LANGUAGE SQL IMMUTABLE;
+   
+   -- Add the generated column to the adr_bina table
+   ALTER TABLE "SBK_rEKORTMAN" ADD COLUMN searchable_text tsvector GENERATED ALWAYS AS (
+       generate_searchable_text_rekortman(id, kodu, adi, kesit, tipi)
+   ) STORED;
+   
+   -- Create GIN index for fast text search
+   create INDEX idx_rekortman_searchable_text ON "SBK_rEKORTMAN" USING GIN(searchable_text);
+   ```
 
 3. **Configure Environment**
    ```bash
@@ -147,6 +226,21 @@ docker run -d \
 
 5. **Access API Documentation**
    - Navigate to `https://<domain>/api/docs/lines/swagger` for interactive API docs
+
+## 🐳 Docker Deployment
+
+### Build Image
+```bash
+docker build -t conduit3d-lines:latest .
+```
+
+### Run Container
+```bash
+docker run -d \
+  -p 8080:8080 \
+  -e POSTGRESQL_CONNECTION_STRING="Host=db;Database=lines_db;Username=user;Password=pass" \
+  conduit3d-lines:latest
+```
 
 ## ⚡ Electrical Line Types
 

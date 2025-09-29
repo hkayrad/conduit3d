@@ -3,6 +3,7 @@ using Asp.Versioning;
 using BuildingsService.Infrastructure;
 using BuildingsService.Infrastructure.Data;
 using BuildingsService.Infrastructure.Services;
+using Conduit3D.Common.Infrastructure.Formatters;
 using BuildingsService.Resources;
 using Conduit3D.Common.Domain;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,10 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.OutputFormatters.Add(new ProtobufOutputFormatter());
+});
 
 // Configure API versioning
 builder.Services.AddApiVersioning(options =>

@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+message OgMusDirekResponse {
+    bool isSuccess = 1;
+    string message = 2;
+    int32 statusCode = 3;
+    repeated OgMusDirekProto data = 4;
+}
+
+message OgMusDirekProto {
+    int32 id = 1;
+    string kodu = 2;
+    string adi = 3;
+    string cinsi = 4;
+    string tipi = 5;
+    string direkNo = 6;
+    string boyOzellik = 7;
+    double direkBoyId = 8;
+    string wkb = 9;
+}

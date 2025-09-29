@@ -58,11 +58,19 @@ body::-webkit-scrollbar-thumb {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
+kbd {
+  background: #FFFFFF;
+  color: #2B2D42;
+  padding: 1px 4px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
 #layer-control-toggle {
   position: absolute;
   top: 72px;
   right: 16px;
-  z-index: 1;
+  z-index: 1000;
   transition: all 0.3s ease;
   border: none;
   border-radius: 8px;
@@ -77,19 +85,20 @@ body::-webkit-scrollbar-thumb {
   cursor: pointer;
 }
 #layer-control-toggle.open {
-  right: 320px;
+  right: 316px;
+  border-radius: 8px 0 0 8px;
 }
 
 .layer-control-content {
-  z-index: 1;
+  z-index: 1000;
   position: absolute;
   top: 72px;
   right: -320px;
-  width: 304px;
+  width: 316px;
   transition: all 0.3s ease;
   background: #2B2D42;
   padding: 16px 12px 16px 16px;
-  border-radius: 8px 0 0 8px;
+  border-radius: 12px 0 0 12px;
   color: #FFFFFF;
   display: flex;
   flex-direction: column;
@@ -111,4 +120,15 @@ body::-webkit-scrollbar-thumb {
 }
 .layer-control-content.open {
   right: 0px;
+  border-radius: 0 0 0 12px;
+}
+.layer-control-content.short {
+  max-height: calc(100vh - 72px - 88px - 208px);
+}
+.layer-control-content.pinned {
+  max-height: calc(100vh - 72px - 88px - 408px);
+}
+
+.street-view:hover ~ .layer-control-content {
+  max-height: calc(100vh - 72px - 88px - 408px);
 }/*# sourceMappingURL=layerControl.css.map */

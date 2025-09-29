@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using Conduit3D.Common.Domain;
 using LinesService.Domain;
 using LinesService.Resources;
@@ -150,6 +151,127 @@ public class PostgresqlOgHatService(IUnitOfWork unitOfWork) : IOgHatService
         catch (Exception ex)
         {
             return Response<List<string>>.UnhandledError(LinesResources.GetString("tipListRetrievalFailed", ex.Message));
+        }
+    }
+
+    public async Task<OgHatResponse> GetAllAsProtobufAsync(int pageNumber, int pageSize, string sortBy, bool ascending, Extent? extent, string? query, CancellationToken cancellationToken)
+    {
+        if (pageSize < 1 || pageSize > 200000)
+            return new OgHatResponse
+            {
+                IsSuccess = false,
+                Message = LinesResources.GetString("invalidPageSize"),
+                StatusCode = (int)HttpStatusCode.BadRequest,
+                Data = { }
+            };
+
+        if (pageNumber < 1)
+            return new OgHatResponse
+            {
+                IsSuccess = false,
+                Message = LinesResources.GetString("invalidPageNumber"),
+                StatusCode = (int)HttpStatusCode.BadRequest,
+                Data = { }
+            };
+
+        string[] allowedSortColumns =
+        [
+            "Id",
+            "Kodu",
+            "SiteAdi",
+            "Adi",
+            "BinaKatSayisi",
+            "DaireSayisi",
+            "IsyeriSayisi",
+            "Yukseklik"
+        ];
+
+        if (!allowedSortColumns.Contains(sortBy))
+            return new OgHatResponse
+            {
+                IsSuccess = false,
+                Message = LinesResources.GetString("invalidSortBy"),
+                StatusCode = (int)HttpStatusCode.BadRequest,
+                Data = { }
+            };
+
+        extent ??= new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
+
+        if (extent.MinX == 0 && extent.MinY == 0 && extent.MaxX == 0 && extent.MaxY == 0)
+        {
+            extent = new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
+        }
+
+        if (!extent.IsValid())
+            return new OgHatResponse
+            {
+                IsSuccess = false,
+                Message = LinesResources.GetString("invalidExtent"),
+                StatusCode = (int)HttpStatusCode.BadRequest,
+                Data = { }
+            };
+
+        try
+        {
+            var buildings = await _unitOfWork.OgHatRepository.GetAllAsync(pageNumber,
+                                                                    pageSize,
+                                                                    sortBy,
+                                                                    ascending,
+                                                                    extent,
+                                                                    query,
+                                                                    cancellationToken);
+
+            if (buildings == null || buildings.Count == 0)
+                return new OgHatResponse
+                {
+                    IsSuccess = false,
+                    Message = LinesResources.GetString("noLineFound"),
+                    StatusCode = (int)HttpStatusCode.NotFound,
+                    Data = { }
+                };
+
+            var buildingsResponse = new OgHatResponse
+            {
+                IsSuccess = true,
+                Message = LinesResources.GetString("linesRetrieved"),
+                StatusCode = (int)HttpStatusCode.OK,
+            };
+
+            foreach (var building in buildings)
+            {
+                buildingsResponse.Data.Add(new OgHatProto
+                {
+                    Id = building.Id,
+                    Kodu = building.Kodu ?? string.Empty,
+                    Adi = building.Adi ?? string.Empty,
+                    Cinsi = building.Cinsi ?? string.Empty,
+                    Kesit = building.Kesit ?? string.Empty,
+                    Tipi = building.Tipi ?? string.Empty,
+                    Wkb = Convert.ToBase64String(building.Wkb)
+                });
+            }
+
+            return buildingsResponse;
+        }
+        catch (NpgsqlException ex)
+        {
+            return new OgHatResponse
+            {
+                IsSuccess = false,
+                Message = LinesResources.GetString("lineRetrievalFailed", ex.Message),
+                StatusCode = (int)HttpStatusCode.InternalServerError,
+                Data = { }
+            };
+        }
+        catch (Exception ex)
+        {
+            return new OgHatResponse
+            {
+                IsSuccess = false,
+                Message = LinesResources.GetString("lineRetrievalFailed", ex.Message),
+                StatusCode = (int)HttpStatusCode.InternalServerError,
+                Data = { }
+            };
         }
     }
 }

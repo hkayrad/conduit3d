@@ -58,6 +58,14 @@ body::-webkit-scrollbar-thumb {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
+kbd {
+  background: #FFFFFF;
+  color: #2B2D42;
+  padding: 1px 4px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
 .view-toggle {
   position: absolute;
   z-index: 1000;
@@ -89,4 +97,7 @@ body::-webkit-scrollbar-thumb {
   color: #FFFFFF;
   padding: 8px;
   border: none;
+}
+.view-toggle .toggle-button:hover {
+  cursor: pointer;
 }/*# sourceMappingURL=viewToggle.css.map */

@@ -10,5 +10,11 @@ namespace BuildingsService.Infrastructure.Services;
 /// </summary>
 public interface IBuildingsService : IGenericService<Building>
 {
-
+    Task<BuildingsResponse> GetAllAsProtobufAsync(int pageNumber,
+                                            int pageSize,
+                                            string sortBy,
+                                            bool ascending,
+                                            Extent? extent,
+                                            string? query,
+                                            CancellationToken cancellationToken);
 }

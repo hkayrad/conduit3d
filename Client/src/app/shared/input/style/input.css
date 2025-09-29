@@ -110,7 +110,7 @@ body::-webkit-scrollbar-thumb {
   border: 1px solid rgba(43, 45, 66, 0.2);
   color: #2B2D42;
   padding: 8px 8px;
-  border-radius: 4px;
+  border-radius: 12px;
   transition: all ease 0.2s;
 }
 .input-container #toggle-password:hover {

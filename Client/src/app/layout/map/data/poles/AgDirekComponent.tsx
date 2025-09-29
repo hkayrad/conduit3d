@@ -1,13 +1,14 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { AgDirekApi } from "../../../../../lib/api";
-import type { Direk, Extent } from "../../../../../lib/types";
+import type { Extent } from "../../../../../lib/types";
 import { setType } from "../../mapSlice";
-import { FeatureType } from "../../../../../lib/enums";
+import { FeatureType, C3D_MapLayers } from "../../../../../lib/enums";
 import { useAppDispatch } from "../../../../../lib/hooks";
-import { Logger } from "../../../../../lib/utils/logger";
+import { handleDataFetch, Logger, wkbToGeometry } from "../../../../../lib/utils";
+import { CHUNK_SIZE } from "../../../../../lib/constants";
 
 type Props = {
-    setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>,
+    setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection[]>>,
     extent: Extent
 }
 
@@ -21,23 +22,32 @@ export default function AgDirekComponent(props: Props): null {
 
     const dispatch = useAppDispatch();
 
-    const handleAgDirekFetch = useCallback(async () => {
+    const abortControllerRef = useRef<AbortController | null>(null);
+    const isLoadingRef = useRef<boolean>(false);
+
+    const fetchNextChunk = async (page: number, signal?: AbortSignal): Promise<GeoJSON.FeatureCollection> => {
         try {
-            const response = await AgDirekApi.fetchAll(200000, 1, 'id', true, null!, extent);
+            const response = await AgDirekApi.fetchAllProto(CHUNK_SIZE, page, 'id', true, null!, extent);
 
-            if (!response.isSuccess)
-                return;
+            if (signal?.aborted) {
+                Logger.debug("Request aborted");
+                return { type: "FeatureCollection", features: [] };
+            }
 
-            var dataList: GeoJSON.FeatureCollection = {
-                type: "FeatureCollection",
-                features: []
-            };
+            if (!response.isSuccess) {
+                if (response.statusCode === 404) {
+                    Logger.debug("No AgDirek data found in the specified extent.");
+                    return { type: "FeatureCollection", features: [] };
+                }
+                Logger.error("Error fetching AgDirek data");
+                return { type: "FeatureCollection", features: [] };
+            }
 
-            response.data.forEach((rawData: Direk) => {
+            const formattedData: GeoJSON.Feature[] = response.data.map((rawData) => {
                 const height = Number(rawData.boyOzellik.split("/")[1]);
-                const feature = {
+                return {
                     type: "Feature",
-                    geometry: JSON.parse(rawData.geoJson),
+                    geometry: wkbToGeometry(rawData.wkb),
                     properties: {
                         id: rawData.id,
                         dataType: FeatureType.POLE,
@@ -50,15 +60,22 @@ export default function AgDirekComponent(props: Props): null {
                         direkBoyId: rawData.direkBoyId,
                         yukseklik: Number.isNaN(height) ? 10 : height,
                     }
-                } as GeoJSON.Feature;
-                dataList.features.push(feature);
+                }
             });
 
-            setData(dataList);
+            return {
+                type: "FeatureCollection",
+                features: formattedData
+            };
         } catch (error) {
+            if (error === "Request cancelled") {
+                Logger.warn("Request was cancelled by axios");
+                return Promise.reject(error);
+            }
             Logger.error("Error fetching AgDirek data:", error);
+            throw error;
         }
-    }, [extent]);
+    }
 
     const handleAgDirekTypesFetch = useCallback(async () => {
         try {
@@ -67,14 +84,14 @@ export default function AgDirekComponent(props: Props): null {
             if (!response.isSuccess)
                 return;
 
-            dispatch(setType({ key: "agDirek", types: response.data }));
+            dispatch(setType({ key: C3D_MapLayers.AgDirek, types: response.data }));
         } catch (error) {
             Logger.error("Error fetching AgDirek types:", error);
         }
     }, []);
 
     useEffect(() => {
-        handleAgDirekFetch();
+        handleDataFetch(isLoadingRef, abortControllerRef, extent, fetchNextChunk, setData)
     }, [extent]);
 
     useEffect(() => {

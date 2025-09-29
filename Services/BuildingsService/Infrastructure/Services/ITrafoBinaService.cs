@@ -1,5 +1,6 @@
 using System;
 using BuildingsService.Domain;
+using Conduit3D.Common.Domain;
 using Conduit3D.Common.Infrastructure.Services;
 
 namespace BuildingsService.Infrastructure.Services;
@@ -9,4 +10,11 @@ namespace BuildingsService.Infrastructure.Services;
 /// </summary>
 public interface ITrafoBinaService : IGenericService<TrafoBina>
 {
+    Task<TrafoBinaResponse> GetAllAsProtobufAsync(int pageNumber,
+                                            int pageSize,
+                                            string sortBy,
+                                            bool ascending,
+                                            Extent? extent,
+                                            string? query,
+                                            CancellationToken cancellationToken);
 }

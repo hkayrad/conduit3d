@@ -1,14 +1,15 @@
-import { useCallback, useEffect } from "react";
-import type { Extent, Hat } from "../../../../../lib/types";
-import { lineStringToSegments } from "../../../../../lib/utils";
+import { useCallback, useEffect, useRef } from "react";
+import type { Extent } from "../../../../../lib/types";
+import { Logger, handleDataFetch, lineStringToSegments, wkbToGeometry } from "../../../../../lib/utils";
 import { setType } from "../../mapSlice";
 import { AgHatApi } from "../../../../../lib/api";
-import { FeatureType } from "../../../../../lib/enums";
+import { FeatureType, HatCinsi, C3D_MapLayers } from "../../../../../lib/enums";
 import { useAppDispatch } from "../../../../../lib/hooks";
-import { Logger } from "../../../../../lib/utils/logger";
+import { CHUNK_SIZE } from "../../../../../lib/constants";
+
 
 type Props = {
-    setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>
+    setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection[]>>
     allPoles: GeoJSON.Feature[],
     extent: Extent
 }
@@ -23,42 +24,60 @@ export default function AgHatComponent(props: Props): null {
 
     const dispatch = useAppDispatch();
 
-    const handleAgHatFetch = useCallback(async () => {
+    const abortControllerRef = useRef<AbortController | null>(null);
+    const isLoadingRef = useRef<boolean>(false);
+
+    const fetchNextChunk = async (page: number, signal?: AbortSignal): Promise<GeoJSON.FeatureCollection> => {
         try {
-            const response = await AgHatApi.fetchAll(200000, 1, 'id', true, null!, extent);
+            const response = await AgHatApi.fetchAllProto(CHUNK_SIZE, page, 'id', true, null!, extent);
 
-            if (!response.isSuccess)
-                return;
+            if (signal?.aborted) {
+                Logger.debug("Request aborted");
+                return { type: "FeatureCollection", features: [] };
+            }
 
-            var dataList: GeoJSON.FeatureCollection = {
-                type: "FeatureCollection",
-                features: []
-            };
+            if (!response.isSuccess) {
+                if (response.statusCode === 404) {
+                    Logger.debug("No AgHat data found in the specified extent.");
+                    return { type: "FeatureCollection", features: [] };
+                }
+                Logger.error("Error fetching AgHat data");
+                return { type: "FeatureCollection", features: [] };
+            }
 
+            const allSegments: GeoJSON.Feature[] = [];
 
-            response.data.forEach((rawData: Hat) => {
+            response.data.map((rawData) => {
                 const feature = {
                     type: "Feature",
-                    geometry: JSON.parse(rawData.geoJson),
+                    geometry: wkbToGeometry(rawData.wkb),
                     properties: {
                         id: rawData.id,
+                        dataType: FeatureType.LINE,
                         kodu: rawData.kodu,
                         adi: rawData.adi,
                         cinsi: rawData.cinsi,
                         kesit: rawData.kesit,
-                        tipi: rawData.tipi,
-                        dataType: FeatureType.LINE
+                        tipi: rawData.tipi
                     }
-                } as GeoJSON.Feature;
-                const segments = lineStringToSegments(feature, rawData.cinsi, allPoles, -1);
-                dataList.features.push(...segments);
-            })
+                }
+                const segments: GeoJSON.Feature[] = lineStringToSegments(feature, rawData.cinsi as HatCinsi, allPoles, -1);
+                allSegments.push(...segments);
+            });
 
-            setData(dataList);
+            return {
+                type: "FeatureCollection",
+                features: allSegments
+            };
         } catch (error) {
+            if (error === "Request cancelled") {
+                Logger.warn("Request was cancelled by axios");
+                return Promise.reject(error);
+            }
             Logger.error("Error fetching AgHat data:", error);
+            throw error;
         }
-    }, [extent]);
+    }
 
     const handleAgHatTypesFetch = useCallback(async () => {
         try {
@@ -67,7 +86,7 @@ export default function AgHatComponent(props: Props): null {
             if (!response.isSuccess)
                 return;
 
-            dispatch(setType({ key: "agHat", types: response.data }));
+            dispatch(setType({ key: C3D_MapLayers.AgHat, types: response.data }));
         } catch (error) {
             Logger.error("Error fetching AgHat types:", error);
         }
@@ -77,7 +96,7 @@ export default function AgHatComponent(props: Props): null {
         if (allPoles.length <= 0)
             return;
 
-        handleAgHatFetch();
+        handleDataFetch(isLoadingRef, abortControllerRef, extent, fetchNextChunk, setData);
     }, [allPoles, extent]);
 
     useEffect(() => {

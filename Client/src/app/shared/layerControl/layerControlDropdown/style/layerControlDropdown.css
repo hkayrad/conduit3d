@@ -58,6 +58,14 @@ body::-webkit-scrollbar-thumb {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
+kbd {
+  background: #FFFFFF;
+  color: #2B2D42;
+  padding: 1px 4px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
 .layer-control-dropdown {
   display: flex;
   flex-direction: column;
@@ -81,6 +89,11 @@ body::-webkit-scrollbar-thumb {
   justify-content: space-between;
   align-items: center;
   overflow: hidden;
+  transition: background 0.3s ease;
+}
+.layer-control-dropdown .controller:hover {
+  cursor: pointer;
+  background: #4B4E73;
 }
 .layer-control-dropdown .controller .left {
   display: flex;

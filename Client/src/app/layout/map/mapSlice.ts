@@ -2,51 +2,46 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../../lib/store";
 import type { FirstPersonViewState, MapViewState } from "deck.gl";
-import { C3D_MapViewType } from "../../../lib/enums";
+import { C3D_MapViewType, C3D_MapLayers } from "../../../lib/enums";
+import type { C3D_LayerViewState as C3D_LayerViewState } from "../../../lib/types";
 
 export interface MapState {
     isDataLoading: boolean,
     isLayerControlsOpen: boolean,
     isHoverInfoVisible: boolean,
+    isStreetViewVisible: boolean,
+    isStreetViewPinned: boolean,
+    isWireframe: boolean,
     selectedViewType: C3D_MapViewType,
-    visibility: {
-        basemap: boolean,
-        adrBina: boolean,
-        trafoBina: boolean,
-        agDirek: boolean,
-        ogMusDirek: boolean,
-        aydDirek: boolean,
-        agHat: boolean,
-        ogHat: boolean,
-        rekortman: boolean
-    },
+    visibility: C3D_LayerViewState,
+    focusedView: "deckgl" | "streetview",
     filters: {
-        agDirek: {
+        [C3D_MapLayers.AgDirek]: {
             tipi: string[]
         },
-        ogMusDirek: {
+        [C3D_MapLayers.OgMusDirek]: {
             tipi: string[]
         },
-        aydDirek: {
+        [C3D_MapLayers.AydDirek]: {
             tipi: string[]
         },
-        agHat: {
+        [C3D_MapLayers.AgHat]: {
             tipi: string[]
         },
-        ogHat: {
+        [C3D_MapLayers.OgHat]: {
             tipi: string[]
         },
-        rekortman: {
+        [C3D_MapLayers.Rekortman]: {
             tipi: string[]
         }
     },
     types: {
-        agDirek: string[],
-        ogMusDirek: string[],
-        aydDirek: string[],
-        agHat: string[],
-        ogHat: string[],
-        rekortman: string[]
+        [C3D_MapLayers.AgDirek]: string[],
+        [C3D_MapLayers.OgMusDirek]: string[],
+        [C3D_MapLayers.AydDirek]: string[],
+        [C3D_MapLayers.AgHat]: string[],
+        [C3D_MapLayers.OgHat]: string[],
+        [C3D_MapLayers.Rekortman]: string[]
     },
     viewState: {
         [C3D_MapViewType.Cartesian]: MapViewState,
@@ -58,72 +53,85 @@ export interface MapState {
         maxX: number,
         maxY: number,
     }
+    lastRefreshPosition: {
+        longitude: number,
+        latitude: number
+    }
 }
 
 const initialState: MapState = {
     isDataLoading: false,
     isLayerControlsOpen: false,
     isHoverInfoVisible: true,
+    isStreetViewVisible: true,
+    isStreetViewPinned: false,
+    isWireframe: false,
+    focusedView: "deckgl",
     selectedViewType: C3D_MapViewType.Cartesian,
     visibility: {
-        basemap: true,
-        adrBina: true,
-        trafoBina: true,
-        agDirek: true,
-        ogMusDirek: true,
-        aydDirek: true,
-        agHat: true,
-        ogHat: true,
-        rekortman: true
+        [C3D_MapLayers.Basemap]: true,
+        [C3D_MapLayers.AdrBina]: true,
+        [C3D_MapLayers.TrafoBina]: true,
+        [C3D_MapLayers.AgDirek]: true,
+        [C3D_MapLayers.OgMusDirek]: true,
+        [C3D_MapLayers.AydDirek]: true,
+        [C3D_MapLayers.AgHat]: true,
+        [C3D_MapLayers.OgHat]: true,
+        [C3D_MapLayers.Rekortman]: true
     },
     filters: {
-        agDirek: {
+        [C3D_MapLayers.AgDirek]: {
             tipi: []
         },
-        ogMusDirek: {
+        [C3D_MapLayers.OgMusDirek]: {
             tipi: []
         },
-        aydDirek: {
+        [C3D_MapLayers.AydDirek]: {
             tipi: []
         },
-        agHat: {
+        [C3D_MapLayers.AgHat]: {
             tipi: []
         },
-        ogHat: {
+        [C3D_MapLayers.OgHat]: {
             tipi: []
         },
-        rekortman: {
+        [C3D_MapLayers.Rekortman]: {
             tipi: []
         }
     },
     types: {
-        agDirek: [],
-        ogMusDirek: [],
-        aydDirek: [],
-        agHat: [],
-        ogHat: [],
-        rekortman: []
+        [C3D_MapLayers.AgDirek]: [],
+        [C3D_MapLayers.OgMusDirek]: [],
+        [C3D_MapLayers.AydDirek]: [],
+        [C3D_MapLayers.AgHat]: [],
+        [C3D_MapLayers.OgHat]: [],
+        [C3D_MapLayers.Rekortman]: []
     },
     viewState: {
         [C3D_MapViewType.Cartesian]: {
-            longitude: 41.287,
-            latitude: 39.9,
+            longitude: 41.28654673296825,
+            latitude: 39.90032606428541,
             zoom: 15,
             pitch: 60,
             bearing: 0
         },
         [C3D_MapViewType.FirstPerson]: {
-            longitude: 41.287,
-            latitude: 39.9,
+            longitude: 41.28654673296825,
+            latitude: 39.90032606428541,
             pitch: 0,
-            bearing: 50
+            bearing: 0,
+            position: [0, 0, 3] // 3 meters height
         }
     },
     extent: {
-        minX: 40,
-        minY: 39,
-        maxX: 41,
-        maxY: 40,
+        minX: null!,
+        minY: null!,
+        maxX: null!,
+        maxY: null!,
+    },
+    lastRefreshPosition: {
+        longitude: null!,
+        latitude: null!
     }
 };
 
@@ -131,6 +139,9 @@ export const mapSlice = createSlice({
     name: 'map',
     initialState,
     reducers: {
+        setFocusedView: (state, action: PayloadAction<"deckgl" | "streetview">) => {
+            state.focusedView = action.payload;
+        },
         setIsDataLoading: (state, action: PayloadAction<boolean>) => {
             state.isDataLoading = action.payload;
         },
@@ -139,6 +150,15 @@ export const mapSlice = createSlice({
         },
         setIsHoverInfoVisible: (state, action: PayloadAction<boolean>) => {
             state.isHoverInfoVisible = action.payload;
+        },
+        setIsStreetViewVisible: (state, action: PayloadAction<boolean>) => {
+            state.isStreetViewVisible = action.payload;
+        },
+        setIsStreetViewPinned: (state, action: PayloadAction<boolean>) => {
+            state.isStreetViewPinned = action.payload;
+        },
+        setIsWireframe: (state, action: PayloadAction<boolean>) => {
+            state.isWireframe = action.payload;
         },
         setSelectedViewType: (state, action: PayloadAction<C3D_MapViewType>) => {
             state.selectedViewType = action.payload;
@@ -153,6 +173,26 @@ export const mapSlice = createSlice({
             const { layer, visible } = action.payload;
             if (layer in state.visibility) {
                 state.visibility[layer] = visible;
+            }
+        },
+        toggleWireframe: (state) => {
+            state.isWireframe = !state.isWireframe;
+        },
+        toggleStreetView: (state) => {
+            state.isStreetViewVisible = !state.isStreetViewVisible;
+        },
+        toggleStreetViewPinned: (state) => {
+            state.isStreetViewPinned = !state.isStreetViewPinned;
+        },
+        toggleMapLayerVisibility: (
+            state,
+            action: PayloadAction<{
+                layer: keyof MapState["visibility"];
+            }>
+        ) => {
+            const { layer } = action.payload;
+            if (layer in state.visibility) {
+                state.visibility[layer] = !state.visibility[layer];
             }
         },
         setFilter: (
@@ -194,6 +234,13 @@ export const mapSlice = createSlice({
         ) => {
             const { extent } = action.payload;
             state.extent = extent;
+        },
+        setLastRefreshPosition: (
+            state,
+            action: PayloadAction<{ position: MapState["lastRefreshPosition"] }>
+        ) => {
+            const { position } = action.payload;
+            state.lastRefreshPosition = position;
         }
     }
 });
@@ -203,11 +250,20 @@ export const {
     setIsLayerControlsOpen,
     setIsHoverInfoVisible,
     setMapLayerVisibility,
+    setIsStreetViewVisible,
+    setIsStreetViewPinned,
+    setIsWireframe,
+    setFocusedView,
     setSelectedViewType,
+    toggleWireframe,
+    toggleStreetView,
+    toggleStreetViewPinned,
+    toggleMapLayerVisibility,
     setFilter,
     setViewState,
     setExtent,
-    setType
+    setType,
+    setLastRefreshPosition,
 } = mapSlice.actions;
 
 export const selectMapState = (state: RootState) => state.map;
@@ -215,11 +271,16 @@ export const selectMapState = (state: RootState) => state.map;
 export const selectIsDataLoading = (state: RootState) => state.map.isDataLoading;
 export const selectIsLayerControlsOpen = (state: RootState) => state.map.isLayerControlsOpen;
 export const selectIsHoverInfoVisible = (state: RootState) => state.map.isHoverInfoVisible;
+export const selectIsStreetViewVisible = (state: RootState) => state.map.isStreetViewVisible;
+export const selectIsStreetViewPinned = (state: RootState) => state.map.isStreetViewPinned;
+export const selectIsWireframe = (state: RootState) => state.map.isWireframe;
 export const selectSelectedViewType = (state: RootState) => state.map.selectedViewType;
+export const selectFocusedView = (state: RootState) => state.map.focusedView;
 export const selectVisibility = (state: RootState) => state.map.visibility;
 export const selectFilters = (state: RootState) => state.map.filters;
 export const selectTypes = (state: RootState) => state.map.types;
 export const selectViewState = (state: RootState) => state.map.viewState;
 export const selectExtent = (state: RootState) => state.map.extent;
+export const selectLastRefreshPosition = (state: RootState) => state.map.lastRefreshPosition;
 
 export default mapSlice.reducer;

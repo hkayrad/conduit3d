@@ -1,6 +1,7 @@
 {
 	order jwtauth before basicauth
 }
+
 {$BASE_URL} {
     tls /usr/share/caddy/localhost.crt /usr/share/caddy/localhost.key
 
@@ -217,6 +218,26 @@
 
     handle_path /tiles* {
         reverse_proxy tile_server:3000 {
+            # Remove CORS headers added by the tile server
+            header_down -Access-Control-Allow-Origin
+        }
+    }
+
+    handle /geoserver* {
+
+        header {
+            Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' {$BASE_URL}:3000; form-action 'self' {$BASE_URL}/geoserver;"
+        }
+
+        @geooptions {
+        method OPTIONS
+    }
+
+    handle @geooptions {
+        respond "" 204
+    }
+        
+        reverse_proxy geoserver:8080 {
             # Remove CORS headers added by the tile server
             header_down -Access-Control-Allow-Origin
         }

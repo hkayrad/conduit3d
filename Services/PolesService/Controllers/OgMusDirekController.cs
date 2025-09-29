@@ -120,5 +120,27 @@ namespace PolesService.Controllers
         {
             return await _ogMusDirekService.GetTipListAsync(cancellationToken);
         }
+
+        [MapToApiVersion("1.0")]
+        [HttpGet("pbf")]
+        [Produces("application/x-protobuf")]
+        public async Task<OgMusDirekResponse> GetAllAsProtobufAsync(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 100000,
+            [FromQuery] string sortBy = "Id",
+            [FromQuery] bool ascending = true,
+            [FromQuery] Extent? extent = null,
+            [FromQuery] string? query = null,
+            CancellationToken cancellationToken = default
+        )
+        {
+            return await _ogMusDirekService.GetAllAsProtobufAsync(pageNumber,
+                                                    pageSize,
+                                                    sortBy,
+                                                    ascending,
+                                                    extent,
+                                                    query,
+                                                    cancellationToken);
+        }
     }
 }

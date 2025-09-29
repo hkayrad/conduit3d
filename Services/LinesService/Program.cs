@@ -8,11 +8,15 @@ using Conduit3D.Common.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Conduit3D.Common.Infrastructure.Formatters;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.OutputFormatters.Add(new ProtobufOutputFormatter());
+});
 
 // Configure API versioning
 builder.Services.AddApiVersioning(options =>

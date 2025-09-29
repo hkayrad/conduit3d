@@ -46,11 +46,17 @@ public class Rekortman
     [MaxLength(20)]
     public string Tipi { get; set; } = string.Empty;
 
+    // /// <summary>
+    // /// The geographical representation of the connection line.
+    // /// </summary>
+    // [Required]
+    // public required string GeoJson { get; set; }
+
     /// <summary>
-    /// The geographical representation of the connection line.
+    /// The Well-Known Binary (WKB) representation of the connection line.
     /// </summary>
-    [Required]
-    public required string GeoJson { get; set; }
+    [Column("wkb")]
+    public required byte[] Wkb { get; set; }
 
     /// <summary>
     /// TsVector column for full-text search.

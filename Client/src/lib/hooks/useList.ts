@@ -1,33 +1,28 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { AdrBinaApi, AgDirekApi, AgHatApi, AydDirekApi, OgHatApi, OgMusDirekApi, RekortmanApi, TrafoBinaApi } from "../api";
 import { ListDataType } from "../enums";
-import { setAscending, setItemsPerPage, setPageNumber, setQuery, setSortBy } from "../../app/layout/list/listSlice";
-import { useAppDispatch } from "./reduxHooks";
-import { InputSanitizer } from "../utils";
-import { Logger } from "../utils/logger";
+import { selectListState, setAscending, setItemsPerPage, setPageNumber, setQuery, setSortBy } from "../../app/layout/list/listSlice";
+import { useAppDispatch, useAppSelector } from "./reduxHooks";
+import { Logger, InputSanitizer } from "../utils";
+import type { TableData } from "../types";
 
 /**
  * Custom hook for managing list state and API interactions.
- * @param featureType The type of feature to manage.
- * @param itemsPerPage The number of items to display per page.
- * @param pageNumber The current page number.
- * @param sortBy The field to sort by.
- * @param ascending Whether the sort is ascending or descending.
- * @param query The search query.
- * @param setFeatures A function to set the features state.
- * @param setFeatureCount A function to set the feature count state.
  * @returns List related functions and handlers
  */
-export function useList(
-    featureType: ListDataType,
-    itemsPerPage: number,
-    pageNumber: number,
-    sortBy: string,
-    ascending: boolean,
-    query: string,
-    setFeatures: React.Dispatch<React.SetStateAction<any[]>>,
-    setFeatureCount: React.Dispatch<React.SetStateAction<number>>,
-) {
+export function useList() {
+    const { itemsPerPage, pageNumber, sortBy, ascending, featureType, query } = useAppSelector(selectListState)
+    const dispatch = useAppDispatch();
+    const sanitizedQuery = InputSanitizer.sanitizeSearchQuery(query);
+
+    const [features, setFeatures] = useState<any[]>([]);
+    const [featureCount, setFeatureCount] = useState<number>(0);
+    const [tableData, setTableData] = useState<TableData>({
+        headers: [],
+        rows: []
+    });
+
+
     const apiMap = {
         [ListDataType.AdrBina]: AdrBinaApi,
         [ListDataType.TrafoBina]: TrafoBinaApi,
@@ -38,8 +33,6 @@ export function useList(
         [ListDataType.OgHat]: OgHatApi,
         [ListDataType.Rekortman]: RekortmanApi,
     };
-    const dispatch = useAppDispatch();
-    const sanitizedQuery = InputSanitizer.sanitizeSearchQuery(query);
 
     /**
      * Fetch features from the API.
@@ -127,6 +120,12 @@ export function useList(
     }, [handleFetchFeatures, featureType, itemsPerPage, pageNumber, sortBy, ascending, query]);
 
     return {
+        features,
+        featureCount,
+        tableData,
+        setTableData,
+        setFeatures,
+        setFeatureCount,
         handleFetchFeatures,
         handleChangeItemsPerPage,
         handleSetPageNumber,

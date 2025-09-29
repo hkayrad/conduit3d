@@ -6,23 +6,30 @@ import LayerControlSection from "../../../shared/layerControl/layerControlSectio
 import LayerControlDropdown from "../../../shared/layerControl/layerControlDropdown/LayerControlDropdown";
 import LayerControlFilter from "../../../shared/layerControl/layerControlFilter/LayerControlFilter";
 import SettingToggleButton from "../../../shared/layerControl/settingToggleButton/SettingToggleButton";
+import { C3D_MapLayers, C3D_MapViewType } from "../../../../lib/enums";
 
 /**
  * LayerControl component manages the visibility and settings of map layers.
  * @component
  * @returns The rendered component
  */
-export default function LayerControl(): React.ReactNode {
+export default function LayerControl({
+    debugBinaVisible,
+    setDebugBinaVisible
+}: {
+    debugBinaVisible: boolean;
+    setDebugBinaVisible: React.Dispatch<React.SetStateAction<boolean>>;
+}): React.ReactNode {
 
     const dispatch = useAppDispatch();
-    const { isLayerControlsOpen, isHoverInfoVisible, visibility, types, filters } = useAppSelector(selectMapState);
+    const { isLayerControlsOpen, isHoverInfoVisible, visibility, types, filters, selectedViewType, isStreetViewVisible, isStreetViewPinned } = useAppSelector(selectMapState);
 
     const handleControlsToggle = () => {
         dispatch(setIsLayerControlsOpen(!isLayerControlsOpen));
     }
 
-    const handleHoverInfoToggle = (state: boolean) => {
-        dispatch(setIsHoverInfoVisible(state));
+    const handleHoverInfoToggle = () => {
+        dispatch(setIsHoverInfoVisible(!isHoverInfoVisible));
     }
 
     const handleLayerToggle = (layer: keyof MapState["visibility"]) => {
@@ -44,7 +51,13 @@ export default function LayerControl(): React.ReactNode {
             >
                 {isLayerControlsOpen ? <ChevronRight /> : <Layers2 />}
             </button>
-            <div className={`layer-control-content shadow ${isLayerControlsOpen ? "open" : "closed"}`}>
+            <div
+                className={`layer-control-content 
+                    ${isLayerControlsOpen ? "open" : "closed"} 
+                    ${selectedViewType === C3D_MapViewType.FirstPerson && isStreetViewVisible ? "short" : ""} 
+                    ${selectedViewType === C3D_MapViewType.FirstPerson && isStreetViewPinned && isStreetViewVisible ? "pinned" : ""}
+                    `}
+            >
                 <LayerControlSection title="hover info">
                     <SettingToggleButton
                         active={isHoverInfoVisible}
@@ -58,7 +71,7 @@ export default function LayerControl(): React.ReactNode {
                 <LayerControlSection title="basemap">
                     <SettingToggleButton
                         active={visibility.basemap}
-                        toggle={() => handleLayerToggle("basemap")}
+                        toggle={() => handleLayerToggle(C3D_MapLayers.Basemap)}
                         hideLabel={<><EyeClosed /> Hide</>}
                         showLabel={<><Eye /> Show</>}
                         hideTitle="Hide Basemap"
@@ -68,15 +81,21 @@ export default function LayerControl(): React.ReactNode {
                 <LayerControlSection title="buildings">
                     <LayerControlDropdown
                         icon={<Building />}
+                        name="Debug Buildings"
+                        isLayerVisible={debugBinaVisible}
+                        toggleLayer={() => setDebugBinaVisible(!debugBinaVisible)}
+                    />
+                    <LayerControlDropdown
+                        icon={<Building />}
                         name="Adr Bina"
                         isLayerVisible={visibility.adrBina}
-                        toggleLayer={() => handleLayerToggle("adrBina")}
+                        toggleLayer={() => handleLayerToggle(C3D_MapLayers.AdrBina)}
                     />
                     <LayerControlDropdown
                         icon={<Zap />}
                         name="Trafo"
                         isLayerVisible={visibility.trafoBina}
-                        toggleLayer={() => handleLayerToggle("trafoBina")}
+                        toggleLayer={() => handleLayerToggle(C3D_MapLayers.TrafoBina)}
                     />
                 </LayerControlSection>
                 <LayerControlSection title="poles">
@@ -84,13 +103,13 @@ export default function LayerControl(): React.ReactNode {
                         icon={<UtilityPole />}
                         name="Ag Direk"
                         isLayerVisible={visibility.agDirek}
-                        toggleLayer={() => handleLayerToggle("agDirek")}
+                        toggleLayer={() => handleLayerToggle(C3D_MapLayers.AgDirek)}
                     >
                         <LayerControlFilter
                             label="Type"
                             typeList={types.agDirek}
                             filters={filters.agDirek.tipi}
-                            filterKey="agDirek"
+                            filterKey={C3D_MapLayers.AgDirek}
                             setFilters={handleFilterToggle}
                         />
                     </LayerControlDropdown>
@@ -98,13 +117,13 @@ export default function LayerControl(): React.ReactNode {
                         icon={<UtilityPole />}
                         name="Og Mus Direk"
                         isLayerVisible={visibility.ogMusDirek}
-                        toggleLayer={() => handleLayerToggle("ogMusDirek")}
+                        toggleLayer={() => handleLayerToggle(C3D_MapLayers.OgMusDirek)}
                     >
                         <LayerControlFilter
                             label="Type"
                             typeList={types.ogMusDirek}
                             filters={filters.ogMusDirek.tipi}
-                            filterKey="ogMusDirek"
+                            filterKey={C3D_MapLayers.OgMusDirek}
                             setFilters={handleFilterToggle}
                         />
                     </LayerControlDropdown>
@@ -112,13 +131,13 @@ export default function LayerControl(): React.ReactNode {
                         icon={<UtilityPole />}
                         name="Ayd Direk"
                         isLayerVisible={visibility.aydDirek}
-                        toggleLayer={() => handleLayerToggle("aydDirek")}
+                        toggleLayer={() => handleLayerToggle(C3D_MapLayers.AydDirek)}
                     >
                         <LayerControlFilter
                             label="Type"
                             typeList={types.aydDirek}
                             filters={filters.aydDirek.tipi}
-                            filterKey="aydDirek"
+                            filterKey={C3D_MapLayers.AydDirek}
                             setFilters={handleFilterToggle}
                         />
                     </LayerControlDropdown>
@@ -128,13 +147,13 @@ export default function LayerControl(): React.ReactNode {
                         icon={<PlugZap />}
                         name="Ag Hat"
                         isLayerVisible={visibility.agHat}
-                        toggleLayer={() => handleLayerToggle("agHat")}
+                        toggleLayer={() => handleLayerToggle(C3D_MapLayers.AgHat)}
                     >
                         <LayerControlFilter
                             label="Type"
                             typeList={types.agHat}
                             filters={filters.agHat.tipi}
-                            filterKey="agHat"
+                            filterKey={C3D_MapLayers.AgHat}
                             setFilters={handleFilterToggle}
                         />
                     </LayerControlDropdown>
@@ -142,13 +161,13 @@ export default function LayerControl(): React.ReactNode {
                         icon={<PlugZap />}
                         name="Og Hat"
                         isLayerVisible={visibility.ogHat}
-                        toggleLayer={() => handleLayerToggle("ogHat")}
+                        toggleLayer={() => handleLayerToggle(C3D_MapLayers.OgHat)}
                     >
                         <LayerControlFilter
                             label="Type"
                             typeList={types.ogHat}
                             filters={filters.ogHat.tipi}
-                            filterKey="ogHat"
+                            filterKey={C3D_MapLayers.OgHat}
                             setFilters={handleFilterToggle}
                         />
                     </LayerControlDropdown>
@@ -156,13 +175,13 @@ export default function LayerControl(): React.ReactNode {
                         icon={<PlugZap />}
                         name="Rekortman"
                         isLayerVisible={visibility.rekortman}
-                        toggleLayer={() => handleLayerToggle("rekortman")}
+                        toggleLayer={() => handleLayerToggle(C3D_MapLayers.Rekortman)}
                     >
                         <LayerControlFilter
                             label="Type"
                             typeList={types.rekortman}
                             filters={filters.rekortman.tipi}
-                            filterKey="rekortman"
+                            filterKey={C3D_MapLayers.Rekortman}
                             setFilters={handleFilterToggle}
                         />
                     </LayerControlDropdown>

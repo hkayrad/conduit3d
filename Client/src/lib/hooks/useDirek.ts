@@ -1,26 +1,19 @@
-import { useMemo } from "react"
-import type { MapState } from "../../app/layout/map/mapSlice"
+import { useMemo, useState } from "react"
 import { filterFeature } from "../utils/geometry/filterFeature";
 import { COLORS } from "../constants";
+import { useAppSelector } from "./reduxHooks";
+import { selectMapState } from "../../app/layout/map/mapSlice";
 
 /**
  * Format the AG Direk feature collection.
- * @param agDirek The AG Direk feature collection.
- * @param ogMusDirek The OG Mus Direk feature collection.
- * @param aydDirek The Ayd Direk feature collection.
- * @param types The map state types.
- * @param filters The map state filters.
- * @param visibility The map state visibility.
  * @returns The formatted AG Direk feature collection.
 */
-export function useDirek(
-    agDirek: GeoJSON.FeatureCollection,
-    ogMusDirek: GeoJSON.FeatureCollection,
-    aydDirek: GeoJSON.FeatureCollection,
-    types: MapState["types"],
-    filters: MapState["filters"],
-    visibility: MapState["visibility"]
-) {
+export function useDirek() {
+    const { visibility, filters, types } = useAppSelector(selectMapState);
+
+    const [agDirek, setAgDirek] = useState<GeoJSON.FeatureCollection[]>([]);
+    const [ogMusDirek, setOgMusDirek] = useState<GeoJSON.FeatureCollection[]>([]);
+    const [aydDirek, setAydDirek] = useState<GeoJSON.FeatureCollection[]>([]);
     /**
      * Formatted AG Direk data for rendering on the map.
      * @memoized to optimize performance and avoid unnecessary recalculations.
@@ -29,10 +22,23 @@ export function useDirek(
         if (!agDirek)
             return [];
 
+        // Combine all chunks into a single FeatureCollection
+        const combinedFeatures: GeoJSON.Feature[] = [];
+        agDirek.forEach(chunk => {
+            if (chunk && chunk.features) {
+                combinedFeatures.push(...chunk.features);
+            }
+        });
+
+        const combinedCollection: GeoJSON.FeatureCollection = {
+            type: "FeatureCollection",
+            features: combinedFeatures
+        };
+
         return types.agDirek.map(type => {
             return {
                 id: `ag-direk-${type}`,
-                data: filterFeature(agDirek, "tipi", type),
+                data: filterFeature(combinedCollection, "tipi", type),
                 color: COLORS.AG_DIREK,
                 visibility:
                     visibility.agDirek &&
@@ -49,10 +55,23 @@ export function useDirek(
         if (!ogMusDirek)
             return [];
 
+        // Combine all chunks into a single FeatureCollection
+        const combinedFeatures: GeoJSON.Feature[] = [];
+        ogMusDirek.forEach(chunk => {
+            if (chunk && chunk.features) {
+                combinedFeatures.push(...chunk.features);
+            }
+        });
+
+        const combinedCollection: GeoJSON.FeatureCollection = {
+            type: "FeatureCollection",
+            features: combinedFeatures
+        };
+
         return types.ogMusDirek.map(type => {
             return {
                 id: `og-mus-direk-${type}`,
-                data: filterFeature(ogMusDirek, "tipi", type),
+                data: filterFeature(combinedCollection, "tipi", type),
                 color: COLORS.OG_MUS_DIREK,
                 visibility:
                     visibility.ogMusDirek &&
@@ -69,10 +88,23 @@ export function useDirek(
         if (!aydDirek)
             return [];
 
+        // Combine all chunks into a single FeatureCollection
+        const combinedFeatures: GeoJSON.Feature[] = [];
+        aydDirek.forEach(chunk => {
+            if (chunk && chunk.features) {
+                combinedFeatures.push(...chunk.features);
+            }
+        });
+
+        const combinedCollection: GeoJSON.FeatureCollection = {
+            type: "FeatureCollection",
+            features: combinedFeatures
+        };
+
         return types.aydDirek.map(type => {
             return {
                 id: `ayd-direk-${type}`,
-                data: filterFeature(aydDirek, "tipi", type),
+                data: filterFeature(combinedCollection, "tipi", type),
                 color: COLORS.AYD_DIREK,
                 visibility:
                     visibility.aydDirek &&
@@ -89,10 +121,19 @@ export function useDirek(
         if (!agDirek || !ogMusDirek || !aydDirek)
             return [];
 
-        return [...agDirek.features, ...ogMusDirek.features, ...aydDirek.features]
+        const agFeatures = agDirek.flatMap(fc => fc.features ?? []);
+        const ogMusFeatures = ogMusDirek.flatMap(fc => fc.features ?? []);
+        const aydFeatures = aydDirek.flatMap(fc => fc.features ?? []);
+        return [...agFeatures, ...ogMusFeatures, ...aydFeatures];
     }, [agDirek, ogMusDirek, aydDirek])
 
     return {
+        agDirek,
+        setAgDirek,
+        ogMusDirek,
+        setOgMusDirek,
+        aydDirek,
+        setAydDirek,
         direkLayerData: [agDirekFormatted, ogMusDirekFormatted, aydDirekFormatted],
         allPoles
     };

@@ -11,4 +11,11 @@ namespace PolesService.Infrastructure.Services;
 public interface IOgMusDirekService : IGenericService<OgMusDirek>
 {
     public Task<Response<List<string>>> GetTipListAsync(CancellationToken cancellationToken);
+    public Task<OgMusDirekResponse> GetAllAsProtobufAsync(int pageNumber,
+                                            int pageSize,
+                                            string sortBy,
+                                            bool ascending,
+                                            Extent? extent,
+                                            string? query,
+                                            CancellationToken cancellationToken);
 }
