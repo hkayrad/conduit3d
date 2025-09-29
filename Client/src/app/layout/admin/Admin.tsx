@@ -1,7 +1,6 @@
 import "./style/admin.css";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { Pencil, Trash2 } from "lucide-react";
-import type { AdminModalStatus, TableData, User, UserCounts } from "../../../lib/types";
 import { useAdmin, useAppSelector } from "../../../lib/hooks";
 import { selectAdminState } from "./adminSlice";
 import Table from "../../shared/table/Table";
@@ -23,27 +22,16 @@ export default function Admin() {
     const { itemsPerPage, pageNumber, sortBy, ascending, query } = useAppSelector(selectAdminState)
     const currentUser = useAppSelector(selectUserState)
 
-    // Local state
-    const [users, setUsers] = useState<User[]>([]);
-    const [tableData, setTableData] = useState<TableData>({
-        headers: [],
-        rows: []
-    });
-    const [userCounts, setUserCounts] = useState<UserCounts>({
-        totalUsers: 0,
-        activeUsers: 0,
-        inactiveUsers: 0
-    });
-    const [errorText, setErrorText] = useState("");
-    const [userToAddModify, setUserToAddModify] = useState<User>({} as User);
-    const [modalStatus, setModalStatus] = useState<AdminModalStatus>({
-        isEditModalOpen: false,
-        isAddModalOpen: false,
-        isDeleteModalOpen: false
-    });
-
     // Admin hook
     const {
+        users,
+        tableData,
+        setTableData,
+        userCounts,
+        errorText,
+        userToAddModify,
+        setUserToAddModify,
+        modalStatus,
         handleAddUser,
         handleDeleteUser,
         handleEditUser,
@@ -57,18 +45,7 @@ export default function Admin() {
         handleSetAscending,
         handleSetQuery,
         handleRefreshData
-    } = useAdmin(
-        itemsPerPage,
-        pageNumber,
-        sortBy,
-        ascending,
-        query,
-        setUsers,
-        setUserCounts,
-        setErrorText,
-        setUserToAddModify,
-        setModalStatus
-    );
+    } = useAdmin();
 
     // Mamoized table headers
     const headers = useMemo(() => [

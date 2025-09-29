@@ -1,39 +1,37 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { AuthApi } from "../api";
-import type { AdminModalStatus, ApiResponse, User, UserCounts, UserSortBy } from "../types";
+import type { AdminModalStatus, ApiResponse, TableData, User, UserCounts, UserSortBy } from "../types";
 import { AdminModalType } from "../enums";
-import { setAscending, setItemsPerPage, setPageNumber, setQuery, setSortBy } from "../../app/layout/admin/adminSlice";
-import { useAppDispatch } from "./reduxHooks";
+import { selectAdminState, setAscending, setItemsPerPage, setPageNumber, setQuery, setSortBy } from "../../app/layout/admin/adminSlice";
+import { useAppDispatch, useAppSelector } from "./reduxHooks";
 import { Logger, InputSanitizer } from "../utils";
 
 /**
  * Returns admin related functions and handlers.
- * @param itemsPerPage Page size of the current user fetch
- * @param pageNumber Current page number
- * @param sortBy Field to sort by
- * @param ascending Sort order
- * @param query Search query
- * @param setUsers Function to set users
- * @param setUserCounts Function to set user counts
- * @param setErrorText Function to set error text
- * @param setUserToAddModify Function to set user to add/modify
- * @param setModalStatus Function to set modal status
  * @returns Admin related functions and handlers
  */
-export function useAdmin(
-    itemsPerPage: number,
-    pageNumber: number,
-    sortBy: string,
-    ascending: boolean,
-    query: string,
-    setUsers: React.Dispatch<React.SetStateAction<User[]>>,
-    setUserCounts: React.Dispatch<React.SetStateAction<UserCounts>>,
-    setErrorText: React.Dispatch<React.SetStateAction<string>>,
-    setUserToAddModify: React.Dispatch<React.SetStateAction<User>>,
-    setModalStatus: React.Dispatch<React.SetStateAction<AdminModalStatus>>,
-) {
+export function useAdmin() {
     const dispatch = useAppDispatch();
+    const { itemsPerPage, pageNumber, sortBy, ascending, query } = useAppSelector(selectAdminState);
     const sanitizedQuery = InputSanitizer.sanitizeSearchQuery(query);
+
+    const [users, setUsers] = useState<User[]>([]);
+    const [tableData, setTableData] = useState<TableData>({
+        headers: [],
+        rows: []
+    });
+    const [userCounts, setUserCounts] = useState<UserCounts>({
+        totalUsers: 0,
+        activeUsers: 0,
+        inactiveUsers: 0
+    });
+    const [errorText, setErrorText] = useState("");
+    const [userToAddModify, setUserToAddModify] = useState<User>({} as User);
+    const [modalStatus, setModalStatus] = useState<AdminModalStatus>({
+        isEditModalOpen: false,
+        isAddModalOpen: false,
+        isDeleteModalOpen: false
+    });
 
     /**
      * Fetch all users with the given parameters and update the users state.
@@ -259,6 +257,15 @@ export function useAdmin(
     }, [handleFetchUsers]);
 
     return {
+        users,
+        tableData,
+        setTableData,
+        userCounts,
+        errorText,
+        userToAddModify,
+        setUserToAddModify,
+        modalStatus,
+        setModalStatus,
         handleFetchUsers,
         handleAddUser,
         handleDeleteUser,

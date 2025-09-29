@@ -1,25 +1,19 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { filterFeature } from "../utils/geometry/filterFeature";
-import type { MapState } from "../../app/layout/map/mapSlice";
+import { selectMapState } from "../../app/layout/map/mapSlice";
 import { COLORS } from "../constants";
+import { useAppSelector } from "./reduxHooks";
 
 /**
  * Format the AG Hat feature collection.
- * @param agHat The AG Hat feature collection.
- * @param ogHat The OG Hat feature collection.
- * @param rekortman The Rekortman feature collection.
- * @param types The map state types.
- * @param filters The map state filters.
- * @param visibility The map state visibility.
  * @returns The formatted AG Hat feature collection.
  */
-export function useHat(
-    agHat: GeoJSON.FeatureCollection[],
-    ogHat: GeoJSON.FeatureCollection[],
-    rekortman: GeoJSON.FeatureCollection[],
-    types: MapState["types"],
-    filters: MapState["filters"],
-    visibility: MapState["visibility"]) {
+export function useHat() {
+    const { visibility, filters, types } = useAppSelector(selectMapState)
+
+    const [agHat, setAgHat] = useState<GeoJSON.FeatureCollection[]>([]);
+    const [ogHat, setOgHat] = useState<GeoJSON.FeatureCollection[]>([]);
+    const [rekortman, setRekortman] = useState<GeoJSON.FeatureCollection[]>([]);
 
     /**
      * Formatted AG Hat data for rendering on the map.
@@ -123,5 +117,13 @@ export function useHat(
         })
     }, [rekortman, visibility.rekortman, filters.rekortman.tipi]);
 
-    return { hatLayerData: [agHatFormatted, ogHatFormatted, rekortmanFormatted] };
+    return {
+        agHat,
+        setAgHat,
+        ogHat,
+        setOgHat,
+        rekortman,
+        setRekortman,
+        hatLayerData: [agHatFormatted, ogHatFormatted, rekortmanFormatted]
+    };
 }

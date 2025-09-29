@@ -1,7 +1,6 @@
 import "./style/list.css";
 import Table from "../../shared/table/Table";
-import React, { useEffect, useMemo, useState } from "react";
-import type { TableData } from "../../../lib/types";
+import React, { useEffect, useMemo } from "react";
 import { useAppDispatch, useAppSelector, useList } from "../../../lib/hooks";
 import { selectListState, setAscending, setFeatureType, setPageNumber, setQuery, setSortBy } from "./listSlice";
 import { capitalizeFirstLetter } from "../../../lib/utils";
@@ -23,36 +22,23 @@ export default function List(): React.ReactNode {
     // Redux state
     const { itemsPerPage, pageNumber, sortBy, ascending, featureType, query } = useAppSelector(selectListState)
 
-    // Local state
-    const [features, setFeatures] = useState<any[]>([]);
-    const [featureCount, setFeatureCount] = useState<number>(0);
-    const [tableData, setTableData] = useState<TableData>({
-        headers: [],
-        rows: []
-    });
-
     // Redux hooks
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
     // List hook
     const {
+        features,
+        featureCount,
+        tableData,
+        setTableData,
         handleChangeItemsPerPage,
         handleSetPageNumber,
         handleSetSortBy,
         handleSetAscending,
         handleSetQuery,
         handleRefreshData
-    } = useList(
-        featureType,
-        itemsPerPage,
-        pageNumber,
-        sortBy,
-        ascending,
-        query,
-        setFeatures,
-        setFeatureCount
-    )
+    } = useList()
 
     // Memoized feature type selector sections
     const featureTypeSelectorSections = useMemo(() => [{

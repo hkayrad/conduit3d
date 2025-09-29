@@ -6,6 +6,8 @@ export const MAX_ZOOM_LEVEL = 25;
 
 export const MAX_POPUP_COUNT = 10;
 
+export const MAX_SEARCH_RESULTS = 10;
+
 export const EXTENT_PADDING = 0.02; // degrees
 export const LON_EXTENT_PADDING = EXTENT_PADDING * 2; // degrees
 export const LAT_EXTENT_PADDING = EXTENT_PADDING; // degrees

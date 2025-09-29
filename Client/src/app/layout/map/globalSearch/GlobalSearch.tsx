@@ -1,6 +1,6 @@
 import { Building, PlugZap, Search, UtilityPole } from "lucide-react";
 import "./style/globalSearch.css";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSearch } from "../../../../lib/hooks/useSearch";
 import { FeatureType } from "../../../../lib/enums";
 
@@ -20,12 +20,8 @@ type Props = {
 export default function GlobalSearch(props: Props) {
     const { flyTo, searchInputRef } = props;
 
-    // Local state
-    const [query, setQuery] = useState("");
-    const [isFocused, setIsFocused] = useState(false);
-
     // Custom hook to handle search logic
-    const { results, handleSearch } = useSearch(query, 10);
+    const { query, setQuery, results, handleSearch, isFocused, setIsFocused } = useSearch();
 
     // Handlers
     const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {

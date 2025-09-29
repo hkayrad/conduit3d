@@ -3,8 +3,12 @@ import { Logger, findAverageLonLat, InputSanitizer, wkbToGeometry } from "../uti
 import { AdrBinaApi, AgDirekApi, AgHatApi, AydDirekApi, OgHatApi, OgMusDirekApi, RekortmanApi, TrafoBinaApi } from "../api";
 import { FeatureType, QueryKeywords } from "../enums";
 import type { Direk } from "../types";
+import { MAX_SEARCH_RESULTS } from "../constants";
 
-export function useSearch(query: string, maxResults: number = 10) {
+export function useSearch() {
+    const [query, setQuery] = useState("");
+    const [isFocused, setIsFocused] = useState(false);
+
     const [results, setResults] = useState<
         Array<{
             id: string;
@@ -38,7 +42,7 @@ export function useSearch(query: string, maxResults: number = 10) {
 
     // Search handlers
     const _handleAdrBinaSearch = async (query: string) => {
-        const response = await AdrBinaApi.fetchAll(maxResults, 1, 'id', true, query);
+        const response = await AdrBinaApi.fetchAll(MAX_SEARCH_RESULTS, 1, 'id', true, query);
 
         if (!response.isSuccess) {
             Logger.error("Bina API error:", response.message);
@@ -62,7 +66,7 @@ export function useSearch(query: string, maxResults: number = 10) {
     }
 
     const _handleTrafoSearch = async (query: string) => {
-        const response = await TrafoBinaApi.fetchAll(maxResults, 1, 'id', true, query);
+        const response = await TrafoBinaApi.fetchAll(MAX_SEARCH_RESULTS, 1, 'id', true, query);
 
         if (!response.isSuccess) {
             Logger.error("Trafo API error:", response.message);
@@ -85,7 +89,7 @@ export function useSearch(query: string, maxResults: number = 10) {
     }
 
     const _handleAgDirekSearch = async (query: string) => {
-        const response = await AgDirekApi.fetchAll(maxResults, 1, 'id', true, query);
+        const response = await AgDirekApi.fetchAll(MAX_SEARCH_RESULTS, 1, 'id', true, query);
 
         if (!response.isSuccess) {
             Logger.error("AG Direk API error:", response.message);
@@ -98,7 +102,7 @@ export function useSearch(query: string, maxResults: number = 10) {
     }
 
     const _handleOgMusDirekSearch = async (query: string) => {
-        const response = await OgMusDirekApi.fetchAll(maxResults, 1, 'id', true, query);
+        const response = await OgMusDirekApi.fetchAll(MAX_SEARCH_RESULTS, 1, 'id', true, query);
 
         if (!response.isSuccess) {
             Logger.error("OG Mus Direk API error:", response.message);
@@ -111,7 +115,7 @@ export function useSearch(query: string, maxResults: number = 10) {
     }
 
     const _handleAydDirekSearch = async (query: string) => {
-        const response = await AydDirekApi.fetchAll(maxResults, 1, 'id', true, query);
+        const response = await AydDirekApi.fetchAll(MAX_SEARCH_RESULTS, 1, 'id', true, query);
 
         if (!response.isSuccess) {
             Logger.error("AYD Direk API error:", response.message);
@@ -145,7 +149,7 @@ export function useSearch(query: string, maxResults: number = 10) {
     }
 
     const _handleAgHatSearch = async (query: string) => {
-        const response = await AgHatApi.fetchAll(maxResults, 1, 'id', true, query);
+        const response = await AgHatApi.fetchAll(MAX_SEARCH_RESULTS, 1, 'id', true, query);
 
         if (!response.isSuccess) {
             Logger.error("AG Hat API error:", response.message);
@@ -168,7 +172,7 @@ export function useSearch(query: string, maxResults: number = 10) {
     }
 
     const _handleOgHatSearch = async (query: string) => {
-        const response = await OgHatApi.fetchAll(maxResults, 1, 'id', true, query);
+        const response = await OgHatApi.fetchAll(MAX_SEARCH_RESULTS, 1, 'id', true, query);
 
         if (!response.isSuccess) {
             Logger.error("OG Hat API error:", response.message);
@@ -191,7 +195,7 @@ export function useSearch(query: string, maxResults: number = 10) {
     }
 
     const _handleRekortmanSearch = async (query: string) => {
-        const response = await RekortmanApi.fetchAll(maxResults, 1, 'id', true, query);
+        const response = await RekortmanApi.fetchAll(MAX_SEARCH_RESULTS, 1, 'id', true, query);
 
         if (!response.isSuccess) {
             Logger.error("Rekortman API error:", response.message);
@@ -257,7 +261,7 @@ export function useSearch(query: string, maxResults: number = 10) {
                     .concat(trafoResults)
                     .concat(direkResults)
                     .concat(hatResults);
-                setResults(aggregatedResults.slice(0, maxResults));
+                setResults(aggregatedResults.slice(0, MAX_SEARCH_RESULTS));
                 return;
             }
 
@@ -314,12 +318,12 @@ export function useSearch(query: string, maxResults: number = 10) {
                     aggregatedResults = aggregatedResults.concat(hatResults);
                     break;
             }
-            setResults(aggregatedResults.slice(0, maxResults));
+            setResults(aggregatedResults.slice(0, MAX_SEARCH_RESULTS));
 
         } catch (error) {
             Logger.error("Search error:", error);
             setResults([]);
         }
     }
-    return { results, handleSearch };
+    return { query, setQuery, results, handleSearch, isFocused, setIsFocused };
 }

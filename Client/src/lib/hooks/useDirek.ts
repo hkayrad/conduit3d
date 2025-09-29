@@ -1,26 +1,19 @@
-import { useMemo } from "react"
-import type { MapState } from "../../app/layout/map/mapSlice"
+import { useMemo, useState } from "react"
 import { filterFeature } from "../utils/geometry/filterFeature";
 import { COLORS } from "../constants";
+import { useAppSelector } from "./reduxHooks";
+import { selectMapState } from "../../app/layout/map/mapSlice";
 
 /**
  * Format the AG Direk feature collection.
- * @param agDirek The AG Direk feature collection.
- * @param ogMusDirek The OG Mus Direk feature collection.
- * @param aydDirek The Ayd Direk feature collection.
- * @param types The map state types.
- * @param filters The map state filters.
- * @param visibility The map state visibility.
  * @returns The formatted AG Direk feature collection.
 */
-export function useDirek(
-    agDirek: GeoJSON.FeatureCollection[],
-    ogMusDirek: GeoJSON.FeatureCollection[],
-    aydDirek: GeoJSON.FeatureCollection[],
-    types: MapState["types"],
-    filters: MapState["filters"],
-    visibility: MapState["visibility"]
-) {
+export function useDirek() {
+    const { visibility, filters, types } = useAppSelector(selectMapState);
+
+    const [agDirek, setAgDirek] = useState<GeoJSON.FeatureCollection[]>([]);
+    const [ogMusDirek, setOgMusDirek] = useState<GeoJSON.FeatureCollection[]>([]);
+    const [aydDirek, setAydDirek] = useState<GeoJSON.FeatureCollection[]>([]);
     /**
      * Formatted AG Direk data for rendering on the map.
      * @memoized to optimize performance and avoid unnecessary recalculations.
@@ -135,6 +128,12 @@ export function useDirek(
     }, [agDirek, ogMusDirek, aydDirek])
 
     return {
+        agDirek,
+        setAgDirek,
+        ogMusDirek,
+        setOgMusDirek,
+        aydDirek,
+        setAydDirek,
         direkLayerData: [agDirekFormatted, ogMusDirekFormatted, aydDirekFormatted],
         allPoles
     };

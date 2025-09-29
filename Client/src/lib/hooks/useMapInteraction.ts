@@ -1,37 +1,45 @@
 import type { FirstPersonViewState, MapViewState, PickingInfo } from "deck.gl";
-import { useCallback } from "react";
+import { useCallback, useRef, useState } from "react";
 import type { C3D_ViewState, PopupState } from "../types";
-import { MAX_POPUP_COUNT } from "../constants";
+import { MAX_POPUP_COUNT, MAX_ZOOM_LEVEL } from "../constants";
 import { C3D_MapViewType, FeatureType, C3D_MapLayers } from "../enums";
-import { useAppDispatch } from "./reduxHooks";
-import { setSelectedViewType, toggleMapLayerVisibility, toggleStreetView, toggleWireframe } from "../../app/layout/map/mapSlice";
+import { useAppDispatch, useAppSelector } from "./reduxHooks";
+import { selectMapState, setSelectedViewType, toggleMapLayerVisibility, toggleStreetView, toggleWireframe } from "../../app/layout/map/mapSlice";
 import { flyToFeature } from "../utils";
 
 /**
  * Map interaction handlers
- * @param zIndexCounter Counter for z-index handling
- * @param activePopups Array of active popups
- * @param setMapViewState Function to update the map view state
- * @param setOvergroundLineWidth Function to update the line width
- * @param setHoveredFeature Function to update the hovered feature
- * @param setMousePos Function to update the mouse position
- * @param setMouseLonLat Function to update the mouse longitude and latitude
- * @param setActivePopups Function to update the active popups
  * @returns Map interaction handlers
  */
-export function useMapInteraction(
-    zIndexCounter: React.RefObject<number>,
-    activePopups: PopupState[],
-    selectedViewType: C3D_MapViewType,
-    mapViewState: C3D_ViewState,
-    searchInputRef: React.RefObject<HTMLInputElement>,
-    setMapViewState: React.Dispatch<React.SetStateAction<C3D_ViewState>>,
-    setHoveredFeature: React.Dispatch<React.SetStateAction<GeoJSON.Feature | null>>,
-    setMousePos: React.Dispatch<React.SetStateAction<{ x: number; y: number }>>,
-    setMouseLonLat: React.Dispatch<React.SetStateAction<number[]>>,
-    setActivePopups: React.Dispatch<React.SetStateAction<PopupState[]>>,
-) {
+export function useMapInteraction() {
+    const { viewState, selectedViewType } = useAppSelector(selectMapState);
+    const { cartesian, firstPerson } = viewState;
     const dispatch = useAppDispatch();
+
+    const [activePopups, setActivePopups] = useState<PopupState[]>([]);
+    const [mapViewState, setMapViewState] = useState<C3D_ViewState>({
+        [C3D_MapViewType.Cartesian]: {
+            longitude: cartesian.longitude,
+            latitude: cartesian.latitude,
+            zoom: cartesian.zoom,
+            maxZoom: MAX_ZOOM_LEVEL,
+            pitch: cartesian.pitch,
+            bearing: cartesian.bearing
+        },
+        [C3D_MapViewType.FirstPerson]: {
+            longitude: firstPerson.longitude,
+            latitude: firstPerson.latitude,
+            pitch: firstPerson.pitch,
+            bearing: firstPerson.bearing,
+            position: [0, 0, 3],
+        }
+    });
+    const [hoveredFeature, setHoveredFeature] = useState<GeoJSON.Feature | null>(null);
+    const [mousePos, setMousePos] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
+    const [mouseLonLat, setMouseLonLat] = useState<number[]>([0, 0]);
+
+    const zIndexCounter = useRef(1000);
+    const searchInputRef = useRef<HTMLInputElement>(null!);
 
     /**
      * Handle view state changes
@@ -45,15 +53,31 @@ export function useMapInteraction(
             },
         }));
 
-        if (viewId === C3D_MapViewType.Cartesian) {
-            setMapViewState((prevState) => ({
-                ...prevState,
-                firstPerson: {
-                    ...prevState.firstPerson,
-                    longitude: viewState.longitude,
-                    latitude: viewState.latitude,
-                }
-            }));
+        switch (viewId) {
+            case C3D_MapViewType.Cartesian:
+                setMapViewState((prevState) => ({
+                    ...prevState,
+                    firstPerson: {
+                        ...prevState.firstPerson,
+                        longitude: viewState.longitude,
+                        latitude: viewState.latitude,
+                    }
+                }));
+                break;
+
+            case C3D_MapViewType.FirstPerson:
+                setMapViewState((prevState) => ({
+                    ...prevState,
+                    firstPerson: {
+                        ...prevState.firstPerson,
+                        position: [
+                            prevState.firstPerson.position![0],
+                            prevState.firstPerson.position![1],
+                            prevState.firstPerson.position![2] < 3 ? 3 : prevState.firstPerson.position![2]
+                            // BELKI StreetView icin SINIRLANIR
+                        ]
+                    }
+                }));
         }
     };
 
@@ -62,13 +86,13 @@ export function useMapInteraction(
      * @param info The picking info from the mouse move event
      */
     const handleMouseMove = useCallback((info: PickingInfo) => {
-        if (info.object && info.layer?.id === 'building-bina-mvt-layer') {
-            // Ensure dataType is set for MVT features
-            if (!info.object.properties.dataType) {
-                info.object.properties.dataType = FeatureType.BUILDING;
-            }
-            // Continue with your existing click handling logic
-        }
+        // if (info.object && info.layer?.id === 'building-bina-mvt-layer') {
+        //     // Ensure dataType is set for MVT features
+        //     if (!info.object.properties.dataType) {
+        //         info.object.properties.dataType = FeatureType.BUILDING;
+        //     }
+        //     // Continue with your existing click handling logic
+        // }
         setHoveredFeature(info.object);
         setMousePos({ x: info.x, y: info.y });
         setMouseLonLat(info.coordinate ? info.coordinate : [0, 0]);
@@ -149,8 +173,6 @@ export function useMapInteraction(
      * @param e The keyboard event
      */
     const handleKeyPresses = useCallback((e: KeyboardEvent) => {
-        console.log(e);
-
         if (e.code === "Escape") {
             e.preventDefault();
             if (searchInputRef.current)
@@ -257,6 +279,16 @@ export function useMapInteraction(
     }, [mapViewState, selectedViewType])
 
     return {
+        activePopups,
+        mapViewState,
+        setMapViewState,
+        searchInputRef,
+        hoveredFeature,
+        setHoveredFeature,
+        mousePos,
+        setMousePos,
+        mouseLonLat,
+        setMouseLonLat,
         handleViewStateChange,
         handleMouseMove,
         handleClick,

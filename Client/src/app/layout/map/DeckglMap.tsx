@@ -43,7 +43,7 @@ import DynmicStreetView from "./streetView/DynamicStreetView";
  */
 export default function DeckglMap(): React.ReactNode {
     // Redux State
-    const { visibility, filters, types, selectedViewType, viewState, lastRefreshPosition, isWireframe, focusedView } = useAppSelector(selectMapState);
+    const { visibility, filters, selectedViewType, viewState, lastRefreshPosition, isWireframe, focusedView } = useAppSelector(selectMapState);
     const { firstPerson } = viewState;
 
     // React-Router Hooks
