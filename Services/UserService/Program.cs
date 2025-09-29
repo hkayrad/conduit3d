@@ -1,9 +1,9 @@
 using System.Net;
 using Asp.Versioning;
-using AuthService.Infrastructure;
-using AuthService.Infrastructure.Data;
-using AuthService.Infrastructure.Services;
-using AuthService.Resources;
+using UserService.Infrastructure;
+using UserService.Infrastructure.Data;
+using UserService.Infrastructure.Services;
+using UserService.Resources;
 using Conduit3D.Common.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -45,7 +45,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
         var response = new Response<object>
         {
             IsSuccess = false,
-            Message = AuthResources.GetString("oneOrMoreValidationError"),
+            Message = UserResources.GetString("oneOrMoreValidationError"),
             Data = errors,
             StatusCode = HttpStatusCode.BadRequest
         };
@@ -57,7 +57,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 // Configure Swagger
 builder.Services.AddSwaggerGen(config =>
 {
-    config.SwaggerDoc("v1", new OpenApiInfo { Title = "Conduit3D Auth API", Version = "v1" });
+    config.SwaggerDoc("v1", new OpenApiInfo { Title = "Conduit3D User API", Version = "v1" });
 
     // Configure JWT authentication
     config.AddSecurityDefinition("bearerAuth", new OpenApiSecurityScheme
@@ -127,14 +127,14 @@ app.Use(async (context, next) =>
         Console.WriteLine($"--- END HEADERS ---");
     }
 
-    if (path != null && !path.Contains("/api/v1/auth/login") && !path.Contains("/api/v1/auth/logout") && !path.Contains("/swagger"))
+    if (path != null && !path.Contains("/api/v1/user/login") && !path.Contains("/api/v1/user/logout") && !path.Contains("/swagger"))
     {
         var userRole = context.Request.Headers["Role"].FirstOrDefault();
         if (string.IsNullOrEmpty(userRole) || userRole != Roles.Admin)
         {
             context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
             await context.Response.WriteAsJsonAsync(Response<object>.Unauthorized(
-                AuthResources.GetString("unauthorizedAccess")));
+                UserResources.GetString("unauthorizedAccess")));
             return;
         }
     }

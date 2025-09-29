@@ -1,8 +1,8 @@
 using System;
-using AuthService.Domain;
+using UserService.Domain;
 using Microsoft.EntityFrameworkCore;
 
-namespace AuthService.Infrastructure.Data;
+namespace UserService.Infrastructure.Data;
 
 /// <summary>
 /// Database context for managing user-related data.

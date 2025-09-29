@@ -1,7 +1,7 @@
 using System;
-using AuthService.Domain;
+using UserService.Domain;
 
-namespace AuthService.Infrastructure.DTOs;
+namespace UserService.Infrastructure.DTOs;
 
 /// <summary>
 /// Represents a user with an authentication token.

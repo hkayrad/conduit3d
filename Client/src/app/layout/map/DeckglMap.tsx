@@ -10,7 +10,7 @@ import { useHat } from "../../../lib/hooks";
 import { useDirek } from "../../../lib/hooks";
 import { useMapInteraction } from "../../../lib/hooks";
 
-import { CreateLayer } from "../../../lib/utils";
+import { CreateLayer, Logger } from "../../../lib/utils";
 
 import { FirstPersonView, FirstPersonViewport, Layer, MapView, Viewport, WebMercatorViewport, type DeckProps } from "@deck.gl/core";
 import { ColumnLayer, GeoJsonLayer } from "deck.gl";
@@ -334,20 +334,34 @@ export default function DeckglMap(): React.ReactNode {
 
     // Add keyboard event listener
     useEffect(() => {
-        document.addEventListener("keydown", (e) => handleKeyPresses(e));
-
         const deckglContainer = document.getElementById("deckgl-wrapper");
-        deckglContainer?.addEventListener("mousedown", () => {
-            dispatch(setFocusedView("deckgl"));
-        });
+
+        const keydownHandler = (e: KeyboardEvent) => {
+            try {
+                handleKeyPresses(e);
+            } catch (error) {
+                Logger.error('Error handling keypress:', error);
+            }
+        };
+
+        const mousedownHandler = () => {
+            try {
+                dispatch(setFocusedView("deckgl"));
+            } catch (error) {
+                Logger.error('Error setting focused view:', error);
+            }
+        };
+
+        if (location.pathname === "/") {
+            document.addEventListener("keydown", keydownHandler);
+            deckglContainer?.addEventListener("mousedown", mousedownHandler);
+        }
 
         return () => {
-            document.removeEventListener("keydown", (e) => handleKeyPresses(e));
-            deckglContainer?.removeEventListener("mousedown", () => {
-                dispatch(setFocusedView("deckgl"));
-            });
+            document.removeEventListener("keydown", keydownHandler);
+            deckglContainer?.removeEventListener("mousedown", mousedownHandler);
         };
-    }, []);
+    }, [location.pathname, handleKeyPresses, dispatch]);
 
     useEffect(() => {
         if (focusedView === "streetview") {

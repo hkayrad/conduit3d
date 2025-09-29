@@ -1,9 +1,9 @@
 using System;
-using AuthService.Infrastructure.Data;
-using AuthService.Infrastructure.Repositories;
+using UserService.Infrastructure.Data;
+using UserService.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace AuthService.Infrastructure;
+namespace UserService.Infrastructure;
 
 public class UnitOfWork(UsersContext context) : IUnitOfWork
 {

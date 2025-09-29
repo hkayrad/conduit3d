@@ -1,9 +1,9 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
-using AuthService.Resources;
+using UserService.Resources;
 
-namespace AuthService.Infrastructure.DTOs;
+namespace UserService.Infrastructure.DTOs;
 
 /// <summary>
 /// Data transfer object for logging in a user.
@@ -32,24 +32,24 @@ public class LoginUserDto : IValidatableObject
     {
         // Username null check
         if (string.IsNullOrWhiteSpace(Username))
-            yield return new ValidationResult(AuthResources.GetString("usernameNull"), [nameof(Username)]);
+            yield return new ValidationResult(UserResources.GetString("usernameNull"), [nameof(Username)]);
         else
         {
             // Username max length check
             if (Username.Length > 100)
-                yield return new ValidationResult(AuthResources.GetString("usernameTooLong"), [nameof(Username)]);
+                yield return new ValidationResult(UserResources.GetString("usernameTooLong"), [nameof(Username)]);
 
             // Username min length check
             if (Username.Length < 3)
-                yield return new ValidationResult(AuthResources.GetString("usernameTooShort"), [nameof(Username)]);
+                yield return new ValidationResult(UserResources.GetString("usernameTooShort"), [nameof(Username)]);
 
             // Username format check
             if (!Regex.IsMatch(Username, @"^[a-zA-Z0-9_]+$"))
-                yield return new ValidationResult(AuthResources.GetString("usernameInvalid"), [nameof(Username)]);
+                yield return new ValidationResult(UserResources.GetString("usernameInvalid"), [nameof(Username)]);
         }
 
         // Password null check
         if (string.IsNullOrWhiteSpace(Password))
-            yield return new ValidationResult(AuthResources.GetString("passwordNull"), [nameof(Password)]);
+            yield return new ValidationResult(UserResources.GetString("passwordNull"), [nameof(Password)]);
     }
 }

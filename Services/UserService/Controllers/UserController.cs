@@ -1,12 +1,12 @@
 using Asp.Versioning;
-using AuthService.Domain;
-using AuthService.Infrastructure.DTOs;
-using AuthService.Infrastructure.Services;
-using AuthService.Resources;
+using UserService.Domain;
+using UserService.Infrastructure.DTOs;
+using UserService.Infrastructure.Services;
+using UserService.Resources;
 using Conduit3D.Common.Domain;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AuthService.Controllers
+namespace UserService.Controllers
 {
     /// <summary>
     /// AuthController is responsible for handling authentication-related requests.
@@ -18,7 +18,7 @@ namespace AuthService.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
-    public class AuthController(IUserService userService) : ControllerBase
+    public class UserController(IUserService userService) : ControllerBase
     {
         private readonly IUserService _userService = userService ?? throw new ArgumentNullException(
             nameof(userService));
@@ -197,12 +197,12 @@ namespace AuthService.Controllers
                     Expires = DateTimeOffset.UtcNow.AddHours(Convert.ToDouble(Environment.GetEnvironmentVariable("JWT_EXPIRATION_TIME_HRS")))
                 });
 
-                return Response<User>.Success(response.Data.User, AuthResources.GetString("loginSuccessful"));
+                return Response<User>.Success(response.Data.User, UserResources.GetString("loginSuccessful"));
             }
             else
             {
                 Response.Cookies.Delete("user_session");
-                return Response<User>.Failure(AuthResources.GetString("loginFailed", response.Message), response.StatusCode);
+                return Response<User>.Failure(UserResources.GetString("loginFailed", response.Message), response.StatusCode);
             }
         }
     }

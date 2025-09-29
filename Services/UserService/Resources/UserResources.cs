@@ -1,17 +1,17 @@
 using System;
 using System.Resources;
 
-namespace AuthService.Resources;
+namespace UserService.Resources;
 
 /// <summary>
 /// Resource strings for authentication-related messages.
 /// </summary>
-public static class AuthResources
+public static class UserResources
 {
     /// <summary>
     /// Resource strings for authentication-related messages.
     /// </summary>
-    private static readonly ResourceManager _resourceManager = new("AuthService.Resources.AuthResources", typeof(AuthResources).Assembly);
+    private static readonly ResourceManager _resourceManager = new("UserService.Resources.UserResources", typeof(UserResources).Assembly);
 
     /// <summary>
     /// Retrieves a localized string for the specified key.

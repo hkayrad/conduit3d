@@ -1,9 +1,9 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
-using AuthService.Resources;
+using UserService.Resources;
 
-namespace AuthService.Infrastructure.DTOs;
+namespace UserService.Infrastructure.DTOs;
 
 /// <summary>
 /// Data transfer object for adding a new user.
@@ -31,9 +31,9 @@ public class AddUserDto : UserDto, IValidatableObject
 
         // Password null check
         if (string.IsNullOrWhiteSpace(Password))
-            yield return new ValidationResult(AuthResources.GetString("passwordNull"), [nameof(Password)]);
+            yield return new ValidationResult(UserResources.GetString("passwordNull"), [nameof(Password)]);
         // Password complexity check
         else if (!Regex.IsMatch(Password, @"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"))
-            yield return new ValidationResult(AuthResources.GetString("passwordInvalid"), [nameof(Password)]);
+            yield return new ValidationResult(UserResources.GetString("passwordInvalid"), [nameof(Password)]);
     }
 }

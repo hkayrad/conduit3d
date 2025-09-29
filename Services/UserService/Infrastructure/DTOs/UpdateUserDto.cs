@@ -1,10 +1,10 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
-using AuthService.Resources;
+using UserService.Resources;
 using Conduit3D.Common.Domain;
 
-namespace AuthService.Infrastructure.DTOs;
+namespace UserService.Infrastructure.DTOs;
 
 /// <summary>
 /// Data transfer object for updating a user.
@@ -54,21 +54,21 @@ public class UpdateUserDto : IValidatableObject
         {
             // Username max length check
             if (Username.Length > 100)
-                yield return new ValidationResult(AuthResources.GetString("usernameTooLong"), [nameof(Username)]);
+                yield return new ValidationResult(UserResources.GetString("usernameTooLong"), [nameof(Username)]);
 
             // Username min length check
             if (Username.Length < 3)
-                yield return new ValidationResult(AuthResources.GetString("usernameTooShort"), [nameof(Username)]);
+                yield return new ValidationResult(UserResources.GetString("usernameTooShort"), [nameof(Username)]);
 
             // Username format check
             if (!Regex.IsMatch(Username, @"^[a-zA-Z0-9_]+$"))
-                yield return new ValidationResult(AuthResources.GetString("usernameInvalid"), [nameof(Username)]);
+                yield return new ValidationResult(UserResources.GetString("usernameInvalid"), [nameof(Username)]);
         }
 
         // Email null check
         if (!string.IsNullOrWhiteSpace(Email))
             if (!Regex.IsMatch(Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
-                yield return new ValidationResult(AuthResources.GetString("emailInvalid"), [nameof(Email)]);
+                yield return new ValidationResult(UserResources.GetString("emailInvalid"), [nameof(Email)]);
 
         // UserRole null check
         if (!string.IsNullOrWhiteSpace(UserRole))
@@ -76,7 +76,7 @@ public class UpdateUserDto : IValidatableObject
             // UserRole validity check
             var allowedRoles = Roles.AllowedRoles;
             if (!Array.Exists(allowedRoles, r => r.Equals(UserRole, StringComparison.OrdinalIgnoreCase)))
-                yield return new ValidationResult(AuthResources.GetString("userRoleInvalid"), [nameof(UserRole)]);
+                yield return new ValidationResult(UserResources.GetString("userRoleInvalid"), [nameof(UserRole)]);
         }
 
         // Name null check
@@ -84,25 +84,25 @@ public class UpdateUserDto : IValidatableObject
         {
             // Name max length check
             if (Name.Length > 255)
-                yield return new ValidationResult(AuthResources.GetString("nameTooLong"), [nameof(Name)]);
+                yield return new ValidationResult(UserResources.GetString("nameTooLong"), [nameof(Name)]);
 
             // Name min length check
             if (Name.Length < 3)
-                yield return new ValidationResult(AuthResources.GetString("nameTooShort"), [nameof(Name)]);
+                yield return new ValidationResult(UserResources.GetString("nameTooShort"), [nameof(Name)]);
 
             // Name format check
             if (!Regex.IsMatch(Name, @"^[a-zA-Z\s]+$"))
-                yield return new ValidationResult(AuthResources.GetString("nameInvalid"), [nameof(Name)]);
+                yield return new ValidationResult(UserResources.GetString("nameInvalid"), [nameof(Name)]);
         }
 
         // Password null check
         if (string.IsNullOrWhiteSpace(Password))
-            yield return new ValidationResult(AuthResources.GetString("passwordNull"), [nameof(Password)]);
+            yield return new ValidationResult(UserResources.GetString("passwordNull"), [nameof(Password)]);
         else
         {
             // Password complexity check
             if (!Regex.IsMatch(Password, @"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"))
-                yield return new ValidationResult(AuthResources.GetString("passwordInvalid"), [nameof(Password)]);
+                yield return new ValidationResult(UserResources.GetString("passwordInvalid"), [nameof(Password)]);
         }
     }
 }

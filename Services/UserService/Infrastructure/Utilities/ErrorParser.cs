@@ -1,6 +1,6 @@
 using System;
 
-namespace AuthService.Infrastructure.Utilities;
+namespace UserService.Infrastructure.Utilities;
 
 public static class ErrorParser
 {

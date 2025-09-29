@@ -1,9 +1,9 @@
 using System;
-using AuthService.Domain;
-using AuthService.Infrastructure.DTOs;
+using UserService.Domain;
+using UserService.Infrastructure.DTOs;
 using Conduit3D.Common.Domain;
 
-namespace AuthService.Infrastructure.Services;
+namespace UserService.Infrastructure.Services;
 
 /// <summary>
 /// User service interface for managing user-related operations.

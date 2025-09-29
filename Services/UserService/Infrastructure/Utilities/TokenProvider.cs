@@ -1,11 +1,11 @@
 using System;
 using System.Security.Claims;
 using System.Text;
-using AuthService.Domain;
+using UserService.Domain;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 
-namespace AuthService.Infrastructure.Utilities;
+namespace UserService.Infrastructure.Utilities;
 
 internal sealed class TokenProvider
 {

@@ -1,10 +1,10 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
-using AuthService.Resources;
+using UserService.Resources;
 using Conduit3D.Common.Domain;
 
-namespace AuthService.Infrastructure.DTOs;
+namespace UserService.Infrastructure.DTOs;
 
 /// <summary>
 /// Data transfer object for a user.
@@ -45,56 +45,56 @@ public class UserDto : IValidatableObject
     {
         // Username null check
         if (string.IsNullOrWhiteSpace(Username))
-            yield return new ValidationResult(AuthResources.GetString("usernameNull"), [nameof(Username)]);
+            yield return new ValidationResult(UserResources.GetString("usernameNull"), [nameof(Username)]);
         else
         {
             // Username max length check
             if (Username.Length > 100)
-                yield return new ValidationResult(AuthResources.GetString("usernameTooLong"), [nameof(Username)]);
+                yield return new ValidationResult(UserResources.GetString("usernameTooLong"), [nameof(Username)]);
 
             // Username min length check
             if (Username.Length < 3)
-                yield return new ValidationResult(AuthResources.GetString("usernameTooShort"), [nameof(Username)]);
+                yield return new ValidationResult(UserResources.GetString("usernameTooShort"), [nameof(Username)]);
 
             // Username format check
             if (!Regex.IsMatch(Username, @"^[a-zA-Z0-9_]+$"))
-                yield return new ValidationResult(AuthResources.GetString("usernameInvalid"), [nameof(Username)]);
+                yield return new ValidationResult(UserResources.GetString("usernameInvalid"), [nameof(Username)]);
         }
 
         // Email null check
         if (string.IsNullOrWhiteSpace(Email))
-            yield return new ValidationResult(AuthResources.GetString("emailNull"), [nameof(Email)]);
+            yield return new ValidationResult(UserResources.GetString("emailNull"), [nameof(Email)]);
         // Email format check
         else if (!Regex.IsMatch(Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
-            yield return new ValidationResult(AuthResources.GetString("emailInvalid"), [nameof(Email)]);
+            yield return new ValidationResult(UserResources.GetString("emailInvalid"), [nameof(Email)]);
 
         // UserRole null check
         if (string.IsNullOrWhiteSpace(UserRole))
-            yield return new ValidationResult(AuthResources.GetString("userRoleNull"), [nameof(UserRole)]);
+            yield return new ValidationResult(UserResources.GetString("userRoleNull"), [nameof(UserRole)]);
         else
         {
             // UserRole validity check
             var allowedRoles = Roles.AllowedRoles;
             if (!Array.Exists(allowedRoles, r => r.Equals(UserRole, StringComparison.OrdinalIgnoreCase)))
-                yield return new ValidationResult(AuthResources.GetString("userRoleInvalid"), [nameof(UserRole)]);
+                yield return new ValidationResult(UserResources.GetString("userRoleInvalid"), [nameof(UserRole)]);
         }
 
         // Name null check
         if (string.IsNullOrWhiteSpace(Name))
-            yield return new ValidationResult(AuthResources.GetString("nameNull"), [nameof(Name)]);
+            yield return new ValidationResult(UserResources.GetString("nameNull"), [nameof(Name)]);
         else
         {
             // Name max length check
             if (Name.Length > 255)
-                yield return new ValidationResult(AuthResources.GetString("nameTooLong"), [nameof(Name)]);
+                yield return new ValidationResult(UserResources.GetString("nameTooLong"), [nameof(Name)]);
 
             // Name min length check
             if (Name.Length < 3)
-                yield return new ValidationResult(AuthResources.GetString("nameTooShort"), [nameof(Name)]);
+                yield return new ValidationResult(UserResources.GetString("nameTooShort"), [nameof(Name)]);
 
             // Name format check
             if (!Regex.IsMatch(Name, @"^[a-zA-Z\s]+$"))
-                yield return new ValidationResult(AuthResources.GetString("nameInvalid"), [nameof(Name)]);
+                yield return new ValidationResult(UserResources.GetString("nameInvalid"), [nameof(Name)]);
         }
     }
 }

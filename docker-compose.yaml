@@ -1,16 +1,16 @@
 services:
-  auth_database:
+  user_database:
     image: postgres:17
-    container_name: auth_database
+    container_name: user_database
     # Remove the ports section when deploying
     ports:
       - "6000:5432"
     environment:
-      - POSTGRES_DB=${AUTH_DB_NAME}
-      - POSTGRES_USER=${AUTH_DB_USER}
-      - POSTGRES_PASSWORD=${AUTH_DB_PASS}
+      - POSTGRES_DB=${USER_DB_NAME}
+      - POSTGRES_USER=${USER_DB_USER}
+      - POSTGRES_PASSWORD=${USER_DB_PASS}
     volumes:
-      - auth_data:/var/lib/postgresql/data
+      - user_data:/var/lib/postgresql/data
     networks:
       - gis_db_connection
     restart: unless-stopped
@@ -63,20 +63,20 @@ services:
       - gis_db_connection
     restart: unless-stopped
 
-  auth_service:
+  user_service:
     build:
       context: .
-      dockerfile: Services/AuthService/Dockerfile
-    container_name: auth_service
+      dockerfile: Services/UserService/Dockerfile
+    container_name: user_service
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - POSTGRESQL_CONNECTION_STRING=Host=auth_database;Database=${AUTH_DB_NAME};Username=${AUTH_DB_USER};Password=${AUTH_DB_PASS}
+      - POSTGRESQL_CONNECTION_STRING=Host=user_database;Database=${USER_DB_NAME};Username=${USER_DB_USER};Password=${USER_DB_PASS}
       - JWT_SECRET=${JWT_SECRET}
       - JWT_ISSUER=${JWT_ISSUER}
       - JWT_AUDIENCE=${JWT_AUDIENCE}
       - JWT_EXPIRATION_TIME_HRS=${JWT_EXPIRATION_TIME_HRS}
     depends_on:
-      - auth_database
+      - user_database
     networks:
       - gis_db_connection
       - api_gateway_network
@@ -216,7 +216,7 @@ volumes:
   buildings_data:
   lines_data:
   poles_data:
-  auth_data:
+  user_data:
   caddy_data:
   tile_data:
   # geoserver_data:

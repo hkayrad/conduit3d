@@ -1,6 +1,6 @@
 using System;
 
-namespace AuthService.Infrastructure.DTOs;
+namespace UserService.Infrastructure.DTOs;
 
 public class UserCountsDto
 {

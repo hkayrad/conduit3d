@@ -1,7 +1,7 @@
 using System;
-using AuthService.Infrastructure.Repositories;
+using UserService.Infrastructure.Repositories;
 
-namespace AuthService.Infrastructure;
+namespace UserService.Infrastructure;
 
 /// <summary>
 /// Unit of Work interface for managing repositories and transactions.

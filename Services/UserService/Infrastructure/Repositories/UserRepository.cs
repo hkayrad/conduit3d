@@ -1,13 +1,13 @@
 using System;
-using AuthService.Domain;
-using AuthService.Infrastructure.Data;
-using AuthService.Infrastructure.DTOs;
-using AuthService.Infrastructure.Utilities;
+using UserService.Domain;
+using UserService.Infrastructure.Data;
+using UserService.Infrastructure.DTOs;
+using UserService.Infrastructure.Utilities;
 using Conduit3D.Common.Infrastructure.Utilities;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
-namespace AuthService.Infrastructure.Repositories;
+namespace UserService.Infrastructure.Repositories;
 
 /// <summary>
 /// Entity framework implementation of <see cref="IUserRepository"/> for managing user data.

@@ -21,8 +21,8 @@
     }
     
     handle_path /api/docs* {
-        handle_path /auth* {
-            reverse_proxy auth_service:8080
+        handle_path /user* {
+            reverse_proxy user_service:8080
         }
         handle_path /buildings* {
             reverse_proxy buildings_service:8080
@@ -41,11 +41,11 @@
         }
     }
 
-    handle /api/v1/auth/login {
-        reverse_proxy auth_service:8080
+    handle /api/v1/user/login {
+        reverse_proxy user_service:8080
     }
 
-    handle /api/v1/auth* {
+    handle /api/v1/user* {
         jwtauth {
 	    	sign_key {$JWT_SECRET_BASE64}
 	    	sign_alg HS256
@@ -59,7 +59,7 @@
 
         request_header Role {http.auth.user.role}
 
-        reverse_proxy auth_service:8080
+        reverse_proxy user_service:8080
     }
     
     handle /api/v1/buildings* {

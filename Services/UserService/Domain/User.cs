@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using NpgsqlTypes;
 
-namespace AuthService.Domain;
+namespace UserService.Domain;
 
 /// <summary>
 /// Represents a user in the system.

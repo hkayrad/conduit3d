@@ -1,6 +1,6 @@
 import { List, LogOut, Map, ShieldUser } from "lucide-react";
 import { NavLink, useNavigate } from "react-router";
-import { AuthApi } from "../../../../lib/api";
+import { UserApi } from "../../../../lib/api";
 import { clearUser, selectUserState } from "../../../layout/auth/authSlice";
 import { UserRoles } from "../../../../lib/enums";
 import { useAppDispatch, useAppSelector } from "../../../../lib/hooks";
@@ -18,7 +18,7 @@ export default function Actions(): React.ReactNode {
     const user = useAppSelector(selectUserState);
 
     const handleLogout = async (): Promise<void> => {
-        AuthApi.logout();
+        UserApi.logout();
         navigate("/login", { replace: true });
         dispatch(clearUser());
     }

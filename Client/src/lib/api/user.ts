@@ -6,7 +6,7 @@ import { Logger, capitalizeFirstLetter } from "../utils";
 /**
  * Class representing the authentication API.
  */
-export class AuthApi {
+export class UserApi {
 
     /**
      * Login a user.
@@ -17,7 +17,7 @@ export class AuthApi {
         const { username, password } = user;
         try {
             // Make API call to login
-            const response = await instance.post<ApiResponse<User>>("/auth/login", { username, password });
+            const response = await instance.post<ApiResponse<User>>("/user/login", { username, password });
 
             return response.data;
         } catch (error) {
@@ -49,7 +49,7 @@ export class AuthApi {
         ascending: boolean = true,
         query: string = null!) {
         try {
-            const response = await instance.get<ApiResponse<User[]>>("/auth", {
+            const response = await instance.get<ApiResponse<User[]>>("/user", {
                 params: {
                     pageSize: pageSize,
                     pageNumber: pageNumber,
@@ -72,7 +72,7 @@ export class AuthApi {
      */
     static async fetchCount(query: string = null!) {
         try {
-            const response = await instance.get<ApiResponse<UserCounts>>("/auth/count", {
+            const response = await instance.get<ApiResponse<UserCounts>>("/user/count", {
                 params: {
                     query: query
                 }
@@ -91,7 +91,7 @@ export class AuthApi {
      */
     static async deleteUser(userId: number) {
         try {
-            const response = await instance.delete<ApiResponse<void>>(`/auth/${userId}`);
+            const response = await instance.delete<ApiResponse<void>>(`/user/${userId}`);
             return response.data;
         } catch (error) {
             Logger.error("Delete user error:", error);
@@ -107,7 +107,7 @@ export class AuthApi {
      */
     static async updateUser(userId: number, user: User) {
         try {
-            const response = await instance.put<ApiResponse<User>>(`/auth/${userId}`, user);
+            const response = await instance.put<ApiResponse<User>>(`/user/${userId}`, user);
             return response.data;
         } catch (error) {
             Logger.error("Update user error:", error);
@@ -122,7 +122,7 @@ export class AuthApi {
      */
     static async createUser(user: User) {
         try {
-            const response = await instance.post<ApiResponse<User>>(`/auth`, user);
+            const response = await instance.post<ApiResponse<User>>(`/user`, user);
             return response.data;
         } catch (error) {
             Logger.error("Create user error:", error);

@@ -1,8 +1,8 @@
 using System;
-using AuthService.Domain;
-using AuthService.Infrastructure.DTOs;
+using UserService.Domain;
+using UserService.Infrastructure.DTOs;
 
-namespace AuthService.Infrastructure.Repositories;
+namespace UserService.Infrastructure.Repositories;
 
 /// <summary>
 /// User repository interface for managing user entities.
