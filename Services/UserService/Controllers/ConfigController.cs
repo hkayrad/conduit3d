@@ -32,7 +32,7 @@ namespace UserService.Controllers
         [HttpPost]
         [MapToApiVersion("1.0")]
         public async Task<Response<string>> SetConfigValueAsync(
-            [FromQuery] ConfigDto configDto
+            ConfigDto configDto
         )
         {
             return await _configService.SetConfigValueAsync(configDto);

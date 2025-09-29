@@ -28,8 +28,7 @@ export type User = {
 }
 
 export type Config = {
-    key: string,
-    value: string
+    [key: string]: string
 }
 
 export type LoginUserDto = {

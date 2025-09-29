@@ -17,7 +17,7 @@ import { ColumnLayer, GeoJsonLayer } from "deck.gl";
 import { DeckGL } from "@deck.gl/react";
 import { CompassWidget, ZoomWidget } from "@deck.gl/widgets";
 import { Map as MapLibre } from 'react-map-gl/maplibre';
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Outlet, useLocation } from "react-router";
 
 import { selectMapState, setExtent, setFocusedView, setLastRefreshPosition, setViewState } from "./mapSlice";
@@ -34,7 +34,10 @@ import GlobalSearch from "./globalSearch/GlobalSearch";
 //@ts-ignore
 import StaticStreetView from "./streetView/StaticStreetView";
 import DynmicStreetView from "./streetView/DynamicStreetView";
-import { selectConfig } from "../../configSlice";
+import { selectConfig, updateConfig } from "../../configSlice";
+import { selectUserState } from "../auth/authSlice";
+import { ConfigApi } from "../../../lib/api";
+import type { Config } from "../../../lib/types";
 
 /**
  * DeckglMap component renders the Deck.gl map with various layers and controls.
@@ -44,6 +47,7 @@ import { selectConfig } from "../../configSlice";
 export default function DeckglMap(): React.ReactNode {
     // Redux State
     const { visibility, filters, selectedViewType, viewState, lastRefreshPosition, isWireframe, focusedView } = useAppSelector(selectMapState);
+    const user = useAppSelector(selectUserState);
     const { firstPerson } = viewState;
     const config = useAppSelector(selectConfig);
 
@@ -202,7 +206,8 @@ export default function DeckglMap(): React.ReactNode {
         trafoBina,
         overgroundLineWidth,
         undergroundLineWidth,
-        debugBinaVisible
+        debugBinaVisible,
+        config
     ]);
 
     const layerFilter: DeckProps['layerFilter'] = useCallback(
@@ -418,6 +423,46 @@ export default function DeckglMap(): React.ReactNode {
         return () => clearTimeout(handler);
     }, [lastRefreshPosition, mapViewState, selectedViewType]);
 
+    const debounceTimeouts = useRef<Record<string, NodeJS.Timeout>>({});
+
+    const handleColorChange = useCallback((key: string, e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+
+        // Clear existing timeout for this key
+        if (debounceTimeouts.current[key]) {
+            clearTimeout(debounceTimeouts.current[key]);
+        }
+
+        // Set new timeout
+        debounceTimeouts.current[key] = setTimeout(() => {
+            dispatch(updateConfig({ [key]: value }));
+            delete debounceTimeouts.current[key];
+        }, 300); // 300ms delay
+    }, [dispatch]);
+
+    // Cleanup timeouts on unmount
+    useEffect(() => {
+        return () => {
+            Object.values(debounceTimeouts.current).forEach(clearTimeout);
+        };
+    }, []);
+
+    const handleSaveColors = async () => {
+        for (const [key, value] of Object.entries(config)) {
+            if (key.endsWith("_COLOR")) {
+                const configRow = {
+                    key: key,
+                    value: value
+                } as Config
+                try {
+                    await ConfigApi.updateConfig(configRow);
+                } catch (error) {
+                    Logger.error("Error saving config:", error);
+                }
+            }
+        }
+    }
+
     return (
         <>
             <Outlet context={{ flyTo }} />
@@ -434,6 +479,48 @@ export default function DeckglMap(): React.ReactNode {
                     setOgHat={setOgHat}
                     setRekortman={setRekortman}
                 />
+                {
+                    user?.userRole === "admin" &&
+                    <div style={{ position: "absolute", top: 180, left: 16, zIndex: 10000, background: "white", padding: 8, display: "flex", flexDirection: "column", gap: 4 }}>
+                        <input type="color" value={config.ADR_BINA_COLOR && config.ADR_BINA_COLOR.toString().slice(0, 7)} onChange={(e) => {
+                            if (e.target.value === undefined) return;
+                            handleColorChange("ADR_BINA_COLOR", e);
+                        }} />
+                        <input type="color" value={config.TRAFO_BINA_COLOR && config.TRAFO_BINA_COLOR.toString().slice(0, 7)} onChange={(e) => {
+                            if (e.target.value === undefined) return;
+                            handleColorChange("TRAFO_BINA_COLOR", e);
+                        }} />
+                        <input type="color" value={config.AG_DIREK_COLOR && config.AG_DIREK_COLOR.toString().slice(0, 7)} onChange={(e) => {
+                            if (e.target.value === undefined) return;
+                            handleColorChange("AG_DIREK_COLOR", e);
+                        }} />
+                        <input type="color" value={config.AYD_DIREK_COLOR && config.AYD_DIREK_COLOR.toString().slice(0, 7)} onChange={(e) => {
+                            if (e.target.value === undefined) return;
+                            handleColorChange("AYD_DIREK_COLOR", e);
+                        }} />
+                        <input type="color" value={config.OG_MUS_DIREK_COLOR && config.OG_MUS_DIREK_COLOR.toString().slice(0, 7)} onChange={(e) => {
+                            if (e.target.value === undefined) return;
+                            handleColorChange("OG_MUS_DIREK_COLOR", e);
+                        }} />
+                        <input type="color" value={config.AG_HAT_COLOR && config.AG_HAT_COLOR.toString().slice(0, 7)} onChange={(e) => {
+                            if (e.target.value === undefined) return;
+                            handleColorChange("AG_HAT_COLOR", e);
+                        }} />
+                        <input type="color" value={config.OG_HAT_COLOR && config.OG_HAT_COLOR.toString().slice(0, 7)} onChange={(e) => {
+                            if (e.target.value === undefined) return;
+                            handleColorChange("OG_HAT_COLOR", e);
+                        }} />
+                        <input type="color" value={config.REKORTMAN_COLOR && config.REKORTMAN_COLOR.toString().slice(0, 7)} onChange={(e) => {
+                            if (e.target.value === undefined) return;
+                            handleColorChange("REKORTMAN_COLOR", e);
+                        }} />
+                        <input type="color" value={config.HOVER_COLOR && config.HOVER_COLOR.toString().slice(0, 7)} onChange={(e) => {
+                            if (e.target.value === undefined) return;
+                            handleColorChange("HOVER_COLOR", e);
+                        }} />
+                        <button onClick={handleSaveColors}>Save Colors</button>
+                    </div>
+                }
                 {/* Dynamically create the FeatureInfo components */}
                 {activePopups.map(popup => (
                     <FeatureInfo

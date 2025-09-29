@@ -48,7 +48,7 @@ export function useDirek() {
                     (filters.agDirek.tipi.includes(type) || filters.agDirek.tipi.length === 0),
             }
         });
-    }, [agDirek, visibility.agDirek, filters.agDirek.tipi]);
+    }, [agDirek, visibility.agDirek, filters.agDirek.tipi, config]);
 
     /**
      * Formatted OG Mus Direk data for rendering on the map.
@@ -81,7 +81,7 @@ export function useDirek() {
                     (filters.ogMusDirek.tipi.includes(type) || filters.ogMusDirek.tipi.length === 0),
             }
         });
-    }, [ogMusDirek, visibility.ogMusDirek, filters.ogMusDirek.tipi]);
+    }, [ogMusDirek, visibility.ogMusDirek, filters.ogMusDirek.tipi, config]);
 
     /**
      * Formatted AYD Direk data for rendering on the map.
@@ -114,7 +114,7 @@ export function useDirek() {
                     (filters.aydDirek.tipi.includes(type) || filters.aydDirek.tipi.length === 0),
             }
         });
-    }, [aydDirek, visibility.aydDirek, filters.aydDirek.tipi]);
+    }, [aydDirek, visibility.aydDirek, filters.aydDirek.tipi, config]);
 
     /**
      * All poles combined into a single array for easy access.

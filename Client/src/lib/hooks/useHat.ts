@@ -53,7 +53,7 @@ export function useHat() {
                 data: filterFeature(combinedCollection, "cinsi", type)
             }
         })
-    }, [agHat, visibility.agHat, filters.agHat.tipi]);
+    }, [agHat, visibility.agHat, filters.agHat.tipi, config]);
 
     /**
      * Formatted OG Hat data for rendering on the map.
@@ -87,7 +87,7 @@ export function useHat() {
                 data: filterFeature(combinedCollection, "cinsi", type)
             }
         })
-    }, [ogHat, visibility.ogHat, filters.ogHat.tipi]);
+    }, [ogHat, visibility.ogHat, filters.ogHat.tipi, config]);
 
     /**
      * Formatted Rekortman data for rendering on the map.
@@ -121,7 +121,7 @@ export function useHat() {
                 data: filterFeature(combinedCollection, "tipi", type)
             }
         })
-    }, [rekortman, visibility.rekortman, filters.rekortman.tipi]);
+    }, [rekortman, visibility.rekortman, filters.rekortman.tipi, config]);
 
     return {
         agHat,

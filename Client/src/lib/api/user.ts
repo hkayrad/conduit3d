@@ -144,7 +144,7 @@ export class ConfigApi {
 
     static async updateConfig(config: Config) {
         try {
-            const response = await instance.post<ApiResponse<Config>>("/config", config);
+            const response = await instance.post<ApiResponse<string>>("/config", config);
             return response.data;
         } catch (error) {
             Logger.error("Update config error:", error);
@@ -154,7 +154,7 @@ export class ConfigApi {
 
     static async fetchConfigByKey(key: string) {
         try {
-            const response = await instance.get<ApiResponse<Config>>(`/config/${key}`);
+            const response = await instance.get<ApiResponse<string>>(`/config/${key}`);
             return response.data;
         } catch (error) {
             Logger.error("Fetch config by key error:", error);
@@ -164,7 +164,7 @@ export class ConfigApi {
 
     static async deleteConfigByKey(key: string) {
         try {
-            const response = await instance.delete<ApiResponse<void>>(`/config/${key}`);
+            const response = await instance.delete<ApiResponse<string>>(`/config/${key}`);
             return response.data;
         } catch (error) {
             Logger.error("Delete config by key error:", error);

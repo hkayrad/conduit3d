@@ -1,10 +1,18 @@
 export function hexToRgba(hex: string): [number, number, number, number] {
-    if (!/^#([A-Fa-f0-9]{8})$/.test(hex)) {
-        throw new Error('Invalid hex format. Expected "#aabbccdd".');
+    // Remove the # if present
+    const cleanHex = hex.startsWith('#') ? hex.slice(1) : hex;
+    
+    // Validate hex format (6 or 8 characters)
+    if (!/^[A-Fa-f0-9]{6}$/.test(cleanHex) && !/^[A-Fa-f0-9]{8}$/.test(cleanHex)) {
+        throw new Error('Invalid hex format. Expected "#aabbcc" or "#aabbccdd".');
     }
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
-    const a = parseInt(hex.slice(7, 9), 16);
+    
+    const r = parseInt(cleanHex.slice(0, 2), 16);
+    const g = parseInt(cleanHex.slice(2, 4), 16);
+    const b = parseInt(cleanHex.slice(4, 6), 16);
+    
+    // If 8-character hex, use the alpha value; otherwise default to 255 (fully opaque)
+    const a = cleanHex.length === 8 ? parseInt(cleanHex.slice(6, 8), 16) : 255;
+    
     return [r, g, b, a];
 }

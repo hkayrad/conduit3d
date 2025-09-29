@@ -128,15 +128,36 @@ app.Use(async (context, next) =>
         Console.WriteLine($"--- END HEADERS ---");
     }
 
-    if (path != null && !path.Contains("/api/v1/user/login") && !path.Contains("/api/v1/user/logout") && !path.Contains("/swagger"))
+    if (path != null)
     {
-        var userRole = context.Request.Headers["Role"].FirstOrDefault();
-        if (string.IsNullOrEmpty(userRole) || userRole != Roles.Admin)
+        if (path.Contains("/login") || path.Contains("/swagger"))
         {
-            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-            await context.Response.WriteAsJsonAsync(Response<object>.Unauthorized(
-                UserResources.GetString("unauthorizedAccess")));
+            await next();
             return;
+        }
+
+        if (path.Contains("/users"))
+        {
+            var userRole = context.Request.Headers["Role"].FirstOrDefault();
+            if (string.IsNullOrEmpty(userRole) || userRole != Roles.Admin)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                await context.Response.WriteAsJsonAsync(Response<object>.Unauthorized(
+                    UserResources.GetString("unauthorizedAccess")));
+                return;
+            }
+        }
+
+        if (path.Contains("/config"))
+        {
+            var userRole = context.Request.Headers["Role"].FirstOrDefault();
+            if (string.IsNullOrEmpty(userRole) || !Roles.AllowedRoles.Contains(userRole))
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                await context.Response.WriteAsJsonAsync(Response<object>.Unauthorized(
+                    UserResources.GetString("unauthorizedAccess")));
+                return;
+            }
         }
     }
     await next();
