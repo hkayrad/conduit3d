@@ -9,6 +9,7 @@ public class UnitOfWork(UsersContext context) : IUnitOfWork
 {
     private readonly UsersContext _context = context ?? throw new ArgumentNullException(nameof(context));
     private IUserRepository? _userRepository;
+    private IConfigRepository? _configRepository;
     private IDbContextTransaction? _transaction;
     private bool _disposed = false;
 
@@ -18,6 +19,15 @@ public class UnitOfWork(UsersContext context) : IUnitOfWork
         get
         {
             return _userRepository ??= new UserRepository(_context);
+        }
+    }
+
+    /// <inheritdoc />
+    public IConfigRepository ConfigRepository
+    {
+        get
+        {
+            return _configRepository ??= new ConfigRepository(_context);
         }
     }
 

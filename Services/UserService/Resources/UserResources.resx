@@ -144,6 +144,18 @@
     <data name="loginSuccessful" xml:space="preserve">
         <value>Login successful.</value>
     </data>
+    <data name="configsRetrieved" xml:space="preserve">
+        <value>Configs retrieved successfully.</value>
+    </data>
+    <data name="configValueRetrieved" xml:space="preserve">
+        <value>Config value retrieved successfully.</value>
+    </data>
+    <data name="configValueSet" xml:space="preserve">
+        <value>Config value set successfully.</value>
+    </data>
+    <data name="configValueDeleted" xml:space="preserve">
+        <value>Config value deleted successfully.</value>
+    </data>
 
     <!-- API Failure Messages -->
     <data name="noUserFound" xml:space="preserve">
@@ -179,6 +191,31 @@
     </data>
     <data name="loginFailed" xml:space="preserve">
         <value>User login failed: {0}</value>
+    </data>
+
+    <data name="configRetrievalFailed" xml:space="preserve">
+        <value>Config retrieval failed: {0}</value>
+    </data>
+    <data name="configUpdateFailed" xml:space="preserve">
+        <value>Config update failed: {0}</value>
+    </data>
+    <data name="configKeyNull" xml:space="preserve">
+        <value>Config key is required.</value>
+    </data>
+    <data name="configValueNull" xml:space="preserve">
+        <value>Config value is required.</value>
+    </data>
+    <data name="configKeyTooLong" xml:space="preserve">
+        <value>Config key cannot be longer than 100 characters.</value>
+    </data>
+    <data name="configValueTooLong" xml:space="preserve">
+        <value>Config value cannot be longer than 500 characters.</value>
+    </data> 
+    <data name="noConfigFound" xml:space="preserve">
+        <value>No config found for the given key.</value>
+    </data>
+    <data name="configDeletionFailed" xml:space="preserve">
+        <value>Config deletion failed: {0}</value>
     </data>
 
     <data name="invalidPageSize" xml:space="preserve">

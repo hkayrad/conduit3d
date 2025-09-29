@@ -15,6 +15,11 @@ public class UsersContext(DbContextOptions options) : DbContext(options)
     /// </summary>
     public DbSet<User> Users { get; set; }
 
+    /// <summary>
+    /// DbSet for config entities
+    /// </summary>
+    public DbSet<Config> Configs { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>(entity =>
@@ -67,6 +72,25 @@ public class UsersContext(DbContextOptions options) : DbContext(options)
                 "simple",
                 p => new { p.Id, p.Username, p.Email, p.UserRole, p.Name, p.CreatedAt, p.IsActive }
             );
+        });
+
+        modelBuilder.Entity<Config>(entity =>
+        {
+            entity.HasKey(e => e.Key).HasName("config_pk");
+
+            entity.ToTable("config");
+
+            entity.Property(e => e.Key)
+                .IsRequired()
+                .HasMaxLength(255)
+                .HasColumnType("varchar(255)")
+                .HasColumnName("key");
+
+            entity.Property(e => e.Value)
+                .IsRequired()
+                .HasMaxLength(512)
+                .HasColumnType("varchar(512)")
+                .HasColumnName("value");
         });
     }
 }

@@ -100,6 +100,7 @@ builder.Services.AddDbContext<UsersContext>(options =>
 // Inject dependencies
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUserService, PostgresqlUserService>();
+builder.Services.AddScoped<IConfigService, PostgresqlConfigService>();
 
 var app = builder.Build();
 

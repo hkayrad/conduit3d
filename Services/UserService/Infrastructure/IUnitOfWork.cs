@@ -14,6 +14,11 @@ public interface IUnitOfWork : IDisposable
     IUserRepository UserRepository { get; }
 
     /// <summary>
+    /// Gets the config repository.
+    /// </summary>
+    IConfigRepository ConfigRepository { get; }
+
+    /// <summary>
     /// Saves changes to the data store.
     /// </summary>
     /// <param name="cancellationToken">Cancellation token.</param>
