@@ -63,25 +63,6 @@ AuthService/
 └── Resources/          # Localization resources
 ```
 
-## 🐳 Docker Deployment
-
-### Build Image
-```bash
-docker build -t conduit3d-auth:latest .
-```
-
-### Run Container
-```bash
-docker run -d \
-  -p 8080:8080 \
-  -e POSTGRESQL_CONNECTION_STRING="Host=db;Database=auth_db;Username=user;Password=pass" \
-  -e JWT_SECRET="your-secret-key" \
-  -e JWT_ISSUER="conduit3d" \
-  -e JWT_AUDIENCE="conduit3d-users" \
-  -e JWT_EXPIRATION_TIME_HRS="24" \
-  conduit3d-auth:latest
-```
-
 ## 🔗 Dependencies
 
 ### Core Dependencies
@@ -113,6 +94,41 @@ docker run -d \
     |NOT NULL|NOT NULL|NOT NULL|NOT NULL|NOT NULL|-|NOT NULL|NOT NULL|-|
     |AI|-|-|-|-|CURRENT_TIMESTAMP|true|-|(function generated)|
 
+   > Generate the tsvector column
+
+   ```sql
+   -- Create a custom function to encapsulate the tsvector logic
+   CREATE OR REPLACE FUNCTION generate_searchable_text(
+       id_val INT, 
+       is_active_val BOOLEAN, 
+       username_val TEXT, 
+       email_val TEXT, 
+       created_at_val TIMESTAMP WITH TIME ZONE, 
+       user_role_val TEXT, 
+       name_val TEXT
+   )
+   RETURNS tsvector
+   AS $$
+   SELECT to_tsvector('simple', 
+       coalesce(cast(id_val as text)) || ' ' ||
+       coalesce((case when is_active_val then 'active' else 'inactive' end),  '') || ' ' ||
+       coalesce(username_val, '') || ' ' || 
+       regexp_replace(coalesce(email_val, ''), '[.@]', ' ', 'g') || ' ' || 
+       regexp_replace(coalesce(cast(created_at_val as text), ''), '^(\d{4}-\d{2} -\d{2})\s+(\d{2}:\d{2}:\d{2})\.(\d{3})\s+([+-]\d{4})$', '\1 \2 \3 \4',   'g') || ' ' ||
+       coalesce(user_role_val, '') || ' ' ||
+       coalesce(name_val, '')
+   );
+   $$ LANGUAGE SQL IMMUTABLE;
+   
+   -- Use the custom function 
+   ALTER TABLE users ADD COLUMN searchable_text tsvector GENERATED ALWAYS AS (
+       generate_searchable_text(id, is_active, username, email, created_at,   user_role, name)
+   ) STORED;
+   
+   -- Create GIN index for fast text search
+   CREATE INDEX idx_user_searchable_text ON "users"USING GIN(searchable_text);
+   ```
+
 3. **Configure Environment**
    ```bash
     # Set environment variables or update appsettings.json
@@ -131,6 +147,25 @@ docker run -d \
 
 5. **Access API Documentation**
    - Navigate to `https://<domain>/api/docs/auth/swagger` for interactive API docs
+
+## 🐳 Docker Deployment
+
+### Build Image
+```bash
+docker build -t conduit3d-auth:latest .
+```
+
+### Run Container
+```bash
+docker run -d \
+  -p 8080:8080 \
+  -e POSTGRESQL_CONNECTION_STRING="Host=db;Database=auth_db;Username=user;Password=pass" \
+  -e JWT_SECRET="your-secret-key" \
+  -e JWT_ISSUER="conduit3d" \
+  -e JWT_AUDIENCE="conduit3d-users" \
+  -e JWT_EXPIRATION_TIME_HRS="24" \
+  conduit3d-auth:latest
+```
 
 ## 🔐 Security Features
 

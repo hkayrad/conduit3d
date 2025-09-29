@@ -59,21 +59,6 @@ BuildingsService/
 └── Resources/          # Localization resources
 ```
 
-## 🐳 Docker Deployment
-
-### Build Image
-```bash
-docker build -t conduit3d-buildings:latest .
-```
-
-### Run Container
-```bash
-docker run -d \
-  -p 8080:8080 \
-  -e POSTGRESQL_CONNECTION_STRING="Host=db;Database=buildings_db;Username=user;Password=pass" \
-  conduit3d-buildings:latest
-```
-
 ## 🔗 Dependencies
 
 ### Core Dependencies
@@ -117,6 +102,42 @@ docker run -d \
    |NOT NULL|-|-|-|-|-|-|-|-|-|
    |AI|-|-|-|-|-|-|-|-|(function generated)|
 
+   > Generate the tsvector column
+
+   ```sql 
+   CREATE OR REPLACE FUNCTION generate_searchable_text_adr_bina(
+       id_val INT, 
+       kodu_val TEXT,
+       site_adi_val TEXT,
+       adi_val TEXT, 
+       bina_kat_sayisi_val FLOAT8,
+       daire_sayisi_val FLOAT8,
+       isyeri_sayisi_val FLOAT8,
+       yukseklik_val FLOAT8
+   )
+   RETURNS tsvector
+   AS $$
+   SELECT to_tsvector('simple', 
+       coalesce(cast(id_val as text), '') || ' ' ||
+       coalesce(kodu_val, '') || ' ' ||
+       coalesce(site_adi_val, '') || ' ' ||
+       coalesce(adi_val, '') || ' ' ||
+       coalesce(cast(bina_kat_sayisi_val as text), '') || ' ' ||
+       coalesce(cast(daire_sayisi_val as text), '') || ' ' ||
+       coalesce(cast(isyeri_sayisi_val as text), '') || ' ' ||
+       coalesce(cast(yukseklik_val as text), '')
+   );
+   $$ LANGUAGE SQL IMMUTABLE;
+
+   -- Add the generated column to the adr_bina table
+   ALTER TABLE "ADR_BINA" ADD COLUMN searchable_text tsvector GENERATED    ALWAYS AS (
+       generate_searchable_text_adr_bina(id, kodu, site_adi, adi,    bina_kat_sayisi, daire_sayisi, isyeri_sayisi, yukseklik)
+   ) STORED;
+
+   -- Create GIN index for fast text search
+   CREATE INDEX idx_adr_bina_searchable_text ON "ADR_BINA"USING GIN  (searchable_text);
+   ```
+
    - TrafoBina
 
    |id|geometry|adi|kodu|searchable_text|
@@ -124,6 +145,32 @@ docker run -d \
    |int PK|geometry|varchar(100)|varchar(100)|tsvector|
    |NOT NULL|-|-|-|-|
    |AI|-|-|-|(function generated)|
+
+   > Generate the tsvector column
+
+   ```sql 
+   CREATE OR REPLACE FUNCTION generate_searchable_text_trafo_bina(
+       id_val INT, 
+       kodu_val TEXT,
+       adi_val TEXT
+   )
+   RETURNS tsvector
+   AS $$
+   SELECT to_tsvector('simple', 
+       coalesce(cast(id_val as text), '') || ' ' ||
+       coalesce(kodu_val, '') || ' s' ||
+       coalesce(adi_val, '')
+   );
+   $$ LANGUAGE SQL IMMUTABLE;
+
+   -- Add the generated column to the trafo_bina table
+   ALTER TABLE "SBK_TRAFOBINATIP" ADD COLUMN searchable_text tsvector GENERATED ALWAYS AS (
+       generate_searchable_text_trafo_bina(id, kodu, adi)
+   ) STORED;
+
+   -- Create GIN index for fast text search
+   CREATE INDEX idx_trafo_bina_searchable_text ON "SBK_TRAFOBINATIP" USING GIN(searchable_text);
+   ```
 
 3. **Configure Environment**
    ```bash
@@ -139,6 +186,21 @@ docker run -d \
 
 5. **Access API Documentation**
    - Navigate to `https://<domain>/api/docs/buildings/swagger` for interactive API docs
+
+## 🐳 Docker Deployment
+
+### Build Image
+```bash
+docker build -t conduit3d-buildings:latest .
+```
+
+### Run Container
+```bash
+docker run -d \
+  -p 8080:8080 \
+  -e POSTGRESQL_CONNECTION_STRING="Host=db;Database=buildings_db;Username=user;Password=pass" \
+  conduit3d-buildings:latest
+```
 
 ## 🗺️ Geospatial Features
 
