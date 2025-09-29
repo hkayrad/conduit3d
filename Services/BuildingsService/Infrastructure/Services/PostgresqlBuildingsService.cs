@@ -33,8 +33,7 @@ public class PostgresqlBuildingsService(IUnitOfWork unitOfWork) : IBuildingsServ
         if (pageNumber < 1)
             return Response<List<Building>>.ValidationError(BuildingsResources.GetString("invalidPageNumber"));
 
-        var allowedSortColumns = new[] { "Id", "Name", "FloorCount", "Type", "GeoJson" };
-        if (!allowedSortColumns.Contains(sortBy))
+        if (!AllowedSortingColumns.AdrBinaColumns.Contains(sortBy))
             return Response<List<Building>>.ValidationError(BuildingsResources.GetString("invalidSortBy"));
 
         extent ??= new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
@@ -153,8 +152,7 @@ public class PostgresqlBuildingsService(IUnitOfWork unitOfWork) : IBuildingsServ
                 Data = { }
             };
 
-        var allowedSortColumns = new[] { "Id", "Name", "FloorCount", "Type", "GeoJson" };
-        if (!allowedSortColumns.Contains(sortBy))
+        if (!AllowedSortingColumns.AdrBinaColumns.Contains(sortBy))
             return new BuildingsResponse
             {
                 IsSuccess = false,

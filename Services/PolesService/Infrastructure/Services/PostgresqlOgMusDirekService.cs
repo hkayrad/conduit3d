@@ -33,18 +33,7 @@ public class PostgresqlOgMusDirekService(IUnitOfWork unitOfWork) : IOgMusDirekSe
         if (pageNumber < 1)
             return Response<List<OgMusDirek>>.ValidationError(PolesResources.GetString("invalidPageNumber"));
 
-        string[] allowedSortColumns = [
-            "Id",
-            "Kodu",
-            "Adi",
-            "Cinsi",
-            "Tipi",
-            "DirekNo",
-            "BoyOzellik",
-            "DirekBoyId"
-        ];
-
-        if (!allowedSortColumns.Contains(sortBy))
+        if (!AllowedSortingColumns.PoleColumns.Contains(sortBy))
             return Response<List<OgMusDirek>>.ValidationError(PolesResources.GetString("invalidSortBy"));
 
         extent ??= new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
@@ -176,19 +165,7 @@ public class PostgresqlOgMusDirekService(IUnitOfWork unitOfWork) : IOgMusDirekSe
                 Data = { }
             };
 
-        string[] allowedSortColumns =
-        [
-            "Id",
-            "Kodu",
-            "SiteAdi",
-            "Adi",
-            "BinaKatSayisi",
-            "DaireSayisi",
-            "IsyeriSayisi",
-            "Yukseklik"
-        ];
-
-        if (!allowedSortColumns.Contains(sortBy))
+        if (!AllowedSortingColumns.PoleColumns.Contains(sortBy))
             return new OgMusDirekResponse
             {
                 IsSuccess = false,

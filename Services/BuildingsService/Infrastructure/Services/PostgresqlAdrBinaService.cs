@@ -34,19 +34,7 @@ public class PostgresqlAdrBinaService(IUnitOfWork unitOfWork) : IAdrBinaService
         if (pageNumber < 1)
             return Response<List<AdrBina>>.ValidationError(BuildingsResources.GetString("invalidPageNumber"));
 
-        string[] allowedSortColumns =
-        [
-            "Id",
-            "Kodu",
-            "SiteAdi",
-            "Adi",
-            "BinaKatSayisi",
-            "DaireSayisi",
-            "IsyeriSayisi",
-            "Yukseklik"
-        ];
-
-        if (!allowedSortColumns.Contains(sortBy))
+        if (!AllowedSortingColumns.AdrBinaColumns.Contains(sortBy))
             return Response<List<AdrBina>>.ValidationError(BuildingsResources.GetString("invalidSortBy"));
 
         extent ??= new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
@@ -155,21 +143,9 @@ public class PostgresqlAdrBinaService(IUnitOfWork unitOfWork) : IAdrBinaService
                 Message = BuildingsResources.GetString("invalidPageNumber"),
                 StatusCode = (int)HttpStatusCode.BadRequest,
                 Data = { }
-            };
+            };;
 
-        string[] allowedSortColumns =
-        [
-            "Id",
-            "Kodu",
-            "SiteAdi",
-            "Adi",
-            "BinaKatSayisi",
-            "DaireSayisi",
-            "IsyeriSayisi",
-            "Yukseklik"
-        ];
-
-        if (!allowedSortColumns.Contains(sortBy))
+        if (!AllowedSortingColumns.AdrBinaColumns.Contains(sortBy))
             return new AdrBinaResponse
             {
                 IsSuccess = false,

@@ -33,16 +33,7 @@ public class PostgresqlOgHatService(IUnitOfWork unitOfWork) : IOgHatService
         if (pageNumber < 1)
             return Response<List<OgHat>>.ValidationError(LinesResources.GetString("invalidPageNumber"));
 
-        string[] allowedSortColumns = [
-                "Id",
-                "Kodu",
-                "Adi",
-                "Cinsi",
-                "Kesit",
-                "Tipi"
-            ];
-
-        if (!allowedSortColumns.Contains(sortBy))
+        if (!AllowedSortingColumns.LineColumns.Contains(sortBy))
             return Response<List<OgHat>>.ValidationError(LinesResources.GetString("invalidSortBy"));
 
         extent ??= new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
@@ -174,19 +165,7 @@ public class PostgresqlOgHatService(IUnitOfWork unitOfWork) : IOgHatService
                 Data = { }
             };
 
-        string[] allowedSortColumns =
-        [
-            "Id",
-            "Kodu",
-            "SiteAdi",
-            "Adi",
-            "BinaKatSayisi",
-            "DaireSayisi",
-            "IsyeriSayisi",
-            "Yukseklik"
-        ];
-
-        if (!allowedSortColumns.Contains(sortBy))
+        if (!AllowedSortingColumns.LineColumns.Contains(sortBy))
             return new OgHatResponse
             {
                 IsSuccess = false,

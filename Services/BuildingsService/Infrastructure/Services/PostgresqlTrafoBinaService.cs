@@ -33,9 +33,7 @@ public class PostgresqlTrafoBinaService(IUnitOfWork unitOfWork) : ITrafoBinaServ
         if (pageNumber < 1)
             return Response<List<TrafoBina>>.ValidationError(BuildingsResources.GetString("invalidPageNumber"));
 
-        string[] allowedSortColumns = ["Id", "Adi", "Kodu", "GeoJson"];
-
-        if (!allowedSortColumns.Contains(sortBy))
+        if (!AllowedSortingColumns.TrafoBinaColumns.Contains(sortBy))
             return Response<List<TrafoBina>>.ValidationError(BuildingsResources.GetString("invalidSortBy"));
 
         extent ??= new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
@@ -146,19 +144,7 @@ public class PostgresqlTrafoBinaService(IUnitOfWork unitOfWork) : ITrafoBinaServ
                 Data = { }
             };
 
-        string[] allowedSortColumns =
-        [
-            "Id",
-            "Kodu",
-            "SiteAdi",
-            "Adi",
-            "BinaKatSayisi",
-            "DaireSayisi",
-            "IsyeriSayisi",
-            "Yukseklik"
-        ];
-
-        if (!allowedSortColumns.Contains(sortBy))
+        if (!AllowedSortingColumns.TrafoBinaColumns.Contains(sortBy))
             return new TrafoBinaResponse
             {
                 IsSuccess = false,

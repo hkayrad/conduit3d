@@ -33,15 +33,7 @@ public class PostgresqlRekortmanService(IUnitOfWork unitOfWork) : IRekortmanServ
         if (pageNumber < 1)
             return Response<List<Rekortman>>.ValidationError(LinesResources.GetString("invalidPageNumber"));
 
-        string[] allowedSortColumns = [
-                "Id",
-                "Kodu",
-                "Adi",
-                "Kesit",
-                "Tipi"
-            ];
-
-        if (!allowedSortColumns.Contains(sortBy))
+        if (!AllowedSortingColumns.RekortmanColumns.Contains(sortBy))
             return Response<List<Rekortman>>.ValidationError(LinesResources.GetString("invalidSortBy"));
 
         extent ??= new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
@@ -173,19 +165,7 @@ public class PostgresqlRekortmanService(IUnitOfWork unitOfWork) : IRekortmanServ
                 Data = { }
             };
 
-        string[] allowedSortColumns =
-        [
-            "Id",
-            "Kodu",
-            "SiteAdi",
-            "Adi",
-            "BinaKatSayisi",
-            "DaireSayisi",
-            "IsyeriSayisi",
-            "Yukseklik"
-        ];
-
-        if (!allowedSortColumns.Contains(sortBy))
+        if (!AllowedSortingColumns.RekortmanColumns.Contains(sortBy))
             return new RekortmanResponse
             {
                 IsSuccess = false,

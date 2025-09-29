@@ -180,12 +180,12 @@ public class PostgresqlAgDirekService(IUnitOfWork unitOfWork) : IAgDirekService
         [
             "Id",
             "Kodu",
-            "SiteAdi",
             "Adi",
-            "BinaKatSayisi",
-            "DaireSayisi",
-            "IsyeriSayisi",
-            "Yukseklik"
+            "Cinsi",
+            "Tipi",
+            "DirekNo",
+            "BoyOzellik",
+            "DirekBoyId"
         ];
 
         if (!allowedSortColumns.Contains(sortBy))
