@@ -10,7 +10,7 @@ import { useHat } from "../../../lib/hooks";
 import { useDirek } from "../../../lib/hooks";
 import { useMapInteraction } from "../../../lib/hooks";
 
-import { CreateLayer, Logger } from "../../../lib/utils";
+import { CreateLayer, hexToRgba, Logger } from "../../../lib/utils";
 
 import { FirstPersonView, FirstPersonViewport, Layer, MapView, Viewport, WebMercatorViewport, type DeckProps } from "@deck.gl/core";
 import { ColumnLayer, GeoJsonLayer } from "deck.gl";
@@ -34,6 +34,7 @@ import GlobalSearch from "./globalSearch/GlobalSearch";
 //@ts-ignore
 import StaticStreetView from "./streetView/StaticStreetView";
 import DynmicStreetView from "./streetView/DynamicStreetView";
+import { selectConfig } from "../../configSlice";
 
 /**
  * DeckglMap component renders the Deck.gl map with various layers and controls.
@@ -44,6 +45,7 @@ export default function DeckglMap(): React.ReactNode {
     // Redux State
     const { visibility, filters, selectedViewType, viewState, lastRefreshPosition, isWireframe, focusedView } = useAppSelector(selectMapState);
     const { firstPerson } = viewState;
+    const config = useAppSelector(selectConfig);
 
     // React-Router Hooks
     const location = useLocation();
@@ -126,6 +128,7 @@ export default function DeckglMap(): React.ReactNode {
                     `${hat.id}-layer`,
                     hat.data,
                     hat.color,
+                    hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
                     hat.id.includes("HAVAİ") ? overgroundLineWidth : undergroundLineWidth,
                     hat.visibility,
                     hat.cinsi
@@ -139,6 +142,7 @@ export default function DeckglMap(): React.ReactNode {
                     `${direk.id}-layer`,
                     direk.data,
                     direk.color,
+                    hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
                     direk.visibility,
                 )
             )
@@ -148,12 +152,12 @@ export default function DeckglMap(): React.ReactNode {
             id: `adr-bina-layer-${index}`,
             data: chunk,
             getElevation: (d) => d.properties.yukseklik,
-            getFillColor: isWireframe ? [0, 0, 0, 0] : COLORS.ADR_BINA,
+            getFillColor: isWireframe ? [0, 0, 0, 0] : hexToRgba(config.ADR_BINA_COLOR) || COLORS.ADR_BINA,
             filled: true,
             extruded: true,
             pickable: true,
             autoHighlight: true,
-            highlightColor: COLORS.HOVER,
+            highlightColor: hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
             visible: visibility.adrBina,
             wireframe: isWireframe,
         })),
@@ -162,12 +166,12 @@ export default function DeckglMap(): React.ReactNode {
             id: `building-bina-layer-${index}`,
             data: chunk,
             getElevation: (d) => d.properties.yukseklik,
-            getFillColor: isWireframe ? [0, 0, 0, 0] : COLORS.ADR_BINA,
+            getFillColor: isWireframe ? [0, 0, 0, 0] : hexToRgba(config.ADR_BINA_COLOR) || COLORS.ADR_BINA,
             filled: true,
             extruded: true,
             pickable: true,
             autoHighlight: true,
-            highlightColor: COLORS.HOVER,
+            highlightColor: hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
             visible: debugBinaVisible,
             wireframe: isWireframe,
         })),
@@ -177,11 +181,11 @@ export default function DeckglMap(): React.ReactNode {
             data: chunk.features,
             getPosition: d => d.geometry.coordinates,
             getElevation: d => d.properties.yukseklik,
-            getFillColor: COLORS.TRAFO_BINA,
+            getFillColor: isWireframe ? [0, 0, 0, 0] : hexToRgba(config.TRAFO_BINA_COLOR) || COLORS.TRAFO_BINA,
             extruded: true,
             pickable: true,
             autoHighlight: true,
-            highlightColor: COLORS.HOVER,
+            highlightColor: hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
             radius: 1,
             elevationScale: 1,
             diskResolution: 4,

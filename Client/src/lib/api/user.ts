@@ -1,4 +1,4 @@
-import type { ApiResponse, LoginUserDto, User, UserCounts } from "../types";
+import type { ApiResponse, Config, LoginUserDto, User, UserCounts } from "../types";
 import instance from "../instance";
 import Cookies from "js-cookie";
 import { Logger, capitalizeFirstLetter } from "../utils";
@@ -126,6 +126,48 @@ export class UserApi {
             return response.data;
         } catch (error) {
             Logger.error("Create user error:", error);
+            throw error;
+        }
+    }
+}
+
+export class ConfigApi {
+    static async fetchConfig() {
+        try {
+            const response = await instance.get<ApiResponse<Array<Config>>>("/config");
+            return response.data;
+        } catch (error) {
+            Logger.error("Fetch config error:", error);
+            throw error;
+        }
+    }
+
+    static async updateConfig(config: Config) {
+        try {
+            const response = await instance.post<ApiResponse<Config>>("/config", config);
+            return response.data;
+        } catch (error) {
+            Logger.error("Update config error:", error);
+            throw error;
+        }
+    }
+
+    static async fetchConfigByKey(key: string) {
+        try {
+            const response = await instance.get<ApiResponse<Config>>(`/config/${key}`);
+            return response.data;
+        } catch (error) {
+            Logger.error("Fetch config by key error:", error);
+            throw error;
+        }
+    }
+
+    static async deleteConfigByKey(key: string) {
+        try {
+            const response = await instance.delete<ApiResponse<void>>(`/config/${key}`);
+            return response.data;
+        } catch (error) {
+            Logger.error("Delete config by key error:", error);
             throw error;
         }
     }

@@ -3,6 +3,8 @@ import { filterFeature } from "../utils/geometry/filterFeature";
 import { COLORS } from "../constants";
 import { useAppSelector } from "./reduxHooks";
 import { selectMapState } from "../../app/layout/map/mapSlice";
+import { hexToRgba } from "../utils";
+import { selectConfig } from "../../app/configSlice";
 
 /**
  * Format the AG Direk feature collection.
@@ -10,6 +12,7 @@ import { selectMapState } from "../../app/layout/map/mapSlice";
 */
 export function useDirek() {
     const { visibility, filters, types } = useAppSelector(selectMapState);
+    const config = useAppSelector(selectConfig);
 
     const [agDirek, setAgDirek] = useState<GeoJSON.FeatureCollection[]>([]);
     const [ogMusDirek, setOgMusDirek] = useState<GeoJSON.FeatureCollection[]>([]);
@@ -39,7 +42,7 @@ export function useDirek() {
             return {
                 id: `ag-direk-${type}`,
                 data: filterFeature(combinedCollection, "tipi", type),
-                color: COLORS.AG_DIREK,
+                color: hexToRgba(config.AG_DIREK_COLOR) || COLORS.AG_DIREK,
                 visibility:
                     visibility.agDirek &&
                     (filters.agDirek.tipi.includes(type) || filters.agDirek.tipi.length === 0),
@@ -72,7 +75,7 @@ export function useDirek() {
             return {
                 id: `og-mus-direk-${type}`,
                 data: filterFeature(combinedCollection, "tipi", type),
-                color: COLORS.OG_MUS_DIREK,
+                color: hexToRgba(config.OG_MUS_DIREK_COLOR) || COLORS.OG_MUS_DIREK,
                 visibility:
                     visibility.ogMusDirek &&
                     (filters.ogMusDirek.tipi.includes(type) || filters.ogMusDirek.tipi.length === 0),
@@ -105,7 +108,7 @@ export function useDirek() {
             return {
                 id: `ayd-direk-${type}`,
                 data: filterFeature(combinedCollection, "tipi", type),
-                color: COLORS.AYD_DIREK,
+                color: hexToRgba(config.AYD_DIREK_COLOR) || COLORS.AYD_DIREK,
                 visibility:
                     visibility.aydDirek &&
                     (filters.aydDirek.tipi.includes(type) || filters.aydDirek.tipi.length === 0),
