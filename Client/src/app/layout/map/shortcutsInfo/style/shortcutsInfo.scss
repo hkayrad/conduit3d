@@ -10,6 +10,12 @@
     color: global.$white;
     padding: 8px;
     border-radius: 12px;
+    transition: background 0.3s ease !important;
+
+    &:hover {
+        cursor: pointer;
+        background: global.$primary-light !important;
+    }
 }
 
 .shortcuts-info {

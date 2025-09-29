@@ -3,9 +3,7 @@ import "deck.gl/stylesheet.css"
 import "maplibre-gl/dist/maplibre-gl.css"
 import "./style/deckglMap.css"
 
-import { COLORS, DEBOUNCE_TIME_MS, LAT_EXTENT_PADDING, LON_EXTENT_PADDING, MAX_ZOOM_LEVEL, MIN_ZOOM_THRESHOLD } from "../../../lib/constants";
-
-import type { C3D_ViewState, PopupState } from "../../../lib/types";
+import { COLORS, DEBOUNCE_TIME_MS, LAT_EXTENT_PADDING, LON_EXTENT_PADDING, MIN_ZOOM_THRESHOLD } from "../../../lib/constants";
 
 import { useAppDispatch, useAppSelector } from "../../../lib/hooks";
 import { useHat } from "../../../lib/hooks";
@@ -19,7 +17,7 @@ import { ColumnLayer, GeoJsonLayer } from "deck.gl";
 import { DeckGL } from "@deck.gl/react";
 import { CompassWidget, ZoomWidget } from "@deck.gl/widgets";
 import { Map as MapLibre } from 'react-map-gl/maplibre';
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Outlet, useLocation } from "react-router";
 
 import { selectMapState, setExtent, setFocusedView, setLastRefreshPosition, setViewState } from "./mapSlice";
@@ -46,16 +44,16 @@ import DynmicStreetView from "./streetView/DynamicStreetView";
 export default function DeckglMap(): React.ReactNode {
     // Redux State
     const { visibility, filters, types, selectedViewType, viewState, lastRefreshPosition, isWireframe, focusedView } = useAppSelector(selectMapState);
-    const { cartesian, firstPerson } = viewState;
+    const { firstPerson } = viewState;
 
     // React-Router Hooks
     const location = useLocation();
 
     // Refs
-    const zIndexCounter = useRef(1000);
 
     // Local State
     const [debugBinaVisible, setDebugBinaVisible] = useState<boolean>(false);
+    const [cursor, setCursor] = useState<string>("default");
 
     // const [agDirekWFS, setAgDirekWFS] = useState<GeoJSON.Feature[] | null>(null);
     // const [ogDirekWFS, setOgDirekWFS] = useState<GeoJSON.Feature[] | null>(null);
@@ -145,88 +143,54 @@ export default function DeckglMap(): React.ReactNode {
     //     // fetchAydHatWFS();
     // }, [])
 
-    const [mapViewState, setMapViewState] = useState<C3D_ViewState>({
-        [C3D_MapViewType.Cartesian]: {
-            longitude: cartesian.longitude,
-            latitude: cartesian.latitude,
-            zoom: cartesian.zoom,
-            maxZoom: MAX_ZOOM_LEVEL,
-            pitch: cartesian.pitch,
-            bearing: cartesian.bearing
-        },
-        [C3D_MapViewType.FirstPerson]: {
-            longitude: firstPerson.longitude,
-            latitude: firstPerson.latitude,
-            pitch: firstPerson.pitch,
-            bearing: firstPerson.bearing,
-            position: [0, 0, 3],
-        }
-    });
+
 
     // GeoJSON Data States
     const [adrBina, setAdrBina] = useState<GeoJSON.FeatureCollection[]>([]);
     const [buildingBina, setBuildingBin] = useState<GeoJSON.FeatureCollection[]>([]);
     const [trafoBina, setTrafoBina] = useState<GeoJSON.FeatureCollection[]>([]);
-    const [agDirek, setAgDirek] = useState<GeoJSON.FeatureCollection[]>([]);
-    const [ogMusDirek, setOgMusDirek] = useState<GeoJSON.FeatureCollection[]>([]);
-    const [aydDirek, setAydDirek] = useState<GeoJSON.FeatureCollection[]>([]);
-    const [agHat, setAgHat] = useState<GeoJSON.FeatureCollection[]>([]);
-    const [ogHat, setOgHat] = useState<GeoJSON.FeatureCollection[]>([]);
-    const [rekortman, setRekortman] = useState<GeoJSON.FeatureCollection[]>([]);
+
 
     const [overgroundLineWidth, setOvergroundLineWidth] = useState<number>(1);
     const [undergroundLineWidth, setUndergroundLineWidth] = useState<number>(1);
-    const [hoveredFeature, setHoveredFeature] = useState<GeoJSON.Feature | null>(null);
 
-    const [activePopups, setActivePopups] = useState<PopupState[]>([]);
-
-    const [mousePos, setMousePos] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
-    const [mouseLonLat, setMouseLonLat] = useState<number[]>([0, 0]);
-
-    const searchInputRef = useRef<HTMLInputElement>(null!);
 
     // Redux hooks
     const dispatch = useAppDispatch();
 
     // Hat hook
-    const { hatLayerData } = useHat(
-        agHat,
-        ogHat,
-        rekortman,
-        types,
-        filters,
-        visibility,
-    );
+    const {
+        setAgHat,
+        setOgHat,
+        setRekortman,
+        hatLayerData
+    } = useHat();
 
     // Direk hook
-    const { direkLayerData, allPoles } = useDirek(
-        agDirek,
-        ogMusDirek,
-        aydDirek,
-        types,
-        filters,
-        visibility);
+    const { 
+        setAgDirek,
+        setOgMusDirek,
+        setAydDirek,
+        direkLayerData, 
+        allPoles } = useDirek();
 
     // Map interaction hook
-    const { handleViewStateChange,
+    const {
+        activePopups,
+        searchInputRef,
+        mapViewState,
+        setMapViewState,
+        hoveredFeature,
+        handleViewStateChange,
+        mousePos,
+        mouseLonLat,
         handleMouseMove,
         handleClick,
         handleClosePopup,
         handleFocusPopup,
         handleKeyPresses,
         flyTo
-    } = useMapInteraction(
-        zIndexCounter,
-        activePopups,
-        selectedViewType,
-        mapViewState,
-        searchInputRef,
-        setMapViewState,
-        setHoveredFeature,
-        setMousePos,
-        setMouseLonLat,
-        setActivePopups
-    );
+    } = useMapInteraction();
 
     // Memoized layers from the current data
     const layers: Layer[] = useMemo((): Layer[] => [
@@ -389,15 +353,11 @@ export default function DeckglMap(): React.ReactNode {
         filters,
         visibility,
         isWireframe,
+        hatLayerData,
+        direkLayerData,
         adrBina,
         buildingBina,
         trafoBina,
-        agDirek,
-        ogMusDirek,
-        aydDirek,
-        agHat,
-        ogHat,
-        rekortman,
         overgroundLineWidth,
         undergroundLineWidth,
         debugBinaVisible
@@ -654,6 +614,12 @@ export default function DeckglMap(): React.ReactNode {
                     widgets={selectedViewType === C3D_MapViewType.Cartesian ? [new ZoomWidget({}), new CompassWidget({})] : []}
                     onClick={handleClick}
                     onHover={handleMouseMove}
+                    getCursor={(state) => {
+                        setCursor(state.isDragging ? "grabbing" :
+                            state.isHovering ? "pointer" : "default"
+                        );
+                        return "inherit"
+                    }}
                 >
                     <MapLibre
                         // mapStyle={MAP_STYLE[0]}
@@ -661,7 +627,7 @@ export default function DeckglMap(): React.ReactNode {
                         attributionControl={false}
                         maxZoom={25}
                         boxZoom={false}
-                        cursor={hoveredFeature ? "pointer" : "default"}
+                        cursor={cursor}
                     />
                 </DeckGL>
             </div >

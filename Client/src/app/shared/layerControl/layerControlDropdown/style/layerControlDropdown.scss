@@ -24,6 +24,12 @@
         justify-content: space-between;
         align-items: center;
         overflow: hidden;
+        transition: background 0.3s ease;
+
+        &:hover {
+            cursor: pointer;
+            background: global.$primary-lighter;
+        }
 
         .left {
             display: flex;

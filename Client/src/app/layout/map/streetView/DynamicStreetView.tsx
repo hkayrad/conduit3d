@@ -133,7 +133,6 @@ import { selectFocusedView, selectIsStreetViewPinned, selectIsStreetViewVisible,
 import { C3D_MapViewType } from "../../../../lib/enums";
 import { PictureInPicture, PictureInPicture2, PinIcon, PinOff } from "lucide-react";
 import { useStreetView } from '../../../../lib/hooks/useStreetView';
-import { Logger } from "../../../../lib/utils";
 
 function convertDeckGLToLatLonWithOffset(
   x: number,
@@ -179,8 +178,6 @@ export default function DynamicStreetView() {
         firstPerson.latitude!,
         firstPerson.longitude!
       );
-
-      Logger.table([...firstPerson.position!, firstPerson.latitude, firstPerson.latitude, converted.latitude, converted.longitude]);
 
       return {
         lat: converted.latitude,
@@ -233,8 +230,6 @@ export default function DynamicStreetView() {
         Math.abs(lastUpdateRef.current.lng - targetPosition.lng) > 0.000001
 
       if (hasSignificantChangeOnPos) {
-        console.log('Updating Street View:', targetPosition);
-
         // Update position first
         setStreetViewPosition({ lat: targetPosition.lat, lng: targetPosition.lng });
         updatePosition({ lat: targetPosition.lat, lng: targetPosition.lng });
@@ -249,8 +244,6 @@ export default function DynamicStreetView() {
         Math.abs(lastUpdateRef.current.pitch - targetPosition.pitch) > 0.1;
 
       if (hasSignificantChangeOnView) {
-        console.log('Updating Street View POV:', targetPosition);
-
         updatePOV({
           heading: targetPosition.bearing,
           pitch: targetPosition.pitch,

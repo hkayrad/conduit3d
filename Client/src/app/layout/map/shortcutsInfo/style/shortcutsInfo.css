@@ -76,6 +76,11 @@ kbd {
   color: #FFFFFF;
   padding: 8px;
   border-radius: 12px;
+  transition: background 0.3s ease !important;
+}
+.shortcut-container-icon:hover {
+  cursor: pointer;
+  background: #3B3E5A !important;
 }
 
 .shortcuts-info {

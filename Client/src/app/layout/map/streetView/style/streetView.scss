@@ -12,6 +12,12 @@
     border: none;
     background: global.$primary;
     color: global.$white;
+    transition: background 0.3s ease !important;
+
+    &:hover {
+        cursor: pointer;
+        background: global.$primary-light !important;
+    }
 }
 
 .street-view {
@@ -52,6 +58,12 @@
         background: global.$primary;
         color: global.$white;
         border-radius: 8px;
+        transition: background 0.3s ease !important;
+
+        &:hover {
+            cursor: pointer;
+            background: global.$primary-light !important;
+        }
     }
 
     .street-view-image {
@@ -71,10 +83,22 @@
         height: 32px !important;
         border-radius: 8px !important;
         background: global.$primary !important;
+        transition: background 0.3s ease !important;
+
+        &:hover {
+            cursor: pointer;
+            background: global.$primary-light !important;
+        }
 
         img {
             width: 16px !important;
             height: 16px !important;
+            filter: brightness(0) invert(1) !important;
         }
+    }
+
+    // Sag alttaki kontrol metinlerini gizle (sorun olusa kaldirilacak)
+    .gmnoprint, .gm-style-cc {
+        display: none !important;
     }
 }

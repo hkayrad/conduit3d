@@ -259,11 +259,27 @@
 
                     &:last-child,
                     &:first-child {
+                        &:hover {
+                            cursor: default;
+                        }
+
                         .header-content {
                             justify-content: center;
 
+                            &:hover {
+                                cursor: default;
+                            }
+
+                            p:hover {
+                                cursor: default;
+                            }
+
                             .header-actions {
                                 display: none;
+
+                                &:hover {
+                                    cursor: default;
+                                }
                             }
                         }
                     }
@@ -322,11 +338,17 @@
                                     background: none;
                                 }
 
+                                &:disabled:hover {
+                                    cursor: not-allowed;
+                                    background: none;
+                                }
+
                                 .disabled {
                                     color: rgba(global.$white, .25);
 
                                     &:hover {
                                         cursor: not-allowed;
+                                        background: none;
                                     }
                                 }
                             }
