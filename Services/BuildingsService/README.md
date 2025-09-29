@@ -130,12 +130,12 @@ BuildingsService/
    $$ LANGUAGE SQL IMMUTABLE;
 
    -- Add the generated column to the adr_bina table
-   ALTER TABLE "ADR_BINA" ADD COLUMN searchable_text tsvector GENERATED    ALWAYS AS (
-       generate_searchable_text_adr_bina(id, kodu, site_adi, adi,    bina_kat_sayisi, daire_sayisi, isyeri_sayisi, yukseklik)
+   ALTER TABLE "ADR_BINA" ADD COLUMN searchable_text tsvector GENERATED ALWAYS AS (
+       generate_searchable_text_adr_bina(id, kodu, site_adi, adi, bina_kat_sayisi, daire_sayisi, isyeri_sayisi, yukseklik)
    ) STORED;
 
    -- Create GIN index for fast text search
-   CREATE INDEX idx_adr_bina_searchable_text ON "ADR_BINA"USING GIN  (searchable_text);
+   CREATE INDEX idx_adr_bina_searchable_text ON "ADR_BINA" USING GIN  (searchable_text);
    ```
 
    - TrafoBina
@@ -158,7 +158,7 @@ BuildingsService/
    AS $$
    SELECT to_tsvector('simple', 
        coalesce(cast(id_val as text), '') || ' ' ||
-       coalesce(kodu_val, '') || ' s' ||
+       coalesce(kodu_val, '') || ' ' ||
        coalesce(adi_val, '')
    );
    $$ LANGUAGE SQL IMMUTABLE;

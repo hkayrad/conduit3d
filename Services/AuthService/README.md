@@ -122,11 +122,11 @@ AuthService/
    
    -- Use the custom function 
    ALTER TABLE users ADD COLUMN searchable_text tsvector GENERATED ALWAYS AS (
-       generate_searchable_text(id, is_active, username, email, created_at,   user_role, name)
+       generate_searchable_text(id, is_active, username, email, created_at, user_role, name)
    ) STORED;
    
    -- Create GIN index for fast text search
-   CREATE INDEX idx_user_searchable_text ON "users"USING GIN(searchable_text);
+   CREATE INDEX idx_user_searchable_text ON "users" USING GIN(searchable_text);
    ```
 
 3. **Configure Environment**
