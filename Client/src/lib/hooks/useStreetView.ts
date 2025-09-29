@@ -80,8 +80,6 @@ export const useStreetView = ({ position, pov, apiKey }: StreetViewOptions) => {
     const handlePositionChanged = () => {
       if (shouldIgnoreEventsRef.current) return;
 
-      if (shouldIgnoreEventsRef.current) return;
-
       dispatch(setViewState({
         viewId: C3D_MapViewType.FirstPerson,
         viewState: {
@@ -95,9 +93,6 @@ export const useStreetView = ({ position, pov, apiKey }: StreetViewOptions) => {
     };
 
     const handlePovChanged = () => {
-      if (shouldIgnoreEventsRef.current) return;
-
-      // Debounce the update
       if (shouldIgnoreEventsRef.current) return;
 
       dispatch(setViewState({
