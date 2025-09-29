@@ -3,6 +3,8 @@ import { filterFeature } from "../utils/geometry/filterFeature";
 import { selectMapState } from "../../app/layout/map/mapSlice";
 import { COLORS } from "../constants";
 import { useAppSelector } from "./reduxHooks";
+import { selectConfig } from "../../app/configSlice";
+import { hexToRgba } from "../utils";
 
 /**
  * Format the AG Hat feature collection.
@@ -10,6 +12,7 @@ import { useAppSelector } from "./reduxHooks";
  */
 export function useHat() {
     const { visibility, filters, types } = useAppSelector(selectMapState)
+    const config = useAppSelector(selectConfig);
 
     const [agHat, setAgHat] = useState<GeoJSON.FeatureCollection[]>([]);
     const [ogHat, setOgHat] = useState<GeoJSON.FeatureCollection[]>([]);
@@ -42,7 +45,7 @@ export function useHat() {
         return types.agHat.map(type => {
             return {
                 id: `ag-hat-${type}`,
-                color: COLORS.AG_HAT,
+                color: hexToRgba(config.AG_HAT_COLOR) || COLORS.AG_HAT,
                 visibility:
                     visibility.agHat &&
                     (filters.agHat.tipi.includes(type) || filters.agHat.tipi.length === 0),
@@ -50,7 +53,7 @@ export function useHat() {
                 data: filterFeature(combinedCollection, "cinsi", type)
             }
         })
-    }, [agHat, visibility.agHat, filters.agHat.tipi]);
+    }, [agHat, visibility.agHat, filters.agHat.tipi, config]);
 
     /**
      * Formatted OG Hat data for rendering on the map.
@@ -76,7 +79,7 @@ export function useHat() {
         return types.ogHat.map(type => {
             return {
                 id: `og-hat-${type}`,
-                color: COLORS.OG_HAT,
+                color: hexToRgba(config.OG_HAT_COLOR) || COLORS.OG_HAT,
                 visibility:
                     visibility.ogHat &&
                     (filters.ogHat.tipi.includes(type) || filters.ogHat.tipi.length === 0),
@@ -84,7 +87,7 @@ export function useHat() {
                 data: filterFeature(combinedCollection, "cinsi", type)
             }
         })
-    }, [ogHat, visibility.ogHat, filters.ogHat.tipi]);
+    }, [ogHat, visibility.ogHat, filters.ogHat.tipi, config]);
 
     /**
      * Formatted Rekortman data for rendering on the map.
@@ -110,7 +113,7 @@ export function useHat() {
         return types.rekortman.map(type => {
             return {
                 id: `rekortman-${type}`,
-                color: COLORS.REKORTMAN,
+                color: hexToRgba(config.REKORTMAN_COLOR) || COLORS.REKORTMAN,
                 visibility:
                     visibility.rekortman &&
                     (filters.rekortman.tipi.includes(type) || filters.rekortman.tipi.length === 0),
@@ -118,7 +121,7 @@ export function useHat() {
                 data: filterFeature(combinedCollection, "tipi", type)
             }
         })
-    }, [rekortman, visibility.rekortman, filters.rekortman.tipi]);
+    }, [rekortman, visibility.rekortman, filters.rekortman.tipi, config]);
 
     return {
         agHat,

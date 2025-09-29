@@ -10,14 +10,14 @@ import { useHat } from "../../../lib/hooks";
 import { useDirek } from "../../../lib/hooks";
 import { useMapInteraction } from "../../../lib/hooks";
 
-import { CreateLayer } from "../../../lib/utils";
+import { CreateLayer, hexToRgba, Logger } from "../../../lib/utils";
 
 import { FirstPersonView, FirstPersonViewport, Layer, MapView, Viewport, WebMercatorViewport, type DeckProps } from "@deck.gl/core";
 import { ColumnLayer, GeoJsonLayer } from "deck.gl";
 import { DeckGL } from "@deck.gl/react";
 import { CompassWidget, ZoomWidget } from "@deck.gl/widgets";
 import { Map as MapLibre } from 'react-map-gl/maplibre';
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Outlet, useLocation } from "react-router";
 
 import { selectMapState, setExtent, setFocusedView, setLastRefreshPosition, setViewState } from "./mapSlice";
@@ -34,6 +34,10 @@ import GlobalSearch from "./globalSearch/GlobalSearch";
 //@ts-ignore
 import StaticStreetView from "./streetView/StaticStreetView";
 import DynmicStreetView from "./streetView/DynamicStreetView";
+import { selectConfig, updateConfig } from "../../configSlice";
+import { selectUserState } from "../auth/authSlice";
+import { ConfigApi } from "../../../lib/api";
+import type { Config } from "../../../lib/types";
 
 /**
  * DeckglMap component renders the Deck.gl map with various layers and controls.
@@ -43,7 +47,9 @@ import DynmicStreetView from "./streetView/DynamicStreetView";
 export default function DeckglMap(): React.ReactNode {
     // Redux State
     const { visibility, filters, selectedViewType, viewState, lastRefreshPosition, isWireframe, focusedView } = useAppSelector(selectMapState);
+    const user = useAppSelector(selectUserState);
     const { firstPerson } = viewState;
+    const config = useAppSelector(selectConfig);
 
     // React-Router Hooks
     const location = useLocation();
@@ -126,6 +132,7 @@ export default function DeckglMap(): React.ReactNode {
                     `${hat.id}-layer`,
                     hat.data,
                     hat.color,
+                    hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
                     hat.id.includes("HAVAİ") ? overgroundLineWidth : undergroundLineWidth,
                     hat.visibility,
                     hat.cinsi
@@ -139,6 +146,7 @@ export default function DeckglMap(): React.ReactNode {
                     `${direk.id}-layer`,
                     direk.data,
                     direk.color,
+                    hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
                     direk.visibility,
                 )
             )
@@ -148,12 +156,12 @@ export default function DeckglMap(): React.ReactNode {
             id: `adr-bina-layer-${index}`,
             data: chunk,
             getElevation: (d) => d.properties.yukseklik,
-            getFillColor: isWireframe ? [0, 0, 0, 0] : COLORS.ADR_BINA,
+            getFillColor: isWireframe ? [0, 0, 0, 0] : hexToRgba(config.ADR_BINA_COLOR) || COLORS.ADR_BINA,
             filled: true,
             extruded: true,
             pickable: true,
             autoHighlight: true,
-            highlightColor: COLORS.HOVER,
+            highlightColor: hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
             visible: visibility.adrBina,
             wireframe: isWireframe,
         })),
@@ -162,12 +170,12 @@ export default function DeckglMap(): React.ReactNode {
             id: `building-bina-layer-${index}`,
             data: chunk,
             getElevation: (d) => d.properties.yukseklik,
-            getFillColor: isWireframe ? [0, 0, 0, 0] : COLORS.ADR_BINA,
+            getFillColor: isWireframe ? [0, 0, 0, 0] : hexToRgba(config.ADR_BINA_COLOR) || COLORS.ADR_BINA,
             filled: true,
             extruded: true,
             pickable: true,
             autoHighlight: true,
-            highlightColor: COLORS.HOVER,
+            highlightColor: hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
             visible: debugBinaVisible,
             wireframe: isWireframe,
         })),
@@ -177,11 +185,11 @@ export default function DeckglMap(): React.ReactNode {
             data: chunk.features,
             getPosition: d => d.geometry.coordinates,
             getElevation: d => d.properties.yukseklik,
-            getFillColor: COLORS.TRAFO_BINA,
+            getFillColor: isWireframe ? [0, 0, 0, 0] : hexToRgba(config.TRAFO_BINA_COLOR) || COLORS.TRAFO_BINA,
             extruded: true,
             pickable: true,
             autoHighlight: true,
-            highlightColor: COLORS.HOVER,
+            highlightColor: hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
             radius: 1,
             elevationScale: 1,
             diskResolution: 4,
@@ -198,7 +206,8 @@ export default function DeckglMap(): React.ReactNode {
         trafoBina,
         overgroundLineWidth,
         undergroundLineWidth,
-        debugBinaVisible
+        debugBinaVisible,
+        config
     ]);
 
     const layerFilter: DeckProps['layerFilter'] = useCallback(
@@ -334,20 +343,34 @@ export default function DeckglMap(): React.ReactNode {
 
     // Add keyboard event listener
     useEffect(() => {
-        document.addEventListener("keydown", (e) => handleKeyPresses(e));
-
         const deckglContainer = document.getElementById("deckgl-wrapper");
-        deckglContainer?.addEventListener("mousedown", () => {
-            dispatch(setFocusedView("deckgl"));
-        });
+
+        const keydownHandler = (e: KeyboardEvent) => {
+            try {
+                handleKeyPresses(e);
+            } catch (error) {
+                Logger.error('Error handling keypress:', error);
+            }
+        };
+
+        const mousedownHandler = () => {
+            try {
+                dispatch(setFocusedView("deckgl"));
+            } catch (error) {
+                Logger.error('Error setting focused view:', error);
+            }
+        };
+
+        if (location.pathname === "/") {
+            document.addEventListener("keydown", keydownHandler);
+            deckglContainer?.addEventListener("mousedown", mousedownHandler);
+        }
 
         return () => {
-            document.removeEventListener("keydown", (e) => handleKeyPresses(e));
-            deckglContainer?.removeEventListener("mousedown", () => {
-                dispatch(setFocusedView("deckgl"));
-            });
+            document.removeEventListener("keydown", keydownHandler);
+            deckglContainer?.removeEventListener("mousedown", mousedownHandler);
         };
-    }, []);
+    }, [location.pathname, handleKeyPresses, dispatch]);
 
     useEffect(() => {
         if (focusedView === "streetview") {
@@ -400,6 +423,46 @@ export default function DeckglMap(): React.ReactNode {
         return () => clearTimeout(handler);
     }, [lastRefreshPosition, mapViewState, selectedViewType]);
 
+    const debounceTimeouts = useRef<Record<string, NodeJS.Timeout>>({});
+
+    const handleColorChange = useCallback((key: string, e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+
+        // Clear existing timeout for this key
+        if (debounceTimeouts.current[key]) {
+            clearTimeout(debounceTimeouts.current[key]);
+        }
+
+        // Set new timeout
+        debounceTimeouts.current[key] = setTimeout(() => {
+            dispatch(updateConfig({ [key]: value }));
+            delete debounceTimeouts.current[key];
+        }, 300); // 300ms delay
+    }, [dispatch]);
+
+    // Cleanup timeouts on unmount
+    useEffect(() => {
+        return () => {
+            Object.values(debounceTimeouts.current).forEach(clearTimeout);
+        };
+    }, []);
+
+    const handleSaveColors = async () => {
+        for (const [key, value] of Object.entries(config)) {
+            if (key.endsWith("_COLOR")) {
+                const configRow = {
+                    key: key,
+                    value: value
+                } as Config
+                try {
+                    await ConfigApi.updateConfig(configRow);
+                } catch (error) {
+                    Logger.error("Error saving config:", error);
+                }
+            }
+        }
+    }
+
     return (
         <>
             <Outlet context={{ flyTo }} />
@@ -416,6 +479,48 @@ export default function DeckglMap(): React.ReactNode {
                     setOgHat={setOgHat}
                     setRekortman={setRekortman}
                 />
+                {
+                    user?.userRole === "admin" &&
+                    <div style={{ position: "absolute", top: 180, left: 16, zIndex: 10000, background: "white", padding: 8, display: "flex", flexDirection: "column", gap: 4 }}>
+                        <input type="color" value={config.ADR_BINA_COLOR && config.ADR_BINA_COLOR.toString().slice(0, 7)} onChange={(e) => {
+                            if (e.target.value === undefined) return;
+                            handleColorChange("ADR_BINA_COLOR", e);
+                        }} />
+                        <input type="color" value={config.TRAFO_BINA_COLOR && config.TRAFO_BINA_COLOR.toString().slice(0, 7)} onChange={(e) => {
+                            if (e.target.value === undefined) return;
+                            handleColorChange("TRAFO_BINA_COLOR", e);
+                        }} />
+                        <input type="color" value={config.AG_DIREK_COLOR && config.AG_DIREK_COLOR.toString().slice(0, 7)} onChange={(e) => {
+                            if (e.target.value === undefined) return;
+                            handleColorChange("AG_DIREK_COLOR", e);
+                        }} />
+                        <input type="color" value={config.AYD_DIREK_COLOR && config.AYD_DIREK_COLOR.toString().slice(0, 7)} onChange={(e) => {
+                            if (e.target.value === undefined) return;
+                            handleColorChange("AYD_DIREK_COLOR", e);
+                        }} />
+                        <input type="color" value={config.OG_MUS_DIREK_COLOR && config.OG_MUS_DIREK_COLOR.toString().slice(0, 7)} onChange={(e) => {
+                            if (e.target.value === undefined) return;
+                            handleColorChange("OG_MUS_DIREK_COLOR", e);
+                        }} />
+                        <input type="color" value={config.AG_HAT_COLOR && config.AG_HAT_COLOR.toString().slice(0, 7)} onChange={(e) => {
+                            if (e.target.value === undefined) return;
+                            handleColorChange("AG_HAT_COLOR", e);
+                        }} />
+                        <input type="color" value={config.OG_HAT_COLOR && config.OG_HAT_COLOR.toString().slice(0, 7)} onChange={(e) => {
+                            if (e.target.value === undefined) return;
+                            handleColorChange("OG_HAT_COLOR", e);
+                        }} />
+                        <input type="color" value={config.REKORTMAN_COLOR && config.REKORTMAN_COLOR.toString().slice(0, 7)} onChange={(e) => {
+                            if (e.target.value === undefined) return;
+                            handleColorChange("REKORTMAN_COLOR", e);
+                        }} />
+                        <input type="color" value={config.HOVER_COLOR && config.HOVER_COLOR.toString().slice(0, 7)} onChange={(e) => {
+                            if (e.target.value === undefined) return;
+                            handleColorChange("HOVER_COLOR", e);
+                        }} />
+                        <button onClick={handleSaveColors}>Save Colors</button>
+                    </div>
+                }
                 {/* Dynamically create the FeatureInfo components */}
                 {activePopups.map(popup => (
                     <FeatureInfo

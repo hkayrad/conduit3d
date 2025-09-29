@@ -1,7 +1,6 @@
 import { BitmapLayer, ColumnLayer, PathLayer, TileLayer } from "deck.gl";
 import { PathStyleExtension } from "@deck.gl/extensions";
 import { C3D_MapViewType, HatCinsi } from "../../enums";
-import { COLORS } from "../../constants";
 
 /**
  * Class for creating different types of layers.
@@ -54,6 +53,7 @@ export class CreateLayer {
         id: string,
         data: GeoJSON.Feature[],
         color: [number, number, number, number],
+        highlightColor: [number, number, number, number],
         lineWidth: number,
         visibility: boolean,
         type: string) {
@@ -68,7 +68,7 @@ export class CreateLayer {
                 pickable: true,
                 billboard: true,
                 autoHighlight: true,
-                highlightColor: COLORS.HOVER,
+                highlightColor: highlightColor,
                 visible: visibility,
             })
         else
@@ -81,7 +81,7 @@ export class CreateLayer {
                 pickable: true,
                 billboard: false,
                 autoHighlight: true,
-                highlightColor: COLORS.HOVER,
+                highlightColor: highlightColor,
                 visible: visibility,
                 extensions: [new PathStyleExtension({ dash: true })],
                 getDashArray: dashArray,
@@ -102,6 +102,7 @@ export class CreateLayer {
         id: string,
         data: GeoJSON.Feature[],
         color: [number, number, number, number],
+        highlightColor: [number, number, number, number],
         visibility: boolean,
     ) {
         return new ColumnLayer({
@@ -113,7 +114,7 @@ export class CreateLayer {
             extruded: true,
             pickable: true,
             autoHighlight: true,
-            highlightColor: COLORS.HOVER,
+            highlightColor: highlightColor,
             radius: .5,
             elevationScale: 1,
             visible: visibility,

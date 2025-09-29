@@ -265,7 +265,6 @@ export function useMapInteraction() {
                 dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.Basemap }));
             }
         }
-
     }, [searchInputRef]);
 
     // Fly to a given feature

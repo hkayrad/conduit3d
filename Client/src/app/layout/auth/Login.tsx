@@ -1,7 +1,7 @@
 import "./style/login.css"
 
 import { useNavigate } from "react-router";
-import { AuthApi } from "../../../lib/api";
+import { UserApi } from "../../../lib/api";
 import Logo from "../../shared/logo/Logo";
 import Input from "../../shared/input/Input";
 import { useState } from "react";
@@ -45,7 +45,7 @@ export default function Login(): React.ReactNode {
         setLoading(true);
 
         try {
-            const response = await AuthApi.login(user);
+            const response = await UserApi.login(user);
 
             if (!response.isSuccess) {
                 dispatch(clearUser());

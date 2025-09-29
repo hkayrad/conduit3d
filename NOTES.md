@@ -6,6 +6,7 @@
  - CACHE CONTROL 
  - Create custom FirstPersonController to handle WASD control
  - Color control for admin account
+ - Add config menu for admins
 
 |feature|geojson|wkb|diff|%|
 |-|-|-|-|-|

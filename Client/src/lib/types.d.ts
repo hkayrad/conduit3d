@@ -27,6 +27,10 @@ export type User = {
     isActive: boolean
 }
 
+export type Config = {
+    [key: string]: string
+}
+
 export type LoginUserDto = {
     username: string,
     password: string

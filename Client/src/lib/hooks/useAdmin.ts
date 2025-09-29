@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { AuthApi } from "../api";
+import { UserApi } from "../api";
 import type { AdminModalStatus, ApiResponse, TableData, User, UserCounts, UserSortBy } from "../types";
 import { AdminModalType } from "../enums";
 import { selectAdminState, setAscending, setItemsPerPage, setPageNumber, setQuery, setSortBy } from "../../app/layout/admin/adminSlice";
@@ -40,8 +40,8 @@ export function useAdmin() {
     const handleFetchUsers = async () => {
         try {
             const [dataResponse, countResponse] = await Promise.all([
-                AuthApi.fetchAll(itemsPerPage, pageNumber, sortBy, ascending, sanitizedQuery),
-                AuthApi.fetchCount(sanitizedQuery)
+                UserApi.fetchAll(itemsPerPage, pageNumber, sortBy, ascending, sanitizedQuery),
+                UserApi.fetchCount(sanitizedQuery)
             ])
 
             if (!dataResponse.isSuccess || !countResponse.isSuccess) {
@@ -67,7 +67,7 @@ export function useAdmin() {
      */
     const handleDeleteUser = async (userId: number) => {
         try {
-            const response = await AuthApi.deleteUser(userId) as ApiResponse<any>;
+            const response = await UserApi.deleteUser(userId) as ApiResponse<any>;
 
             if (!response.isSuccess) {
                 // Parse and display the first error message
@@ -93,7 +93,7 @@ export function useAdmin() {
      */
     const handleEditUser = async (updatedUser: User) => {
         try {
-            const response = await AuthApi.updateUser(updatedUser.id, updatedUser) as ApiResponse<any>;
+            const response = await UserApi.updateUser(updatedUser.id, updatedUser) as ApiResponse<any>;
 
             if (!response.isSuccess) {
                 // Parse and display the first error message
@@ -119,7 +119,7 @@ export function useAdmin() {
      */
     const handleAddUser = async (newUser: User) => {
         try {
-            const response = await AuthApi.createUser(newUser) as ApiResponse<any>;
+            const response = await UserApi.createUser(newUser) as ApiResponse<any>;
 
             if (!response.isSuccess) {
                 // Parse and display the first error message
