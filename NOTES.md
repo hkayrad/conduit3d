@@ -5,6 +5,7 @@
  - Add tsvector functions to the service documentations
  - CACHE CONTROL 
  - Create custom FirstPersonController to handle WASD control
+ - Color control for admin account
 
 |feature|geojson|wkb|diff|%|
 |-|-|-|-|-|

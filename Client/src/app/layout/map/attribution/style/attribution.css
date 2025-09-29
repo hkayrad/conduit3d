@@ -58,6 +58,14 @@ body::-webkit-scrollbar-thumb {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
+kbd {
+  background: #FFFFFF;
+  color: #2B2D42;
+  padding: 1px 4px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
 #attribution {
   position: absolute;
   bottom: 16px;
@@ -74,4 +82,12 @@ body::-webkit-scrollbar-thumb {
 }
 #attribution span {
   font-size: 12px;
+}
+#attribution span a {
+  color: #FFFFFF;
+  text-decoration: none;
+  font-size: 12px;
+}
+#attribution span a:hover {
+  text-decoration: underline;
 }/*# sourceMappingURL=attribution.css.map */

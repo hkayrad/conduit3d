@@ -9,7 +9,12 @@ interface StreetViewOptions {
   pov?: { heading: number; pitch: number; zoom?: number };
 }
 
-export const useStreetView = ({ position, pov }: StreetViewOptions) => {
+/**
+ * Custom hook for managing Street View functionality.  
+ * @param param0 Options for initializing Street View
+ * @returns An object containing references and methods for Street View management
+ */
+export function useStreetView({ position, pov }: StreetViewOptions) {
   const containerRef = useRef<HTMLDivElement>(null);
   const streetViewRef = useRef<google.maps.StreetViewPanorama | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);

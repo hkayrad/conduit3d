@@ -9,7 +9,7 @@ import "./style/attribution.css";
 export default function Attribution(): React.ReactNode {
     return (
         <div id="attribution">
-            <span>MapLibre | © CARTO, © OpenStreetMap contributors</span>
+            <span><a href="https://maplibre.org/" target="_blank" rel="noopener noreferrer">MapLibre</a> | <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">© OpenStreetMap contributors</a></span>
             <InfoIcon />
         </div>
     )

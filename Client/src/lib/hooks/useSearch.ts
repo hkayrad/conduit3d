@@ -5,6 +5,10 @@ import { FeatureType, QueryKeywords } from "../enums";
 import type { Direk } from "../types";
 import { MAX_SEARCH_RESULTS } from "../constants";
 
+/**
+ * Custom hook for managing search functionality.
+ * @returns Search hook to manage search state and operations.
+ */
 export function useSearch() {
     const [query, setQuery] = useState("");
     const [isFocused, setIsFocused] = useState(false);

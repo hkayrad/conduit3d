@@ -15,6 +15,9 @@ export function useHat() {
     const [ogHat, setOgHat] = useState<GeoJSON.FeatureCollection[]>([]);
     const [rekortman, setRekortman] = useState<GeoJSON.FeatureCollection[]>([]);
 
+    const [overgroundLineWidth, setOvergroundLineWidth] = useState<number>(1);
+    const [undergroundLineWidth, setUndergroundLineWidth] = useState<number>(1);
+
     /**
      * Formatted AG Hat data for rendering on the map.
      * @memoized to optimize performance and avoid unnecessary recalculations.
@@ -124,6 +127,10 @@ export function useHat() {
         setOgHat,
         rekortman,
         setRekortman,
-        hatLayerData: [agHatFormatted, ogHatFormatted, rekortmanFormatted]
+        hatLayerData: [agHatFormatted, ogHatFormatted, rekortmanFormatted],
+        overgroundLineWidth,
+        setOvergroundLineWidth,
+        undergroundLineWidth,
+        setUndergroundLineWidth
     };
 }
