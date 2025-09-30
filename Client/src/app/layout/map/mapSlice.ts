@@ -11,6 +11,7 @@ export interface MapState {
     isHoverInfoVisible: boolean,
     isStreetViewVisible: boolean,
     isStreetViewPinned: boolean,
+    isSettingsWindowOpen: boolean,
     isWireframe: boolean,
     selectedViewType: C3D_MapViewType,
     visibility: C3D_LayerViewState,
@@ -65,6 +66,7 @@ const initialState: MapState = {
     isHoverInfoVisible: true,
     isStreetViewVisible: true,
     isStreetViewPinned: false,
+    isSettingsWindowOpen: false,
     isWireframe: false,
     focusedView: "deckgl",
     selectedViewType: C3D_MapViewType.Cartesian,
@@ -163,6 +165,9 @@ export const mapSlice = createSlice({
         setSelectedViewType: (state, action: PayloadAction<C3D_MapViewType>) => {
             state.selectedViewType = action.payload;
         },
+        setIsSettingsWindowOpen: (state, action: PayloadAction<boolean>) => {
+            state.isSettingsWindowOpen = action.payload;
+        },
         setMapLayerVisibility: (
             state,
             action: PayloadAction<{
@@ -183,6 +188,9 @@ export const mapSlice = createSlice({
         },
         toggleStreetViewPinned: (state) => {
             state.isStreetViewPinned = !state.isStreetViewPinned;
+        },
+        toggleSettingsWindow: (state) => {
+            state.isSettingsWindowOpen = !state.isSettingsWindowOpen;
         },
         toggleMapLayerVisibility: (
             state,
@@ -252,12 +260,14 @@ export const {
     setMapLayerVisibility,
     setIsStreetViewVisible,
     setIsStreetViewPinned,
+    setIsSettingsWindowOpen,
     setIsWireframe,
     setFocusedView,
     setSelectedViewType,
     toggleWireframe,
     toggleStreetView,
     toggleStreetViewPinned,
+    toggleSettingsWindow,
     toggleMapLayerVisibility,
     setFilter,
     setViewState,
@@ -274,6 +284,7 @@ export const selectIsHoverInfoVisible = (state: RootState) => state.map.isHoverI
 export const selectIsStreetViewVisible = (state: RootState) => state.map.isStreetViewVisible;
 export const selectIsStreetViewPinned = (state: RootState) => state.map.isStreetViewPinned;
 export const selectIsWireframe = (state: RootState) => state.map.isWireframe;
+export const selectIsSettingsWindowOpen = (state: RootState) => state.map.isSettingsWindowOpen;
 export const selectSelectedViewType = (state: RootState) => state.map.selectedViewType;
 export const selectFocusedView = (state: RootState) => state.map.focusedView;
 export const selectVisibility = (state: RootState) => state.map.visibility;

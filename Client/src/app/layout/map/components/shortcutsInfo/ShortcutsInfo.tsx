@@ -18,7 +18,8 @@ export default function ShortcutsInfo() {
             </div>
             <div className={`shortcuts-info ${isShortcutsInfoHovered || isShortcutsInfoToggled ? "" : "hidden"}`}>
                 <h3>Keyboard Shortcuts</h3>
-                <p><span><kbd>Ctrl</kbd><kbd>Del</kbd></span> : Close Popup Windows</p>
+                <p><span><kbd>Ctrl</kbd><kbd>Delete</kbd></span> : Close Popup Windows</p>
+                <p><span><kbd>Ctrl</kbd><kbd>Comma</kbd></span> : Toggle Settings Window</p>
                 <p><span><kbd>Ctrl</kbd><kbd>/</kbd></span> : Focus Search Bar</p>
                 <p><span><kbd>Esc</kbd></span> : Unfocus Search Bar</p>
                 <p><span><kbd>Shift</kbd><kbd>W</kbd></span> : Wireframe Mode</p>

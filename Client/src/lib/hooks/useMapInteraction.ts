@@ -4,7 +4,7 @@ import type { C3D_ViewState, PopupState } from "../types";
 import { MAX_POPUP_COUNT, MAX_ZOOM_LEVEL } from "../constants";
 import { C3D_MapViewType, FeatureType, C3D_MapLayers } from "../enums";
 import { useAppDispatch, useAppSelector } from "./reduxHooks";
-import { selectMapState, setSelectedViewType, toggleMapLayerVisibility, toggleStreetView, toggleWireframe } from "../../app/layout/map/mapSlice";
+import { selectMapState, setSelectedViewType, toggleMapLayerVisibility, toggleSettingsWindow, toggleStreetView, toggleWireframe } from "../../app/layout/map/mapSlice";
 import { flyToFeature } from "../utils";
 
 /**
@@ -190,6 +190,11 @@ export function useMapInteraction() {
                 e.stopPropagation();
                 if (searchInputRef.current)
                     searchInputRef.current.focus();
+            }
+
+            if (e.code === "Comma") {
+                e.preventDefault();
+                dispatch(toggleSettingsWindow())
             }
         }
 

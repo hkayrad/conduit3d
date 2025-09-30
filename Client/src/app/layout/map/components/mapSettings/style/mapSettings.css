@@ -6,14 +6,13 @@
   font-family: "Lexend", sans-serif;
   font-size: 16px;
 }
-
-body::-webkit-scrollbar {
+*::-webkit-scrollbar {
   width: 8px;
 }
-body::-webkit-scrollbar-track {
+*::-webkit-scrollbar-track {
   background: none;
 }
-body::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
   background: #4B4E73;
 }
 
@@ -90,19 +89,25 @@ kbd {
 .map-settings-window {
   position: absolute;
   z-index: 1000;
-  left: 400px;
-  bottom: 400px;
   display: flex;
   flex-direction: column;
-  width: 30vw;
+  width: 400px;
   background: #FFFFFF;
+  max-height: 80vh;
+  max-width: 80vw;
+  min-width: 600px;
+  min-height: 200px;
+  border-radius: 12px;
+  overflow: hidden;
+  resize: both;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 .map-settings-window .window-header {
   display: flex;
   justify-content: space-between;
   gap: 8px;
   width: 100%;
-  background: #2B2D42;
+  background: #3B3E5A;
   color: #FFFFFF;
   padding: 0 0 0 12px;
   height: 32px;
@@ -110,6 +115,18 @@ kbd {
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
+  border-bottom: 1px solid #4B4E73;
+}
+.map-settings-window .window-header:hover {
+  cursor: grab;
+}
+.map-settings-window .window-header:active {
+  cursor: grabbing;
+}
+.map-settings-window .window-header h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
 }
 .map-settings-window .window-header button {
   display: flex;
@@ -124,4 +141,128 @@ kbd {
 }
 .map-settings-window .window-header button:hover {
   background: #D32F2F;
+}
+.map-settings-window .window-content {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  gap: 12px;
+  height: 100%;
+  overflow-y: auto;
+}
+.map-settings-window .window-content h2 {
+  font-weight: 600;
+  font-size: 18px;
+  margin: 0 0 8px 0;
+  grid-column: -1/1;
+}
+.map-settings-window .window-content .color-settings {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 16px;
+}
+.map-settings-window .window-content .color-settings .setting-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #f9f9f9;
+}
+.map-settings-window .window-content .color-settings .setting-item > label {
+  font-weight: 600;
+  font-size: 14px;
+  margin: 0;
+}
+.map-settings-window .window-content .color-settings .setting-item .color-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.map-settings-window .window-content .color-settings .setting-item .color-controls .color-picker {
+  width: 50px;
+  height: 30px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 0;
+}
+.map-settings-window .window-content .color-settings .setting-item .color-controls .color-picker::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+.map-settings-window .window-content .color-settings .setting-item .color-controls .color-picker::-webkit-color-swatch {
+  border: none;
+  border-radius: 3px;
+}
+.map-settings-window .window-content .color-settings .setting-item .color-controls .color-picker::-moz-color-swatch {
+  border: none;
+  border-radius: 3px;
+}
+.map-settings-window .window-content .color-settings .setting-item .color-controls .alpha-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+.map-settings-window .window-content .color-settings .setting-item .color-controls .alpha-control .alpha-label {
+  font-weight: 600;
+  font-size: 12px;
+  color: #666;
+  min-width: 12px;
+}
+.map-settings-window .window-content .color-settings .setting-item .color-controls .alpha-control .alpha-slider {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(to right, transparent 0%, currentColor 100%);
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  outline: none;
+}
+.map-settings-window .window-content .color-settings .setting-item .color-controls .alpha-control .alpha-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+          appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #2B2D42;
+  border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+.map-settings-window .window-content .color-settings .setting-item .color-controls .alpha-control .alpha-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #2B2D42;
+  border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+.map-settings-window .window-content .color-settings .setting-item .color-controls .alpha-control .alpha-value {
+  font-size: 12px;
+  color: #666;
+  min-width: 35px;
+  text-align: right;
+}
+.map-settings-window .save-button {
+  align-self: flex-end;
+  padding: 8px 16px;
+  margin: 0 8px 8px 0;
+  border: none;
+  border-radius: 8px;
+  background: #2B2D42;
+  color: #FFFFFF;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  outline: none;
+}
+.map-settings-window .save-button:hover {
+  background: #3B3E5A;
+  cursor: pointer;
 }/*# sourceMappingURL=mapSettings.css.map */

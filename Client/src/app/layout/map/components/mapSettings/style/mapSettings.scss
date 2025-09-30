@@ -26,24 +26,45 @@
 .map-settings-window {
     position: absolute;
     z-index: 1000;
-    left: 400px;
-    bottom: 400px;
     display: flex;
     flex-direction: column;
-    width: 30vw;
+    width: 400px;
     background: global.$white;
+    max-height: 80vh;
+    max-width: 80vw;
+    min-width: 600px;
+    min-height: 200px;
+    border-radius: 12px;
+    overflow: hidden;
+    resize: both;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 
     .window-header {
         display: flex;
         justify-content: space-between;
         gap: 8px;
         width: 100%;
-        background: global.$primary;
+        background: global.$primary-light;
         color: global.$white;
         padding: 0 0 0 12px;
         height: 32px;
         align-items: center;
         user-select: none;
+        border-bottom: 1px solid global.$primary-lighter;
+
+        &:hover {
+            cursor: grab;
+        }
+
+        &:active {
+            cursor: grabbing;
+        }
+
+        h3 {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 500;
+        }
 
         button {
             display: flex;
@@ -59,6 +80,149 @@
             &:hover {
                 background: global.$error;
             }
+        }
+    }
+
+    .window-content {
+        display: flex;
+        flex-direction: column;
+        padding: 12px;
+        gap: 12px;
+        height: 100%;
+        overflow-y: auto;
+
+        h2 {
+            font-weight: 600;
+            font-size: 18px;
+            margin: 0 0 8px 0;
+            grid-column: -1 / 1;
+        }
+
+        .color-settings {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 16px;
+
+            .setting-item {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                padding: 12px;
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+                background: #f9f9f9;
+
+                > label {
+                    font-weight: 600;
+                    font-size: 14px;
+                    margin: 0;
+                }
+
+                .color-controls {
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+
+                    .color-picker {
+                        width: 50px;
+                        height: 30px;
+                        border: 1px solid #ccc;
+                        border-radius: 4px;
+                        cursor: pointer;
+                        padding: 0;
+
+                        &::-webkit-color-swatch-wrapper {
+                            padding: 0;
+                        }
+
+                        &::-webkit-color-swatch {
+                            border: none;
+                            border-radius: 3px;
+                        }
+
+                        &::-moz-color-swatch {
+                            border: none;
+                            border-radius: 3px;
+                        }
+                    }
+
+                    .alpha-control {
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        flex: 1;
+
+                        .alpha-label {
+                            font-weight: 600;
+                            font-size: 12px;
+                            color: #666;
+                            min-width: 12px;
+                        }
+
+                        .alpha-slider {
+                            flex: 1;
+                            height: 6px;
+                            border-radius: 3px;
+                            background: linear-gradient(
+                                to right,
+                                transparent 0%,
+                                currentColor 100%
+                            );
+                            appearance: none;
+                            outline: none;
+
+                            &::-webkit-slider-thumb {
+                                appearance: none;
+                                width: 16px;
+                                height: 16px;
+                                border-radius: 50%;
+                                background: global.$primary;
+                                border: 2px solid white;
+                                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+                                cursor: pointer;
+                            }
+
+                            &::-moz-range-thumb {
+                                width: 16px;
+                                height: 16px;
+                                border-radius: 50%;
+                                background: global.$primary;
+                                border: 2px solid white;
+                                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+                                cursor: pointer;
+                            }
+                        }
+
+                        .alpha-value {
+                            font-size: 12px;
+                            color: #666;
+                            min-width: 35px;
+                            text-align: right;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .save-button {
+        align-self: flex-end;
+        padding: 8px 16px;
+        margin: 0 8px 8px 0;
+        border: none;
+        border-radius: 8px;
+        background: global.$primary;
+        color: global.$white;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        outline: none;
+
+        &:hover {
+            background: global.$primary-light;
+            cursor: pointer;
         }
     }
 }
