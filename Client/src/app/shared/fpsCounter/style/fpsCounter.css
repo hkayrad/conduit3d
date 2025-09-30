@@ -1,0 +1,217 @@
+@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Lexend", sans-serif;
+  font-size: 16px;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: none;
+}
+*::-webkit-scrollbar-thumb {
+  background: #4B4E73;
+}
+
+.lucide {
+  width: 16px;
+  height: 16px;
+}
+
+.error-fg {
+  color: #D32F2F !important;
+}
+
+.warning-fg {
+  color: #FFC107 !important;
+}
+
+.success-fg {
+  color: #4CAF50 !important;
+}
+
+.white-fg {
+  color: #FFFFFF !important;
+}
+
+.error-bg {
+  background: #D32F2F !important;
+}
+
+.warning-bg {
+  background: #FFC107 !important;
+}
+
+.success-bg {
+  background: #4CAF50 !important;
+}
+
+.white-bg {
+  background: #FFFFFF !important;
+}
+
+.shadow {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+kbd {
+  background: #FFFFFF;
+  color: #2B2D42;
+  padding: 1px 4px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.fps-counter {
+  position: fixed;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 12px;
+  border-radius: 8px;
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  font-weight: bold;
+  min-width: 120px;
+  -webkit-backdrop-filter: blur(6px);
+          backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+.fps-counter--top-left {
+  top: 188px;
+  left: 16px;
+}
+.fps-counter--top-right {
+  top: 16px;
+  right: 16px;
+}
+.fps-counter--bottom-left {
+  bottom: 16px;
+  left: 16px;
+}
+.fps-counter--bottom-right {
+  bottom: 16px;
+  right: 16px;
+}
+.fps-counter .fps-display {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+.fps-counter .fps-display .fps-value {
+  font-size: 24px;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+.fps-counter .fps-display .fps-label {
+  font-size: 14px;
+  opacity: 0.9;
+}
+.fps-counter .fps-details {
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  padding-top: 8px;
+}
+.fps-counter .fps-details .performance-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 12px;
+  margin-bottom: 12px;
+}
+.fps-counter .fps-details .performance-grid .fps-stat {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  align-items: center;
+  gap: 8px;
+}
+.fps-counter .fps-details .performance-grid .fps-stat .fps-stat-label {
+  opacity: 0.8;
+  font-weight: normal;
+}
+.fps-counter .fps-details .performance-grid .fps-stat .fps-stat-value {
+  color: #ffffff;
+  font-weight: bold;
+}
+.fps-counter .fps-details .performance-bars {
+  margin-bottom: 12px;
+}
+.fps-counter .fps-details .performance-bars .perf-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 10px;
+}
+.fps-counter .fps-details .performance-bars .perf-bar .perf-bar-label {
+  min-width: 70px;
+  opacity: 0.8;
+}
+.fps-counter .fps-details .performance-bars .perf-bar .perf-bar-container {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.fps-counter .fps-details .performance-bars .perf-bar .perf-bar-container .perf-bar-fill {
+  height: 100%;
+  transition: width 0.3s ease, background-color 0.3s ease;
+  border-radius: 4px;
+}
+.fps-counter .fps-details .performance-bars .perf-bar .perf-bar-value {
+  min-width: 35px;
+  text-align: right;
+  font-weight: bold;
+}
+.fps-counter .fps-details .fps-actions {
+  display: flex;
+  gap: 8px;
+}
+.fps-counter .fps-details .fps-actions .fps-reset {
+  flex: 1;
+  padding: 6px 12px;
+  background: #2B2D42;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: bold;
+  width: 100%;
+}
+.fps-counter .fps-details .fps-actions .fps-reset:hover {
+  background: #3B3E5A;
+  transform: translateY(-1px);
+}
+.fps-counter .fps-details .fps-actions .fps-reset:active {
+  transform: translateY(0);
+}
+@media (max-width: 768px) {
+  .fps-counter {
+    font-size: 11px;
+    padding: 8px;
+    min-width: 100px;
+  }
+  .fps-counter .fps-display .fps-value {
+    font-size: 20px;
+  }
+  .fps-counter .fps-details .performance-grid {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+}
+@media (max-width: 480px) {
+  .fps-counter .fps-details .performance-bars {
+    display: none;
+  }
+}/*# sourceMappingURL=fpsCounter.css.map */

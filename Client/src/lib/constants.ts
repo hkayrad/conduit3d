@@ -12,8 +12,9 @@ export const EXTENT_PADDING = 0.02; // degrees
 export const LON_EXTENT_PADDING = EXTENT_PADDING * 2; // degrees
 export const LAT_EXTENT_PADDING = EXTENT_PADDING; // degrees
 
-export const CHUNK_SIZE = 20000; // Number of records to load into a state at once
-export const MAX_CHUNK_AMOUNT = 15; // Maximum number of chunks to load into a state
+export const CHUNK_SIZE = 10000; // Number of records to load into a state at once
+export const MAX_CHUNK_AMOUNT = 30; // Maximum number of chunks to load into a state
+export const DATA_FETCH_DELAY_MS = 25; // Delay between chunk fetches to prevent overwhelming the server
 
 export const MIN_ZOOM_THRESHOLD = 12; // Minimum zoom level to start loading detailed data
 

@@ -36,6 +36,7 @@ import StaticStreetView from "./components/streetView/StaticStreetView";
 import DynmicStreetView from "./components/streetView/DynamicStreetView";
 import { selectConfig } from "../../configSlice";
 import MapSettings from "./components/mapSettings/MapSettings";
+import FpsCounter from "../../shared/fpsCounter/FpsCounter";
 
 /**
  * DeckglMap component renders the Deck.gl map with various layers and controls.
@@ -96,6 +97,7 @@ export default function DeckglMap(): React.ReactNode {
 
     // Map interaction hook
     const {
+        showFpsCounter,
         activePopups,
         searchInputRef,
         mapViewState,
@@ -463,6 +465,12 @@ export default function DeckglMap(): React.ReactNode {
                 <ShortcutsInfo />
                 <MousePosition mouseLonLat={mouseLonLat} />
                 <Attribution />
+                {showFpsCounter && (
+                    <FpsCounter
+                        position="top-left"
+                        showDetails={true}
+                    />
+                )}
                 <DeckGL
                     controller
                     views={views}

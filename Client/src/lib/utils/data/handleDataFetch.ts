@@ -1,5 +1,5 @@
 import type { Extent } from "../../types";
-import { CHUNK_SIZE, MAX_CHUNK_AMOUNT } from "../../constants";
+import { CHUNK_SIZE, DATA_FETCH_DELAY_MS, MAX_CHUNK_AMOUNT } from "../../constants";
 import { Logger } from "../logger";
 import { sleep } from "../sleep";
 
@@ -60,7 +60,7 @@ export const handleDataFetch = async (
             }
 
             // Add a small delay to prevent blocking the main thread
-            await sleep(50);
+            await sleep(DATA_FETCH_DELAY_MS);
         }
     } catch (error) {
         if (abortControllerRef.current?.signal.aborted) {

@@ -37,6 +37,7 @@ export function useMapInteraction() {
     const [hoveredFeature, setHoveredFeature] = useState<GeoJSON.Feature | null>(null);
     const [mousePos, setMousePos] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
     const [mouseLonLat, setMouseLonLat] = useState<number[]>([0, 0]);
+    const [showFpsCounter, setShowFpsCounter] = useState(true);
 
     const zIndexCounter = useRef(1000);
     const searchInputRef = useRef<HTMLInputElement>(null!);
@@ -224,6 +225,12 @@ export function useMapInteraction() {
                 dispatch(setSelectedViewType(C3D_MapViewType.FirstPerson));
             }
 
+            // Toggle FPS Counter
+            if (e.code === "KeyP") {
+                e.preventDefault();
+                setShowFpsCounter(prev => !prev);
+            }
+
             // Toggle layers
             if (e.code === "Digit1") {
                 e.preventDefault();
@@ -283,6 +290,7 @@ export function useMapInteraction() {
     }, [mapViewState, selectedViewType])
 
     return {
+        showFpsCounter,
         activePopups,
         mapViewState,
         setMapViewState,
