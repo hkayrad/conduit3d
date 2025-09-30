@@ -1,0 +1,30 @@
+@use "../../../../../../global.scss";
+
+#attribution {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    background: global.$primary;
+    color: global.$white;
+    z-index: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 4px 4px 8px;
+    border-radius: 12px;
+
+    span {
+        font-size: 12px;
+        
+        a {
+            color: global.$white;
+            text-decoration: none;
+            font-size: 12px;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}

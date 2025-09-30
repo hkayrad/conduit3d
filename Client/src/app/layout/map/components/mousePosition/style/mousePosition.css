@@ -1,0 +1,87 @@
+@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Lexend", sans-serif;
+  font-size: 16px;
+}
+
+body::-webkit-scrollbar {
+  width: 8px;
+}
+body::-webkit-scrollbar-track {
+  background: none;
+}
+body::-webkit-scrollbar-thumb {
+  background: #4B4E73;
+}
+
+.lucide {
+  width: 16px;
+  height: 16px;
+}
+
+.error-fg {
+  color: #D32F2F !important;
+}
+
+.warning-fg {
+  color: #FFC107 !important;
+}
+
+.success-fg {
+  color: #4CAF50 !important;
+}
+
+.white-fg {
+  color: #FFFFFF !important;
+}
+
+.error-bg {
+  background: #D32F2F !important;
+}
+
+.warning-bg {
+  background: #FFC107 !important;
+}
+
+.success-bg {
+  background: #4CAF50 !important;
+}
+
+.white-bg {
+  background: #FFFFFF !important;
+}
+
+.shadow {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+kbd {
+  background: #FFFFFF;
+  color: #2B2D42;
+  padding: 1px 4px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+#mouse-position {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  z-index: 1;
+  padding: 4.5px 10px;
+  border-radius: 12px;
+  background: #2B2D42;
+  color: #FFFFFF;
+  width: 136px;
+  display: flex;
+  justify-content: space-between;
+}
+#mouse-position span {
+  font-size: 12px;
+}
+#mouse-position span#number {
+  width: 45%;
+}/*# sourceMappingURL=mousePosition.css.map */

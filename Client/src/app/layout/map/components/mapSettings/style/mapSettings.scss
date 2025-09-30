@@ -1,0 +1,64 @@
+@use "../../../../../../global.scss";
+
+.map-settings-toggle {
+    position: absolute;
+    z-index: 1000;
+    left: 56px;
+    bottom: 48px;
+
+    button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        border: none;
+        border-radius: 12px;
+        color: global.$white;
+        background: global.$primary;
+
+        &:hover {
+            background: global.$primary-light;
+            cursor: pointer;
+        }
+    }
+}
+
+.map-settings-window {
+    position: absolute;
+    z-index: 1000;
+    left: 400px;
+    bottom: 400px;
+    display: flex;
+    flex-direction: column;
+    width: 30vw;
+    background: global.$white;
+
+    .window-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        width: 100%;
+        background: global.$primary;
+        color: global.$white;
+        padding: 0 0 0 12px;
+        height: 32px;
+        align-items: center;
+        user-select: none;
+
+        button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            border: none;
+            background: none;
+            color: global.$white;
+            width: 32px;
+            height: 32px;
+
+            &:hover {
+                background: global.$error;
+            }
+        }
+    }
+}

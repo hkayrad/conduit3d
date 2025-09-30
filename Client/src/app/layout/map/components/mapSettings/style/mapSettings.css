@@ -1,0 +1,127 @@
+@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Lexend", sans-serif;
+  font-size: 16px;
+}
+
+body::-webkit-scrollbar {
+  width: 8px;
+}
+body::-webkit-scrollbar-track {
+  background: none;
+}
+body::-webkit-scrollbar-thumb {
+  background: #4B4E73;
+}
+
+.lucide {
+  width: 16px;
+  height: 16px;
+}
+
+.error-fg {
+  color: #D32F2F !important;
+}
+
+.warning-fg {
+  color: #FFC107 !important;
+}
+
+.success-fg {
+  color: #4CAF50 !important;
+}
+
+.white-fg {
+  color: #FFFFFF !important;
+}
+
+.error-bg {
+  background: #D32F2F !important;
+}
+
+.warning-bg {
+  background: #FFC107 !important;
+}
+
+.success-bg {
+  background: #4CAF50 !important;
+}
+
+.white-bg {
+  background: #FFFFFF !important;
+}
+
+.shadow {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+kbd {
+  background: #FFFFFF;
+  color: #2B2D42;
+  padding: 1px 4px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.map-settings-toggle {
+  position: absolute;
+  z-index: 1000;
+  left: 56px;
+  bottom: 48px;
+}
+.map-settings-toggle button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border: none;
+  border-radius: 12px;
+  color: #FFFFFF;
+  background: #2B2D42;
+}
+.map-settings-toggle button:hover {
+  background: #3B3E5A;
+  cursor: pointer;
+}
+
+.map-settings-window {
+  position: absolute;
+  z-index: 1000;
+  left: 400px;
+  bottom: 400px;
+  display: flex;
+  flex-direction: column;
+  width: 30vw;
+  background: #FFFFFF;
+}
+.map-settings-window .window-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  background: #2B2D42;
+  color: #FFFFFF;
+  padding: 0 0 0 12px;
+  height: 32px;
+  align-items: center;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+.map-settings-window .window-header button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border: none;
+  background: none;
+  color: #FFFFFF;
+  width: 32px;
+  height: 32px;
+}
+.map-settings-window .window-header button:hover {
+  background: #D32F2F;
+}/*# sourceMappingURL=mapSettings.css.map */

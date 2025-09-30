@@ -1,0 +1,111 @@
+@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Lexend", sans-serif;
+  font-size: 16px;
+}
+
+body::-webkit-scrollbar {
+  width: 8px;
+}
+body::-webkit-scrollbar-track {
+  background: none;
+}
+body::-webkit-scrollbar-thumb {
+  background: #4B4E73;
+}
+
+.lucide {
+  width: 16px;
+  height: 16px;
+}
+
+.error-fg {
+  color: #D32F2F !important;
+}
+
+.warning-fg {
+  color: #FFC107 !important;
+}
+
+.success-fg {
+  color: #4CAF50 !important;
+}
+
+.white-fg {
+  color: #FFFFFF !important;
+}
+
+.error-bg {
+  background: #D32F2F !important;
+}
+
+.warning-bg {
+  background: #FFC107 !important;
+}
+
+.success-bg {
+  background: #4CAF50 !important;
+}
+
+.white-bg {
+  background: #FFFFFF !important;
+}
+
+.shadow {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+kbd {
+  background: #FFFFFF;
+  color: #2B2D42;
+  padding: 1px 4px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.shortcut-container-icon {
+  position: absolute;
+  bottom: 48px;
+  left: 16px;
+  z-index: 10;
+  display: flex;
+  background: #2B2D42;
+  color: #FFFFFF;
+  padding: 8px;
+  border-radius: 12px;
+  transition: background 0.3s ease !important;
+}
+.shortcut-container-icon:hover {
+  cursor: pointer;
+  background: #3B3E5A !important;
+}
+
+.shortcuts-info {
+  position: absolute;
+  bottom: 88px;
+  left: 16px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  background: #2B2D42;
+  color: #FFFFFF;
+  padding: 12px;
+  border-radius: 12px;
+  gap: 4px;
+  transition: all 0.3s ease;
+  transform: translateX(0);
+}
+.shortcuts-info.hidden {
+  transform: translateX(-120%);
+}
+.shortcuts-info p {
+  display: flex;
+  gap: 4px;
+}
+.shortcuts-info p span {
+  display: flex;
+  gap: 4px;
+}/*# sourceMappingURL=shortcutsInfo.css.map */
