@@ -1,5 +1,5 @@
 import { useAppSelector } from "../../../../../lib/hooks";
-import { selectExtent } from "../../mapSlice";
+import { selectExtent, selectSelectedViewType, selectViewState } from "../../mapSlice";
 import AdrBinaComponent from "./buildings/AdrBinaComponent";
 import BuildingComponent from "./buildings/BuildingComponent";
 import TrafoBinaComponent from "./buildings/TrafoBinaComponent";
@@ -44,33 +44,48 @@ export default function DataComponent(props: Props): React.ReactNode {
     } = props;
 
     const extent = useAppSelector(selectExtent);
+    const { cartesian } = useAppSelector(selectViewState);
+    const { zoom } = cartesian;
+    const selectedViewType = useAppSelector(selectSelectedViewType);
 
     return (
         <>
             <BuildingComponent
                 setData={setBuildingBina}
                 extent={extent}
+                zoom={zoom}
+                selectedViewType={selectedViewType}
             />
             <AdrBinaComponent
                 setData={setAdrBina}
                 extent={extent}
+                zoom={zoom}
+                selectedViewType={selectedViewType}
             />
             <TrafoBinaComponent
                 setData={setTrafoBina}
                 extent={extent}
+                zoom={zoom}
+                selectedViewType={selectedViewType}
             />
 
             <AgDirekComponent
                 setData={setAgDirek}
                 extent={extent}
+                zoom={zoom}
+                selectedViewType={selectedViewType}
             />
             <OgMusDirekComponent
                 setData={setOgMusDirek}
                 extent={extent}
+                zoom={zoom}
+                selectedViewType={selectedViewType}
             />
             <AydDirekComponent
                 setData={setAydDirek}
                 extent={extent}
+                zoom={zoom}
+                selectedViewType={selectedViewType}
             />
 
             <AgHatComponent

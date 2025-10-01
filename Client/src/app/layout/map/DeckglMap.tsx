@@ -124,7 +124,7 @@ export default function DeckglMap(): React.ReactNode {
             C3D_MapViewType.FirstPerson,
             visibility.basemap
         ),
-
+        
         ...hatLayerData.flatMap(filteredHat =>
             filteredHat.map(hat =>
                 CreateLayer.Hat(

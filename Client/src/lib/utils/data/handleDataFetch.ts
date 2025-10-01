@@ -2,14 +2,20 @@ import type { Extent } from "../../types";
 import { CHUNK_SIZE, DATA_FETCH_DELAY_MS, MAX_CHUNK_AMOUNT } from "../../constants";
 import { Logger } from "../logger";
 import { sleep } from "../sleep";
+import { C3D_MapViewType } from "../../enums";
 
 export const handleDataFetch = async (
     isLoadingRef: React.RefObject<boolean>,
     abortControllerRef: React.RefObject<AbortController | null>,
     extent: Extent,
+    zoom: number,
+    selectedViewType: C3D_MapViewType,
     fetchNextChunk: (page: number, signal?: AbortSignal) => Promise<GeoJSON.FeatureCollection>,
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection[]>>
 ) => {
+    if (selectedViewType !== C3D_MapViewType.FirstPerson && zoom < 15)
+        return;
+
     try {
         // Prevent multiple concurrent fetches
         if (isLoadingRef.current) return;

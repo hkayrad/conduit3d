@@ -3,11 +3,13 @@ import type { Extent } from "../../../../../../lib/types"
 import { BuildingsApi } from "../../../../../../lib/api";
 import { Logger, wkbToGeometry, handleDataFetch } from "../../../../../../lib/utils";
 import { CHUNK_SIZE, DEFAULT_FLOOR_COUNT, DEFAULT_FLOOR_HEIGHT } from "../../../../../../lib/constants";
-import { FeatureType } from "../../../../../../lib/enums";
+import { C3D_MapViewType, FeatureType } from "../../../../../../lib/enums";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection[]>>,
     extent: Extent,
+    zoom: number,
+    selectedViewType: C3D_MapViewType
 }
 
 /**
@@ -16,7 +18,7 @@ type Props = {
  * @param props - The props for the component
  */
 export default function BuildingComponent(props: Props): null {
-    const { setData, extent } = props;
+    const { setData, extent, zoom, selectedViewType } = props;
     const abortControllerRef = useRef<AbortController | null>(null);
     const isLoadingRef = useRef<boolean>(false);
 
@@ -70,8 +72,8 @@ export default function BuildingComponent(props: Props): null {
     }
 
     useEffect(() => {
-        handleDataFetch(isLoadingRef, abortControllerRef, extent, fetchNextChunk, setData);
-    }, [extent]);
+        handleDataFetch(isLoadingRef, abortControllerRef, extent, zoom, selectedViewType,  fetchNextChunk, setData);
+    }, [extent, zoom, selectedViewType]);
 
     return null;
 }

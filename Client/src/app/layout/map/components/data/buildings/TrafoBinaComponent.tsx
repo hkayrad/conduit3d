@@ -1,13 +1,15 @@
 import { useEffect, useRef } from "react";
 import { TrafoBinaApi } from "../../../../../../lib/api";
 import type { Extent } from "../../../../../../lib/types";
-import { FeatureType } from "../../../../../../lib/enums";
+import { C3D_MapViewType, FeatureType } from "../../../../../../lib/enums";
 import { handleDataFetch, Logger, wkbToGeometry } from "../../../../../../lib/utils";
 import { CHUNK_SIZE } from "../../../../../../lib/constants";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection[]>>,
-    extent: Extent
+    extent: Extent,
+    zoom: number,
+    selectedViewType: C3D_MapViewType
 }
 
 /**
@@ -16,7 +18,7 @@ type Props = {
  * @param props - The props for the component
  */
 export default function TrafoBinaComponent(props: Props): null {
-    const { setData, extent } = props;
+    const { setData, extent, zoom, selectedViewType } = props;
     const abortControllerRef = useRef<AbortController | null>(null);
     const isLoadingRef = useRef<boolean>(false);
 
@@ -58,8 +60,8 @@ export default function TrafoBinaComponent(props: Props): null {
     }
 
     useEffect(() => {
-        handleDataFetch(isLoadingRef, abortControllerRef, extent, fetchNextChunk, setData);
-    }, [extent]);
+        handleDataFetch(isLoadingRef, abortControllerRef, extent, zoom, selectedViewType, fetchNextChunk, setData);
+    }, [extent, zoom, selectedViewType]);
 
     return null;
 } 

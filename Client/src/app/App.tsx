@@ -15,7 +15,8 @@ export default function App(): React.ReactNode {
 
     const handleConfigFetch = async () => {
         const response = await ConfigApi.fetchConfig();
-
+        console.log(response);
+        
         if (response.isSuccess)
             dispatch(setConfig(response.data.reduce((acc, curr) => {
                 acc[curr.key] = curr.value;

@@ -113,7 +113,7 @@ const initialState: MapState = {
         [C3D_MapViewType.Cartesian]: {
             longitude: 41.28654673296825,
             latitude: 39.90032606428541,
-            zoom: 15,
+            zoom: 14,
             pitch: 60,
             bearing: 0
         },

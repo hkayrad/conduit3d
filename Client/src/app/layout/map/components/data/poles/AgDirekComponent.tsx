@@ -2,14 +2,16 @@ import { useCallback, useEffect, useRef } from "react";
 import { AgDirekApi } from "../../../../../../lib/api";
 import type { Extent } from "../../../../../../lib/types";
 import { setType } from "../../../mapSlice";
-import { FeatureType, C3D_MapLayers } from "../../../../../../lib/enums";
+import { FeatureType, C3D_MapLayers, C3D_MapViewType } from "../../../../../../lib/enums";
 import { useAppDispatch } from "../../../../../../lib/hooks";
 import { handleDataFetch, Logger, wkbToGeometry } from "../../../../../../lib/utils";
 import { CHUNK_SIZE } from "../../../../../../lib/constants";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection[]>>,
-    extent: Extent
+    extent: Extent,
+    zoom: number,
+    selectedViewType: C3D_MapViewType
 }
 
 /**
@@ -18,7 +20,7 @@ type Props = {
  * @param props - The props for the component
  */
 export default function AgDirekComponent(props: Props): null {
-    const { setData, extent } = props;
+    const { setData, extent, zoom, selectedViewType } = props;
 
     const dispatch = useAppDispatch();
 
@@ -91,8 +93,8 @@ export default function AgDirekComponent(props: Props): null {
     }, []);
 
     useEffect(() => {
-        handleDataFetch(isLoadingRef, abortControllerRef, extent, fetchNextChunk, setData)
-    }, [extent]);
+        handleDataFetch(isLoadingRef, abortControllerRef, extent, zoom, selectedViewType, fetchNextChunk, setData)
+    }, [extent, zoom, selectedViewType]);
 
     useEffect(() => {
         handleAgDirekTypesFetch();

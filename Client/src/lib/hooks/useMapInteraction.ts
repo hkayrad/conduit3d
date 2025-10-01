@@ -37,7 +37,7 @@ export function useMapInteraction() {
     const [hoveredFeature, setHoveredFeature] = useState<GeoJSON.Feature | null>(null);
     const [mousePos, setMousePos] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
     const [mouseLonLat, setMouseLonLat] = useState<number[]>([0, 0]);
-    const [showFpsCounter, setShowFpsCounter] = useState(true);
+    const [showFpsCounter, setShowFpsCounter] = useState(false);
 
     const zIndexCounter = useRef(1000);
     const searchInputRef = useRef<HTMLInputElement>(null!);

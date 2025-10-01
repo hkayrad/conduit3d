@@ -3,7 +3,7 @@ import { RekortmanApi } from "../../../../../../lib/api";
 import type { Extent } from "../../../../../../lib/types";
 import { Logger, handleDataFetch, lineStringToSegments, wkbToGeometry } from "../../../../../../lib/utils";
 import { setType } from "../../../mapSlice";
-import { FeatureType, HatCinsi, C3D_MapLayers } from "../../../../../../lib/enums";
+import { FeatureType, HatCinsi, C3D_MapLayers, C3D_MapViewType } from "../../../../../../lib/enums";
 import { useAppDispatch } from "../../../../../../lib/hooks";
 import { CHUNK_SIZE } from "../../../../../../lib/constants";
 
@@ -95,7 +95,7 @@ export default function RekortmanComponent(props: Props): null {
         if (allPoles.length <= 0)
             return;
 
-        handleDataFetch(isLoadingRef, abortControllerRef, extent, fetchNextChunk, setData);
+        handleDataFetch(isLoadingRef, abortControllerRef, extent, 16, C3D_MapViewType.Cartesian, fetchNextChunk, setData);
     }, [allPoles, extent]);
 
     useEffect(() => {

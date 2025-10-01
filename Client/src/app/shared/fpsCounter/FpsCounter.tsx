@@ -22,8 +22,8 @@ interface PerformanceMetrics {
     stability: number; // FPS stability percentage
 }
 
-export default function FpsCounter({ 
-    position = 'top-right', 
+export default function FpsCounter({
+    position = 'top-right',
     showDetails = false,
     updateInterval = 1000
 }: FpsCounterProps) {
@@ -41,7 +41,7 @@ export default function FpsCounter({
         frameDrops: 0,
         stability: 100
     });
-    
+
     const frameCountRef = useRef(0);
     const lastTimeRef = useRef(performance.now());
     const animationFrameRef = useRef<number>(0);
@@ -57,60 +57,60 @@ export default function FpsCounter({
 
         const updateFps = (currentTime: number) => {
             const frameStartTime = performance.now();
-            
+
             frameCountRef.current++;
             totalFramesRef.current++;
-            
+
             const frameTime = currentTime - lastFrameTime;
             frameTimesRef.current.push(frameTime);
-            
+
             // Track jank (frames over 16.67ms for 60fps)
             if (frameTime > 16.67) {
                 jankFramesRef.current++;
             }
-            
+
             const deltaTime = currentTime - lastTimeRef.current;
-            
+
             if (deltaTime >= updateInterval) {
                 const currentFps = Math.round((frameCountRef.current * 1000) / deltaTime);
                 const avgFrameTime = frameTimesRef.current.reduce((a, b) => a + b, 0) / frameTimesRef.current.length;
-                
+
                 // Calculate CPU usage based on actual processing time vs available time
                 const totalElapsedTime = currentTime - cpuStartTimeRef.current;
-                const cpuUsagePercentage = totalElapsedTime > 0 
+                const cpuUsagePercentage = totalElapsedTime > 0
                     ? Math.min(100, (busyTimeRef.current / totalElapsedTime) * 100)
                     : 0;
-                
+
                 // Memory usage (if available)
                 let memoryUsage = 0;
                 if ('memory' in performance) {
                     const memory = (performance as any).memory;
                     memoryUsage = Math.round(memory.usedJSHeapSize / 1024 / 1024); // in MB
                 }
-                
+
                 // Calculate frame drops
                 const expectedFrames = Math.round(deltaTime / 16.67);
                 const frameDrops = Math.max(0, expectedFrames - frameCountRef.current);
-                
+
                 // Calculate FPS stability (lower variance = higher stability)
-                const fpsVariance = fpsHistoryRef.current.length > 1 
-                    ? calculateVariance(fpsHistoryRef.current) 
+                const fpsVariance = fpsHistoryRef.current.length > 1
+                    ? calculateVariance(fpsHistoryRef.current)
                     : 0;
                 const stability = Math.max(0, 100 - (fpsVariance / Math.max(currentFps, 1)) * 100);
-                
+
                 // Average FPS calculation
                 fpsHistoryRef.current.push(currentFps);
                 if (fpsHistoryRef.current.length > 60) {
                     fpsHistoryRef.current.shift();
                 }
-                
-                const avgFps = fpsHistoryRef.current.length > 0 
+
+                const avgFps = fpsHistoryRef.current.length > 0
                     ? Math.round(fpsHistoryRef.current.reduce((a, b) => a + b, 0) / fpsHistoryRef.current.length)
                     : currentFps;
 
                 // Jank percentage
-                const jankPercentage = totalFramesRef.current > 0 
-                    ? (jankFramesRef.current / totalFramesRef.current) * 100 
+                const jankPercentage = totalFramesRef.current > 0
+                    ? (jankFramesRef.current / totalFramesRef.current) * 100
                     : 0;
 
                 setMetrics(prev => ({
@@ -127,7 +127,7 @@ export default function FpsCounter({
                     frameDrops,
                     stability: Math.round(stability)
                 }));
-                
+
                 // Reset counters
                 frameCountRef.current = 0;
                 frameTimesRef.current = [];
@@ -135,11 +135,11 @@ export default function FpsCounter({
                 cpuStartTimeRef.current = currentTime;
                 busyTimeRef.current = 0;
             }
-            
+
             // Track busy time for CPU usage calculation
             const frameProcessingTime = performance.now() - frameStartTime;
             busyTimeRef.current += frameProcessingTime;
-            
+
             lastFrameTime = currentTime;
             animationFrameRef.current = requestAnimationFrame(updateFps);
         };
@@ -168,6 +168,7 @@ export default function FpsCounter({
             jank: 0,
             frameDrops: 0,
             stability: 100,
+            memoryUsage: 0,
             cpuUsage: 0
         }));
         fpsHistoryRef.current = [];
@@ -192,23 +193,23 @@ export default function FpsCounter({
     };
 
     const getMemoryColor = (usage: number) => {
-        if (usage < 70) return '#00ff00';
-        if (usage < 85) return '#ffff00';
+        if (usage < 128) return '#00ff00';
+        if (usage < 256) return '#ffff00';
         return '#ff0000';
     };
 
     return (
         <div className={`fps-counter fps-counter--${position}`}>
             <div className="fps-display">
-                <span 
-                    className="fps-value" 
+                <span
+                    className="fps-value"
                     style={{ color: getFpsColor(metrics.fps) }}
                 >
                     {metrics.fps}
                 </span>
                 <span className="fps-label">FPS</span>
             </div>
-            
+
             {showDetails && (
                 <div className="fps-details">
                     <div className="performance-grid">
@@ -218,14 +219,14 @@ export default function FpsCounter({
                                 {metrics.avgFps}
                             </span>
                         </div>
-                        
+
                         <div className="fps-stat">
                             <span className="fps-stat-label">Min:</span>
                             <span className="fps-stat-value" style={{ color: getFpsColor(metrics.minFps) }}>
                                 {metrics.minFps === Infinity ? metrics.fps : metrics.minFps}
                             </span>
                         </div>
-                        
+
                         <div className="fps-stat">
                             <span className="fps-stat-label">Max:</span>
                             <span className="fps-stat-value" style={{ color: getFpsColor(metrics.maxFps) }}>
@@ -239,14 +240,14 @@ export default function FpsCounter({
                                 {metrics.stability}%
                             </span>
                         </div>
-                        
+
                         <div className="fps-stat">
                             <span className="fps-stat-label">Frame:</span>
                             <span className="fps-stat-value" style={{ color: getPerformanceColor(metrics.frameTime, { good: 16.67, ok: 33.33 }) }}>
                                 {metrics.frameTime.toFixed(2)}ms
                             </span>
                         </div>
-                        
+
                         <div className="fps-stat">
                             <span className="fps-stat-label">Jank:</span>
                             <span className="fps-stat-value" style={{ color: getPerformanceColor(metrics.jank, { good: 5, ok: 15 }) }}>
@@ -275,14 +276,13 @@ export default function FpsCounter({
                             </span>
                         </div>
 
-                        {metrics.memoryUsage > 0 && (
-                            <div className="fps-stat">
-                                <span className="fps-stat-label">Memory:</span>
-                                <span className="fps-stat-value" style={{ color: getMemoryColor(metrics.memoryUsage) }}>
-                                    {metrics.memoryUsage} MB
-                                </span>
-                            </div>
-                        )}
+
+                        <div className="fps-stat">
+                            <span className="fps-stat-label">Memory:</span>
+                            <span className="fps-stat-value" style={{ color: getMemoryColor(metrics.memoryUsage) }}>
+                                {metrics.memoryUsage} MB
+                            </span>
+                        </div>
 
                         <div className="fps-stat">
                             <span className="fps-stat-label">Target:</span>
@@ -296,9 +296,9 @@ export default function FpsCounter({
                         <div className="perf-bar">
                             <span className="perf-bar-label">Performance</span>
                             <div className="perf-bar-container">
-                                <div 
-                                    className="perf-bar-fill" 
-                                    style={{ 
+                                <div
+                                    className="perf-bar-fill"
+                                    style={{
                                         width: `${Math.min(100, (metrics.fps / 60) * 100)}%`,
                                         backgroundColor: getFpsColor(metrics.fps)
                                     }}
@@ -310,9 +310,9 @@ export default function FpsCounter({
                         <div className="perf-bar">
                             <span className="perf-bar-label">Stability</span>
                             <div className="perf-bar-container">
-                                <div 
-                                    className="perf-bar-fill" 
-                                    style={{ 
+                                <div
+                                    className="perf-bar-fill"
+                                    style={{
                                         width: `${metrics.stability}%`,
                                         backgroundColor: getPerformanceColor(100 - metrics.stability, { good: 10, ok: 25 })
                                     }}
@@ -321,10 +321,10 @@ export default function FpsCounter({
                             <span className="perf-bar-value">{metrics.stability}%</span>
                         </div>
                     </div>
-                    
+
                     <div className="fps-actions">
-                        <button 
-                            className="fps-reset" 
+                        <button
+                            className="fps-reset"
                             onClick={resetStats}
                             title="Reset Statistics"
                         >

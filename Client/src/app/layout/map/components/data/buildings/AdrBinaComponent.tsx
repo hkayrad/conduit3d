@@ -1,13 +1,15 @@
 import { useEffect, useRef } from "react";
 import type { Extent } from "../../../../../../lib/types"
 import { AdrBinaApi } from "../../../../../../lib/api";
-import { FeatureType } from "../../../../../../lib/enums";
+import { C3D_MapViewType, FeatureType } from "../../../../../../lib/enums";
 import { Logger, wkbToGeometry, handleDataFetch } from "../../../../../../lib/utils";
 import { CHUNK_SIZE, DEFAULT_FLOOR_COUNT, DEFAULT_FLOOR_HEIGHT } from "../../../../../../lib/constants";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection[]>>,
-    extent: Extent
+    extent: Extent,
+    zoom: number,
+    selectedViewType: C3D_MapViewType
 }
 
 /**
@@ -16,7 +18,7 @@ type Props = {
  * @param props - The props for the component
  */
 export default function AdrBinaComponent(props: Props): null {
-    const { setData, extent } = props;
+    const { setData, extent, zoom, selectedViewType } = props;
     const abortControllerRef = useRef<AbortController | null>(null);
     const isLoadingRef = useRef<boolean>(false);
 
@@ -39,25 +41,25 @@ export default function AdrBinaComponent(props: Props): null {
             }
 
             const formattedData: GeoJSON.Feature[] = response.data
-            .filter(rawData => rawData.adi.trim().toUpperCase() !== "SANAL_BINA")
-            .map((rawData) => (
-                {
-                    type: "Feature",
-                    geometry: wkbToGeometry(rawData.wkb),
-                    properties: {
-                        id: rawData.id,
-                        dataType: FeatureType.BUILDING,
-                        adi: rawData.adi,
-                        kodu: rawData.kodu,
-                        siteAdi: rawData.siteAdi,
-                        binaKatSayisi: rawData.binaKatSayisi,
-                        daireSayisi: rawData.daireSayisi,
-                        isyeriSayisi: rawData.isyeriSayisi,
-                        // Assumed average floor count as 5 and floor height as 2.5 meters if not provided
-                        yukseklik: rawData.yukseklik || ((rawData.binaKatSayisi || DEFAULT_FLOOR_COUNT) * DEFAULT_FLOOR_HEIGHT),
+                .filter(rawData => rawData.adi.trim().toUpperCase() !== "SANAL_BINA")
+                .map((rawData) => (
+                    {
+                        type: "Feature",
+                        geometry: wkbToGeometry(rawData.wkb),
+                        properties: {
+                            id: rawData.id,
+                            dataType: FeatureType.BUILDING,
+                            adi: rawData.adi,
+                            kodu: rawData.kodu,
+                            siteAdi: rawData.siteAdi,
+                            binaKatSayisi: rawData.binaKatSayisi,
+                            daireSayisi: rawData.daireSayisi,
+                            isyeriSayisi: rawData.isyeriSayisi,
+                            // Assumed average floor count as 5 and floor height as 2.5 meters if not provided
+                            yukseklik: rawData.yukseklik || ((rawData.binaKatSayisi || DEFAULT_FLOOR_COUNT) * DEFAULT_FLOOR_HEIGHT),
+                        }
                     }
-                }
-            ));
+                ));
 
             return {
                 type: "FeatureCollection",
@@ -74,8 +76,8 @@ export default function AdrBinaComponent(props: Props): null {
     }
 
     useEffect(() => {
-        handleDataFetch(isLoadingRef, abortControllerRef, extent, fetchNextChunk, setData);
-    }, [extent])
+        handleDataFetch(isLoadingRef, abortControllerRef, extent, zoom, selectedViewType, fetchNextChunk, setData);
+    }, [extent, zoom, selectedViewType])
 
     return null;
 } 
