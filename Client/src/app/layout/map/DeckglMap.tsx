@@ -16,7 +16,7 @@ import { FirstPersonView, FirstPersonViewport, Layer, MapView, Viewport, WebMerc
 import { ColumnLayer, GeoJsonLayer } from "deck.gl";
 import { DeckGL } from "@deck.gl/react";
 import { CompassWidget, ZoomWidget } from "@deck.gl/widgets";
-import { Map as MapLibre } from 'react-map-gl/maplibre';
+import { Map as MapLibre, type StyleSpecification } from 'react-map-gl/maplibre';
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Outlet, useLocation } from "react-router";
 
@@ -45,15 +45,101 @@ import FpsCounter from "../../shared/fpsCounter/FpsCounter";
  */
 export default function DeckglMap(): React.ReactNode {
     // Redux State
-    const { visibility, filters, selectedViewType, viewState, lastRefreshPosition, isWireframe, focusedView } = useAppSelector(selectMapState);
-    const { firstPerson } = viewState;
+    const { visibility, selectedViewType, viewState, lastRefreshPosition, isWireframe, focusedView, filters } = useAppSelector(selectMapState);
+    const { cartesian, firstPerson } = viewState;
     const config = useAppSelector(selectConfig);
+
+    const adrBinaColor = config.ADR_BINA_COLOR ? hexToRgba(config.ADR_BINA_COLOR) : hexToRgba("#C8C8C8FF");
+    const MAP_STYLE: StyleSpecification = {
+        version: 8,
+        sources: {
+            "eskisehir": {
+                type: "raster",
+                tiles: [
+                    `${import.meta.env.VITE_TILE_SERVER_URL}/eskisehir/{z}/{x}/{y}`,
+                ],
+                tileSize: 256,
+                attribution: "© OpenStreetMap contributors",
+                bounds: [29.8, 38.3, 31.8, 40.1]
+            },
+            "erzurum": {
+                type: "raster",
+                tiles: [
+                    `${import.meta.env.VITE_TILE_SERVER_URL}/erzurum/{z}/{x}/{y}`,
+                ],
+                tileSize: 256,
+                attribution: "© OpenStreetMap contributors",
+                bounds: [39.5, 38.0, 42.5, 41.0]
+            },
+            "turkey": {
+                type: "raster",
+                tiles: [
+                    `${import.meta.env.VITE_TILE_SERVER_URL}/turkey/{z}/{x}/{y}`,
+                ],
+                tileSize: 256,
+                attribution: "© OpenStreetMap contributors",
+                bounds: [25.0, 35.0, 45.0, 43.0]
+            },
+            "buildings": {
+                type: "vector",
+                scheme: "tms",
+                tiles: [
+                    "https://localhost/geoserver/gwc/service/tms/1.0.0/demoB:buildings@EPSG:900913@pbf/{z}/{x}/{y}.pbf"
+                ],
+                bounds: [25.0, 35.0, 45.0, 43.0],
+                minzoom: 0,
+            },
+        },
+        layers: [
+            {
+                id: "turkey-layer",
+                type: "raster",
+                source: "turkey",
+                layout: {
+                    visibility: selectedViewType === C3D_MapViewType.Cartesian && visibility.basemap ? "visible" : "none"
+                },
+                maxzoom: 12
+            },
+            {
+                id: "eskisehir-layer",
+                type: "raster",
+                source: "eskisehir",
+                layout: {
+                    visibility: selectedViewType === C3D_MapViewType.Cartesian && visibility.basemap ? "visible" : "none"
+                },
+                maxzoom: 16
+            },
+            {
+                id: "erzurum-layer",
+                type: "raster",
+                source: "erzurum",
+                layout: {
+                    visibility: selectedViewType === C3D_MapViewType.Cartesian && visibility.basemap ? "visible" : "none"
+                },
+                maxzoom: 16
+            },
+            {
+                id: "building-layer",
+                source: "buildings",
+                "source-layer": "buildings",
+                type: "fill-extrusion",
+                maxzoom: 22,
+                minzoom: 0,
+                layout: {
+                    visibility: selectedViewType === C3D_MapViewType.Cartesian && visibility.adrBina ? "visible" : "none"
+                },
+                paint: {
+                    "fill-extrusion-color": `rgba(${adrBinaColor[0]}, ${adrBinaColor[1]}, ${adrBinaColor[2]}, ${adrBinaColor[3]})`,
+                    "fill-extrusion-height": 2.5
+                }
+            },
+        ]
+    }
 
     // React-Router Hooks
     const location = useLocation();
 
     // Local State
-    const [debugBinaVisible, setDebugBinaVisible] = useState<boolean>(false);
     const [cursor, setCursor] = useState<string>("default");
 
     const widgets = useMemo(() => {
@@ -124,7 +210,7 @@ export default function DeckglMap(): React.ReactNode {
             C3D_MapViewType.FirstPerson,
             visibility.basemap
         ),
-        
+
         ...hatLayerData.flatMap(filteredHat =>
             filteredHat.map(hat =>
                 CreateLayer.Hat(
@@ -133,7 +219,7 @@ export default function DeckglMap(): React.ReactNode {
                     hat.color,
                     hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
                     hat.id.includes("HAVAİ") ? overgroundLineWidth : undergroundLineWidth,
-                    hat.visibility,
+                    selectedViewType === C3D_MapViewType.Cartesian ? (hat.visibility && cartesian.zoom >= 15) : hat.visibility,
                     hat.cinsi
                 )
             )
@@ -146,7 +232,7 @@ export default function DeckglMap(): React.ReactNode {
                     direk.data,
                     direk.color,
                     hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
-                    direk.visibility,
+                    selectedViewType === C3D_MapViewType.Cartesian ? (direk.visibility && cartesian.zoom >= 15) : direk.visibility,
                 )
             )
         ),
@@ -161,7 +247,7 @@ export default function DeckglMap(): React.ReactNode {
             pickable: true,
             autoHighlight: true,
             highlightColor: hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
-            visible: visibility.adrBina,
+            visible: selectedViewType === C3D_MapViewType.Cartesian ? (visibility.adrBina && cartesian.zoom >= 15) : visibility.adrBina,
             wireframe: isWireframe,
         })),
 
@@ -175,7 +261,7 @@ export default function DeckglMap(): React.ReactNode {
             pickable: true,
             autoHighlight: true,
             highlightColor: hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
-            visible: debugBinaVisible,
+            visible: selectedViewType === C3D_MapViewType.Cartesian ? (visibility.adrBina && cartesian.zoom >= 15) : visibility.adrBina,
             wireframe: isWireframe,
         })),
 
@@ -192,7 +278,7 @@ export default function DeckglMap(): React.ReactNode {
             radius: 1,
             elevationScale: 1,
             diskResolution: 4,
-            visible: visibility.trafoBina,
+            visible: selectedViewType === C3D_MapViewType.Cartesian ? (visibility.trafoBina && cartesian.zoom >= 15) : visibility.trafoBina,
         })),
     ], [
         filters,
@@ -205,7 +291,6 @@ export default function DeckglMap(): React.ReactNode {
         trafoBina,
         overgroundLineWidth,
         undergroundLineWidth,
-        debugBinaVisible,
         config
     ]);
 
@@ -453,10 +538,7 @@ export default function DeckglMap(): React.ReactNode {
                 <MapSettings />
                 {/* <StaticStreetView /> */}
                 <DynmicStreetView />
-                <LayerControl
-                    debugBinaVisible={debugBinaVisible}
-                    setDebugBinaVisible={setDebugBinaVisible}
-                />
+                <LayerControl />
                 <HoverCard
                     hoveredFeature={hoveredFeature}
                     mousePos={mousePos}
@@ -489,11 +571,11 @@ export default function DeckglMap(): React.ReactNode {
                     }}
                 >
                     <MapLibre
-                        // mapStyle={MAP_STYLE[0]}
+                        mapStyle={MAP_STYLE}
                         reuseMaps
                         attributionControl={false}
                         maxZoom={25}
-                        boxZoom={false}
+                        // boxZoom={false}
                         cursor={cursor}
                     />
                 </DeckGL>

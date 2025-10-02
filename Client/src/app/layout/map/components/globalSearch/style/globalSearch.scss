@@ -3,17 +3,17 @@
 .info-card {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: .5rem;
     position: absolute;
-    bottom: 16px;
+    bottom: 1rem;
     left: 0;
     right: 0;
     margin: auto;
     width: 400px;
     background: global.$primary;
     color: global.$white;
-    border-radius: 12px;
-    padding: 12px;
+    border-radius: .75rem;
+    padding: .75rem;
     z-index: 900;
     transition: all 0.3s ease;
 
@@ -29,29 +29,29 @@
 #global-search {
     position: fixed;
     z-index: 1000;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-    width: 400px;
-    height: 60px;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 24rem;
+    height: fit-content;
     margin: auto;
     background: global.$primary;
-    border-radius: 0px 0px 12px 12px;
+    border-radius: 0 0 .75rem .75rem;
 
     &.with-results {
-        border-radius: 0px !important;
+        border-radius: 0 !important;
     }
 
     .search-bar {
         background: global.$primary-light;
-        padding: 8px;
+        padding: .5rem;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: .5rem;
         color: global.$white;
-        margin-top: 12px;
-        border-radius: 4px;
-        margin: 12px 12px;
+        margin-top: .75rem;
+        border-radius: .25rem;
+        margin: .75rem;
 
         &:has(input:focus),
         &:hover {
@@ -77,14 +77,14 @@
 
     .results {
         position: fixed;
-        top: 60px;
-        width: 400px;
+        top: 3.5rem;
+        width: 24rem;
         background: global.$primary;
         display: flex;
         flex-direction: column;
-        gap: 12px;
-        padding: 0px 12px 12px 12px;
-        border-radius: 0 0 12px 12px;
+        gap: .75rem;
+        padding: .25rem .75rem .75rem .75rem;
+        border-radius: 0 0 .75rem .75rem;
 
         .result-item {
             display: flex;
@@ -93,10 +93,10 @@
             width: 100%;
             overflow: hidden;
             align-items: center;
-            padding: 8px 16px;
+            padding: .5rem 1rem;
             justify-content: space-between;
-            gap: 24px;
-            border-radius: 4px;
+            gap: 1.5rem;
+            border-radius: .25rem;
             transition: all 0.2s ease;
 
             &:hover {
@@ -108,7 +108,7 @@
                 position: unset;
                 background: none;
                 color: global.$white;
-                padding: 0px;
+                padding: 0;
             }
 
             .text {
@@ -119,21 +119,21 @@
                     text-wrap: nowrap;
                     text-overflow: ellipsis;
                     overflow: hidden;
-                    max-width: 220px;
+                    max-width: 12rem;
 
                 }
 
                 .subtitle {
-                    font-size: 12px;
-                    max-width: 220px;
+                    font-size: .75rem;
+                    max-width: 12rem;
                     opacity: 0.8;
                 }
             }
 
             .position {
-                width: 60px;
+                width: 3.5rem;
                 text-wrap: nowrap;
-                font-size: 12px;
+                font-size: .75rem;
                 opacity: 0.8;
             }
         }

@@ -6,20 +6,19 @@
   font-family: "Lexend", sans-serif;
   font-size: 16px;
 }
-
-body::-webkit-scrollbar {
-  width: 8px;
+*::-webkit-scrollbar {
+  width: 0.5rem;
 }
-body::-webkit-scrollbar-track {
+*::-webkit-scrollbar-track {
   background: none;
 }
-body::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
   background: #4B4E73;
 }
 
 .lucide {
-  width: 16px;
-  height: 16px;
+  width: 1rem;
+  height: 1rem;
 }
 
 .error-fg {
@@ -55,18 +54,26 @@ body::-webkit-scrollbar-thumb {
 }
 
 .shadow {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.15);
+}
+
+kbd {
+  background: #FFFFFF;
+  color: #2B2D42;
+  padding: 0.0625rem 0.25rem;
+  border-radius: 0.25rem;
+  white-space: nowrap;
 }
 
 #login {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  height: 100svh;
-  width: 100svw;
+  height: 100dvh;
+  width: 100dvw;
   overflow: hidden;
 }
 #login #left {
-  height: 100vh;
+  height: 100dvh;
   background-color: #2B2D42;
   position: relative;
   display: grid;
@@ -89,21 +96,21 @@ body::-webkit-scrollbar-thumb {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 32px;
-  padding: 0 250px;
+  gap: 2rem;
+  padding: 0 auto;
 }
 #login #right #info-box {
   position: absolute;
-  right: 16px;
-  top: 16px;
+  right: 1rem;
+  top: 1rem;
 }
 #login #right #info-box #info-hover {
   color: #FFFFFF;
   background: #2B2D42;
   display: flex;
   align-items: center;
-  padding: 12px;
-  border-radius: 8px;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
 }
 #login #right #info-box #info-hover:hover {
   cursor: help;
@@ -112,13 +119,13 @@ body::-webkit-scrollbar-thumb {
   position: absolute;
   transition: all 0.2s ease;
   right: 0;
-  top: 48px;
-  font-size: 12px;
+  top: 3rem;
+  font-size: 0.75rem;
   color: #FFFFFF;
   background: #2B2D42;
-  padding: 8px;
+  padding: 0.5rem;
   width: 200px;
-  border-radius: 8px;
+  border-radius: 0.5rem;
   opacity: 0;
 }
 #login #right #info-box #info-text.visible {
@@ -126,7 +133,7 @@ body::-webkit-scrollbar-thumb {
 }
 #login #right #welcome {
   color: #2B2D42;
-  font-size: 48px;
+  font-size: 3rem;
   font-weight: bold;
 }
 #login #right #instructions {
@@ -137,14 +144,13 @@ body::-webkit-scrollbar-thumb {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 1.5rem;
   justify-content: center;
-  width: 100%;
+  width: 24rem;
 }
 #login #right #login-form .input {
   margin: auto;
-  min-width: 300px;
-  width: 20vw;
+  min-width: 16rem;
 }
 #login #right #login-form #login-button {
   display: flex;
@@ -152,13 +158,13 @@ body::-webkit-scrollbar-thumb {
   justify-content: center;
   width: -moz-fit-content;
   width: fit-content;
-  padding: 8px 12px;
+  padding: 0.5rem 0.75rem;
   margin: auto;
-  gap: 8px;
+  gap: 0.5rem;
   background-color: #2B2D42;
   color: #FFFFFF;
   border: none;
-  border-radius: 8px;
+  border-radius: 0.5rem;
   transition: all ease 0.2s;
 }
 #login #right #login-form #login-button #loader {
@@ -181,9 +187,9 @@ body::-webkit-scrollbar-thumb {
   display: flex;
   align-items: center;
   width: fit-content;
-  gap: 16px;
-  padding: 8px 16px;
-  border-radius: 8px;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
   visibility: hidden;
 }
 #login #right #login-error.visible {

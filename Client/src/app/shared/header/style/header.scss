@@ -6,11 +6,12 @@
     left: 0;
     z-index: 100;
     background-color: global.$white;
-    border-radius: 0 0 12px 0;
-    padding: 4px 0;
+    border-radius: 0 0 .75rem 0;
+    height: 4rem;
 
     #logo {
-        height: 48px;
+        height: 3rem;
+        margin: .5rem 0;
     }
 }
 
@@ -22,24 +23,24 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 16px;
-    padding: 8px 14px;
+    gap: 1rem;
+    padding: .5rem .875rem;
     background: global.$white;
-    border-radius: 0 0 0 12px;
-    height: 60px;
+    border-radius: 0 0 0 .75rem;
+    height: 4rem;
 
-    #action-button {
+    #link-button {
         color: global.$primary;
         text-decoration: none;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: .5rem;
         outline: none;
         border: none;
         background: none;
-        padding: 8px;
+        padding: .5rem;
         transition: all 0.2s ease;
-        border-radius: 6px;
+        border-radius: .5rem;
 
         &.error-fg {
             &:hover {

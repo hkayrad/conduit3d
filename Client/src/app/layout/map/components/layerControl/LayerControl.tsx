@@ -13,13 +13,7 @@ import { C3D_MapLayers, C3D_MapViewType } from "../../../../../lib/enums";
  * @component
  * @returns The rendered component
  */
-export default function LayerControl({
-    debugBinaVisible,
-    setDebugBinaVisible
-}: {
-    debugBinaVisible: boolean;
-    setDebugBinaVisible: React.Dispatch<React.SetStateAction<boolean>>;
-}): React.ReactNode {
+export default function LayerControl(): React.ReactNode {
 
     const dispatch = useAppDispatch();
     const { isLayerControlsOpen, isHoverInfoVisible, visibility, types, filters, selectedViewType, isStreetViewVisible, isStreetViewPinned } = useAppSelector(selectMapState);
@@ -79,12 +73,6 @@ export default function LayerControl({
                     />
                 </LayerControlSection>
                 <LayerControlSection title="buildings">
-                    <LayerControlDropdown
-                        icon={<Building />}
-                        name="Debug Buildings"
-                        isLayerVisible={debugBinaVisible}
-                        toggleLayer={() => setDebugBinaVisible(!debugBinaVisible)}
-                    />
                     <LayerControlDropdown
                         icon={<Building />}
                         name="Adr Bina"

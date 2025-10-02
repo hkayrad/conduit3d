@@ -10,7 +10,7 @@
     display: flex;
     flex-direction: column;
     width: fit-content;
-    border-radius: 8px;
+    border-radius: .5rem;
     // z-index: 2;
     overflow: hidden;
 
@@ -33,7 +33,7 @@
         p {
             width: 100%;
             display: flex;
-            padding: 0px 8px;
+            padding: 0 .5rem;
             text-wrap-mode: nowrap;
         }
 
@@ -47,7 +47,7 @@
                 background: none;
                 border: none;
                 height: auto;
-                padding: 8px 8px;
+                padding: .5rem;
                 color: global.$off-white;
 
                 &:hover {
@@ -67,7 +67,7 @@
     .content {
         display: flex;
         flex-direction: column;
-        padding: 8px;
-        gap: 4px;
+        padding: .5rem;
+        gap: .25rem;
     }
 }

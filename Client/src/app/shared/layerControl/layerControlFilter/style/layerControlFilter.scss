@@ -3,11 +3,11 @@
 .layer-control-filter {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: .5rem;
 
     h4 {
         opacity: .65;
-        font-size: 12px;
+        font-size: .75rem;
         font-weight: normal;
         letter-spacing: 1px;
         user-select: none;
@@ -16,7 +16,7 @@
     .control-buttons {
         display: flex;
         flex-direction: row;
-        gap: 6px;
+        gap: .375rem;
         flex-wrap: wrap;
         user-select: none;
 
@@ -25,13 +25,13 @@
             color: global.$primary;
             border: none;
             border-radius: 100px;
-            padding: 6px 10px;
-            font-size: 14px;
+            padding: .375rem .625rem;
+            font-size: .875rem;
             text-decoration: line-through;
             display: flex;
             flex-direction: row;
             align-items: center;
-            gap: 4px;
+            gap: .25rem;
             transition: all .2s ease;
 
 

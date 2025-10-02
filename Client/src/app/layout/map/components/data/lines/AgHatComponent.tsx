@@ -11,7 +11,9 @@ import { CHUNK_SIZE } from "../../../../../../lib/constants";
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection[]>>
     allPoles: GeoJSON.Feature[],
-    extent: Extent
+    extent: Extent,
+    zoom: number,
+    selectedViewType: C3D_MapViewType
 }
 
 /**
@@ -20,7 +22,7 @@ type Props = {
  * @param props - The props for the component
  */
 export default function AgHatComponent(props: Props): null {
-    const { setData, allPoles, extent } = props;
+    const { setData, allPoles, extent, zoom, selectedViewType } = props;
 
     const dispatch = useAppDispatch();
 
@@ -96,7 +98,7 @@ export default function AgHatComponent(props: Props): null {
         if (allPoles.length <= 0)
             return;
 
-        handleDataFetch(isLoadingRef, abortControllerRef, extent, 16, C3D_MapViewType.Cartesian, fetchNextChunk, setData);
+        handleDataFetch(isLoadingRef, abortControllerRef, extent, zoom, selectedViewType, fetchNextChunk, setData);
     }, [allPoles, extent]);
 
     useEffect(() => {

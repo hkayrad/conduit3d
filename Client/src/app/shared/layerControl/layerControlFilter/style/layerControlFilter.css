@@ -6,20 +6,19 @@
   font-family: "Lexend", sans-serif;
   font-size: 16px;
 }
-
-body::-webkit-scrollbar {
-  width: 8px;
+*::-webkit-scrollbar {
+  width: 0.5rem;
 }
-body::-webkit-scrollbar-track {
+*::-webkit-scrollbar-track {
   background: none;
 }
-body::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
   background: #4B4E73;
 }
 
 .lucide {
-  width: 16px;
-  height: 16px;
+  width: 1rem;
+  height: 1rem;
 }
 
 .error-fg {
@@ -55,17 +54,25 @@ body::-webkit-scrollbar-thumb {
 }
 
 .shadow {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.15);
+}
+
+kbd {
+  background: #FFFFFF;
+  color: #2B2D42;
+  padding: 0.0625rem 0.25rem;
+  border-radius: 0.25rem;
+  white-space: nowrap;
 }
 
 .layer-control-filter {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0.5rem;
 }
 .layer-control-filter h4 {
   opacity: 0.65;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: normal;
   letter-spacing: 1px;
   -webkit-user-select: none;
@@ -75,7 +82,7 @@ body::-webkit-scrollbar-thumb {
 .layer-control-filter .control-buttons {
   display: flex;
   flex-direction: row;
-  gap: 6px;
+  gap: 0.375rem;
   flex-wrap: wrap;
   -webkit-user-select: none;
      -moz-user-select: none;
@@ -86,13 +93,13 @@ body::-webkit-scrollbar-thumb {
   color: #2B2D42;
   border: none;
   border-radius: 100px;
-  padding: 6px 10px;
-  font-size: 14px;
+  padding: 0.375rem 0.625rem;
+  font-size: 0.875rem;
   text-decoration: line-through;
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 4px;
+  gap: 0.25rem;
   transition: all 0.2s ease;
 }
 .layer-control-filter .control-buttons .filter-button:hover {

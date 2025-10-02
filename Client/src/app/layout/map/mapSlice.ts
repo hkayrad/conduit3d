@@ -111,10 +111,12 @@ const initialState: MapState = {
     },
     viewState: {
         [C3D_MapViewType.Cartesian]: {
-            longitude: 41.28654673296825,
-            latitude: 39.90032606428541,
-            zoom: 14,
-            pitch: 60,
+            // longitude: 41.28654673296825,
+            // latitude: 39.90032606428541,
+            longitude: (26+46) / 2,
+            latitude: (36+42) / 2,
+            zoom: 6,
+            pitch: 0,
             bearing: 0
         },
         [C3D_MapViewType.FirstPerson]: {
@@ -134,7 +136,7 @@ const initialState: MapState = {
     lastRefreshPosition: {
         longitude: null!,
         latitude: null!
-    }
+    },
 };
 
 export const mapSlice = createSlice({

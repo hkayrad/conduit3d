@@ -5,9 +5,9 @@
     flex-direction: row;
     justify-content: stretch;
     background-color: global.$primary-light;
-    padding: 4px;
-    gap: 4px;
-    border-radius: 8px;
+    padding: .25rem;
+    gap: .25rem;
+    border-radius: .5rem;
     position: relative;
 
     .toggle-button {
@@ -29,15 +29,15 @@
     }
 
     .toggle-slider {
-        width: calc(50% - 4px); // Half width minus gap compensation
-        height: calc(100% - 8px); // Full height minus padding
-        border-radius: 4px;
+        width: calc(50% - .25rem);
+        height: calc(100% - .5rem);
+        border-radius: .5rem;
         position: absolute;
         background: global.$primary-lighter;
         z-index: 1;
         transition: all 0.3s ease;
-        top: 4px; // Match parent padding
-        left: 4px; // Match parent padding
+        top: .25rem;
+        left: .25rem;
 
         &.active {
             transform: translateX(100%);

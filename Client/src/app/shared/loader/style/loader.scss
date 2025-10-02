@@ -5,13 +5,13 @@
     z-index: 1000;
     background: global.$primary;
     color: global.$white;
-    padding: 8px;
+    padding: .5rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
+    border-radius: .5rem;
     left: 235px;
-    top: 16px;
+    top: 1rem;
     transition: all .5s ease;
     pointer-events: none;
 

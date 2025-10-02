@@ -6,20 +6,19 @@
   font-family: "Lexend", sans-serif;
   font-size: 16px;
 }
-
-body::-webkit-scrollbar {
-  width: 8px;
+*::-webkit-scrollbar {
+  width: 0.5rem;
 }
-body::-webkit-scrollbar-track {
+*::-webkit-scrollbar-track {
   background: none;
 }
-body::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
   background: #4B4E73;
 }
 
 .lucide {
-  width: 16px;
-  height: 16px;
+  width: 1rem;
+  height: 1rem;
 }
 
 .error-fg {
@@ -55,38 +54,38 @@ body::-webkit-scrollbar-thumb {
 }
 
 .shadow {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.15);
 }
 
 kbd {
   background: #FFFFFF;
   color: #2B2D42;
-  padding: 1px 4px;
-  border-radius: 4px;
+  padding: 0.0625rem 0.25rem;
+  border-radius: 0.25rem;
   white-space: nowrap;
 }
 
 #attribution {
   position: absolute;
-  bottom: 16px;
-  right: 16px;
+  bottom: 1rem;
+  right: 1rem;
   background: #2B2D42;
   color: #FFFFFF;
   z-index: 1;
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 4px;
-  padding: 4px 4px 4px 8px;
-  border-radius: 12px;
+  gap: 0.25rem;
+  padding: 0.25rem 0.25rem 0.25rem 0.5rem;
+  border-radius: 0.75rem;
 }
 #attribution span {
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 #attribution span a {
   color: #FFFFFF;
   text-decoration: none;
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 #attribution span a:hover {
   text-decoration: underline;

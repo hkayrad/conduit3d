@@ -19,7 +19,7 @@ export class CreateLayer {
             new TileLayer<ImageBitmap>({
                 id: `${layerFor}-${city}-basemap`,
                 data: [`${import.meta.env.VITE_TILE_SERVER_URL}/${city}/{z}/{x}/{y}`],
-                minZoom: 0,
+                minZoom: 16,
                 maxZoom: city === "turkey" ? 12 : 18,
                 tileSize: 256,
                 zoomOffset: devicePixelRatio === 1 ? -1 : 0,

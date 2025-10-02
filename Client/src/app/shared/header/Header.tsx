@@ -1,6 +1,6 @@
 import "./style/header.css"
 import Logo from "./components/Logo";
-import Actions from "./components/Actions";
+import Links from "./components/Links";
 import { NavLink } from "react-router";
 
 /**
@@ -15,7 +15,7 @@ export default function Header(): React.ReactNode {
             <NavLink to="/" id="logo-container" className="shadow">
                 <Logo />
             </NavLink>
-            <Actions />
+            <Links />
         </>
     );
 }

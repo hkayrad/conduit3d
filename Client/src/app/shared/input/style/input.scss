@@ -5,24 +5,24 @@
     flex: row;
     align-items: end;
     min-width: 320px;
-    gap: 8px;
+    gap: .5rem;
 
     .input-element {
         display: flex;
         flex-direction: column;
         width: 100%;
-        gap: 4px;
+        gap: .25rem;
 
         p {
-            margin-left: 12px;
+            margin-left: .75rem;
         }
 
         input {
             width: 100%;
             border: 1px solid rgba(global.$primary, .2);
-            border-radius: 12px;
+            border-radius: .5rem;
             outline: none;
-            padding: 6px 12px;
+            padding: .375rem .75rem;
             transition: all ease .2s;
 
             &::placeholder {
@@ -56,8 +56,8 @@
         background: none;
         border: 1px solid rgba(global.$primary, .2);
         color: global.$primary;
-        padding: 8px 8px;
-        border-radius: 12px;
+        padding: .5rem;
+        border-radius: .5rem;
         transition: all ease .2s;
 
         &:hover {

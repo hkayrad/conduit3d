@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from "../../../../lib/hooks";
  * @component
  * @returns The rendered component
  */
-export default function Actions(): React.ReactNode {
+export default function Links(): React.ReactNode {
     const navigate = useNavigate();
 
     const dispatch = useAppDispatch();
@@ -26,19 +26,19 @@ export default function Actions(): React.ReactNode {
     return (
         <div id="actions" className="shadow">
             <NavLink
-                id="action-button"
+                id="link-button"
                 className={({ isActive }) => (isActive ? "active" : "")}
                 to="/"
             >
                 <Map /> Map
             </NavLink>
-            <NavLink id="action-button" className={({ isActive }) => (isActive ? "active" : "")} to="/list"><List /> List</NavLink>
+            <NavLink id="link-button" className={({ isActive }) => (isActive ? "active" : "")} to="/list"><List /> List</NavLink>
             {
                 user?.userRole === UserRoles.ADMIN && (
-                    <NavLink id="action-button" className={({ isActive }) => (isActive ? "active" : "")} to="/admin"><ShieldUser /> Admin</NavLink>
+                    <NavLink id="link-button" className={({ isActive }) => (isActive ? "active" : "")} to="/admin"><ShieldUser /> Admin</NavLink>
                 )
             }
-            <button className="error-fg" id="action-button" onClick={handleLogout}><LogOut /> Logout</button>
+            <button className="error-fg" id="link-button" onClick={handleLogout}><LogOut /> Logout</button>
         </div>
     )
 }

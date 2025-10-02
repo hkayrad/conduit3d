@@ -36,6 +36,7 @@ export const handleDataFetch = async (
         }
 
         let currentPage = 1;
+        let allData = [];
 
         while (currentPage <= MAX_CHUNK_AMOUNT) {
             if (signal.aborted) {
@@ -55,7 +56,7 @@ export const handleDataFetch = async (
             }
 
             // Update data with new chunk
-            setData((prevData: GeoJSON.FeatureCollection[]) => [chunk, ...prevData].slice(0, MAX_CHUNK_AMOUNT));
+            allData.push(chunk);
 
             currentPage++;
 
@@ -68,6 +69,7 @@ export const handleDataFetch = async (
             // Add a small delay to prevent blocking the main thread
             await sleep(DATA_FETCH_DELAY_MS);
         }
+        setData(allData);
     } catch (error) {
         if (abortControllerRef.current?.signal.aborted) {
             Logger.warn("Fetch was cancelled");

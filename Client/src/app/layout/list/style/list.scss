@@ -1,7 +1,7 @@
 @use "../../../../global.scss";
 
 #list-page {
-    margin-top: 96px;
+    margin-top: 6rem;
     display: grid;
     grid-template-columns: 200px 1fr;
 
@@ -16,9 +16,9 @@
         bottom: 0;
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: .5rem;
         width: 200px;
-        padding: 16px;
+        padding: 1rem;
         border-radius: 0 12px 12px 0;
         margin: auto 0 auto;
         height: fit-content;
@@ -26,22 +26,22 @@
 
         h2 {
             color: global.$white;
-            margin-bottom: 8px;
+            margin-bottom: .5rem;
         }
 
         .feature-type-sections {
             display: flex;
             flex-direction: column;
-            gap: 24px;
+            gap: 1.5rem;
 
             .feature-type-section {
                 display: flex;
                 flex-direction: column;
-                gap: 8px;
+                gap: .5rem;
 
                 h3 {
                     color: global.$white;
-                    margin-bottom: 4px;
+                    margin-bottom: .25rem;
                     font-weight: normal;
                 }
 
@@ -49,13 +49,13 @@
                     background: global.$primary-lighter;
                     color: global.$white;
                     border: none;
-                    padding: 12px 12px;
-                    border-radius: 4px;
+                    padding: .75rem .75rem;
+                    border-radius: .25rem;
                     text-align: left;
                     transition: all ease .2s;
                     display: flex;
                     align-items: center;
-                    gap: 16px;
+                    gap: 1rem;
 
                     &:hover {
                         cursor: pointer;

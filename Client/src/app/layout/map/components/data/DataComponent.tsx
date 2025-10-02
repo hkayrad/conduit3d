@@ -92,16 +92,22 @@ export default function DataComponent(props: Props): React.ReactNode {
                 setData={setAgHat}
                 allPoles={allPoles}
                 extent={extent}
+                zoom={zoom}
+                selectedViewType={selectedViewType}
             />
             <OgHatComponent
                 setData={setOgHat}
                 allPoles={allPoles}
                 extent={extent}
+                zoom={zoom}
+                selectedViewType={selectedViewType}
             />
             <RekortmanComponent
                 setData={setRekortman}
                 allPoles={allPoles}
                 extent={extent}
+                zoom={zoom}
+                selectedViewType={selectedViewType}
             />
         </>
     )

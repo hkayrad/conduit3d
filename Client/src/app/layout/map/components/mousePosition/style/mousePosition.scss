@@ -2,11 +2,11 @@
 
 #mouse-position {
     position: absolute;
-    bottom: 16px;
-    left: 16px;
+    bottom: 1rem;
+    left: 1rem;
     z-index: 1;
-    padding: 4.5px 10px;
-    border-radius: 12px;
+    padding: .28125rem .625rem;
+    border-radius: .75rem;
     background: global.$primary;
     color: global.$white;
     width: 136px;
@@ -14,7 +14,7 @@
     justify-content: space-between;
 
     span {
-        font-size: 12px;
+        font-size: .75rem;
 
         &#number {
             width: 45%;

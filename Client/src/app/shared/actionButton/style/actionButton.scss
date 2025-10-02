@@ -6,9 +6,9 @@
     justify-content: center;
     border: none;
     cursor: pointer;
-    border-radius: 8px;
-    padding: 8px 8px;
-    box-shadow: 0 2px 8px rgba(global.$primary, .1);
+    border-radius: .5rem;
+    padding: .5rem;
+    box-shadow: 0 .125rem .5rem rgba(global.$primary, .1);
 
     &.success {
         background: global.$success;

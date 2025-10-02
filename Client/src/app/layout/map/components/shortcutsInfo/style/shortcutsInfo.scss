@@ -2,14 +2,14 @@
 
 .shortcut-container-icon {
     position: absolute;
-    bottom: 48px;
-    left: 16px;
+    bottom: 3rem;
+    left: 1rem;
     z-index: 10;
     display: flex;
     background: global.$primary;
     color: global.$white;
-    padding: 8px;
-    border-radius: 12px;
+    padding: .5rem;
+    border-radius: .75rem;
     transition: background 0.3s ease !important;
 
     &:hover {
@@ -20,16 +20,16 @@
 
 .shortcuts-info {
     position: absolute;
-    bottom: 88px;
-    left: 16px;
+    bottom: 5.5rem;
+    left: 1rem;
     z-index: 10;
     display: flex;
     flex-direction: column;
     background: global.$primary;
     color: global.$white;
-    padding: 12px;
-    border-radius: 12px;
-    gap: 4px;
+    padding: .75rem;
+    border-radius: .75rem;
+    gap: .25rem;
     transition: all .3s ease;
     transform: translateX(0);
 
@@ -39,12 +39,11 @@
 
     p {
         display: flex;
-        gap: 4px;
+        gap: .25rem;
 
         span {
             display: flex;
-            gap: 4px;
+            gap: .25rem;
         }
     }
-
 }

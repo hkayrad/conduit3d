@@ -3,28 +3,27 @@
 .view-toggle {
     position: absolute;
     z-index: 1000;
-    bottom: 48px;
-    right: 16px;
+    bottom: 3rem;
+    right: 1rem;
     display: flex;
-    gap: 2px;
+    gap: .125rem;
     background-color: global.$primary;
-    border-radius: 12px;
+    border-radius: .75rem;
     overflow: hidden;
 
     .selector {
         position: absolute;
         background: global.$primary-lighter;
-        height: 24px;
-        width: 24px;
-
-        top: 4px;
-        left: 4px;
-        border-radius: 8px;
+        height: 1.5rem;
+        width: 1.5rem;
+        top: .25rem;
+        left: .25rem;
+        border-radius: .5rem;
         z-index: -1;
         transition: left 0.3s ease;
 
         &.active {
-            left: 38px
+            left: calc(100% - 1.75rem);
         }
     }
 
@@ -32,7 +31,7 @@
         display: flex;
         background: none;
         color: global.$white;
-        padding: 8px;
+        padding: .5rem;
         border: none;
 
         &:hover {

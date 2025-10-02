@@ -3,16 +3,16 @@
 .map-settings-toggle {
     position: absolute;
     z-index: 1000;
-    left: 56px;
-    bottom: 48px;
+    left: 3.5rem;
+    bottom: 3rem;
 
     button {
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 8px;
+        padding: .5rem;
         border: none;
-        border-radius: 12px;
+        border-radius: .75rem;
         color: global.$white;
         background: global.$primary;
 
@@ -34,20 +34,20 @@
     max-width: 80vw;
     min-width: 600px;
     min-height: 200px;
-    border-radius: 12px;
+    border-radius: .75rem;
     overflow: hidden;
     resize: both;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 .25rem 1.25rem rgba(0, 0, 0, 0.15);
 
     .window-header {
         display: flex;
         justify-content: space-between;
-        gap: 8px;
+        gap: .5rem;
         width: 100%;
         background: global.$primary-light;
         color: global.$white;
-        padding: 0 0 0 12px;
-        height: 32px;
+        padding: 0 0 0 .75rem;
+        height: 2rem;
         align-items: center;
         user-select: none;
         border-bottom: 1px solid global.$primary-lighter;
@@ -62,7 +62,7 @@
 
         h3 {
             margin: 0;
-            font-size: 14px;
+            font-size: .875rem;
             font-weight: 500;
         }
 
@@ -70,12 +70,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 4px;
+            padding: .25rem;
             border: none;
             background: none;
             color: global.$white;
-            width: 32px;
-            height: 32px;
+            width: 2rem;
+            height: 2rem;
 
             &:hover {
                 background: global.$error;
@@ -86,48 +86,48 @@
     .window-content {
         display: flex;
         flex-direction: column;
-        padding: 12px;
-        gap: 12px;
+        padding: .75rem;
+        gap: .75rem;
         height: 100%;
         overflow-y: auto;
 
         h2 {
             font-weight: 600;
-            font-size: 18px;
-            margin: 0 0 8px 0;
+            font-size: 1.125rem;
+            margin: 0 0 .5rem 0;
             grid-column: -1 / 1;
         }
 
         .color-settings {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-            gap: 16px;
+            gap: 1rem;
 
             .setting-item {
                 display: flex;
                 flex-direction: column;
-                gap: 8px;
-                padding: 12px;
+                gap: .5rem;
+                padding: .75rem;
                 border: 1px solid #e0e0e0;
-                border-radius: 8px;
+                border-radius: .5rem;
                 background: #f9f9f9;
 
                 > label {
                     font-weight: 600;
-                    font-size: 14px;
+                    font-size: .875rem;
                     margin: 0;
                 }
 
                 .color-controls {
                     display: flex;
                     align-items: center;
-                    gap: 12px;
+                    gap: .75rem;
 
                     .color-picker {
                         width: 50px;
                         height: 30px;
                         border: 1px solid #ccc;
-                        border-radius: 4px;
+                        border-radius: .25rem;
                         cursor: pointer;
                         padding: 0;
 
@@ -149,14 +149,14 @@
                     .alpha-control {
                         display: flex;
                         align-items: center;
-                        gap: 8px;
+                        gap: .5rem;
                         flex: 1;
 
                         .alpha-label {
                             font-weight: 600;
-                            font-size: 12px;
+                            font-size: .75rem;
                             color: #666;
-                            min-width: 12px;
+                            min-width: .75rem;
                         }
 
                         .alpha-slider {
@@ -207,17 +207,17 @@
 
     .save-button {
         align-self: flex-end;
-        padding: 8px 16px;
-        margin: 0 8px 8px 0;
+        padding: .5rem 1rem;
+        margin: 0 .5rem .5rem 0;
         border: none;
-        border-radius: 8px;
+        border-radius: .5rem;
         background: global.$primary;
         color: global.$white;
         font-weight: 600;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
+        gap: .5rem;
         outline: none;
 
         &:hover {

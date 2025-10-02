@@ -6,20 +6,19 @@
   font-family: "Lexend", sans-serif;
   font-size: 16px;
 }
-
-body::-webkit-scrollbar {
-  width: 8px;
+*::-webkit-scrollbar {
+  width: 0.5rem;
 }
-body::-webkit-scrollbar-track {
+*::-webkit-scrollbar-track {
   background: none;
 }
-body::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
   background: #4B4E73;
 }
 
 .lucide {
-  width: 16px;
-  height: 16px;
+  width: 1rem;
+  height: 1rem;
 }
 
 .error-fg {
@@ -55,28 +54,28 @@ body::-webkit-scrollbar-thumb {
 }
 
 .shadow {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.15);
 }
 
 kbd {
   background: #FFFFFF;
   color: #2B2D42;
-  padding: 1px 4px;
-  border-radius: 4px;
+  padding: 0.0625rem 0.25rem;
+  border-radius: 0.25rem;
   white-space: nowrap;
 }
 
 #layer-control-toggle {
   position: absolute;
-  top: 72px;
-  right: 16px;
+  top: 5rem;
+  right: 1rem;
   z-index: 1000;
   transition: all 0.3s ease;
   border: none;
-  border-radius: 8px;
+  border-radius: 0.5rem;
   background-color: #2B2D42;
   color: #FFFFFF;
-  padding: 12px;
+  padding: 0.75rem;
   display: flex;
   align-items: center;
   outline: none;
@@ -85,32 +84,32 @@ kbd {
   cursor: pointer;
 }
 #layer-control-toggle.open {
-  right: 316px;
-  border-radius: 8px 0 0 8px;
+  right: 21rem;
 }
 
 .layer-control-content {
   z-index: 1000;
   position: absolute;
-  top: 72px;
-  right: -320px;
-  width: 316px;
+  top: 5rem;
+  right: -20rem;
+  width: 20rem;
+  min-height: 100px;
   transition: all 0.3s ease;
   background: #2B2D42;
-  padding: 16px 12px 16px 16px;
+  padding: 1rem 0.75rem 1rem 1rem;
   border-radius: 12px 0 0 12px;
   color: #FFFFFF;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  max-height: calc(100vh - 72px - 88px);
+  gap: 1rem;
+  max-height: calc(100vh - 5rem - 5.5rem);
   overflow-y: scroll;
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
 }
 .layer-control-content::-webkit-scrollbar {
-  width: 6px;
+  width: 0.5rem;
 }
 .layer-control-content::-webkit-scrollbar-track {
   background: none;
@@ -120,15 +119,14 @@ kbd {
 }
 .layer-control-content.open {
   right: 0px;
-  border-radius: 0 0 0 12px;
 }
 .layer-control-content.short {
-  max-height: calc(100vh - 72px - 88px - 208px);
+  max-height: calc(100vh - 5rem - 5.5rem - 13rem);
 }
 .layer-control-content.pinned {
-  max-height: calc(100vh - 72px - 88px - 408px);
+  max-height: calc(100vh - 5rem - 5.5rem - 25.5rem);
 }
 
 .street-view:hover ~ .layer-control-content {
-  max-height: calc(100vh - 72px - 88px - 408px);
+  max-height: calc(100vh - 5rem - 5.5rem - 25.5rem);
 }/*# sourceMappingURL=layerControl.css.map */
