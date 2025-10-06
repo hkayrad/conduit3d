@@ -174,17 +174,14 @@ export function useMapInteraction() {
      * @param e The keyboard event
      */
     const handleKeyPresses = useCallback((e: KeyboardEvent) => {
-        if (e.code === "Escape") {
+
+        if (e.code === "Escape" && searchInputRef.current === document.activeElement) {
             e.preventDefault();
             if (searchInputRef.current)
                 searchInputRef.current.blur();
         }
 
-        if (e.ctrlKey && !e.altKey && !e.shiftKey) {
-            if (e.code === "Delete") {
-                e.preventDefault();
-                setActivePopups([]);
-            }
+        if (e.ctrlKey && !e.altKey && !e.shiftKey && searchInputRef.current !== document.activeElement) {
 
             if (e.code === "Slash") {
                 e.preventDefault();
@@ -193,14 +190,19 @@ export function useMapInteraction() {
                     searchInputRef.current.focus();
             }
 
+            if (e.code === "Delete") {
+                e.preventDefault();
+                setActivePopups([]);
+            }
+
+
             if (e.code === "Comma") {
                 e.preventDefault();
                 dispatch(toggleSettingsWindow())
             }
         }
 
-        // Close all popups on Ctrl + Delete
-        if (e.shiftKey && !e.altKey && !e.ctrlKey) {
+        if (e.shiftKey && !e.altKey && !e.ctrlKey && searchInputRef.current !== document.activeElement) {
 
             // Toggle Wireframe mode
             if (e.code === "KeyW") {
