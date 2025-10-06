@@ -12,7 +12,7 @@ import { useMapInteraction } from "../../../lib/hooks";
 
 import { CreateLayer, hexToRgba, Logger } from "../../../lib/utils";
 
-import { FirstPersonView, FirstPersonViewport, Layer, MapView, Viewport, WebMercatorViewport, type DeckProps } from "@deck.gl/core";
+import { AmbientLight, DirectionalLight, FirstPersonView, FirstPersonViewport, Layer, LightingEffect, MapView, Viewport, WebMercatorViewport, type DeckProps } from "@deck.gl/core";
 import { ColumnLayer, GeoJsonLayer } from "deck.gl";
 import { DeckGL } from "@deck.gl/react";
 import { CompassWidget, ZoomWidget } from "@deck.gl/widgets";
@@ -49,8 +49,9 @@ export default function DeckglMap(): React.ReactNode {
     const { cartesian, firstPerson } = viewState;
     const config = useAppSelector(selectConfig);
 
+    //@ts-ignore
     const adrBinaColor = config.ADR_BINA_COLOR ? hexToRgba(config.ADR_BINA_COLOR) : hexToRgba("#C8C8C8FF");
-    const MAP_STYLE: StyleSpecification = {
+    const MAP_STYLE: StyleSpecification = useMemo(() => ({
         version: 8,
         sources: {
             "eskisehir": {
@@ -84,9 +85,18 @@ export default function DeckglMap(): React.ReactNode {
                 type: "vector",
                 scheme: "tms",
                 tiles: [
-                    "https://localhost/geoserver/gwc/service/tms/1.0.0/demoB:buildings@EPSG:900913@pbf/{z}/{x}/{y}.pbf"
+                    "https://localhost/geoserver/gwc/service/tms/1.0.0/buildings:buildings@EPSG:900913@pbf/{z}/{x}/{y}.pbf"
                 ],
-                bounds: [25.0, 35.0, 45.0, 43.0],
+                bounds: [25.670742, 35.7996524, 44.8299436, 42.1146586],
+                minzoom: 0,
+            },
+            "adr_bina": {
+                type: "vector",
+                scheme: "tms",
+                tiles: [
+                    "https://localhost/geoserver/gwc/service/tms/1.0.0/buildings:adr_bina@EPSG:900913@pbf/{z}/{x}/{y}.pbf"
+                ],
+                bounds: [41.28019714355469, 39.89549255371094, 41.29623794555664, 39.90587615966797],
                 minzoom: 0,
             },
         },
@@ -98,7 +108,7 @@ export default function DeckglMap(): React.ReactNode {
                 layout: {
                     visibility: selectedViewType === C3D_MapViewType.Cartesian && visibility.basemap ? "visible" : "none"
                 },
-                maxzoom: 12
+                maxzoom: 16
             },
             {
                 id: "eskisehir-layer",
@@ -119,22 +129,48 @@ export default function DeckglMap(): React.ReactNode {
                 maxzoom: 16
             },
             {
-                id: "building-layer",
+                id: "buildings-layer",
                 source: "buildings",
                 "source-layer": "buildings",
                 type: "fill-extrusion",
-                maxzoom: 22,
                 minzoom: 0,
+                maxzoom: 16,
                 layout: {
                     visibility: selectedViewType === C3D_MapViewType.Cartesian && visibility.adrBina ? "visible" : "none"
                 },
                 paint: {
-                    "fill-extrusion-color": `rgba(${adrBinaColor[0]}, ${adrBinaColor[1]}, ${adrBinaColor[2]}, ${adrBinaColor[3]})`,
-                    "fill-extrusion-height": 2.5
+                    "fill-extrusion-color": `rgba(${adrBinaColor[0]}, ${adrBinaColor[1]}, ${adrBinaColor[2]}, 1)`,
+                    "fill-extrusion-height": 12.5
+                }
+            },
+            {
+                id: "adr-bina-layer",
+                source: "adr_bina",
+                "source-layer": "adr_bina",
+                type: "fill-extrusion",
+                minzoom: 0,
+                maxzoom: 16,
+                layout: {
+                    visibility: selectedViewType === C3D_MapViewType.Cartesian && visibility.adrBina ? "visible" : "none"
+                },
+                paint: {
+                    "fill-extrusion-color": `rgba(${adrBinaColor[0]}, ${adrBinaColor[1]}, ${adrBinaColor[2]}, 1)`,
+                    "fill-extrusion-height": 12.5
                 }
             },
         ]
-    }
+    }), [config.ADR_BINA_COLOR, selectedViewType, visibility.basemap, visibility.adrBina]);
+
+    const ambientLight = new AmbientLight({
+        color: [255, 255, 255],
+        intensity: 1.85,
+    })
+    const directionalLight = new DirectionalLight({
+        color: [255, 255, 255],
+        intensity: 0.5,
+        direction: [0, 0, -1],
+    });
+    const effects = useMemo(() => [new LightingEffect({ ambientLight, directionalLight })], []);
 
     // React-Router Hooks
     const location = useLocation();
@@ -179,7 +215,8 @@ export default function DeckglMap(): React.ReactNode {
         setOgMusDirek,
         setAydDirek,
         direkLayerData,
-        allPoles } = useDirek();
+        allPoles
+    } = useDirek();
 
     // Map interaction hook
     const {
@@ -244,7 +281,7 @@ export default function DeckglMap(): React.ReactNode {
             getFillColor: isWireframe ? [0, 0, 0, 0] : hexToRgba(config.ADR_BINA_COLOR) || COLORS.ADR_BINA,
             filled: true,
             extruded: true,
-            pickable: true,
+            pickable: !isWireframe,
             autoHighlight: true,
             highlightColor: hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
             visible: selectedViewType === C3D_MapViewType.Cartesian ? (visibility.adrBina && cartesian.zoom >= 15) : visibility.adrBina,
@@ -258,7 +295,7 @@ export default function DeckglMap(): React.ReactNode {
             getFillColor: isWireframe ? [0, 0, 0, 0] : hexToRgba(config.ADR_BINA_COLOR) || COLORS.ADR_BINA,
             filled: true,
             extruded: true,
-            pickable: true,
+            pickable: !isWireframe,
             autoHighlight: true,
             highlightColor: hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
             visible: selectedViewType === C3D_MapViewType.Cartesian ? (visibility.adrBina && cartesian.zoom >= 15) : visibility.adrBina,
@@ -272,13 +309,15 @@ export default function DeckglMap(): React.ReactNode {
             getElevation: d => d.properties.yukseklik,
             getFillColor: isWireframe ? [0, 0, 0, 0] : hexToRgba(config.TRAFO_BINA_COLOR) || COLORS.TRAFO_BINA,
             extruded: true,
-            pickable: true,
+            pickable: !isWireframe,
             autoHighlight: true,
             highlightColor: hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
             radius: 1,
             elevationScale: 1,
             diskResolution: 4,
+            filled: true,
             visible: selectedViewType === C3D_MapViewType.Cartesian ? (visibility.trafoBina && cartesian.zoom >= 15) : visibility.trafoBina,
+            wireframe: isWireframe,
         })),
     ], [
         filters,
@@ -314,7 +353,9 @@ export default function DeckglMap(): React.ReactNode {
             return new FirstPersonView({
                 id: C3D_MapViewType.FirstPerson,
                 // viewState: { ...mapViewState.firstPerson },
-                controller: true
+                controller: true,
+                far: 10000,
+
             });
         }
         else {
@@ -569,13 +610,14 @@ export default function DeckglMap(): React.ReactNode {
                         );
                         return "inherit"
                     }}
+                    effects={effects}
                 >
                     <MapLibre
                         mapStyle={MAP_STYLE}
                         reuseMaps
                         attributionControl={false}
                         maxZoom={25}
-                        // boxZoom={false}
+                        boxZoom={false}
                         cursor={cursor}
                     />
                 </DeckGL>

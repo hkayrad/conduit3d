@@ -2,14 +2,14 @@
 
  - Add auto windows adjustment
  - Add feature highligt on goto button click
- - Add tsvector functions to the service documentations
  - CACHE CONTROL 
  - Create custom FirstPersonController to handle WASD control
- - Color control for admin account
- - Add config menu for admins
+
+# NOTES
+I tried sticking the REKORTMAN to the height of the pole. It caused so many calculations so it is discarded.
 
 |feature|geojson|wkb|diff|%|
-|-|-|-|-|-|
+|-|-|-|-|-|s
 |adrbina|403kb|323kb|-80kb|%80.14|
 |buildings|2358kb|2077kb|-281kb|%88.08|
 |buildings_200k|65mb|56mb|-9mb|%86.15|

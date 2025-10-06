@@ -30,11 +30,13 @@ export class CreateLayer {
                     return [
                         new BitmapLayer(otherProps, {
                             image: data,
-                            bounds: [west, south, east, north]
+                            bounds: [west, south, east, north],
+                            pickable: false,
                         })
                     ];
                 },
                 visible: visibility,
+                pickable: false,
             })
         )
     }

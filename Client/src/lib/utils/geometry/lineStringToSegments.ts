@@ -9,7 +9,7 @@ import { findClosestPoleHeight } from "..";
  * @param offset An optional height offset to apply to the segments.
  * @returns An array of segment features.
  */
-export function lineStringToSegments(feature: any, featureType: HatCinsi, poles: any[], offset: number = 0): any[] {
+export function lineStringToSegments(feature: any, featureType: HatCinsi, poles: GeoJSON.Feature[], offset: number = 0): any[] {
     if (!feature) return [];
     const coords = feature.geometry.coordinates;
     var segments = [];
