@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Conduit3D.Common.Infrastructure.Formatters;
+using Conduit3D.Common.Infrastructure.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,7 +62,31 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 // Configure Swagger
 builder.Services.AddSwaggerGen(config =>
 {
-    config.SwaggerDoc("v1", new OpenApiInfo { Title = "Conduit3D Auth API", Version = "v1" });
+    config.SwaggerDoc("v1", new OpenApiInfo { Title = "Conduit3D Poles API", Version = "v1" });
+
+    // Use custom schema IDs to handle pbf and generic types collisions
+    config.CustomSchemaIds(type =>
+    {
+        if (type.IsGenericType)
+        {
+            var genericTypeName = type.GetGenericTypeDefinition().Name;
+
+            // Remove generic type suffixes like `1, `2, etc.
+            var backtickIndex = genericTypeName.IndexOf('`');
+            if (backtickIndex > 0)
+            {
+                genericTypeName = genericTypeName.Substring(0, backtickIndex);
+            }
+
+            // Get all generic arguments and build their names recursively
+            var genericArgs = type.GetGenericArguments()
+                .Select(arg => TypeDisplayName.Get(arg))
+                .ToArray();
+
+            return $"{genericTypeName}Of{string.Join("And", genericArgs)}";
+        }
+        return type.Name;
+    });
 
     // Configure JWT authentication
     config.AddSecurityDefinition("bearerAuth", new OpenApiSecurityScheme
