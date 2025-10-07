@@ -10,7 +10,7 @@ import { useHat } from "../../../lib/hooks";
 import { useDirek } from "../../../lib/hooks";
 import { useMapInteraction } from "../../../lib/hooks";
 
-import { CreateLayer, hexToRgba, Logger } from "../../../lib/utils";
+import { convertDeckGLToLatLonWithOffset, CreateLayer, hexToRgba, Logger } from "../../../lib/utils";
 
 import { AmbientLight, DirectionalLight, FirstPersonView, FirstPersonViewport, Layer, LightingEffect, MapView, Viewport, WebMercatorViewport, type DeckProps } from "@deck.gl/core";
 import { ColumnLayer, GeoJsonLayer } from "deck.gl";
@@ -78,8 +78,9 @@ export default function DeckglMap(): React.ReactNode {
                     `${import.meta.env.VITE_TILE_SERVER_URL}/turkey/{z}/{x}/{y}`,
                 ],
                 tileSize: 256,
+                maxzoom: 12,
                 attribution: "© OpenStreetMap contributors",
-                bounds: [25.0, 35.0, 45.0, 43.0]
+                bounds: [25.544799999999995, 36.0213296718736, 45.21067066650391, 42.4926]
             },
             "buildings": {
                 type: "vector",
@@ -105,15 +106,17 @@ export default function DeckglMap(): React.ReactNode {
                 id: "turkey-layer",
                 type: "raster",
                 source: "turkey",
+                "source-layer": "turkey",
                 layout: {
                     visibility: selectedViewType === C3D_MapViewType.Cartesian && visibility.basemap ? "visible" : "none"
                 },
-                maxzoom: 16
+                maxzoom: 19
             },
             {
                 id: "eskisehir-layer",
                 type: "raster",
                 source: "eskisehir",
+                "source-layer": "eskisehir",
                 layout: {
                     visibility: selectedViewType === C3D_MapViewType.Cartesian && visibility.basemap ? "visible" : "none"
                 },
@@ -123,6 +126,7 @@ export default function DeckglMap(): React.ReactNode {
                 id: "erzurum-layer",
                 type: "raster",
                 source: "erzurum",
+                "source-layer": "erzurum",
                 layout: {
                     visibility: selectedViewType === C3D_MapViewType.Cartesian && visibility.basemap ? "visible" : "none"
                 },
@@ -432,8 +436,20 @@ export default function DeckglMap(): React.ReactNode {
         // const zoomBasedThreshold = baseThreshold * Math.max(1, Math.min(10, zoomFactor));
         // Logger.table({ baseThreshold, zoomFactor, zoomBasedThreshold })
 
-        const deltaLonDistance = Math.abs(lastRefreshPosition.longitude - mapViewState[selectedViewType].longitude!);
-        const deltaLatDistance = Math.abs(lastRefreshPosition.latitude - mapViewState[selectedViewType].latitude!);
+        const currentPos = convertDeckGLToLatLonWithOffset(
+            mapViewState.firstPerson.position![0],
+            mapViewState.firstPerson.position![1],
+            mapViewState.firstPerson.latitude!,
+            mapViewState.firstPerson.longitude!
+        );
+
+        const deltaLonDistance = selectedViewType === C3D_MapViewType.Cartesian ?
+            Math.abs(lastRefreshPosition.longitude - mapViewState[selectedViewType].longitude!) :
+            Math.abs(lastRefreshPosition.longitude - currentPos.longitude);
+
+        const deltaLatDistance = selectedViewType === C3D_MapViewType.Cartesian ?
+            Math.abs(lastRefreshPosition.latitude - mapViewState[selectedViewType].latitude!) :
+            Math.abs(lastRefreshPosition.latitude - currentPos.latitude);
 
         if (deltaLonDistance < LON_EXTENT_PADDING || deltaLatDistance < LAT_EXTENT_PADDING || mapViewState.cartesian.zoom < MIN_ZOOM_THRESHOLD) return;
 
@@ -446,9 +462,14 @@ export default function DeckglMap(): React.ReactNode {
             }
         }));
 
-        dispatch(setLastRefreshPosition({
-            position: { longitude: mapViewState[selectedViewType].longitude!, latitude: mapViewState[selectedViewType].latitude! }
-        }));
+        if (selectedViewType === C3D_MapViewType.Cartesian)
+            dispatch(setLastRefreshPosition({
+                position: { longitude: mapViewState[selectedViewType].longitude!, latitude: mapViewState[selectedViewType].latitude! }
+            }));
+        else if (selectedViewType === C3D_MapViewType.FirstPerson)
+            dispatch(setLastRefreshPosition({
+                position: { longitude: currentPos.longitude, latitude: currentPos.latitude }
+            }));
     }, [focusedView, location, mapViewState, selectedViewType, lastRefreshPosition]);
 
     const handleFirstPersonPan = () => {
