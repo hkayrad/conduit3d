@@ -3,24 +3,24 @@ import "deck.gl/stylesheet.css"
 import "maplibre-gl/dist/maplibre-gl.css"
 import "./style/deckglMap.css"
 
-import { COLORS, DEBOUNCE_TIME_MS, LAT_EXTENT_PADDING, LON_EXTENT_PADDING, MIN_ZOOM_THRESHOLD } from "../../../lib/constants";
+import { COLORS, DEBOUNCE_TIME_MS } from "../../../lib/constants";
 
 import { useAppDispatch, useAppSelector } from "../../../lib/hooks";
 import { useHat } from "../../../lib/hooks";
 import { useDirek } from "../../../lib/hooks";
-import { useMapInteraction } from "../../../lib/hooks";
+import { useMap } from "../../../lib/hooks";
 
-import { convertDeckGLToLatLonWithOffset, CreateLayer, hexToRgba, Logger } from "../../../lib/utils";
+import { CreateLayer, hexToRgba, Logger } from "../../../lib/utils";
 
-import { AmbientLight, DirectionalLight, FirstPersonView, FirstPersonViewport, Layer, LightingEffect, MapView, Viewport, WebMercatorViewport, type DeckProps } from "@deck.gl/core";
+import { AmbientLight, DirectionalLight, Layer, LightingEffect } from "@deck.gl/core";
 import { ColumnLayer, GeoJsonLayer } from "deck.gl";
 import { DeckGL } from "@deck.gl/react";
 import { CompassWidget, ZoomWidget } from "@deck.gl/widgets";
 import { Map as MapLibre, type StyleSpecification } from 'react-map-gl/maplibre';
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Outlet, useLocation } from "react-router";
 
-import { selectMapState, setExtent, setFocusedView, setLastRefreshPosition, setViewState } from "./mapSlice";
+import { selectMapState, setFocusedView } from "./mapSlice";
 import LayerControl from "./components/layerControl/LayerControl";
 import DataComponent from "./components/data/DataComponent";
 import MousePosition from "./components/mousePosition/MousePosition";
@@ -49,7 +49,6 @@ export default function DeckglMap(): React.ReactNode {
     const { cartesian, firstPerson } = viewState;
     const config = useAppSelector(selectConfig);
 
-    //@ts-ignore
     const adrBinaColor = config.ADR_BINA_COLOR ? hexToRgba(config.ADR_BINA_COLOR) : hexToRgba("#C8C8C8FF");
     const MAP_STYLE: StyleSpecification = useMemo(() => ({
         version: 8,
@@ -182,17 +181,6 @@ export default function DeckglMap(): React.ReactNode {
     // Local State
     const [cursor, setCursor] = useState<string>("default");
 
-    const widgets = useMemo(() => {
-        const zoomWidget = new ZoomWidget({
-            viewId: C3D_MapViewType.Cartesian,
-        })
-        const compassWidget = new CompassWidget({
-            viewId: C3D_MapViewType.Cartesian,
-        })
-
-        return [zoomWidget, compassWidget];
-    }, []);
-
     // GeoJSON Data States
     const [adrBina, setAdrBina] = useState<GeoJSON.FeatureCollection[]>([]);
     const [buildingBina, setBuildingBina] = useState<GeoJSON.FeatureCollection[]>([]);
@@ -222,7 +210,7 @@ export default function DeckglMap(): React.ReactNode {
         allPoles
     } = useDirek();
 
-    // Map interaction hook
+    // Map hook
     const {
         showFpsCounter,
         activePopups,
@@ -233,13 +221,29 @@ export default function DeckglMap(): React.ReactNode {
         handleViewStateChange,
         mousePos,
         mouseLonLat,
+        handleUpdate,
+        views,
+        layerFilter,
         handleMouseMove,
+        handleFirstPersonDrag,
         handleClick,
         handleClosePopup,
         handleFocusPopup,
         handleKeyPresses,
         flyTo
-    } = useMapInteraction();
+    } = useMap();
+
+    // Memoized widgets
+    const widgets = useMemo(() => {
+        const zoomWidget = new ZoomWidget({
+            viewId: C3D_MapViewType.Cartesian,
+        })
+        const compassWidget = new CompassWidget({
+            viewId: C3D_MapViewType.Cartesian,
+        })
+
+        return [zoomWidget, compassWidget];
+    }, []);
 
     // Memoized layers from the current data
     const layers: Layer[] = useMemo((): Layer[] => [
@@ -338,156 +342,6 @@ export default function DeckglMap(): React.ReactNode {
         config
     ]);
 
-    const layerFilter: DeckProps['layerFilter'] = useCallback(
-        ({ layer, viewport }: { layer: Layer, viewport: Viewport }) => {
-            if (layer.id.includes("basemap"))
-                return layer.id.includes(viewport.id as string);
-
-            return true;
-        }, []);
-
-    const views = useMemo(() => {
-        if (selectedViewType === C3D_MapViewType.Cartesian) {
-            return new MapView({
-                id: C3D_MapViewType.Cartesian,
-                // viewState: { ...mapViewState.cartesian },
-                controller: true
-            });
-        }
-        else if (selectedViewType === C3D_MapViewType.FirstPerson) {
-            return new FirstPersonView({
-                id: C3D_MapViewType.FirstPerson,
-                // viewState: { ...mapViewState.firstPerson },
-                controller: true,
-                far: 10000,
-
-            });
-        }
-        else {
-            return null;
-        }
-    }, [selectedViewType, mapViewState]);
-
-    // Update handler
-    const handleUpdate = useCallback(() => {
-        if (focusedView !== "deckgl")
-            return;
-
-        if (location.pathname !== "/")
-            return;
-
-        let viewport;
-
-        if (selectedViewType === C3D_MapViewType.Cartesian) {
-            viewport = new WebMercatorViewport({
-                longitude: mapViewState.cartesian.longitude,
-                latitude: mapViewState.cartesian.latitude,
-                zoom: mapViewState.cartesian.zoom,
-                pitch: mapViewState.cartesian.pitch,
-                bearing: mapViewState.cartesian.bearing,
-                width: window.innerWidth,
-                height: window.innerHeight
-            });
-
-            dispatch(setViewState({
-                viewId: C3D_MapViewType.Cartesian,
-                viewState: {
-                    ...mapViewState.cartesian,
-                }
-            }));
-        }
-        else if (selectedViewType === C3D_MapViewType.FirstPerson) {
-            viewport = new FirstPersonViewport({
-                longitude: mapViewState.firstPerson.longitude,
-                latitude: mapViewState.firstPerson.latitude,
-                pitch: mapViewState.firstPerson.pitch,
-                bearing: mapViewState.firstPerson.bearing,
-                position: mapViewState.firstPerson.position,
-                width: window.innerWidth,
-                height: window.innerHeight
-            });
-
-            dispatch(setViewState({
-                viewId: C3D_MapViewType.FirstPerson,
-                viewState: {
-                    ...mapViewState.firstPerson,
-                }
-            }));
-        }
-        else
-            return;
-
-        const bounds = { ...viewport.getBounds() };
-
-        if (lastRefreshPosition.longitude === null || lastRefreshPosition.latitude === null)
-            dispatch(setExtent({
-                extent: {
-                    minX: bounds[0] - LON_EXTENT_PADDING,
-                    minY: bounds[1] - LAT_EXTENT_PADDING,
-                    maxX: bounds[2] + LON_EXTENT_PADDING,
-                    maxY: bounds[3] + LAT_EXTENT_PADDING,
-                }
-            }));
-
-        // // Threshold scales inversely with zoom level
-        // // Higher zoom = smaller threshold (more frequent updates)
-        // // Lower zoom = larger threshold (less frequent updates)
-        // const baseThreshold = EXTENT_PADDING / 2;
-        // const zoomFactor = Math.pow(2, 15 - mapViewState.cartesian.zoom); // Exponential scaling
-        // const zoomBasedThreshold = baseThreshold * Math.max(1, Math.min(10, zoomFactor));
-        // Logger.table({ baseThreshold, zoomFactor, zoomBasedThreshold })
-
-        const currentPos = convertDeckGLToLatLonWithOffset(
-            mapViewState.firstPerson.position![0],
-            mapViewState.firstPerson.position![1],
-            mapViewState.firstPerson.latitude!,
-            mapViewState.firstPerson.longitude!
-        );
-
-        const deltaLonDistance = selectedViewType === C3D_MapViewType.Cartesian ?
-            Math.abs(lastRefreshPosition.longitude - mapViewState[selectedViewType].longitude!) :
-            Math.abs(lastRefreshPosition.longitude - currentPos.longitude);
-
-        const deltaLatDistance = selectedViewType === C3D_MapViewType.Cartesian ?
-            Math.abs(lastRefreshPosition.latitude - mapViewState[selectedViewType].latitude!) :
-            Math.abs(lastRefreshPosition.latitude - currentPos.latitude);
-
-        if (deltaLonDistance < LON_EXTENT_PADDING || deltaLatDistance < LAT_EXTENT_PADDING || mapViewState.cartesian.zoom < MIN_ZOOM_THRESHOLD) return;
-
-        dispatch(setExtent({
-            extent: {
-                minX: bounds[0] - LON_EXTENT_PADDING,
-                minY: bounds[1] - LAT_EXTENT_PADDING,
-                maxX: bounds[2] + LON_EXTENT_PADDING,
-                maxY: bounds[3] + LAT_EXTENT_PADDING,
-            }
-        }));
-
-        if (selectedViewType === C3D_MapViewType.Cartesian)
-            dispatch(setLastRefreshPosition({
-                position: { longitude: mapViewState[selectedViewType].longitude!, latitude: mapViewState[selectedViewType].latitude! }
-            }));
-        else if (selectedViewType === C3D_MapViewType.FirstPerson)
-            dispatch(setLastRefreshPosition({
-                position: { longitude: currentPos.longitude, latitude: currentPos.latitude }
-            }));
-    }, [focusedView, location, mapViewState, selectedViewType, lastRefreshPosition]);
-
-    const handleFirstPersonPan = () => {
-        if (selectedViewType !== C3D_MapViewType.FirstPerson) return;
-        if (focusedView !== "deckgl") return;
-
-        dispatch(setViewState({
-            viewId: C3D_MapViewType.FirstPerson,
-            viewState: {
-                ...viewState.firstPerson,
-                bearing: mapViewState.firstPerson.bearing,
-                pitch: mapViewState.firstPerson.pitch,
-                position: mapViewState.firstPerson.position,
-            }
-        }))
-    }
-
     // Add keyboard event listener
     useEffect(() => {
         const deckglContainer = document.getElementById("deckgl-wrapper");
@@ -565,7 +419,7 @@ export default function DeckglMap(): React.ReactNode {
             handleUpdate();
         }, DEBOUNCE_TIME_MS);
 
-        handleFirstPersonPan();
+        handleFirstPersonDrag();
 
         return () => clearTimeout(handler);
     }, [lastRefreshPosition, mapViewState, selectedViewType]);

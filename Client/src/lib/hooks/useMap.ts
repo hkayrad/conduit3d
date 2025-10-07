@@ -1,18 +1,18 @@
-import type { FirstPersonViewState, MapViewState, PickingInfo } from "deck.gl";
-import { useCallback, useRef, useState } from "react";
+import { FirstPersonView, FirstPersonViewport, Layer, MapView, Viewport, WebMercatorViewport, type DeckProps, type FirstPersonViewState, type MapViewState, type PickingInfo } from "deck.gl";
+import { useCallback, useMemo, useRef, useState } from "react";
 import type { C3D_ViewState, PopupState } from "../types";
-import { MAX_POPUP_COUNT, MAX_ZOOM_LEVEL } from "../constants";
+import { LAT_EXTENT_PADDING, LON_EXTENT_PADDING, MAX_POPUP_COUNT, MAX_ZOOM_LEVEL, MIN_ZOOM_THRESHOLD } from "../constants";
 import { C3D_MapViewType, FeatureType, C3D_MapLayers } from "../enums";
 import { useAppDispatch, useAppSelector } from "./reduxHooks";
-import { selectMapState, setSelectedViewType, toggleMapLayerVisibility, toggleSettingsWindow, toggleStreetView, toggleWireframe } from "../../app/layout/map/mapSlice";
-import { flyToFeature } from "../utils";
+import { selectMapState, setExtent, setLastRefreshPosition, setSelectedViewType, setViewState, toggleMapLayerVisibility, toggleSettingsWindow, toggleStreetView, toggleWireframe } from "../../app/layout/map/mapSlice";
+import { convertDeckGLToLatLonWithOffset, flyToFeature } from "../utils";
 
 /**
  * Map interaction handlers
  * @returns Map interaction handlers
  */
-export function useMapInteraction() {
-    const { viewState, selectedViewType } = useAppSelector(selectMapState);
+export function useMap() {
+    const { viewState, selectedViewType, focusedView, lastRefreshPosition } = useAppSelector(selectMapState);
     const { cartesian, firstPerson } = viewState;
     const dispatch = useAppDispatch();
 
@@ -42,11 +42,172 @@ export function useMapInteraction() {
     const zIndexCounter = useRef(1000);
     const searchInputRef = useRef<HTMLInputElement>(null!);
 
+    // Memoized views for DeckGL
+    const views = useMemo(() => {
+        if (selectedViewType === C3D_MapViewType.Cartesian) {
+            return new MapView({
+                id: C3D_MapViewType.Cartesian,
+                // viewState: { ...mapViewState.cartesian },
+                controller: true
+            });
+        }
+        else if (selectedViewType === C3D_MapViewType.FirstPerson) {
+            return new FirstPersonView({
+                id: C3D_MapViewType.FirstPerson,
+                // viewState: { ...mapViewState.firstPerson },
+                controller: true,
+                far: 10000,
+
+            });
+        }
+        else {
+            return null;
+        }
+    }, [selectedViewType, mapViewState]);
+
+    /**
+     * Filter layers based on the current viewport
+     * @param param0 The layer and viewport information
+     * @returns Whether to render the layer in the current viewport
+     */
+    const layerFilter: DeckProps['layerFilter'] = useCallback(
+        ({ layer, viewport }: { layer: Layer, viewport: Viewport }) => {
+            if (layer.id.includes("basemap"))
+                return layer.id.includes(viewport.id as string);
+
+            return true;
+        }, []);
+
+    /**
+     * Handle map view updates and extent changes
+     */
+    const handleUpdate = useCallback(() => {
+        if (focusedView !== "deckgl")
+            return;
+
+        if (location.pathname !== "/")
+            return;
+
+        let viewport;
+
+        if (selectedViewType === C3D_MapViewType.Cartesian) {
+            viewport = new WebMercatorViewport({
+                longitude: mapViewState.cartesian.longitude,
+                latitude: mapViewState.cartesian.latitude,
+                zoom: mapViewState.cartesian.zoom,
+                pitch: mapViewState.cartesian.pitch,
+                bearing: mapViewState.cartesian.bearing,
+                width: window.innerWidth,
+                height: window.innerHeight
+            });
+
+            dispatch(setViewState({
+                viewId: C3D_MapViewType.Cartesian,
+                viewState: {
+                    ...mapViewState.cartesian,
+                }
+            }));
+        }
+        else if (selectedViewType === C3D_MapViewType.FirstPerson) {
+            viewport = new FirstPersonViewport({
+                longitude: mapViewState.firstPerson.longitude,
+                latitude: mapViewState.firstPerson.latitude,
+                pitch: mapViewState.firstPerson.pitch,
+                bearing: mapViewState.firstPerson.bearing,
+                position: mapViewState.firstPerson.position,
+                width: window.innerWidth,
+                height: window.innerHeight
+            });
+
+            dispatch(setViewState({
+                viewId: C3D_MapViewType.FirstPerson,
+                viewState: {
+                    ...mapViewState.firstPerson,
+                }
+            }));
+        }
+        else
+            return;
+
+        const bounds = { ...viewport.getBounds() };
+
+        if (lastRefreshPosition.longitude === null || lastRefreshPosition.latitude === null)
+            dispatch(setExtent({
+                extent: {
+                    minX: bounds[0] - LON_EXTENT_PADDING,
+                    minY: bounds[1] - LAT_EXTENT_PADDING,
+                    maxX: bounds[2] + LON_EXTENT_PADDING,
+                    maxY: bounds[3] + LAT_EXTENT_PADDING,
+                }
+            }));
+
+        // // Threshold scales inversely with zoom level
+        // // Higher zoom = smaller threshold (more frequent updates)
+        // // Lower zoom = larger threshold (less frequent updates)
+        // const baseThreshold = EXTENT_PADDING / 2;
+        // const zoomFactor = Math.pow(2, 15 - mapViewState.cartesian.zoom); // Exponential scaling
+        // const zoomBasedThreshold = baseThreshold * Math.max(1, Math.min(10, zoomFactor));
+        // Logger.table({ baseThreshold, zoomFactor, zoomBasedThreshold })
+
+        const currentPos = convertDeckGLToLatLonWithOffset(
+            mapViewState.firstPerson.position![0],
+            mapViewState.firstPerson.position![1],
+            mapViewState.firstPerson.latitude!,
+            mapViewState.firstPerson.longitude!
+        );
+
+        const deltaLonDistance = selectedViewType === C3D_MapViewType.Cartesian ?
+            Math.abs(lastRefreshPosition.longitude - mapViewState[selectedViewType].longitude!) :
+            Math.abs(lastRefreshPosition.longitude - currentPos.longitude);
+
+        const deltaLatDistance = selectedViewType === C3D_MapViewType.Cartesian ?
+            Math.abs(lastRefreshPosition.latitude - mapViewState[selectedViewType].latitude!) :
+            Math.abs(lastRefreshPosition.latitude - currentPos.latitude);
+
+        if (deltaLonDistance < LON_EXTENT_PADDING || deltaLatDistance < LAT_EXTENT_PADDING || mapViewState.cartesian.zoom < MIN_ZOOM_THRESHOLD) return;
+
+        dispatch(setExtent({
+            extent: {
+                minX: bounds[0] - LON_EXTENT_PADDING,
+                minY: bounds[1] - LAT_EXTENT_PADDING,
+                maxX: bounds[2] + LON_EXTENT_PADDING,
+                maxY: bounds[3] + LAT_EXTENT_PADDING,
+            }
+        }));
+
+        if (selectedViewType === C3D_MapViewType.Cartesian)
+            dispatch(setLastRefreshPosition({
+                position: { longitude: mapViewState[selectedViewType].longitude!, latitude: mapViewState[selectedViewType].latitude! }
+            }));
+        else if (selectedViewType === C3D_MapViewType.FirstPerson)
+            dispatch(setLastRefreshPosition({
+                position: { longitude: currentPos.longitude, latitude: currentPos.latitude }
+            }));
+    }, [focusedView, location, mapViewState, selectedViewType, lastRefreshPosition]);
+
+    /**
+     * Handle dragging in First Person view
+     */
+    const handleFirstPersonDrag = () => {
+        if (selectedViewType !== C3D_MapViewType.FirstPerson) return;
+        if (focusedView !== "deckgl") return;
+
+        dispatch(setViewState({
+            viewId: C3D_MapViewType.FirstPerson,
+            viewState: {
+                ...viewState.firstPerson,
+                bearing: mapViewState.firstPerson.bearing,
+                pitch: mapViewState.firstPerson.pitch,
+                position: mapViewState.firstPerson.position,
+            }
+        }))
+    }
+
     /**
      * Handle view state changes
      * @param viewState The new map view state
      */
-    const handleViewStateChange = (viewId: C3D_MapViewType, viewState: MapViewState | FirstPersonViewState) => {
+    const handleViewStateChange = useCallback((viewId: C3D_MapViewType, viewState: MapViewState | FirstPersonViewState) => {
         setMapViewState((prevState) => ({
             ...prevState,
             [viewId]: {
@@ -80,7 +241,7 @@ export function useMapInteraction() {
                     }
                 }));
         }
-    };
+    }, []);
 
     /**
      * Handle mouse move events
@@ -303,8 +464,12 @@ export function useMapInteraction() {
         setMousePos,
         mouseLonLat,
         setMouseLonLat,
+        views,
+        layerFilter,
+        handleUpdate,
         handleViewStateChange,
         handleMouseMove,
+        handleFirstPersonDrag,
         handleClick,
         handleClosePopup,
         handleFocusPopup,
