@@ -81,22 +81,13 @@ export default function DeckglMap(): React.ReactNode {
                 attribution: "© OpenStreetMap contributors",
                 bounds: [25.544799999999995, 36.0213296718736, 45.21067066650391, 42.4926]
             },
-            "buildings": {
+            "all_buildings": {
                 type: "vector",
                 scheme: "tms",
                 tiles: [
-                    "https://localhost/geoserver/gwc/service/tms/1.0.0/buildings:buildings@EPSG:900913@pbf/{z}/{x}/{y}.pbf"
+                    "https://localhost/geoserver/gwc/service/tms/1.0.0/buildings:all_buildings@EPSG:900913@pbf/{z}/{x}/{y}.pbf"
                 ],
                 bounds: [25.670742, 35.7996524, 44.8299436, 42.1146586],
-                minzoom: 0,
-            },
-            "adr_bina": {
-                type: "vector",
-                scheme: "tms",
-                tiles: [
-                    "https://localhost/geoserver/gwc/service/tms/1.0.0/buildings:adr_bina@EPSG:900913@pbf/{z}/{x}/{y}.pbf"
-                ],
-                bounds: [41.28019714355469, 39.89549255371094, 41.29623794555664, 39.90587615966797],
                 minzoom: 0,
             },
         },
@@ -117,7 +108,7 @@ export default function DeckglMap(): React.ReactNode {
                 source: "eskisehir",
                 "source-layer": "eskisehir",
                 layout: {
-                    visibility: selectedViewType === C3D_MapViewType.Cartesian && visibility.basemap ? "visible" : "none"
+                    visibility: selectedViewType === C3D_MapViewType.Cartesian && visibility.basemap ? "visible" : "none",
                 },
                 maxzoom: 16
             },
@@ -132,9 +123,9 @@ export default function DeckglMap(): React.ReactNode {
                 maxzoom: 16
             },
             {
-                id: "buildings-layer",
-                source: "buildings",
-                "source-layer": "buildings",
+                id: "all_buildings-layer",
+                source: "all_buildings",
+                "source-layer": "all_buildings",
                 type: "fill-extrusion",
                 minzoom: 0,
                 maxzoom: 16,
@@ -145,34 +136,19 @@ export default function DeckglMap(): React.ReactNode {
                     "fill-extrusion-color": `rgba(${adrBinaColor[0]}, ${adrBinaColor[1]}, ${adrBinaColor[2]}, 1)`,
                     "fill-extrusion-height": 12.5
                 }
-            },
-            {
-                id: "adr-bina-layer",
-                source: "adr_bina",
-                "source-layer": "adr_bina",
-                type: "fill-extrusion",
-                minzoom: 0,
-                maxzoom: 16,
-                layout: {
-                    visibility: selectedViewType === C3D_MapViewType.Cartesian && visibility.adrBina ? "visible" : "none"
-                },
-                paint: {
-                    "fill-extrusion-color": `rgba(${adrBinaColor[0]}, ${adrBinaColor[1]}, ${adrBinaColor[2]}, 1)`,
-                    "fill-extrusion-height": 12.5
-                }
-            },
+            }
         ]
     }), [config.ADR_BINA_COLOR, selectedViewType, visibility.basemap, visibility.adrBina]);
 
-    const ambientLight = new AmbientLight({
+    const ambientLight = useMemo(() => new AmbientLight({
         color: [255, 255, 255],
         intensity: 1.85,
-    })
-    const directionalLight = new DirectionalLight({
+    }), []);
+    const directionalLight = useMemo(() => new DirectionalLight({
         color: [255, 255, 255],
         intensity: 0.5,
         direction: [0, 0, -1],
-    });
+    }), []);
     const effects = useMemo(() => [new LightingEffect({ ambientLight, directionalLight })], []);
 
     // React-Router Hooks
