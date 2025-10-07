@@ -177,15 +177,16 @@ kbd {
   text-wrap: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  max-width: 12rem;
+  max-width: 11.5rem;
 }
 #global-search .results .result-item .text .subtitle {
   font-size: 0.75rem;
-  max-width: 12rem;
+  max-width: 11.5rem;
   opacity: 0.8;
 }
 #global-search .results .result-item .position {
-  width: 3.5rem;
+  width: 4rem;
+  text-align: right;
   text-wrap: nowrap;
   font-size: 0.75rem;
   opacity: 0.8;

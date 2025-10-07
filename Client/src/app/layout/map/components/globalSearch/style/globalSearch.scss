@@ -119,19 +119,20 @@
                     text-wrap: nowrap;
                     text-overflow: ellipsis;
                     overflow: hidden;
-                    max-width: 12rem;
+                    max-width: 11.5rem;
 
                 }
 
                 .subtitle {
                     font-size: .75rem;
-                    max-width: 12rem;
+                    max-width: 11.5rem;
                     opacity: 0.8;
                 }
             }
 
             .position {
-                width: 3.5rem;
+                width: 4rem;
+                text-align: right;
                 text-wrap: nowrap;
                 font-size: .75rem;
                 opacity: 0.8;
