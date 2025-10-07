@@ -106,20 +106,23 @@ export class CreateLayer {
         color: [number, number, number, number],
         highlightColor: [number, number, number, number],
         visibility: boolean,
+        wireframe: boolean = false
     ) {
         return new ColumnLayer({
             id: id,
             data: data ? data : [],
             getPosition: d => d.geometry.coordinates,
             getElevation: d => d.properties.yukseklik,
-            getFillColor: color,
+            getFillColor: wireframe ? [0,0,0,0] : color,
             extruded: true,
-            pickable: true,
+            pickable: !wireframe,
             autoHighlight: true,
             highlightColor: highlightColor,
             radius: .5,
             elevationScale: 1,
+            diskResolution: wireframe ? 4 : 12,
             visible: visibility,
+            wireframe: wireframe,
         })
     }
 }

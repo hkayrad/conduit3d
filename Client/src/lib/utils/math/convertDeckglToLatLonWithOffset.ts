@@ -1,4 +1,4 @@
-export function convertDeckGLToLatLonWithOffset(
+export function convertDeckGLPositionToLatLonWithOffset(
     x: number,
     y: number,
     baseLatitude: number,

@@ -274,6 +274,7 @@ export default function DeckglMap(): React.ReactNode {
                     direk.color,
                     hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
                     selectedViewType === C3D_MapViewType.Cartesian ? (direk.visibility && cartesian.zoom >= 15) : direk.visibility,
+                    isWireframe
                 )
             )
         ),

@@ -1,3 +1,3 @@
 export { easeInOutCubic } from "./easeInOutCubic";
-export { convertDeckGLToLatLonWithOffset } from "./convertDeckglToLatLonWithOffset";
+export { convertDeckGLPositionToLatLonWithOffset as convertDeckGLToLatLonWithOffset } from "./convertDeckglToLatLonWithOffset";
 export { hexToRgba } from "./hexToRgba";
