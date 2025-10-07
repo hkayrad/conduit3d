@@ -69,10 +69,10 @@ export default function GlobalSearch(props: Props) {
                             <div key={result.id} className="result-item" onClick={() => handleGoTo(result.feature)}>
                                 <div className="icon">{ICONS[result.type]}</div>
                                 <div className="text">
-                                    <div className="title">{result.title}</div>
-                                    <div className="subtitle">{result.subtitle}</div>
+                                    <div className="title" title={result.title}>{result.title}</div>
+                                    <div className="subtitle" title={result.subtitle}>{result.subtitle}</div>
                                 </div>
-                                <div className="position">
+                                <div className="position" title={`Position: ${result.position[0]}, ${result.position[1]}`}>
                                     {result.position[0]}, {result.position[1]}
                                 </div>
                             </div>

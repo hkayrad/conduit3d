@@ -37,8 +37,30 @@ export function useSearch() {
         return {
             id: `direk-${direkType}-${direk.id}`,
             title: `${direk.cinsi} ${direk.tipi} (${direk.boyOzellik})`,
-            subtitle: direk.direkNo,
+            subtitle: `No: ${direk.direkNo} | Id: ${direk.id}`,
             type: FeatureType.POLE,
+            position: findAverageLonLat(geometry, 2),
+            feature: _wrapInFeature(geometry)
+        }
+    }
+
+    const _convertToHatFeature = (hatType: FeatureType, hat: any) => {
+        const geometry: GeoJSON.Geometry = wkbToGeometry(hat.wkb);
+        if (hatType === FeatureType.REKORTMAN)
+            return {
+                id: `hat-rekortman-${hat.id}`,
+                title: `Rekortman ${hat.tipi}`,
+                subtitle: `Kesit: ${hat.kesit} | Id: ${hat.id}`,
+                type: FeatureType.REKORTMAN,
+                position: findAverageLonLat(geometry, 2),
+                feature: _wrapInFeature(geometry)
+            }
+
+        return {
+            id: `hat-${hat.id}`,
+            title: `${hat.tipi} ${hat.cinsi}`,
+            subtitle: `Kesit: ${hat.kesit} | Id: ${hat.id}`,
+            type: FeatureType.LINE,
             position: findAverageLonLat(geometry, 2),
             feature: _wrapInFeature(geometry)
         }
@@ -59,7 +81,7 @@ export function useSearch() {
             return {
                 id: `bina-${bina.id}`,
                 title: bina.adi || "İsimsiz Bina",
-                subtitle: bina.siteAdi || "Sitesiz Bina",
+                subtitle: bina.id,
                 type: FeatureType.BUILDING,
                 position: findAverageLonLat(geometry, 2),
                 feature: _wrapInFeature(geometry)
@@ -82,7 +104,7 @@ export function useSearch() {
             return {
                 id: `trafo-${trafo.id}`,
                 title: trafo.adi || "İsimsiz Trafo",
-                subtitle: trafo.kodu || "Kodsuz Trafo",
+                subtitle: `Kodu: ${trafo.kodu} | Id: ${trafo.id}`,
                 type: FeatureType.TRAFO,
                 position: findAverageLonLat(geometry, 2),
                 feature: _wrapInFeature(geometry)
@@ -160,17 +182,7 @@ export function useSearch() {
             return [];
         }
 
-        const results = response.data.map(hat => {
-            const geometry: GeoJSON.Geometry = wkbToGeometry(hat.wkb);
-            return {
-                id: `hat-ag-${hat.id}`,
-                title: `${hat.tipi} ${hat.cinsi}`,
-                subtitle: hat.kesit,
-                type: FeatureType.LINE,
-                position: findAverageLonLat(geometry, 2),
-                feature: _wrapInFeature(geometry)
-            }
-        });
+        const results = response.data.map(hat => _convertToHatFeature(FeatureType.LINE, hat));
 
         return results;
     }
@@ -183,17 +195,7 @@ export function useSearch() {
             return [];
         }
 
-        const results = response.data.map(hat => {
-            const geometry: GeoJSON.Geometry = wkbToGeometry(hat.wkb);
-            return {
-                id: `hat-og-${hat.id}`,
-                title: `${hat.tipi} ${hat.cinsi}`,
-                subtitle: hat.kesit,
-                type: FeatureType.LINE,
-                position: findAverageLonLat(geometry, 2),
-                feature: _wrapInFeature(geometry)
-            }
-        });
+        const results = response.data.map(hat => _convertToHatFeature(FeatureType.LINE, hat));
 
         return results;
     }
@@ -206,17 +208,7 @@ export function useSearch() {
             return [];
         }
 
-        const results = response.data.map(hat => {
-            const geometry: GeoJSON.Geometry = wkbToGeometry(hat.wkb);
-            return {
-                id: `hat-rekortman-${hat.id}`,
-                title: `Rekortman: ${hat.tipi}`,
-                subtitle: hat.kesit,
-                type: FeatureType.REKORTMAN,
-                position: findAverageLonLat(geometry, 2),
-                feature: _wrapInFeature(geometry)
-            }
-        });
+        const results = response.data.map(hat => _convertToHatFeature(FeatureType.REKORTMAN, hat));
 
         return results;
     }

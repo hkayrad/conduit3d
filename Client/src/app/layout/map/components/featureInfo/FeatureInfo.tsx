@@ -90,7 +90,7 @@ export default function FeatureInfo(props: Props): React.ReactNode {
             ref={windowRef}
         >
             <div className="header" onMouseDown={onMouseDown} style={{ cursor: isDragging ? "grabbing" : "grab" }}>
-                <p>{capitalizeFirstLetter(properties.dataType)}: {properties.id}</p>
+                <p>{capitalizeFirstLetter(properties.dataType)}</p>
                 <div className="dragger-buttons">
                     {selectedViewType === C3D_MapViewType.Cartesian &&
                         <button onClick={onFlyTo}><LucideArrowRight /></button>

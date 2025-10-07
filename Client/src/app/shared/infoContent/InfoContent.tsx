@@ -15,6 +15,7 @@ export default function InfoContent(properties: any, coordinate?: number[]): Rea
         case FeatureType.BUILDING:
             return (
                 <>
+                    <InfoField label="Id" value={properties.id} />
                     <InfoField
                         label="Adi"
                         value={properties.adi} capitalize={true}
@@ -35,6 +36,7 @@ export default function InfoContent(properties: any, coordinate?: number[]): Rea
         case FeatureType.TRAFO:
             return (
                 <>
+                    <InfoField label="Id" value={properties.id} />
                     <InfoField
                         label="Adi"
                         value={properties.adi} capitalize={true}
@@ -51,6 +53,7 @@ export default function InfoContent(properties: any, coordinate?: number[]): Rea
         case FeatureType.POLE:
             return (
                 <>
+                    <InfoField label="Id" value={properties.id} />
                     <InfoField label="Adi" value={properties.adi} />
                     <InfoField label="Cinsi" value={properties.cinsi} />
                     <InfoField label="Tipi" value={properties.tipi} />
@@ -68,6 +71,7 @@ export default function InfoContent(properties: any, coordinate?: number[]): Rea
         case FeatureType.LINE:
             return (
                 <>
+                    <InfoField label="Id" value={properties.id} />
                     <InfoField label="Adi" value={properties.adi} />
                     <InfoField label="Cinsi" value={properties.cinsi} />
                     <InfoField label="Tipi" value={properties.tipi} />
@@ -83,6 +87,7 @@ export default function InfoContent(properties: any, coordinate?: number[]): Rea
         case FeatureType.REKORTMAN:
             return (
                 <>
+                    <InfoField label="Id" value={properties.id} />
                     <InfoField label="Tipi" value={properties.tipi} />
                     <InfoField label="Kesit" value={properties.kesit} />
                     {
