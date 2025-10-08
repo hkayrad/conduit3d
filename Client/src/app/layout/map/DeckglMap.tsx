@@ -316,7 +316,7 @@ export default function DeckglMap(): React.ReactNode {
             filled: true,
             visible: selectedViewType === C3D_MapViewType.Cartesian ? (visibility.trafoBina && cartesian.zoom >= 15) : visibility.trafoBina,
             wireframe: isWireframe,
-        })),
+        }))
     ], [
         filters,
         visibility,

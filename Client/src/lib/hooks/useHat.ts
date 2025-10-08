@@ -45,7 +45,7 @@ export function useHat() {
         return types.agHat.map(type => {
             return {
                 id: `ag-hat-${type}`,
-                color: hexToRgba(config.AG_HAT_COLOR) || COLORS.AG_HAT,
+                color: hexToRgba(config[`AG_HAT_${type}_COLOR`]) || COLORS.AG_HAT,
                 visibility:
                     visibility.agHat &&
                     (filters.agHat.tipi.includes(type) || filters.agHat.tipi.length === 0),
@@ -79,7 +79,7 @@ export function useHat() {
         return types.ogHat.map(type => {
             return {
                 id: `og-hat-${type}`,
-                color: hexToRgba(config.OG_HAT_COLOR) || COLORS.OG_HAT,
+                color: hexToRgba(config[`OG_HAT_${type}_COLOR`]) || COLORS.OG_HAT,
                 visibility:
                     visibility.ogHat &&
                     (filters.ogHat.tipi.includes(type) || filters.ogHat.tipi.length === 0),
@@ -113,7 +113,7 @@ export function useHat() {
         return types.rekortman.map(type => {
             return {
                 id: `rekortman-${type}`,
-                color: hexToRgba(config.REKORTMAN_COLOR) || COLORS.REKORTMAN,
+                color: hexToRgba(config[`REKORTMAN_${type}_COLOR`]) || COLORS.REKORTMAN,
                 visibility:
                     visibility.rekortman &&
                     (filters.rekortman.tipi.includes(type) || filters.rekortman.tipi.length === 0),
