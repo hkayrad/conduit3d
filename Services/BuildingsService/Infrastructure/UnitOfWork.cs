@@ -12,6 +12,7 @@ public class UnitOfWork(BuildingsContext context) : IUnitOfWork
     private BuildingsRepository? _buildingsRepository;
     private AdrBinaRepository? _adrBuildingsRepository;
     private TrafoBinaRepository? _trafoBuildingsRepository;
+    private AdrYolRepository? _adrYolRepository;
     private IDbContextTransaction? _transaction;
     private bool _disposed = false;
 
@@ -39,6 +40,14 @@ public class UnitOfWork(BuildingsContext context) : IUnitOfWork
         get
         {
             return _trafoBuildingsRepository ??= new TrafoBinaRepository(_context);
+        }
+    }
+
+    public AdrYolRepository AdrYolRepository
+    {
+        get
+        {
+            return _adrYolRepository ??= new AdrYolRepository(_context);
         }
     }
 

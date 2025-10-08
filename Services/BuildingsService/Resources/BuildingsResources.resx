@@ -84,13 +84,28 @@
     <data name="buildingCountRetrieved" xml:space="preserve">
         <value>Building count retrieved successfully.</value>
     </data>
+    <data name="roadsRetrieved" xml:space="preserve">
+        <value>Roads retrieved successfully.</value>
+    </data>
+    <data name="roadRetrieved" xml:space="preserve">
+        <value>Road retrieved successfully.</value>
+    </data>
+    <data name="roadCountRetrieved" xml:space="preserve">
+        <value>Road count retrieved successfully.</value>
+    </data>
 
     <!-- API Failure Messages -->
     <data name="noBuildingFound" xml:space="preserve">
         <value>No building found.</value>
     </data>
+    <data name="noRoadFound" xml:space="preserve">
+        <value>No road found.</value>
+    </data> 
     <data name="invalidBuildingId" xml:space="preserve">
         <value>Invalid building ID.</value>
+    </data>
+    <data name="invalidRoadId" xml:space="preserve">
+        <value>Invalid road ID.</value>
     </data>
 
     <data name="buildingRetrievalFailed" xml:space="preserve">
@@ -98,6 +113,12 @@
     </data>
     <data name="buildingCountRetrievalFailed" xml:space="preserve">
         <value>Building count retrieval failed: {0}</value>
+    </data>
+    <data name="roadRetrievalFailed" xml:space="preserve">
+        <value>Road retrieval failed: {0}</value>
+    </data>
+    <data name="roadCountRetrievalFailed" xml:space="preserve">
+        <value>Road count retrieval failed: {0}</value>
     </data>
 
     <data name="invalidExtent" xml:space="preserve">

@@ -19,7 +19,7 @@ public class BuildingsRepository(BuildingsContext context) : IBuildingsRepositor
     /// <summary>
     /// Buildings context.
     /// </summary>
-    private readonly BuildingsContext _context = context;
+    private readonly BuildingsContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
     /// <summary>
     /// Buildings DbSet.

@@ -133,6 +133,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IBuildingsService, PostgresqlBuildingsService>();
 builder.Services.AddScoped<IAdrBinaService, PostgresqlAdrBinaService>();
 builder.Services.AddScoped<ITrafoBinaService, PostgresqlTrafoBinaService>();
+builder.Services.AddScoped<IAdrYolService, PostgresqlAdrYolService>();
 
 var app = builder.Build();
 

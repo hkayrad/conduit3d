@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+message AdrYolResponse {
+    bool isSuccess = 1;
+    string message = 2;
+    int32 statusCode = 3;
+    repeated AdrYolProto data = 4;
+}
+
+message AdrYolProto {
+    int32 id = 1;
+    double genislik = 2;
+    double seritSayisi = 3;
+    string yapisi = 4;
+    string tipi = 5;
+    string kodu = 6;
+    string adi = 7;
+    string wkb = 8;
+}

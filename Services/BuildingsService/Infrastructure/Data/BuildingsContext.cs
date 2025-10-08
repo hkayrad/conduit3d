@@ -25,6 +25,11 @@ public class BuildingsContext(DbContextOptions options) : DbContext(options)
     /// </summary>
     public DbSet<TrafoBina> TrafoBuildings { get; set; }
 
+    /// <summary>
+    /// DbSet for ADR_YOL entities
+    /// </summary>
+    public DbSet<AdrYol> AdrYol { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Building>(entity =>
@@ -141,7 +146,53 @@ public class BuildingsContext(DbContextOptions options) : DbContext(options)
             entity.HasGeneratedTsVectorColumn(
                 e => e.SearchableText,
                 "simple",
-                e => new { e.Id, e.Adi, e.Kodu }
+                e => new
+                {
+                    e.Id,
+                    e.Adi,
+                    e.Kodu
+                }
+            );
+        });
+
+        modelBuilder.Entity<AdrYol>(entity =>
+        {
+            entity.ToTable("ADR_YOL");
+            entity.Property(e => e.Id)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("id");
+            entity.Property(e => e.Genislik)
+                .HasColumnName("genislik");
+            entity.Property(e => e.SeritSayisi)
+                .HasColumnName("serit_sayisi");
+            entity.Property(e => e.Yapisi)
+                .HasMaxLength(30)
+                .HasColumnName("yapisi");
+            entity.Property(e => e.Tipi)
+                .HasMaxLength(25)
+                .HasColumnName("tipi");
+            entity.Property(e => e.Kodu)
+                .HasMaxLength(20)
+                .HasColumnName("kodu");
+            entity.Property(e => e.Adi)
+                .HasMaxLength(100)
+                .HasColumnName("adi");
+            entity.Property(e => e.Wkb)
+                .HasComputedColumnSql("ST_AsBinary(ST_Transform(geometry, 4326))")
+                .HasColumnName("wkb");
+            entity.HasGeneratedTsVectorColumn(
+                e => e.SearchableText,
+                "simple",
+                e => new
+                {
+                    e.Id,
+                    e.Genislik,
+                    e.SeritSayisi,
+                    e.Yapisi,
+                    e.Tipi,
+                    e.Kodu,
+                    e.Adi
+                }
             );
         });
 

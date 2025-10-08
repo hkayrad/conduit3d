@@ -172,6 +172,48 @@ BuildingsService/
    CREATE INDEX idx_trafo_bina_searchable_text ON "SBK_TRAFOBINATIP" USING GIN(searchable_text);
    ```
 
+   - AdrYol
+
+   |id|geometry|genislik|serit_sayisi|yapisi|tipi|kodu|adi|searchable_text|
+   |-|-|-|-|-|-|-|-|-|
+   |int PK|geometry|double|double|varchar(30)|varchar(25)|varchar(20)|varchar(100)|tsvector|
+   |NOT NULL|-|-|-|-|-|-|-|-|
+   |AI|-|-|-|-|-|-|-|(function generated)|
+
+   > Generate the tsvector column
+
+   ```sql 
+   CREATE OR REPLACE FUNCTION generate_searchable_text_adr_yol(
+       id_val INT, 
+       genislik_val FLOAT8,
+       serit_sayisi_val FLOAT8,
+       yapisi_val TEXT,
+       tipi_val TEXT,
+       kodu_val TEXT,
+       adi_val TEXT
+   )
+   RETURNS tsvector
+   AS $$
+   SELECT to_tsvector('simple', 
+       coalesce(cast(id_val as text), '') || ' ' ||
+       coalesce(cast(genislik_val as text), '') || ' ' ||
+       coalesce(cast(serit_sayisi_val as text), '') || ' ' ||
+       coalesce(yapisi_val, '') || ' ' ||
+       coalesce(tipi_val, '') || ' ' ||
+       coalesce(kodu_val, '') || ' ' ||
+       coalesce(adi_val, '')
+   );
+   $$ LANGUAGE SQL IMMUTABLE;
+
+   -- Add the generated column to the trafo_bina table
+   ALTER TABLE "ADR_YOL" ADD COLUMN searchable_text tsvector GENERATED ALWAYS AS (
+       generate_searchable_text_adr_yol(id, genislik, serit_sayisi, yapisi, tipi, kodu, adi)
+   ) STORED;
+
+   -- Create GIN index for fast text search
+   CREATE INDEX idx_adr_yol_searchable_text ON "ADR_YOL" USING GIN(searchable_text);
+   ```
+
 3. **Configure Environment**
    ```bash
    # Set environment variables or update appsettings.json

@@ -143,7 +143,7 @@ public class PostgresqlAdrBinaService(IUnitOfWork unitOfWork) : IAdrBinaService
                 Message = BuildingsResources.GetString("invalidPageNumber"),
                 StatusCode = (int)HttpStatusCode.BadRequest,
                 Data = { }
-            };;
+            };
 
         if (!AllowedSortingColumns.AdrBinaColumns.Contains(sortBy))
             return new AdrBinaResponse

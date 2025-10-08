@@ -19,7 +19,7 @@ public class TrafoBinaRepository(BuildingsContext context) : ITrafoBinaRepositor
     /// <summary>
     /// Buildings context.
     /// </summary>
-    private readonly BuildingsContext _context = context;
+    private readonly BuildingsContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
     /// <summary>
     /// SBK_TRAFOBINATIP DbSet.

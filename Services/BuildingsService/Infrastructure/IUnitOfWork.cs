@@ -24,6 +24,11 @@ public interface IUnitOfWork : IDisposable
     TrafoBinaRepository TrafoBuildingsRepository { get; }
 
     /// <summary>
+    /// Gets the repository for managing AdrYol entities.
+    /// </summary>
+    AdrYolRepository AdrYolRepository { get; }
+
+    /// <summary>
     /// Saves changes to the database.
     /// </summary>
     /// <param name="cancellationToken">Cancellation token.</param>

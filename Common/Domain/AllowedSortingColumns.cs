@@ -21,6 +21,16 @@ public class AllowedSortingColumns
         "Adi"
     ];
 
+    public static readonly string[] AdrYolColumns = [
+        "Id",
+        "Genislik",
+        "SeritSayisi",
+        "Yapisi",
+        "Tipi",
+        "Kodu",
+        "Adi"
+    ];
+
     public static readonly string[] PoleColumns = [
         "Id",
         "Kodu",
