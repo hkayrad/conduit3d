@@ -22,6 +22,61 @@ export default function MapSettings() {
     const debounceTimeouts = useRef<Record<string, NodeJS.Timeout>>({});
     const windowRef = useRef<HTMLDivElement>(null);
 
+    const categorizeColorSettings = useCallback(() => {
+        const categories: Record<string, Array<[string, string]>> = {};
+
+        Object.entries(config).forEach(([key, value]) => {
+            if (!key.endsWith('_COLOR')) return;
+
+            // Extract category from key prefix
+            let category = 'Other';
+
+            if (key.startsWith('OG_MUS_DIREK_')) {
+                category = 'OG Müşteri Direkleri';
+            } else if (key.startsWith('AG_DIREK_')) {
+                category = 'AG Direkler';
+            } else if (key.startsWith('AYD_DIREK_')) {
+                category = 'Aydınlatma Direkleri';
+            } else if (key.startsWith('OG_HAT_')) {
+                category = 'OG Hatlar';
+            } else if (key.startsWith('AG_HAT_')) {
+                category = 'AG Hatlar';
+            } else if (key.startsWith('REKORTMAN_')) {
+                category = 'Rekortman';
+            } else if (key.startsWith('ADR_BINA_')) {
+                category = 'Binalar';
+            } else if (key.startsWith('TRAFO_')) {
+                category = 'Trafo';
+            } else if (key.startsWith('ADR_YOL_')) {
+                category = 'Yollar';
+            } else if (key === 'HOVER_COLOR') {
+                category = 'Genel';
+            }
+
+            if (!categories[category]) {
+                categories[category] = [];
+            }
+            categories[category].push([key, value]);
+        });
+
+        return categories;
+    }, [config]);
+
+    const formatLabel = useCallback((key: string): string => {
+        const formatted = key
+            .replace(/_COLOR$/, '')
+            .replace(/_/g, ' ')
+            .toLowerCase()
+            .split(' ')
+            .map(capitalizeFirstLetter)
+            .join(' ')
+            .replace('demir', 'Demir')
+            .replace('poligon', 'Poligon');
+
+        const words = formatted.split(' ');
+        return words[words.length - 1];
+    }, []);
+
     // Handle mouse down on header to start dragging
     const handleMouseDown = useCallback((e: React.MouseEvent) => {
         e.preventDefault();
@@ -170,48 +225,49 @@ export default function MapSettings() {
                     </div>
                     <div className="window-content">
                         <div className="color-settings">
-                            <h2>Colors</h2>
-                            {config &&
-                                Object.entries(config).map(([key, setting]) => (
-                                    key.endsWith("_COLOR") &&
-                                    <div className="setting-item" key={key}>
-                                        <label
-                                            htmlFor={key}
-                                        >
-                                            {key.replace(/_/g, " ").toLowerCase().split(" ").map(capitalizeFirstLetter).join(" ").replace(" Color", "")}
-                                        </label>
-                                        <div className="color-controls">
-                                            <input
-                                                type="color"
-                                                id={key}
-                                                name={key}
-                                                value={getHexFromConfig(setting)}
-                                                onChange={(e) => handleColorChange(key, e)}
-                                                className="color-picker"
-                                            />
-                                            <div className="alpha-control">
-                                                <label htmlFor={`${key}_alpha`} className="alpha-label">
-                                                    α
+                            {config && Object.entries(categorizeColorSettings()).map(([category, settings]) => (
+                                <div key={category} className="settings-category">
+                                    <h2>{category}</h2>
+                                    <div>
+                                        {settings.map(([key, setting]) => (
+                                            <div className="setting-item" key={key}>
+                                                <label htmlFor={key}>
+                                                    {formatLabel(key)}
                                                 </label>
-                                                <input
-                                                    type="range"
-                                                    id={`${key}_alpha`}
-                                                    name={`${key}_alpha`}
-                                                    min="0"
-                                                    max="1"
-                                                    step="0.01"
-                                                    value={getAlphaFromConfig(setting)}
-                                                    onChange={(e) => handleAlphaChange(key, e)}
-                                                    className="alpha-slider"
-                                                />
-                                                <span className="alpha-value">
-                                                    {Math.round(getAlphaFromConfig(setting) * 100)}%
-                                                </span>
+                                                <div className="color-controls">
+                                                    <input
+                                                        type="color"
+                                                        id={key}
+                                                        name={key}
+                                                        value={getHexFromConfig(setting)}
+                                                        onChange={(e) => handleColorChange(key, e)}
+                                                        className="color-picker"
+                                                    />
+                                                    <div className="alpha-control">
+                                                        <label htmlFor={`${key}_alpha`} className="alpha-label">
+                                                            α
+                                                        </label>
+                                                        <input
+                                                            type="range"
+                                                            id={`${key}_alpha`}
+                                                            name={`${key}_alpha`}
+                                                            min="0"
+                                                            max="1"
+                                                            step="0.01"
+                                                            value={getAlphaFromConfig(setting)}
+                                                            onChange={(e) => handleAlphaChange(key, e)}
+                                                            className="alpha-slider"
+                                                        />
+                                                        <span className="alpha-value">
+                                                            {Math.round(getAlphaFromConfig(setting) * 100)}%
+                                                        </span>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
+                                        ))}
                                     </div>
-                                ))
-                            }
+                                </div>
+                            ))}
                         </div>
                     </div>
                     <button className="save-button" onClick={handleSaveConfig}>

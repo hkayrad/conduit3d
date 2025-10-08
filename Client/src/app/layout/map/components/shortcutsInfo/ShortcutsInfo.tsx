@@ -26,7 +26,7 @@ export default function ShortcutsInfo() {
                 <p><span><kbd>Shift</kbd><kbd>C</kbd></span> : Cartesian View</p>
                 <p><span><kbd>Shift</kbd><kbd>F</kbd></span> : First Person View</p>
                 <p><span><kbd>Shift</kbd><kbd>S</kbd></span> : Toggle Street View</p>
-                <p><span><kbd>Shift</kbd><kbd>1-8</kbd></span> : Toggle Feature Layers</p>
+                <p><span><kbd>Shift</kbd><kbd>1-9</kbd></span> : Toggle Feature Layers</p>
                 <p><span><kbd>Shift</kbd><kbd>0</kbd></span> : Toggle Basemap</p>
             </div>
         </>

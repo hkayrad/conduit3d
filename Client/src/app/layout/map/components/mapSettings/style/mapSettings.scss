@@ -95,109 +95,127 @@
             font-weight: 600;
             font-size: 1.125rem;
             margin: 0 0 .5rem 0;
-            grid-column: -1 / 1;
         }
 
         .color-settings {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-            gap: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
 
-            .setting-item {
+            .settings-category {
                 display: flex;
                 flex-direction: column;
-                gap: .5rem;
-                padding: .75rem;
-                border: 1px solid #e0e0e0;
-                border-radius: .5rem;
-                background: #f9f9f9;
+                gap: .75rem;
 
-                > label {
+                h2 {
                     font-weight: 600;
-                    font-size: .875rem;
+                    font-size: 1rem;
                     margin: 0;
+                    padding-bottom: .5rem;
+                    border-bottom: 1px solid #e0e0e0;
+                    color: global.$primary;
                 }
 
-                .color-controls {
-                    display: flex;
-                    align-items: center;
+                > div {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
                     gap: .75rem;
+                }
 
-                    .color-picker {
-                        width: 50px;
-                        height: 30px;
-                        border: 1px solid #ccc;
-                        border-radius: .25rem;
-                        cursor: pointer;
-                        padding: 0;
+                .setting-item {
+                    display: flex;
+                    flex-direction: column;
+                    gap: .5rem;
+                    padding: .75rem;
+                    border: 1px solid #e0e0e0;
+                    border-radius: .5rem;
+                    background: #f9f9f9;
 
-                        &::-webkit-color-swatch-wrapper {
-                            padding: 0;
-                        }
-
-                        &::-webkit-color-swatch {
-                            border: none;
-                            border-radius: 3px;
-                        }
-
-                        &::-moz-color-swatch {
-                            border: none;
-                            border-radius: 3px;
-                        }
+                    >label {
+                        font-weight: 600;
+                        font-size: .875rem;
+                        margin: 0;
                     }
 
-                    .alpha-control {
+                    .color-controls {
                         display: flex;
                         align-items: center;
-                        gap: .5rem;
-                        flex: 1;
+                        gap: .75rem;
 
-                        .alpha-label {
-                            font-weight: 600;
-                            font-size: .75rem;
-                            color: #666;
-                            min-width: .75rem;
+                        .color-picker {
+                            width: 50px;
+                            height: 30px;
+                            border: 1px solid #ccc;
+                            border-radius: .25rem;
+                            cursor: pointer;
+                            padding: 0;
+
+                            &::-webkit-color-swatch-wrapper {
+                                padding: 0;
+                            }
+
+                            &::-webkit-color-swatch {
+                                border: none;
+                                border-radius: 3px;
+                            }
+
+                            &::-moz-color-swatch {
+                                border: none;
+                                border-radius: 3px;
+                            }
                         }
 
-                        .alpha-slider {
+                        .alpha-control {
+                            display: flex;
+                            align-items: center;
+                            gap: .5rem;
                             flex: 1;
-                            height: 6px;
-                            border-radius: 3px;
-                            background: linear-gradient(
-                                to right,
-                                transparent 0%,
-                                currentColor 100%
-                            );
-                            appearance: none;
-                            outline: none;
 
-                            &::-webkit-slider-thumb {
+                            .alpha-label {
+                                font-weight: 600;
+                                font-size: .75rem;
+                                color: #666;
+                                min-width: .75rem;
+                            }
+
+                            .alpha-slider {
+                                flex: 1;
+                                height: 6px;
+                                border-radius: 3px;
+                                background: linear-gradient(to right,
+                                        transparent 0%,
+                                        currentColor 100%);
                                 appearance: none;
-                                width: 16px;
-                                height: 16px;
-                                border-radius: 50%;
-                                background: global.$primary;
-                                border: 2px solid white;
-                                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-                                cursor: pointer;
+                                outline: none;
+
+                                &::-webkit-slider-thumb {
+                                    appearance: none;
+                                    width: 16px;
+                                    height: 16px;
+                                    border-radius: 50%;
+                                    background: global.$primary;
+                                    border: 2px solid white;
+                                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+                                    cursor: pointer;
+                                }
+
+                                &::-moz-range-thumb {
+                                    width: 16px;
+                                    height: 16px;
+                                    border-radius: 50%;
+                                    background: global.$primary;
+                                    border: 2px solid white;
+                                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+                                    cursor: pointer;
+                                }
                             }
 
-                            &::-moz-range-thumb {
-                                width: 16px;
-                                height: 16px;
-                                border-radius: 50%;
-                                background: global.$primary;
-                                border: 2px solid white;
-                                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-                                cursor: pointer;
+                            .alpha-value {
+                                font-size: 12px;
+                                color: #666;
+                                min-width: 35px;
+                                text-align: right;
                             }
-                        }
-
-                        .alpha-value {
-                            font-size: 12px;
-                            color: #666;
-                            min-width: 35px;
-                            text-align: right;
                         }
                     }
                 }
