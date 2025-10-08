@@ -78,6 +78,17 @@ export type TrafoBina = {
     wkb: string
 }
 
+export type AdrYol = {
+    id: number,
+    genislik: number,
+    seritSayisi: number,
+    yapisi: string,
+    tipi: string,
+    kodu: string, 
+    adi: string,
+    wkb: string
+}
+
 export type Hat = {
     id: number,
     kodu: string,

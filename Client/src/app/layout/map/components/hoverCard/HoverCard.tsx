@@ -25,6 +25,9 @@ type FeatureProperties = {
     kesit?: string;
     boyOzellik?: string;
     direkBoyId?: number;
+    genislik?: number;
+    seritSayisi?: number;
+    yapisi?: string;
 }
 
 /**

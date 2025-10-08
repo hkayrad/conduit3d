@@ -79,7 +79,8 @@ const initialState: MapState = {
         [C3D_MapLayers.AydDirek]: true,
         [C3D_MapLayers.AgHat]: true,
         [C3D_MapLayers.OgHat]: true,
-        [C3D_MapLayers.Rekortman]: true
+        [C3D_MapLayers.Rekortman]: true,
+        [C3D_MapLayers.AdrYol]: true
     },
     filters: {
         [C3D_MapLayers.AgDirek]: {
@@ -99,7 +100,7 @@ const initialState: MapState = {
         },
         [C3D_MapLayers.Rekortman]: {
             tipi: []
-        }
+        },
     },
     types: {
         [C3D_MapLayers.AgDirek]: [],

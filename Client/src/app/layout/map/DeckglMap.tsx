@@ -13,7 +13,7 @@ import { useMap } from "../../../lib/hooks";
 import { CreateLayer, hexToRgba, Logger } from "../../../lib/utils";
 
 import { AmbientLight, DirectionalLight, Layer, LightingEffect } from "@deck.gl/core";
-import { ColumnLayer, GeoJsonLayer } from "deck.gl";
+import { ColumnLayer, GeoJsonLayer, PathLayer } from "deck.gl";
 import { DeckGL } from "@deck.gl/react";
 import { CompassWidget, ZoomWidget } from "@deck.gl/widgets";
 import { Map as MapLibre, type StyleSpecification } from 'react-map-gl/maplibre';
@@ -161,6 +161,7 @@ export default function DeckglMap(): React.ReactNode {
     const [adrBina, setAdrBina] = useState<GeoJSON.FeatureCollection[]>([]);
     const [buildingBina, setBuildingBina] = useState<GeoJSON.FeatureCollection[]>([]);
     const [trafoBina, setTrafoBina] = useState<GeoJSON.FeatureCollection[]>([]);
+    const [adrYol, setAdrYol] = useState<GeoJSON.FeatureCollection[]>([]);
 
     // Redux hooks
     const dispatch = useAppDispatch();
@@ -231,6 +232,18 @@ export default function DeckglMap(): React.ReactNode {
             C3D_MapViewType.FirstPerson,
             visibility.basemap
         ),
+
+        ...adrYol.map((chunk, index) => new PathLayer({
+            id: `adr-yol-layer-${index}`,
+            data: chunk.features,
+            getPath: d => d.geometry.coordinates,
+            getColor: hexToRgba(config.ADR_YOL_COLOR) || COLORS.ADR_YOL,
+            getWidth: undergroundLineWidth,
+            pickable: true,
+            autoHighlight: true,
+            highlightColor: hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
+            visible: selectedViewType === C3D_MapViewType.Cartesian ? (visibility.adrYol && cartesian.zoom >= 15) : visibility.adrYol
+        })),
 
         ...hatLayerData.flatMap(filteredHat =>
             filteredHat.map(hat =>
@@ -311,6 +324,7 @@ export default function DeckglMap(): React.ReactNode {
         hatLayerData,
         direkLayerData,
         adrBina,
+        adrYol,
         buildingBina,
         trafoBina,
         overgroundLineWidth,
@@ -409,6 +423,7 @@ export default function DeckglMap(): React.ReactNode {
                     setBuildingBina={setBuildingBina}
                     setAdrBina={setAdrBina}
                     setTrafoBina={setTrafoBina}
+                    setAdrYol={setAdrYol}
                     setAgDirek={setAgDirek}
                     setOgMusDirek={setOgMusDirek}
                     setAydDirek={setAydDirek}

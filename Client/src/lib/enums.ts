@@ -14,7 +14,8 @@ export enum FeatureType {
     TRAFO = "trafo",
     POLE = "pole",
     LINE = "line",
-    REKORTMAN = "rekortman"
+    REKORTMAN = "rekortman",
+    YOL = "road"
 }
 
 export enum AdminModalType {
@@ -43,7 +44,8 @@ export enum C3D_MapLayers {
     AydDirek = "aydDirek",
     AgHat = "agHat",
     OgHat = "ogHat",
-    Rekortman = "rekortman"
+    Rekortman = "rekortman",
+    AdrYol = "adrYol"
 }
 
 export enum C3D_MapViewType {

@@ -1,6 +1,7 @@
 import { useAppSelector } from "../../../../../lib/hooks";
 import { selectExtent, selectSelectedViewType, selectViewState } from "../../mapSlice";
 import AdrBinaComponent from "./buildings/AdrBinaComponent";
+import AdrYolComponent from "./buildings/AdrYolComponent";
 import BuildingComponent from "./buildings/BuildingComponent";
 import TrafoBinaComponent from "./buildings/TrafoBinaComponent";
 import AgHatComponent from "./lines/AgHatComponent";
@@ -15,6 +16,7 @@ type Props = {
     setAdrBina: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection[]>>;
     setBuildingBina: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection[]>>;
     setTrafoBina: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection[]>>;
+    setAdrYol: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection[]>>;
     setAgDirek: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection[]>>;
     setOgMusDirek: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection[]>>;
     setAydDirek: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection[]>>;
@@ -35,6 +37,7 @@ export default function DataComponent(props: Props): React.ReactNode {
         setAdrBina,
         setBuildingBina,
         setTrafoBina,
+        setAdrYol,
         setAgDirek,
         setOgMusDirek,
         setAydDirek,
@@ -64,6 +67,12 @@ export default function DataComponent(props: Props): React.ReactNode {
             />
             <TrafoBinaComponent
                 setData={setTrafoBina}
+                extent={extent}
+                zoom={zoom}
+                selectedViewType={selectedViewType}
+            />
+            <AdrYolComponent
+                setData={setAdrYol}
                 extent={extent}
                 zoom={zoom}
                 selectedViewType={selectedViewType}

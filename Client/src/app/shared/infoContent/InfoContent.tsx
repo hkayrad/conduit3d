@@ -50,6 +50,24 @@ export default function InfoContent(properties: any, coordinate?: number[]): Rea
                 </>
             );
 
+        case FeatureType.YOL:
+            return (
+                <>
+                    <InfoField label="Id" value={properties.id} />
+                    <InfoField label="Adi" value={properties.adi} />
+                    <InfoField label="Kodu" value={properties.kodu} />
+                    <InfoField label="Tipi" value={properties.tipi} />
+                    <InfoField label="Yapisi" value={properties.yapisi} />
+                    <InfoField label="Serit Sayisi" value={properties.seritSayisi} />
+                    <InfoField label="Genislik" value={properties.genislik} />
+                    {
+                        coordinate && (
+                            <InfoField label="Position" value={`${coordinate[0].toFixed(5)}, ${coordinate[1].toFixed(5)}`} />
+                        )
+                    }
+                </>
+            )
+
         case FeatureType.POLE:
             return (
                 <>
