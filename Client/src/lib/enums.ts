@@ -56,6 +56,7 @@ export enum C3D_MapViewType {
 export enum QueryKeywords {
     BINA = "bina",
     TRAFO = "trafo",
+    YOL = "yol",
     DIREK = "direk",
     AG_DIREK = "agdirek",
     AYD_DIREK = "ayddirek",

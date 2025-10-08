@@ -1,4 +1,4 @@
-import { Building, PlugZap, Search, UtilityPole } from "lucide-react";
+import { Building, PlugZap, Search, UtilityPole, Waypoints } from "lucide-react";
 import "./style/globalSearch.css";
 import { useEffect } from "react";
 import { useSearch } from "../../../../../lib/hooks/useSearch";
@@ -9,7 +9,8 @@ const ICONS: Record<FeatureType, React.ReactNode> = {
     [FeatureType.TRAFO]: <Building />,
     [FeatureType.POLE]: <UtilityPole />,
     [FeatureType.LINE]: <PlugZap />,
-    [FeatureType.REKORTMAN]: <PlugZap />
+    [FeatureType.REKORTMAN]: <PlugZap />,
+    [FeatureType.YOL]: <Waypoints />
 }
 
 type Props = {
@@ -48,7 +49,7 @@ export default function GlobalSearch(props: Props) {
             <div className={`info-card ${isFocused ? "" : "hidden"}`}>
                 <div className="shortcut">Press <kbd>Ctrl</kbd> <kbd>/</kbd> to focus the search bar</div>
                 <div className="shortcut">Press <kbd>Esc</kbd> to unfocus the search</div>
-                <div className="hint">Keywords: bina, trafo, direk, agdirek, ogmusdirek, ayddirek, hat, aghat, oghat, rekortman</div>
+                <div className="hint">Keywords: bina, trafo, yol, direk, agdirek, ogmusdirek, ayddirek, hat, aghat, oghat, rekortman</div>
             </div>
             <div id="global-search" className={results.length > 0 && isFocused ? "with-results" : ""}>
                 <div className="search-bar">

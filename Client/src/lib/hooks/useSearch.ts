@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Logger, findAverageLonLat, InputSanitizer, wkbToGeometry } from "../utils";
-import { AdrBinaApi, AgDirekApi, AgHatApi, AydDirekApi, OgHatApi, OgMusDirekApi, RekortmanApi, TrafoBinaApi } from "../api";
+import { AdrBinaApi, AdrYolApi, AgDirekApi, AgHatApi, AydDirekApi, OgHatApi, OgMusDirekApi, RekortmanApi, TrafoBinaApi } from "../api";
 import { FeatureType, QueryKeywords } from "../enums";
 import type { Direk } from "../types";
 import { MAX_SEARCH_RESULTS } from "../constants";
@@ -106,6 +106,29 @@ export function useSearch() {
                 title: trafo.adi || "İsimsiz Trafo",
                 subtitle: `Kodu: ${trafo.kodu} | Id: ${trafo.id}`,
                 type: FeatureType.TRAFO,
+                position: findAverageLonLat(geometry, 2),
+                feature: _wrapInFeature(geometry)
+            }
+        });
+
+        return results;
+    }
+
+    const _handleYolSearch = async (query: string) => {
+        const response = await AdrYolApi.fetchAll(MAX_SEARCH_RESULTS, 1, 'id', true, query);
+
+        if (!response.isSuccess) {
+            Logger.error("Yol API error:", response.message);
+            return [];
+        }
+
+        const results = response.data.map(yol => {
+            const geometry: GeoJSON.Geometry = wkbToGeometry(yol.wkb);
+            return {
+                id: `yol-${yol.id}`,
+                title: yol.adi || "İsimsiz Yol",
+                subtitle: `Kodu: ${yol.kodu} | Id: ${yol.id}`,
+                type: FeatureType.YOL,
                 position: findAverageLonLat(geometry, 2),
                 feature: _wrapInFeature(geometry)
             }
@@ -249,12 +272,14 @@ export function useSearch() {
             if (!sanitizedQuery.includes(":")) {
                 const binaResults = await _handleAdrBinaSearch(sanitizedQuery);
                 const trafoResults = await _handleTrafoSearch(sanitizedQuery);
+                const yolResults = await _handleYolSearch(sanitizedQuery);
                 const direkResults = await _handleDirekSearch(sanitizedQuery);
                 const hatResults = await _handleHatSearch(sanitizedQuery);
 
                 aggregatedResults = aggregatedResults
                     .concat(binaResults)
                     .concat(trafoResults)
+                    .concat(yolResults)
                     .concat(direkResults)
                     .concat(hatResults);
                 setResults(aggregatedResults.slice(0, MAX_SEARCH_RESULTS));
@@ -272,6 +297,11 @@ export function useSearch() {
                 case QueryKeywords.TRAFO:
                     const trafoResults = await _handleTrafoSearch(queryPart);
                     aggregatedResults = aggregatedResults.concat(trafoResults);
+                    break;
+
+                case QueryKeywords.YOL:
+                    const yolResults = await _handleYolSearch(queryPart);
+                    aggregatedResults = aggregatedResults.concat(yolResults);
                     break;
 
                 case QueryKeywords.AG_DIREK:

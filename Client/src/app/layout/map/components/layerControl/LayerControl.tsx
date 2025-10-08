@@ -1,5 +1,5 @@
 import "./style/layerControl.css"
-import { Building, ChevronRight, Eye, EyeClosed, Layers2, PlugZap, UtilityPole, Zap } from "lucide-react";
+import { Building, ChevronRight, Eye, EyeClosed, Layers2, PlugZap, UtilityPole, Waypoints, Zap } from "lucide-react";
 import { selectMapState, setFilter, setIsHoverInfoVisible, setIsLayerControlsOpen, setMapLayerVisibility, type MapState } from "../../mapSlice";
 import { useAppDispatch, useAppSelector } from "../../../../../lib/hooks";
 import LayerControlSection from "../../../../shared/layerControl/layerControlSection/LayerControlSection";
@@ -84,6 +84,12 @@ export default function LayerControl(): React.ReactNode {
                         name="Trafo"
                         isLayerVisible={visibility.trafoBina}
                         toggleLayer={() => handleLayerToggle(C3D_MapLayers.TrafoBina)}
+                    />
+                    <LayerControlDropdown
+                        icon={<Waypoints />}
+                        name="Adr Yol"
+                        isLayerVisible={visibility.adrYol}
+                        toggleLayer={() => handleLayerToggle(C3D_MapLayers.AdrYol)}
                     />
                 </LayerControlSection>
                 <LayerControlSection title="poles">

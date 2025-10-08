@@ -408,30 +408,35 @@ export function useMap() {
 
             if (e.code === "Digit3") {
                 e.preventDefault();
-                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.AgDirek }));
+                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.AdrYol }));
             }
 
             if (e.code === "Digit4") {
                 e.preventDefault();
-                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.OgMusDirek }));
+                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.AgDirek }));
             }
 
             if (e.code === "Digit5") {
                 e.preventDefault();
-                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.AydDirek }));
+                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.OgMusDirek }));
             }
 
             if (e.code === "Digit6") {
                 e.preventDefault();
-                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.AgHat }));
+                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.AydDirek }));
             }
 
             if (e.code === "Digit7") {
                 e.preventDefault();
-                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.OgHat }));
+                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.AgHat }));
             }
 
             if (e.code === "Digit8") {
+                e.preventDefault();
+                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.OgHat }));
+            }
+
+            if (e.code === "Digit9") {
                 e.preventDefault();
                 dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.Rekortman }));
             }
