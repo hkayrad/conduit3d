@@ -4,7 +4,7 @@ import React, { useEffect, useMemo } from "react";
 import { useAppDispatch, useAppSelector, useList } from "../../../lib/hooks";
 import { selectListState, setAscending, setFeatureType, setPageNumber, setQuery, setSortBy } from "./listSlice";
 import { capitalizeFirstLetter } from "../../../lib/utils";
-import { Building, MapPin, PlugZap, UtilityPole } from "lucide-react";
+import { Building, MapPin, PlugZap, UtilityPole, Waypoints } from "lucide-react";
 import ActionButton from "../../shared/actionButton/ActionButton";
 import { useNavigate, useOutletContext } from "react-router";
 import { C3D_MapViewType, FeatureType, ListDataType } from "../../../lib/enums";
@@ -45,7 +45,13 @@ export default function List(): React.ReactNode {
         sectionLabel: "Binalar",
         sectionIcon: <Building />,
         types: [ListDataType.AdrBina, ListDataType.TrafoBina]
-    }, {
+    },
+    {
+        sectionLabel: "Yollar",
+        sectionIcon: <Waypoints />,
+        types: [ListDataType.AdrYol]
+    },
+    {
         sectionLabel: "Direkler",
         sectionIcon: <UtilityPole />,
         types: [ListDataType.AgDirek, ListDataType.OgMusDirek, ListDataType.AydDirek]
@@ -58,6 +64,7 @@ export default function List(): React.ReactNode {
     const mappedFeatureTypes = useMemo(() => ({
         [ListDataType.AdrBina]: FeatureType.BUILDING,
         [ListDataType.TrafoBina]: FeatureType.TRAFO,
+        [ListDataType.AdrYol]: FeatureType.YOL,
         [ListDataType.AgDirek]: FeatureType.POLE,
         [ListDataType.OgMusDirek]: FeatureType.POLE,
         [ListDataType.AydDirek]: FeatureType.POLE,

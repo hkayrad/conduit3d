@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { AdrBinaApi, AgDirekApi, AgHatApi, AydDirekApi, OgHatApi, OgMusDirekApi, RekortmanApi, TrafoBinaApi } from "../api";
+import { AdrBinaApi, AdrYolApi, AgDirekApi, AgHatApi, AydDirekApi, OgHatApi, OgMusDirekApi, RekortmanApi, TrafoBinaApi } from "../api";
 import { ListDataType } from "../enums";
 import { selectListState, setAscending, setItemsPerPage, setPageNumber, setQuery, setSortBy } from "../../app/layout/list/listSlice";
 import { useAppDispatch, useAppSelector } from "./reduxHooks";
@@ -26,6 +26,7 @@ export function useList() {
     const apiMap = {
         [ListDataType.AdrBina]: AdrBinaApi,
         [ListDataType.TrafoBina]: TrafoBinaApi,
+        [ListDataType.AdrYol]: AdrYolApi,
         [ListDataType.AgDirek]: AgDirekApi,
         [ListDataType.OgMusDirek]: OgMusDirekApi,
         [ListDataType.AydDirek]: AydDirekApi,

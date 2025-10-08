@@ -26,6 +26,7 @@ export enum AdminModalType {
 
 export enum ListDataType {
     AdrBina = "AdrBina",
+    AdrYol = "AdrYol",
     TrafoBina = "TrafoBina",
     AgHat = "AgHat",
     OgHat = "OgHat",
