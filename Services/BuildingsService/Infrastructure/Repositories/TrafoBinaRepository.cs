@@ -46,7 +46,7 @@ public class TrafoBinaRepository(BuildingsContext context) : ITrafoBinaRepositor
                                         ST_AsBinary(ST_Transform(geometry, 4326)) as wkb,
                                         searchable_text
                                     FROM ""SBK_TRAFOBINATIP""
-                                    WHERE ST_Transform(geometry, 4326) @ ST_MakeEnvelope(
+                                    WHERE ST_Transform(geometry, 4326) && ST_MakeEnvelope(
                                         {extent.MinX}, 
                                         {extent.MinY}, 
                                         {extent.MaxX},
@@ -94,7 +94,7 @@ public class TrafoBinaRepository(BuildingsContext context) : ITrafoBinaRepositor
     {
         var sqlQuery = _dbSet.FromSql($@"SELECT *
                     FROM ""SBK_TRAFOBINATIP""
-                    WHERE ST_Transform(geometry, 4326) @ ST_MakeEnvelope({extent.MinX}, {extent.MinY}, {extent.MaxX}, {extent.MaxY}, 4326)");
+                    WHERE ST_Transform(geometry, 4326) && ST_MakeEnvelope({extent.MinX}, {extent.MinY}, {extent.MaxX}, {extent.MaxY}, 4326)");
 
         if (!string.IsNullOrWhiteSpace(query))
             sqlQuery = sqlQuery.Where(u => u.SearchableText.Matches(

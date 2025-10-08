@@ -51,7 +51,7 @@ public class BuildingsRepository(BuildingsContext context) : IBuildingsRepositor
                                         ST_AsBinary(ST_Transform(geometry, 4326)) as wkb,
                                         searchable_text
                                     FROM buildings
-                                    WHERE ST_Transform(geometry, 4326) @ ST_MakeEnvelope(
+                                    WHERE ST_Transform(geometry, 4326) && ST_MakeEnvelope(
                                         {extent.MinX}, 
                                         {extent.MinY}, 
                                         {extent.MaxX},
@@ -104,7 +104,7 @@ public class BuildingsRepository(BuildingsContext context) : IBuildingsRepositor
     {
         var sqlQuery = _dbSet.FromSql($@"SELECT *
                     FROM buildings
-                    WHERE ST_Transform(geometry, 4326) @ ST_MakeEnvelope({extent.MinX}, {extent.MinY}, {extent.MaxX}, {extent.MaxY}, 4326)");
+                    WHERE ST_Transform(geometry, 4326) && ST_MakeEnvelope({extent.MinX}, {extent.MinY}, {extent.MaxX}, {extent.MaxY}, 4326)");
 
         return await sqlQuery.CountAsync(cancellationToken);
     }

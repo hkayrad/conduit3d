@@ -51,7 +51,7 @@ public class AdrBinaRepository(BuildingsContext context) : IAdrBinaRepository
                                         ST_AsBinary(ST_Transform(geometry, 4326)) as wkb,
                                         searchable_text
                                     FROM ""ADR_BINA""
-                                    WHERE ST_Transform(geometry, 4326) @ ST_MakeEnvelope(
+                                    WHERE ST_Transform(geometry, 4326) && ST_MakeEnvelope(
                                         {extent.MinX}, 
                                         {extent.MinY}, 
                                         {extent.MaxX},
@@ -105,7 +105,7 @@ public class AdrBinaRepository(BuildingsContext context) : IAdrBinaRepository
     {
         var sqlQuery = _dbSet.FromSql($@"SELECT *
                     FROM ""ADR_BINA""
-                    WHERE ST_Transform(geometry, 4326) @ ST_MakeEnvelope({extent.MinX}, {extent.MinY}, {extent.MaxX}, {extent.MaxY}, 4326)");
+                    WHERE ST_Transform(geometry, 4326) && ST_MakeEnvelope({extent.MinX}, {extent.MinY}, {extent.MaxX}, {extent.MaxY}, 4326)");
 
         if (!string.IsNullOrWhiteSpace(query))
             sqlQuery = sqlQuery.Where(u => u.SearchableText.Matches(
