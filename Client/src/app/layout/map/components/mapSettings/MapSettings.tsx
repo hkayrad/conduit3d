@@ -32,23 +32,23 @@ export default function MapSettings() {
             let category = 'Other';
 
             if (key.startsWith('OG_MUS_DIREK_')) {
-                category = 'OG Müşteri Direkleri';
+                category = 'OG Mus Direk';
             } else if (key.startsWith('AG_DIREK_')) {
-                category = 'AG Direkler';
+                category = 'AG Direk';
             } else if (key.startsWith('AYD_DIREK_')) {
-                category = 'Aydınlatma Direkleri';
+                category = 'AYD Direk';
             } else if (key.startsWith('OG_HAT_')) {
-                category = 'OG Hatlar';
+                category = 'OG Hat';
             } else if (key.startsWith('AG_HAT_')) {
-                category = 'AG Hatlar';
+                category = 'AG Hat';
             } else if (key.startsWith('REKORTMAN_')) {
                 category = 'Rekortman';
             } else if (key.startsWith('ADR_BINA_')) {
-                category = 'Binalar';
+                category = 'Bina';
             } else if (key.startsWith('TRAFO_')) {
                 category = 'Trafo';
             } else if (key.startsWith('ADR_YOL_')) {
-                category = 'Yollar';
+                category = 'Yol';
             } else if (key === 'HOVER_COLOR') {
                 category = 'Genel';
             }

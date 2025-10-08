@@ -85,6 +85,8 @@ export default function LayerControl(): React.ReactNode {
                         isLayerVisible={visibility.trafoBina}
                         toggleLayer={() => handleLayerToggle(C3D_MapLayers.TrafoBina)}
                     />
+                </LayerControlSection>
+                <LayerControlSection title="roads">
                     <LayerControlDropdown
                         icon={<Waypoints />}
                         name="Adr Yol"

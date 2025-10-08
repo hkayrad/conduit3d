@@ -1,8 +1,12 @@
 import './style/shortcutsInfo.css';
 import { Keyboard } from "lucide-react";
 import { useState } from "react";
+import { useAppSelector } from '../../../../../lib/hooks';
+import { selectUserState } from '../../../auth/authSlice';
 
 export default function ShortcutsInfo() {
+    const user = useAppSelector(selectUserState);
+
     const [isShortcutsInfoHovered, setIsShortcutsInfoHovered] = useState(false);
     const [isShortcutsInfoToggled, setIsShortcutsInfoToggled] = useState(false);
 
@@ -19,7 +23,7 @@ export default function ShortcutsInfo() {
             <div className={`shortcuts-info ${isShortcutsInfoHovered || isShortcutsInfoToggled ? "" : "hidden"}`}>
                 <h3>Keyboard Shortcuts</h3>
                 <p><span><kbd>Ctrl</kbd><kbd>Delete</kbd></span> : Close Popup Windows</p>
-                <p><span><kbd>Ctrl</kbd><kbd>Comma</kbd></span> : Toggle Settings Window</p>
+                {user?.userRole === "admin" && <p><span><kbd>Ctrl</kbd><kbd>Comma</kbd></span> : Toggle Settings Window</p>}
                 <p><span><kbd>Ctrl</kbd><kbd>/</kbd></span> : Focus Search Bar</p>
                 <p><span><kbd>Esc</kbd></span> : Unfocus Search Bar</p>
                 <p><span><kbd>Shift</kbd><kbd>W</kbd></span> : Wireframe Mode</p>

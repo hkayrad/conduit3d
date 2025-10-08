@@ -169,10 +169,10 @@ export function useMap() {
         dispatch(setExtent({
             extent: {
                 // Extra padding for first person view
-                minX: bounds[0] - LON_EXTENT_PADDING - (selectedViewType === C3D_MapViewType.FirstPerson ? 0.002 : 0),
-                minY: bounds[1] - LAT_EXTENT_PADDING - (selectedViewType === C3D_MapViewType.FirstPerson ? 0.002 : 0),
-                maxX: bounds[2] + LON_EXTENT_PADDING + (selectedViewType === C3D_MapViewType.FirstPerson ? 0.002 : 0),
-                maxY: bounds[3] + LAT_EXTENT_PADDING + (selectedViewType === C3D_MapViewType.FirstPerson ? 0.002 : 0),
+                minX: bounds[0] - LON_EXTENT_PADDING - (selectedViewType === C3D_MapViewType.FirstPerson ? 0.002 : 0.001),
+                minY: bounds[1] - LAT_EXTENT_PADDING - (selectedViewType === C3D_MapViewType.FirstPerson ? 0.002 : 0.001),
+                maxX: bounds[2] + LON_EXTENT_PADDING + (selectedViewType === C3D_MapViewType.FirstPerson ? 0.002 : 0.001),
+                maxY: bounds[3] + LAT_EXTENT_PADDING + (selectedViewType === C3D_MapViewType.FirstPerson ? 0.002 : 0.001),
             }
         }));
 
