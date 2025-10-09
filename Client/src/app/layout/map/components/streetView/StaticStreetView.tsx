@@ -56,8 +56,6 @@ export default function StaticStreetView() {
   }
 
   useEffect(() => {
-    console.log(firstPerson, selectedViewType);
-
     if (firstPerson && selectedViewType === "firstPerson") {
       // Initialize and display the street view here
       const { latitude, longitude } = convertDeckGLToLatLonWithOffset(firstPerson.position![0], firstPerson.position![1], firstPerson.latitude!, firstPerson.longitude!);

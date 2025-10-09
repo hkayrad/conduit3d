@@ -1,7 +1,6 @@
 import { BitmapLayer, ColumnLayer, PathLayer, TileLayer } from "deck.gl";
 import { PathStyleExtension } from "@deck.gl/extensions";
 import { C3D_MapViewType, HatCinsi } from "../../enums";
-import { hexToRgba } from "../math";
 
 /**
  * Class for creating different types of layers.
