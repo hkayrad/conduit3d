@@ -44,23 +44,27 @@ export default function Login(): React.ReactNode {
 
         setLoading(true);
 
-        try {
-            const response = await UserApi.login(user);
+        // Basic brute force attack mitigation
+        const timeout = Math.random() * 1000 + 500;
+        setTimeout(async () => {
+            try {
+                const response = await UserApi.login(user);
 
-            if (!response.isSuccess) {
+                if (!response.isSuccess) {
+                    dispatch(clearUser());
+                    setLoading(false);
+                    setLoginError("Invalid username or password");
+                    return;
+                }
+
+                dispatch(setUser(response.data));
+                navigate("/", { replace: true });
+            } catch (error) {
                 dispatch(clearUser());
                 setLoading(false);
-                setLoginError("Invalid username or password");
-                return;
+                setLoginError("An error occurred while trying to log in");
             }
-
-            dispatch(setUser(response.data));
-            navigate("/", { replace: true });
-        } catch (error) {
-            dispatch(clearUser());
-            setLoading(false);
-            setLoginError("An error occurred while trying to log in");
-        }
+        }, timeout);
     }
 
     return (
