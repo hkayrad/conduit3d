@@ -6,6 +6,11 @@
 # dotenv files
 .env
 
+# SonarQube analysis files
+.sonarqube/
+Client/.scannerwork/
+analyze.sh
+
 # User-specific files
 *.rsuser
 *.suo
