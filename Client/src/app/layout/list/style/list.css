@@ -68,7 +68,7 @@ kbd {
 #list-page {
   margin-top: 6rem;
   display: grid;
-  grid-template-columns: 200px 1fr;
+  grid-template-columns: 12.5rem 1fr;
 }
 #list-page .data-table-wrapper {
   width: 90% !important;
@@ -81,7 +81,7 @@ kbd {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  width: 200px;
+  width: 12.5rem;
   padding: 1rem;
   border-radius: 0 12px 12px 0;
   margin: auto 0 auto;

@@ -87,7 +87,7 @@ kbd {
 .data-table-wrapper .data-table-header .data-table-header-actions .input-container {
   font-size: 1rem;
   color: #2B2D42;
-  width: 200px;
+  width: 12.5rem;
   min-width: 0px !important;
 }
 .data-table-wrapper .data-table-header .data-table-header-actions .input-container input {
