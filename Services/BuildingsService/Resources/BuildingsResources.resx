@@ -93,6 +93,9 @@
     <data name="roadCountRetrieved" xml:space="preserve">
         <value>Road count retrieved successfully.</value>
     </data>
+    <data name="tipListRetrieved" xml:space="preserve">
+        <value>Tip list retrieved successfully.</value>
+    </data>
 
     <!-- API Failure Messages -->
     <data name="noBuildingFound" xml:space="preserve">
@@ -107,6 +110,9 @@
     <data name="invalidRoadId" xml:space="preserve">
         <value>Invalid road ID.</value>
     </data>
+    <data name="noTipFound" xml:space="preserve">
+        <value>No tip found.</value>
+    </data>
 
     <data name="buildingRetrievalFailed" xml:space="preserve">
         <value>Building retrieval failed: {0}</value>
@@ -119,6 +125,9 @@
     </data>
     <data name="roadCountRetrievalFailed" xml:space="preserve">
         <value>Road count retrieval failed: {0}</value>
+    </data>
+    <data name="tipListRetrievalFailed" xml:space="preserve">
+        <value>Tip retrieval failed: {0}</value>
     </data>
 
     <data name="invalidExtent" xml:space="preserve">

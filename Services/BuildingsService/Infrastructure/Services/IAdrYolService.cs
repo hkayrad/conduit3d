@@ -7,6 +7,7 @@ namespace BuildingsService.Infrastructure.Services;
 
 public interface IAdrYolService : IGenericService<AdrYol>
 {
+    public Task<Response<List<string>>> GetTipListAsync(CancellationToken cancellationToken);
     Task<AdrYolResponse> GetAllAsProtobufAsync(int pageNumber,
                                                 int pageSize,
                                                 string sortBy,

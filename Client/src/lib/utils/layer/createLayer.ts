@@ -1,6 +1,7 @@
 import { BitmapLayer, ColumnLayer, PathLayer, TileLayer } from "deck.gl";
 import { PathStyleExtension } from "@deck.gl/extensions";
 import { C3D_MapViewType, HatCinsi } from "../../enums";
+import { hexToRgba } from "../math";
 
 /**
  * Class for creating different types of layers.
@@ -113,7 +114,7 @@ export class CreateLayer {
             data: data ? data : [],
             getPosition: d => d.geometry.coordinates,
             getElevation: d => d.properties.yukseklik,
-            getFillColor: wireframe ? [0,0,0,0] : color,
+            getFillColor: wireframe ? [0, 0, 0, 0] : color,
             extruded: true,
             pickable: !wireframe,
             autoHighlight: true,
@@ -123,6 +124,27 @@ export class CreateLayer {
             diskResolution: wireframe ? 4 : 12,
             visible: visibility,
             wireframe: wireframe,
+        })
+    }
+
+    static Yol(
+        id: string,
+        data: GeoJSON.Feature[],
+        color: [number, number, number, number],
+        highlightColor: [number, number, number, number],
+        lineWidth: number,
+        visibility: boolean,
+    ) {
+        return new PathLayer({
+            id: id,
+            data: data ? data : [],
+            getPath: d => d.geometry.coordinates,
+            getColor: color,
+            getWidth: lineWidth,
+            pickable: true,
+            autoHighlight: true,
+            highlightColor: highlightColor,
+            visible: visibility
         })
     }
 }

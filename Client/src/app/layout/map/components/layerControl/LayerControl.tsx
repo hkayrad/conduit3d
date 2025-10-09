@@ -92,7 +92,15 @@ export default function LayerControl(): React.ReactNode {
                         name="Adr Yol"
                         isLayerVisible={visibility.adrYol}
                         toggleLayer={() => handleLayerToggle(C3D_MapLayers.AdrYol)}
-                    />
+                    >
+                        <LayerControlFilter
+                            label="Type"
+                            typeList={types.adrYol}
+                            filters={filters.adrYol.tipi}
+                            filterKey={C3D_MapLayers.AdrYol}
+                            setFilters={handleFilterToggle}
+                        />
+                    </LayerControlDropdown>
                 </LayerControlSection>
                 <LayerControlSection title="poles">
                     <LayerControlDropdown

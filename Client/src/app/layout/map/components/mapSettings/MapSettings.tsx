@@ -43,10 +43,8 @@ export default function MapSettings() {
                 category = 'AG Hat';
             } else if (key.startsWith('REKORTMAN_')) {
                 category = 'Rekortman';
-            } else if (key.startsWith('ADR_BINA_')) {
+            } else if (key.startsWith('ADR_BINA_') || key.startsWith('TRAFO_')) {
                 category = 'Bina';
-            } else if (key.startsWith('TRAFO_')) {
-                category = 'Trafo';
             } else if (key.startsWith('ADR_YOL_')) {
                 category = 'Yol';
             } else if (key === 'HOVER_COLOR') {
@@ -71,10 +69,19 @@ export default function MapSettings() {
             .map(capitalizeFirstLetter)
             .join(' ')
             .replace('demir', 'Demir')
-            .replace('poligon', 'Poligon');
+            .replace('poligon', 'Poligon')
+            .replace(/ag/i, "")
+            .replace(/og/i, "")
+            .replace(/mus/i, "")
+            .replace(/direk/i, "")
+            .replace(/ayd/i, "")
+            .replace(/adr/i, "")
+            .replace(/hat/i, "")
+            .replace(/rekortman/i, "")
+            .replace(/yol/i, "")
 
         const words = formatted.split(' ');
-        return words[words.length - 1];
+        return words.map(word => word.length > 2 ? word : word.toUpperCase()).join(' ');
     }, []);
 
     // Handle mouse down on header to start dragging

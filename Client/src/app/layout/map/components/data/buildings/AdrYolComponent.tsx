@@ -1,9 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { AdrYolApi } from "../../../../../../lib/api";
-import { FeatureType, type C3D_MapViewType } from "../../../../../../lib/enums";
+import { C3D_MapLayers, FeatureType, type C3D_MapViewType } from "../../../../../../lib/enums";
 import type { Extent } from "../../../../../../lib/types";
 import { CHUNK_SIZE } from "../../../../../../lib/constants";
 import { handleDataFetch, Logger, wkbToGeometry } from "../../../../../../lib/utils";
+import { setType } from "../../../mapSlice";
+import { useAppDispatch } from "../../../../../../lib/hooks";
 
 type Props = {
     setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection[]>>,
@@ -19,6 +21,7 @@ type Props = {
  */
 export default function AdrYolComponent(props: Props): null {
     const { setData, extent, zoom, selectedViewType } = props;
+    const dispatch = useAppDispatch();
     const abortControllerRef = useRef<AbortController | null>(null);
     const isLoadingRef = useRef<boolean>(false);
 
@@ -72,9 +75,26 @@ export default function AdrYolComponent(props: Props): null {
         }
     }
 
+    const handleAdrYolTypesFetch = useCallback(async () => {
+            try {
+                const response = await AdrYolApi.fetchTypes();
+
+                if (!response.isSuccess)
+                    return;
+    
+                dispatch(setType({ key: C3D_MapLayers.AdrYol, types: response.data }));
+            } catch (error) {
+                Logger.error("Error fetching AgHat types:", error);
+            }
+        }, []);
+
     useEffect(() => {
         handleDataFetch(isLoadingRef, abortControllerRef, extent, zoom, selectedViewType, fetchNextChunk, setData);
     }, [extent, zoom, selectedViewType])
+
+    useEffect(() => {
+        handleAdrYolTypesFetch();
+    }, [])
 
     return null;
 } 

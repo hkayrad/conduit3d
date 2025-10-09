@@ -124,5 +124,23 @@ namespace BuildingsService.Controllers
                                                     query,
                                                     cancellationToken);
         }
+
+        /// <summary>
+        /// Retrieves a list of adrYol types.
+        /// </summary>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>A list of adrYol types.</returns>
+        /// <response code="200">Returns a list of adrYol types.</response>
+        /// <response code="404">No adrYol types found.</response>
+        /// <response code="500">Internal server error.</response>
+        /// <example>
+        /// GET /api/v1/adrYol/types
+        /// </example>
+        [MapToApiVersion("1.0")]
+        [HttpGet("types")]
+        public async Task<Response<List<string>>> GetTipListAsync(CancellationToken cancellationToken)
+        {
+            return await _adrYolService.GetTipListAsync(cancellationToken);
+        }
     }
 }

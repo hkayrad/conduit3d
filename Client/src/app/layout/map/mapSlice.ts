@@ -34,6 +34,9 @@ export interface MapState {
         },
         [C3D_MapLayers.Rekortman]: {
             tipi: string[]
+        },
+        [C3D_MapLayers.AdrYol]: {
+            tipi: string[]
         }
     },
     types: {
@@ -43,6 +46,7 @@ export interface MapState {
         [C3D_MapLayers.AgHat]: string[],
         [C3D_MapLayers.OgHat]: string[],
         [C3D_MapLayers.Rekortman]: string[]
+        [C3D_MapLayers.AdrYol]: string[]
     },
     viewState: {
         [C3D_MapViewType.Cartesian]: MapViewState,
@@ -101,6 +105,9 @@ const initialState: MapState = {
         [C3D_MapLayers.Rekortman]: {
             tipi: []
         },
+        [C3D_MapLayers.AdrYol]: {
+            tipi: []
+        }
     },
     types: {
         [C3D_MapLayers.AgDirek]: [],
@@ -108,14 +115,15 @@ const initialState: MapState = {
         [C3D_MapLayers.AydDirek]: [],
         [C3D_MapLayers.AgHat]: [],
         [C3D_MapLayers.OgHat]: [],
-        [C3D_MapLayers.Rekortman]: []
+        [C3D_MapLayers.Rekortman]: [],
+        [C3D_MapLayers.AdrYol]: []
     },
     viewState: {
         [C3D_MapViewType.Cartesian]: {
             // longitude: 41.28654673296825,
             // latitude: 39.90032606428541,
-            longitude: (26+46) / 2,
-            latitude: (36+42) / 2,
+            longitude: (26 + 46) / 2,
+            latitude: (36 + 42) / 2,
             zoom: 6,
             pitch: 0,
             bearing: 0

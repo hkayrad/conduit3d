@@ -87,6 +87,27 @@ public class PostgresqlAdrYolService(IUnitOfWork unitOfWork) : IAdrYolService
         }
     }
 
+    public async Task<Response<List<string>>> GetTipListAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            var tipList = await _unitOfWork.AdrYolRepository.GetTipListAsync(cancellationToken);
+            if (tipList == null || tipList.Count == 0)
+                return Response<List<string>>.NotFound(BuildingsResources.GetString("noTipFound"));
+
+            return Response<List<string>>.Success(tipList, BuildingsResources.GetString("tipListRetrieved"));
+        }
+        catch (NpgsqlException ex)
+        {
+            return Response<List<string>>.DatabaseError(BuildingsResources.GetString("tipListRetrievalFailed", ex.Message));
+        }
+        catch (Exception ex)
+        {
+            return Response<List<string>>.UnhandledError(BuildingsResources.GetString("tipListRetrievalFailed", ex.Message));
+        }
+    }
+
+
     public async Task<Response<int>> GetCountAsync(Extent? extent, string? query, CancellationToken cancellationToken)
     {
         extent ??= new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };

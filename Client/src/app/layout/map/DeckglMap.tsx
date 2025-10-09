@@ -5,7 +5,7 @@ import "./style/deckglMap.css"
 
 import { COLORS, DEBOUNCE_TIME_MS } from "../../../lib/constants";
 
-import { useAppDispatch, useAppSelector } from "../../../lib/hooks";
+import { useAppDispatch, useAppSelector, useYol } from "../../../lib/hooks";
 import { useHat } from "../../../lib/hooks";
 import { useDirek } from "../../../lib/hooks";
 import { useMap } from "../../../lib/hooks";
@@ -13,7 +13,7 @@ import { useMap } from "../../../lib/hooks";
 import { CreateLayer, hexToRgba, Logger } from "../../../lib/utils";
 
 import { AmbientLight, DirectionalLight, Layer, LightingEffect } from "@deck.gl/core";
-import { ColumnLayer, GeoJsonLayer, PathLayer } from "deck.gl";
+import { ColumnLayer, GeoJsonLayer } from "deck.gl";
 import { DeckGL } from "@deck.gl/react";
 import { CompassWidget, ZoomWidget } from "@deck.gl/widgets";
 import { Map as MapLibre, type StyleSpecification } from 'react-map-gl/maplibre';
@@ -161,7 +161,6 @@ export default function DeckglMap(): React.ReactNode {
     const [adrBina, setAdrBina] = useState<GeoJSON.FeatureCollection[]>([]);
     const [buildingBina, setBuildingBina] = useState<GeoJSON.FeatureCollection[]>([]);
     const [trafoBina, setTrafoBina] = useState<GeoJSON.FeatureCollection[]>([]);
-    const [adrYol, setAdrYol] = useState<GeoJSON.FeatureCollection[]>([]);
 
     // Redux hooks
     const dispatch = useAppDispatch();
@@ -186,6 +185,11 @@ export default function DeckglMap(): React.ReactNode {
         direkLayerData,
         allPoles
     } = useDirek();
+
+    const {
+        yolLayerData,
+        setAdrYol
+    } = useYol();
 
     // Map hook
     const {
@@ -233,17 +237,18 @@ export default function DeckglMap(): React.ReactNode {
             visibility.basemap
         ),
 
-        ...adrYol.map((chunk, index) => new PathLayer({
-            id: `adr-yol-layer-${index}`,
-            data: chunk.features,
-            getPath: d => d.geometry.coordinates,
-            getColor: hexToRgba(config.ADR_YOL_COLOR) || COLORS.ADR_YOL,
-            getWidth: undergroundLineWidth,
-            pickable: true,
-            autoHighlight: true,
-            highlightColor: hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
-            visible: selectedViewType === C3D_MapViewType.Cartesian ? (visibility.adrYol && cartesian.zoom >= 15) : visibility.adrYol
-        })),
+        ...yolLayerData.flatMap(filteredYol =>
+            filteredYol.map(yol =>
+                CreateLayer.Yol(
+                    `${yol.id}-layer`,
+                    yol.data,
+                    yol.color,
+                    hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
+                    .5,
+                    selectedViewType === C3D_MapViewType.Cartesian ? (yol.visibility && cartesian.zoom >= 15) : yol.visibility,
+                )
+            )
+        ),
 
         ...hatLayerData.flatMap(filteredHat =>
             filteredHat.map(hat =>
@@ -321,10 +326,10 @@ export default function DeckglMap(): React.ReactNode {
         filters,
         visibility,
         isWireframe,
+        yolLayerData,
         hatLayerData,
         direkLayerData,
         adrBina,
-        adrYol,
         buildingBina,
         trafoBina,
         overgroundLineWidth,

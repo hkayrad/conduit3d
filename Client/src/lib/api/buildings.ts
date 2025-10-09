@@ -417,6 +417,20 @@ export class AdrYolApi {
     }
 
     /**
+     * Fetch all AG Direk feature types.
+     * @returns A promise that resolves to the list of AG Direk feature types.
+     */
+    static async fetchTypes() {
+        try {
+            const response = await instance.get<ApiResponse<string[]>>("adrYol/types");
+            return response.data;
+        } catch (error) {
+            Logger.error("Fetch AdrYol types error:", error);
+            throw error;
+        }
+    }
+
+    /**
      * Fetch the count of AdrYol.
      * @param query Optional search query to filter features.
      * @returns A promise that resolves to the count of AdrYol.
