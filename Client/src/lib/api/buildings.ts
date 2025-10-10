@@ -7,6 +7,7 @@ import { BuildingsResponse } from "../utils/protos/buildings/buildings";
 import { TrafoBinaResponse } from "../utils/protos/buildings/trafoBina";
 import axios from "axios";
 import { AdrYolResponse } from "../utils/protos/buildings/adrYol";
+import { DEFAULT_EXTENT } from "../constants";
 
 /**
  * Class representing the ADR Bina API
@@ -30,7 +31,7 @@ export class AdrBinaApi {
         sortBy: string = 'id',
         ascending: boolean = true,
         query: string = null!,
-        extent?: Extent
+        extent: Extent = DEFAULT_EXTENT
     ) {
         if (this._cancelTokens["fetchAll"])
             this._cancelTokens["fetchAll"].cancel("Operation canceled due to new request.");
@@ -63,7 +64,8 @@ export class AdrBinaApi {
      * @returns A promise that resolves to the count of AdrBina.
      */
     static async fetchCount(
-        query: string = null!
+        query: string = null!,
+        extent: Extent = DEFAULT_EXTENT
     ) {
         if (this._cancelTokens["fetchCount"])
             this._cancelTokens["fetchCount"].cancel("Operation canceled due to new request.");
@@ -74,6 +76,7 @@ export class AdrBinaApi {
             const response = await instance.get<ApiResponse<number>>("adrBina/count", {
                 params: {
                     query,
+                    ...extent,
                 },
                 cancelToken: this._cancelTokens["fetchCount"].token,
             });
@@ -90,7 +93,7 @@ export class AdrBinaApi {
         sortBy: string = 'id',
         ascending: boolean = true,
         query: string = null!,
-        extent?: Extent
+        extent: Extent = DEFAULT_EXTENT
     ): Promise<AdrBinaResponse> {
         if (this._cancelTokens["fetchAllProto"])
             this._cancelTokens["fetchAllProto"].cancel("Operation canceled due to new request.");
@@ -118,11 +121,8 @@ export class AdrBinaApi {
 
             return decodedData;
         } catch (error) {
-            if (error instanceof axios.Cancel) {
-                Logger.warn("Request canceled:", error.message);
-                return Promise.reject(error);
-            }
-
+            if (error === "Request cancelled")
+                Logger.warn("Request was cancelled by axios");
             Logger.error("Fetch AdrBina Proto error:", error);
             throw error;
         }
@@ -151,7 +151,7 @@ export class TrafoBinaApi {
         sortBy: string = 'id',
         ascending: boolean = true,
         query: string = null!,
-        extent?: Extent
+        extent: Extent = DEFAULT_EXTENT
     ) {
         if (this._cancelTokens["fetchAll"])
             this._cancelTokens["fetchAll"].cancel("Operation canceled due to new request.");
@@ -172,6 +172,8 @@ export class TrafoBinaApi {
             });
             return response.data;
         } catch (error) {
+            if (error === "Request cancelled")
+                Logger.warn("Request was cancelled by axios");
             Logger.error("Fetch TrafoBina error:", error);
             throw error;
         }
@@ -183,7 +185,8 @@ export class TrafoBinaApi {
      * @returns A promise that resolves to the count of transformer stations.
      */
     static async fetchCount(
-        query: string = null!
+        query: string = null!,
+        extent: Extent = DEFAULT_EXTENT
     ) {
         if (this._cancelTokens["fetchCount"])
             this._cancelTokens["fetchCount"].cancel("Operation canceled due to new request.");
@@ -194,6 +197,7 @@ export class TrafoBinaApi {
             const response = await instance.get<ApiResponse<number>>("trafoBina/count", {
                 params: {
                     query,
+                    ...extent,
                 },
                 cancelToken: this._cancelTokens["fetchCount"].token,
             });
@@ -210,7 +214,7 @@ export class TrafoBinaApi {
         sortBy: string = 'id',
         ascending: boolean = true,
         query: string = null!,
-        extent?: Extent
+        extent: Extent = DEFAULT_EXTENT
     ): Promise<TrafoBinaResponse> {
         if (this._cancelTokens["fetchAllProto"])
             this._cancelTokens["fetchAllProto"].cancel("Operation canceled due to new request.");
@@ -238,11 +242,8 @@ export class TrafoBinaApi {
 
             return decodedData;
         } catch (error) {
-            if (error instanceof axios.Cancel) {
-                Logger.warn("Request canceled:", error.message);
-                return Promise.reject(error);
-            }
-
+            if (error === "Request cancelled")
+                Logger.warn("Request was cancelled by axios");
             Logger.error("Fetch TrafoBina Proto error:", error);
             throw error;
         }
@@ -271,7 +272,7 @@ export class BuildingsApi {
         sortBy: string = 'id',
         ascending: boolean = true,
         query: string = null!,
-        extent?: Extent
+        extent: Extent = DEFAULT_EXTENT
     ) {
         if (this._cancelTokens["fetchAll"])
             this._cancelTokens["fetchAll"].cancel("Operation canceled due to new request.");
@@ -303,8 +304,8 @@ export class BuildingsApi {
      * @returns A promise that resolves to the count of AdrBina.
      */
     static async fetchCount(
-        extent: Extent = null!,
-        query: string = null!
+        query: string = null!,
+        extent: Extent = DEFAULT_EXTENT
     ) {
         if (this._cancelTokens["fetchCount"])
             this._cancelTokens["fetchCount"].cancel("Operation canceled due to new request.");
@@ -314,8 +315,8 @@ export class BuildingsApi {
         try {
             const response = await instance.get<ApiResponse<number>>("buildings/count", {
                 params: {
-                    ...extent,
                     query,
+                    ...extent,
                 },
                 cancelToken: this._cancelTokens["fetchCount"].token,
             });
@@ -332,7 +333,7 @@ export class BuildingsApi {
         sortBy: string = 'id',
         ascending: boolean = true,
         query: string = null!,
-        extent?: Extent
+        extent: Extent = DEFAULT_EXTENT
     ): Promise<BuildingsResponse> {
         if (this._cancelTokens["fetchAllProto"])
             this._cancelTokens["fetchAllProto"].cancel("Operation canceled due to new request.");
@@ -359,11 +360,8 @@ export class BuildingsApi {
 
             return decodedData;
         } catch (error) {
-            if (error instanceof axios.Cancel) {
-                Logger.warn("Request canceled:", error.message);
-                return Promise.reject(error);
-            }
-
+            if (error === "Request cancelled")
+                Logger.warn("Request was cancelled by axios");
             Logger.error("Fetch Buildings Proto error:", error);
             throw error;
         }
@@ -389,7 +387,7 @@ export class AdrYolApi {
         sortBy: string = 'id',
         ascending: boolean = true,
         query: string = null!,
-        extent?: Extent
+        extent: Extent = DEFAULT_EXTENT
     ) {
         if (this._cancelTokens["fetchAll"])
             this._cancelTokens["fetchAll"].cancel("Operation canceled due to new request.");
@@ -436,7 +434,8 @@ export class AdrYolApi {
      * @returns A promise that resolves to the count of AdrYol.
      */
     static async fetchCount(
-        query: string = null!
+        query: string = null!,
+        extent: Extent = DEFAULT_EXTENT
     ) {
         if (this._cancelTokens["fetchCount"])
             this._cancelTokens["fetchCount"].cancel("Operation canceled due to new request.");
@@ -447,6 +446,7 @@ export class AdrYolApi {
             const response = await instance.get<ApiResponse<number>>("adrYol/count", {
                 params: {
                     query,
+                    ...extent,
                 },
                 cancelToken: this._cancelTokens["fetchCount"].token,
             });
@@ -463,7 +463,7 @@ export class AdrYolApi {
         sortBy: string = 'id',
         ascending: boolean = true,
         query: string = null!,
-        extent?: Extent
+        extent: Extent = DEFAULT_EXTENT
     ): Promise<AdrYolResponse> {
         if (this._cancelTokens["fetchAllProto"])
             this._cancelTokens["fetchAllProto"].cancel("Operation canceled due to new request.");
@@ -491,11 +491,8 @@ export class AdrYolApi {
 
             return decodedData;
         } catch (error) {
-            if (error instanceof axios.Cancel) {
-                Logger.warn("Request canceled:", error.message);
-                return Promise.reject(error);
-            }
-
+            if (error === "Request cancelled")
+                Logger.warn("Request was cancelled by axios");
             Logger.error("Fetch AdrBina Proto error:", error);
             throw error;
         }

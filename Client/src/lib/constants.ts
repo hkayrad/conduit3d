@@ -19,6 +19,13 @@ export const MIN_ZOOM_THRESHOLD = 12; // Minimum zoom level to start loading det
 export const DEFAULT_FLOOR_HEIGHT = 2.5; // meters
 export const DEFAULT_FLOOR_COUNT = 5; // floors
 
+export const DEFAULT_EXTENT = {
+    minX: -180,
+    minY: -90,
+    maxX: 180,
+    maxY: 90
+};
+
 export const EMPTY_GEOMETRY_COLLECTION: GeoJSON.FeatureCollection = {
     type: "FeatureCollection",
     features: []
