@@ -33,7 +33,7 @@ public class AddUserDto : UserDto, IValidatableObject
         if (string.IsNullOrWhiteSpace(Password))
             yield return new ValidationResult(UserResources.GetString("passwordNull"), [nameof(Password)]);
         // Password complexity check
-        else if (!Regex.IsMatch(Password, @"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"))
+        else if (!Regex.IsMatch(Password, @"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$", RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds(250)))
             yield return new ValidationResult(UserResources.GetString("passwordInvalid"), [nameof(Password)]);
     }
 }

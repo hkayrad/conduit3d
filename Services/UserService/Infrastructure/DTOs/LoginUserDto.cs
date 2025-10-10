@@ -44,7 +44,7 @@ public class LoginUserDto : IValidatableObject
                 yield return new ValidationResult(UserResources.GetString("usernameTooShort"), [nameof(Username)]);
 
             // Username format check
-            if (!Regex.IsMatch(Username, @"^[a-zA-Z0-9_]+$"))
+            if (!Regex.IsMatch(Username, @"^[a-zA-Z0-9_]+$", RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds(250)))
                 yield return new ValidationResult(UserResources.GetString("usernameInvalid"), [nameof(Username)]);
         }
 

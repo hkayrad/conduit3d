@@ -9,7 +9,7 @@ export const ValidationPatterns = {
     ALPHANUMERIC_SPACES: /^[a-zA-Z0-9\s]+$/,
 
     // Remove HTML tags
-    HTML_TAGS: /<[^>]*>/g,
+    HTML_TAGS: /<.*?>/g,
 
     // Remove script tags and content
     SCRIPT_TAGS: /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
@@ -33,7 +33,7 @@ export const ValidationPatterns = {
     NUMBERS_ONLY: /^[0-9]+$/,
 
     // Decimal numbers
-    DECIMAL: /^[0-9]*\.?[0-9]+$/,
+    DECIMAL: /^[0-9]+(\.[0-9]*)?$|^[0-9]*\.[0-9]+$/,
 
     // Search query sanitization (for your global search)
     SEARCH_QUERY: /^[a-zA-Z0-9\s\.,\-_]+$/,
