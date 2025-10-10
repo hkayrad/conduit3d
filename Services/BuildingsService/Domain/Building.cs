@@ -63,12 +63,6 @@ public class Building
     [Column("yukseklik")]
     public double Yukseklik { get; set; }
 
-    // /// <summary>
-    // /// The geographical representation of the building.
-    // /// </summary>
-    // [Required]
-    // public required string GeoJson { get; set; }
-
     /// <summary>
     /// The Well-Known Binary (WKB) representation of the building.
     /// </summary>

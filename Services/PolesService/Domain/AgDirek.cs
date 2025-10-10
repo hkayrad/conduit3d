@@ -67,12 +67,6 @@ public class AgDirek
     [Column("direk_boy_id")]
     public double DirekBoyId { get; set; }
 
-    // /// <summary>
-    // /// The geographical representation of the low voltage pole.
-    // /// </summary>
-    // [Column("geojson")]
-    // public required string GeoJson { get; set; }
-
     /// <summary>
     /// The Well-Known Binary (WKB) representation of the low voltage pole's geometry.
     /// </summary>

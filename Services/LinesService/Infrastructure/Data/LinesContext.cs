@@ -52,9 +52,6 @@ public class LinesContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.Wkb)
                 .HasComputedColumnSql("ST_AsBinary(ST_Transform(geometry, 4326))")
                 .HasColumnName("wkb");
-            // entity.Property(e => e.GeoJson)
-            //     .HasComputedColumnSql("ST_AsGeoJSON(ST_Transform(geometry, 4326))")
-            //     .HasColumnName("geojson");
             entity.HasGeneratedTsVectorColumn(
                 e => e.SearchableText,
                 "simple",
@@ -95,9 +92,6 @@ public class LinesContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.Wkb)
                 .HasComputedColumnSql("ST_AsBinary(ST_Transform(geometry, 4326))")
                 .HasColumnName("wkb");
-            // entity.Property(e => e.GeoJson)
-            //     .HasComputedColumnSql("ST_AsGeoJSON(ST_Transform(geometry, 4326))")
-            //     .HasColumnName("geojson");
             entity.HasGeneratedTsVectorColumn(
                 e => e.SearchableText,
                 "simple",
@@ -135,9 +129,6 @@ public class LinesContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.Wkb)
                 .HasComputedColumnSql("ST_AsBinary(ST_Transform(geometry, 4326))")
                 .HasColumnName("wkb");
-            // entity.Property(e => e.GeoJson)
-            //     .HasComputedColumnSql("ST_AsGeoJSON(ST_Transform(geometry, 4326))")
-            //     .HasColumnName("geojson");
             entity.HasGeneratedTsVectorColumn(
                 e => e.SearchableText,
                 "simple",
