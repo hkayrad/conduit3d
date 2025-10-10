@@ -37,16 +37,6 @@
             &:focus {
                 border-color: global.$primary;
             }
-
-            /* &:focus {
-                background: global.$primary;
-                color: global.$white;
-                border-color: global.$primary;
-
-                &::placeholder {
-                    color: global.$white;
-                }
-            } */
         }
     }
 
