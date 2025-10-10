@@ -10,7 +10,7 @@ namespace LinesService.Infrastructure;
 /// Unit of Work for managing database operations.
 /// </summary>
 /// <param name="context"></param>
-public class UnitOfWork(LinesContext context) : IUnitOfWork
+public sealed class UnitOfWork(LinesContext context) : IUnitOfWork
 {
     private readonly LinesContext _context = context ?? throw new ArgumentNullException(nameof(context));
     private AgHatRepository? _agHatRepository;

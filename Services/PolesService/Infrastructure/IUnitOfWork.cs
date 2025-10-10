@@ -6,7 +6,7 @@ namespace PolesService.Infrastructure;
 /// <summary>
 /// Unit of Work interface for managing repositories.
 /// </summary>
-public interface IUnitOfWork
+public interface IUnitOfWork : IDisposable  
 {
     /// <summary>
     /// Gets the repository for managing AgDirek entities.

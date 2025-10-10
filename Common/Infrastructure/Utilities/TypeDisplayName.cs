@@ -2,7 +2,7 @@ using System;
 
 namespace Conduit3D.Common.Infrastructure.Utilities;
 
-public class TypeDisplayName
+public static class TypeDisplayName
 {
     public static string Get(Type type)
     {

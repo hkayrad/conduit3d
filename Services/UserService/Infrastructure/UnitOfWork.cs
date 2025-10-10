@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace UserService.Infrastructure;
 
-public class UnitOfWork(UsersContext context) : IUnitOfWork
+public sealed class UnitOfWork(UsersContext context) : IUnitOfWork
 {
     private readonly UsersContext _context = context ?? throw new ArgumentNullException(nameof(context));
     private IUserRepository? _userRepository;

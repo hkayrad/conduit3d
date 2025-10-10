@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace UserService.Infrastructure.Utilities;
 
-internal sealed class TokenProvider
+internal static class TokenProvider
 {
     public static string GenerateToken(User user)
     {

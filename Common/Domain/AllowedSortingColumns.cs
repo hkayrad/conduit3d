@@ -2,7 +2,7 @@ using System;
 
 namespace Conduit3D.Common.Domain;
 
-public class AllowedSortingColumns
+public static class AllowedSortingColumns
 {
     public static readonly string[] AdrBinaColumns = [
         "Id",
