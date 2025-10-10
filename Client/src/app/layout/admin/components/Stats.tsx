@@ -12,7 +12,7 @@ type Props = {
  * @param props - The properties for the stats component.
  * @returns The rendered stats component.
  */
-export default function Stats(props: Props): React.ReactNode {
+export default function Stats(props: Readonly<Props>): React.ReactNode {
     const { userCounts } = props;
 
     return (

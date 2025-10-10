@@ -19,7 +19,7 @@ type Props = {
  * @param props - The props for the component
  * @returns The rendered component
  */
-export default function Input(props: Props): React.ReactNode {
+export default function Input(props: Readonly<Props>): React.ReactNode {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     const { type, id, name, label, required, placeholder, state, setState } = props;

@@ -36,7 +36,7 @@ type FeatureProperties = {
  * @param props - The props for the component
  * @returns The rendered component
  */
-export default function HoverCard(props: Props): React.ReactNode {
+export default function HoverCard(props: Readonly<Props>): React.ReactNode {
     const { hoveredFeature, mousePos } = props;
 
     const properties = hoveredFeature?.properties as FeatureProperties | undefined;

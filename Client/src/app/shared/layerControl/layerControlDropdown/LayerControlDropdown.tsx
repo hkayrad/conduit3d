@@ -16,7 +16,7 @@ type Props = {
  * @param props - The props for the component
  * @returns The rendered component
  */
-export default function LayerControlDropdown(props: Props): React.ReactNode {
+export default function LayerControlDropdown(props: Readonly<Props>): React.ReactNode {
     const { icon, name, isLayerVisible, toggleLayer, children } = props;
 
     const [isOpen, setIsOpen] = useState(false);

@@ -28,7 +28,7 @@ type Props = {
  * @param props Props for the Table component.
  * @returns The rendered Table component.
  */
-export default function Table(props: Props): React.ReactNode {
+export default function Table(props: Readonly<Props>): React.ReactNode {
     const {
         tableName,
         pageNumber,

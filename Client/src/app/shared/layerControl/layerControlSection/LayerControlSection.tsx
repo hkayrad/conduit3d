@@ -11,7 +11,7 @@ type Props = {
  * @param props - The props for the component
  * @returns The rendered component
  */
-export default function LayerControlSection(props: Props): React.ReactNode {
+export default function LayerControlSection(props: Readonly<Props>): React.ReactNode {
     const { title, children } = props;
     
     return (

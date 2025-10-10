@@ -1,3 +1,4 @@
+
 import { CircleAlert } from "lucide-react";
 import type { User } from "../../../../lib/types";
 
@@ -13,7 +14,7 @@ type Props = {
  * @param props - Props for the UserDeleteModalContent component
  * @returns The rendered component
  */
-export default function UserDeleteModalContent(props: Props): React.ReactNode {
+export default function UserDeleteModalContent(props: Readonly<Props>): React.ReactNode {
     const { user, handleDelete, handleCloseModal, errorText } = props;
 
     return (
