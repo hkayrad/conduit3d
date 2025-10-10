@@ -19,7 +19,7 @@ type Props = {
  * @component
  * @param props - The props for the component
  */
-export default function AydDirekComponent(props: Props): null {
+export default function AydDirekComponent(props: Readonly<Props>): null {
     const { setData, extent, zoom, selectedViewType } = props;
 
     const dispatch = useAppDispatch();
@@ -70,10 +70,8 @@ export default function AydDirekComponent(props: Props): null {
                 features: formattedData
             };
         } catch (error) {
-            if (error === "Request cancelled") {
+            if (error === "Request cancelled")
                 Logger.warn("Request was cancelled by axios");
-                return Promise.reject(error);
-            }
             Logger.error("Error fetching AydDirek data:", error);
             throw error;
         }

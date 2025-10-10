@@ -17,7 +17,7 @@ type Props = {
  * @component
  * @param props - The props for the component
  */
-export default function AdrBinaComponent(props: Props): null {
+export default function AdrBinaComponent(props: Readonly<Props>): null {
     const { setData, extent, zoom, selectedViewType } = props;
     const abortControllerRef = useRef<AbortController | null>(null);
     const isLoadingRef = useRef<boolean>(false);
@@ -66,10 +66,8 @@ export default function AdrBinaComponent(props: Props): null {
                 features: formattedData
             };
         } catch (error) {
-            if (error === "Request cancelled") {
+            if (error === "Request cancelled")
                 Logger.warn("Request was cancelled by axios");
-                return Promise.reject(error);
-            }
             Logger.error("Error fetching AdrBina data:", error);
             throw error;
         }

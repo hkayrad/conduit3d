@@ -17,7 +17,7 @@ type Props = {
  * @component
  * @param props - The props for the component
  */
-export default function TrafoBinaComponent(props: Props): null {
+export default function TrafoBinaComponent(props: Readonly<Props>): null {
     const { setData, extent, zoom, selectedViewType } = props;
     const abortControllerRef = useRef<AbortController | null>(null);
     const isLoadingRef = useRef<boolean>(false);
@@ -54,7 +54,9 @@ export default function TrafoBinaComponent(props: Props): null {
                 features: formattedData
             };
         } catch (error) {
-            Logger.error("Error fetching AdrBina data:", error);
+            if (error === "Request cancelled")
+                Logger.warn("Request was cancelled by axios");
+            Logger.error("Error fetching TrafoBina data:", error);
             throw error;
         }
     }

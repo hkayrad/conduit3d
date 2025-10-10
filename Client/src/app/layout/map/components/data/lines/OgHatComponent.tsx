@@ -20,7 +20,7 @@ type Props = {
  * @component
  * @param props - The props for the component
  */
-export default function OgHatComponent(props: Props): null {
+export default function OgHatComponent(props: Readonly<Props>): null {
     const { setData, allPoles, extent, zoom, selectedViewType } = props;
 
     const dispatch = useAppDispatch();
@@ -48,7 +48,7 @@ export default function OgHatComponent(props: Props): null {
 
             const allSegments: GeoJSON.Feature[] = [];
 
-            response.data.map((rawData) => {
+            for(const rawData of response.data) {
                 const feature = {
                     type: "Feature",
                     geometry: wkbToGeometry(rawData.wkb),
@@ -64,17 +64,15 @@ export default function OgHatComponent(props: Props): null {
                 }
                 const segments: GeoJSON.Feature[] = lineStringToSegments(feature, rawData.cinsi as HatCinsi, allPoles, -.25);
                 allSegments.push(...segments);
-            });
+            };
 
             return {
                 type: "FeatureCollection",
                 features: allSegments
             };
         } catch (error) {
-            if (error === "Request cancelled") {
+            if (error === "Request cancelled")
                 Logger.warn("Request was cancelled by axios");
-                return Promise.reject(error);
-            }
             Logger.error("Error fetching AgHat data:", error);
             throw error;
         }
