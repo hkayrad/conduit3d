@@ -4,13 +4,9 @@ import "maplibre-gl/dist/maplibre-gl.css"
 import "./style/deckglMap.css"
 
 import { COLORS, DEBOUNCE_TIME_MS } from "../../../lib/constants";
-
-import { useAppDispatch, useAppSelector, useYol } from "../../../lib/hooks";
-import { useHat } from "../../../lib/hooks";
-import { useDirek } from "../../../lib/hooks";
-import { useMap } from "../../../lib/hooks";
-
+import { useAppDispatch, useAppSelector, useYol, useHat, useDirek, useMap } from "../../../lib/hooks";
 import { CreateLayer, hexToRgba, Logger } from "../../../lib/utils";
+import { C3D_MapViewType } from "../../../lib/enums";
 
 import { AmbientLight, DirectionalLight, Layer, LightingEffect } from "@deck.gl/core";
 import { ColumnLayer, GeoJsonLayer } from "deck.gl";
@@ -21,6 +17,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Outlet, useLocation } from "react-router";
 
 import { selectMapState, setFocusedView } from "./mapSlice";
+import { selectConfig } from "../../configSlice";
 import LayerControl from "./components/layerControl/LayerControl";
 import DataComponent from "./components/data/DataComponent";
 import MousePosition from "./components/mousePosition/MousePosition";
@@ -28,13 +25,9 @@ import Attribution from "./components/attribution/Attribution";
 import HoverCard from "./components/hoverCard/HoverCard";
 import FeatureInfo from "./components/featureInfo/FeatureInfo";
 import ShortcutsInfo from "./components/shortcutsInfo/ShortcutsInfo";
-import { C3D_MapViewType } from "../../../lib/enums";
 import ViewToggle from "./components/viewToggle/ViewToggle";
 import GlobalSearch from "./components/globalSearch/GlobalSearch";
-//@ts-ignore
-import StaticStreetView from "./components/streetView/StaticStreetView";
 import DynmicStreetView from "./components/streetView/DynamicStreetView";
-import { selectConfig } from "../../configSlice";
 import MapSettings from "./components/mapSettings/MapSettings";
 import FpsCounter from "../../shared/fpsCounter/FpsCounter";
 
@@ -69,7 +62,7 @@ export default function DeckglMap(): React.ReactNode {
                 ],
                 tileSize: 256,
                 attribution: "© OpenStreetMap contributors",
-                bounds: [39.5, 38.0, 42.5, 41.0]
+                bounds: [39.5, 38, 42.5, 41]
             },
             "turkey": {
                 type: "raster",
@@ -422,7 +415,7 @@ export default function DeckglMap(): React.ReactNode {
     return (
         <>
             <Outlet context={{ flyTo }} />
-            <div id="map-page" className={location.pathname !== "/" ? "hide" : ""}>
+            <div id="map-page" className={location.pathname === "/" ? "" : "hide"}>
                 <DataComponent
                     allPoles={allPoles}
                     setBuildingBina={setBuildingBina}
@@ -476,11 +469,11 @@ export default function DeckglMap(): React.ReactNode {
                     widgets={widgets}
                     onClick={handleClick}
                     onHover={handleMouseMove}
-                    getCursor={(state) => {
-                        setCursor(state.isDragging ? "grabbing" :
-                            state.isHovering ? "pointer" : "default"
-                        );
-                        return "inherit"
+                    getCursor={({ isDragging, isHovering }) => {
+                        const newCursor = isDragging ? "grabbing" :
+                                          isHovering ? "pointer" : "default";
+                        setCursor(newCursor);
+                        return newCursor;
                     }}
                     effects={effects}
                 >

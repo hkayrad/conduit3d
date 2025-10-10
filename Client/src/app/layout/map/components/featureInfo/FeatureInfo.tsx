@@ -35,7 +35,7 @@ export default function FeatureInfo(props: Readonly<Props>): React.ReactNode {
 
     const windowRef = useRef<HTMLDivElement>(null);
 
-    const content = useMemo(() => InfoContent(properties, coordinate!), [coordinate, properties]);
+    const content = useMemo(() => InfoContent(properties, coordinate), [coordinate, properties]);
 
     const handleMouseDown = useCallback((e: React.MouseEvent) => {
         if (!windowRef.current)

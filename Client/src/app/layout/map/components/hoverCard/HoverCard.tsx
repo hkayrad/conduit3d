@@ -62,7 +62,7 @@ export default function HoverCard(props: Readonly<Props>): React.ReactNode {
             if (deltaTime > 0) {
                 const velocityX = deltaX / deltaTime; // pixels per millisecond
                 const velocityY = deltaY / deltaTime;
-                const magnitude = Math.sqrt(velocityX * velocityX + velocityY * velocityY);
+                const magnitude = Math.hypot(velocityX, velocityY);
 
                 velocityRef.current = {
                     x: velocityX * 1000, // Convert to pixels per second

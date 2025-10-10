@@ -43,8 +43,7 @@ export default function StaticStreetView() {
 
   const fetchImg = useMemo(() => {
     if (selectedViewType !== C3D_MapViewType.FirstPerson) return "";
-    // return `https://maps.googleapis.com/maps/api/streetview?key=${import.meta.env.VITE_MAPS_API_KEY}&location=${updatedLonLat?.latitude},${updatedLonLat?.longitude}&heading=${firstPerson.bearing}&pitch=${-firstPerson.pitch!}&fov=90&size=600x400`;
-    return `https://placehold.co/1200x800/png?text=lon:${updatedLonLat?.longitude}%0Alat:${updatedLonLat?.latitude}%0Ab:${firstPerson.bearing}%0Ap:${-(firstPerson.pitch!)}`;
+    return `https://maps.googleapis.com/maps/api/streetview?key=${import.meta.env.VITE_MAPS_API_KEY}&location=${updatedLonLat?.latitude},${updatedLonLat?.longitude}&heading=${firstPerson.bearing}&pitch=${-firstPerson.pitch!}&fov=90&size=600x400`;
   }, [firstPerson]);
 
   const onPin = () => {
@@ -77,6 +76,7 @@ export default function StaticStreetView() {
         </button>
         <img
           className="street-view-image"
+          alt="Google Street View"
           src={fetchImg}
         />
       </div>

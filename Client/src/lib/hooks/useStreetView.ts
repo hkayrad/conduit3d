@@ -96,23 +96,8 @@ export function useStreetView({ position, pov }: StreetViewOptions) {
       }));
     };
 
-    const handlePovChanged = () => {
-      if (shouldIgnoreEventsRef.current) return;
-
-      dispatch(setViewState({
-        viewId: C3D_MapViewType.FirstPerson,
-        viewState: {
-          longitude: streetViewRef.current?.getPosition()?.lng() || 0,
-          latitude: streetViewRef.current?.getPosition()?.lat() || 0,
-          bearing: streetViewRef.current?.getPov().heading || 0,
-          pitch: -streetViewRef.current?.getPov().pitch! || 0,
-          position: [0, 0, 3]
-        }
-      }));
-    };
-
     streetViewRef.current.addListener("position_changed", handlePositionChanged);
-    streetViewRef.current.addListener("pov_changed", handlePovChanged);
+    streetViewRef.current.addListener("pov_changed", handlePositionChanged);
   }, [isLoaded, dispatch]);
 
   const updatePosition = useCallback((newPosition: { lat: number; lng: number }) => {

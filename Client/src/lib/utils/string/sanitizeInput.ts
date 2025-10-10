@@ -33,7 +33,7 @@ export const ValidationPatterns = {
     NUMBERS_ONLY: /^[0-9]+$/,
 
     // Decimal numbers
-    DECIMAL: /^[0-9]+(\.[0-9]*)?$|^[0-9]*\.[0-9]+$/,
+    DECIMAL: /^\d+(\.\d*)?$|^\d*\.\d+$/,
 
     // Search query sanitization (for your global search)
     SEARCH_QUERY: /^[a-zA-Z0-9\s\.,\-_]+$/,
@@ -68,18 +68,18 @@ export class InputSanitizer {
      */
     static preventXSS(input: string): string {
         return input
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#x27;')
-            .replace(/\//g, '&#x2F;');
+            .replaceAll(/</, '&lt;')
+            .replaceAll(/>/, '&gt;')
+            .replaceAll(/"/, '&quot;')
+            .replaceAll(/'/, '&#x27;')
+            .replaceAll(/\//, '&#x2F;');
     }
 
     /**
      * SQL injection prevention (basic)
      */
     static preventSQLInjection(input: string): string {
-        return input.replace(ValidationPatterns.SQL_INJECTION, '');
+        return input.replaceAll(ValidationPatterns.SQL_INJECTION, '');
     }
 
     /**
@@ -88,10 +88,10 @@ export class InputSanitizer {
     static sanitizeSearchQuery(query: string): string {
         // Remove dangerous characters but keep useful search characters
         let sanitized = query
-            .replace(ValidationPatterns.HTML_TAGS, '')
-            .replace(ValidationPatterns.SCRIPT_TAGS, '')
-            .replace(ValidationPatterns.SQL_INJECTION, '')
-            .replace(ValidationPatterns.XSS_PATTERNS, '')
+            .replaceAll(ValidationPatterns.HTML_TAGS, '')
+            .replaceAll(ValidationPatterns.SCRIPT_TAGS, '')
+            .replaceAll(ValidationPatterns.SQL_INJECTION, '')
+            .replaceAll(ValidationPatterns.XSS_PATTERNS, '')
             .trim();
 
         // Limit length
@@ -115,7 +115,7 @@ export class InputSanitizer {
         // Then validate against allowed pattern
         if (!pattern.test(sanitized)) {
             // Remove non-matching characters
-            sanitized = sanitized.replace(allowTurkish ? /[^a-zA-ZçğıöşüÇĞIİÖŞÜ0-9\s\.,\-_!?()]/g : /[^a-zA-Z0-9\s\.,\-_!?()]/g, '');
+            sanitized = sanitized.replaceAll(allowTurkish ? /[^a-zA-ZçğıöşüÇĞIİÖŞÜ0-9\s\.,\-_!?()]/ : /[^a-zA-Z0-9\s\.,\-_!?()]/, '');
         }
 
         return sanitized.trim();
@@ -131,10 +131,10 @@ export class InputSanitizer {
             return { lat: null, lon: null };
         }
 
-        const latNum = parseFloat(lat);
-        const lonNum = parseFloat(lon);
+        const latNum = Number.parseFloat(lat);
+        const lonNum = Number.parseFloat(lon);
 
-        if (isNaN(latNum) || isNaN(lonNum)) {
+        if (Number.isNaN(latNum) || Number.isNaN(lonNum)) {
             return { lat: null, lon: null };
         }
 

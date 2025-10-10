@@ -63,7 +63,7 @@ export class CreateLayer {
         if (type == HatCinsi.HAVAI)
             return new PathLayer({
                 id: id,
-                data: data ? data : [],
+                data: data ?? [],
                 getPath: d => d.geometry.coordinates,
                 getColor: color,
                 getWidth: lineWidth,
@@ -76,7 +76,7 @@ export class CreateLayer {
         else
             return new PathLayer({
                 id: id,
-                data: data ? data : [],
+                data: data ?? [],
                 getPath: d => d.geometry.coordinates,
                 getColor: color,
                 getWidth: lineWidth,
@@ -110,7 +110,7 @@ export class CreateLayer {
     ) {
         return new ColumnLayer({
             id: id,
-            data: data ? data : [],
+            data: data ?? [],
             getPosition: d => d.geometry.coordinates,
             getElevation: d => d.properties.yukseklik,
             getFillColor: wireframe ? [0, 0, 0, 0] : color,
@@ -136,7 +136,7 @@ export class CreateLayer {
     ) {
         return new PathLayer({
             id: id,
-            data: data ? data : [],
+            data: data ?? [],
             getPath: d => d.geometry.coordinates,
             getColor: color,
             getWidth: lineWidth,

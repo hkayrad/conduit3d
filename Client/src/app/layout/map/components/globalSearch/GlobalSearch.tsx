@@ -18,7 +18,7 @@ type Props = {
     searchInputRef: React.RefObject<HTMLInputElement>;
 }
 
-export default function GlobalSearch(props: Props) {
+export default function GlobalSearch(props: Readonly<Props>) {
     const { flyTo, searchInputRef } = props;
 
     // Custom hook to handle search logic
@@ -66,8 +66,12 @@ export default function GlobalSearch(props: Props) {
                 </div>
                 {results.length > 0 && isFocused && (
                     <div className="results">
-                        {results.map(result => (
-                            <div key={result.id} className="result-item" onClick={() => handleGoTo(result.feature)}>
+                        {results.map((result) => (
+                            <div
+                                key={result.id}
+                                className="result-item"
+                                onClick={() => handleGoTo(result.feature)}
+                            >
                                 <div className="icon">{ICONS[result.type]}</div>
                                 <div className="text">
                                     <div className="title" title={result.title}>{result.title}</div>

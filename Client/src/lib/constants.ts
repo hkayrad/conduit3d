@@ -43,12 +43,3 @@ export const COLORS: { [name: string]: [number, number, number, number] } = {
     REKORTMAN: [255, 0, 255, 255],
     ADR_YOL: [128, 0, 128, 255]        // Purple, opaque
 };
-
-// export const MAP_STYLE = [
-//     "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json",
-//     "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
-//     "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
-//     "https://tiles.openfreemap.org/styles/positron",
-//     "https://tiles.openfreemap.org/styles/bright",
-//     "https://tiles.openfreemap.org/styles/liberty"
-// ];

@@ -44,7 +44,10 @@ export default function LayerControlDropdown(props: Readonly<Props>): React.Reac
                 </div>
             </div>
             {children &&
-                <div onClick={(e) => e.stopPropagation()} className={`content ${isOpen && children ? "open" : "closed"}`}>
+                <div
+                    onClick={(e) => e.stopPropagation()}
+                    className={`content ${isOpen && children ? "open" : "closed"}`}
+                >
                     <div className="content-wrapper">
                         {children}
                     </div>

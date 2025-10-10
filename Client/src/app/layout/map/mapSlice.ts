@@ -3,7 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../../lib/store";
 import type { FirstPersonViewState, MapViewState } from "deck.gl";
 import { C3D_MapViewType, C3D_MapLayers } from "../../../lib/enums";
-import type { C3D_LayerViewState as C3D_LayerViewState } from "../../../lib/types";
+import type { C3D_LayerViewState } from "../../../lib/types";
 
 export interface MapState {
     isDataLoading: boolean,

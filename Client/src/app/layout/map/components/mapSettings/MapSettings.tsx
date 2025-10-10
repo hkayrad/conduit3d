@@ -25,8 +25,8 @@ export default function MapSettings() {
     const categorizeColorSettings = useCallback(() => {
         const categories: Record<string, Array<[string, string]>> = {};
 
-        Object.entries(config).forEach(([key, value]) => {
-            if (!key.endsWith('_COLOR')) return;
+        for (const [key, value] of Object.entries(config)) {
+            if (!key.endsWith('_COLOR')) continue;
 
             // Extract category from key prefix
             let category = 'Other';
@@ -55,7 +55,7 @@ export default function MapSettings() {
                 categories[category] = [];
             }
             categories[category].push([key, value]);
-        });
+        }
 
         return categories;
     }, [config]);
@@ -180,7 +180,9 @@ export default function MapSettings() {
     // Cleanup timeouts on unmount
     useEffect(() => {
         return () => {
-            Object.values(debounceTimeouts.current).forEach(clearTimeout);
+            for (const timeout of Object.values(debounceTimeouts.current)) {
+                clearTimeout(timeout);
+            }
         };
     }, []);
 

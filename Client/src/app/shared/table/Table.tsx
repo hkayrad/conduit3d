@@ -59,9 +59,9 @@ export default function Table(props: Readonly<Props>): React.ReactNode {
     }
 
     const handleGoToPage = (): void => {
-        const targetPage = parseInt(gotoPageInput);
+        const targetPage = Number.parseInt(gotoPageInput);
 
-        if (isNaN(targetPage) || targetPage < 1 || targetPage > maxPageCount)
+        if (Number.isNaN(targetPage) || targetPage < 1 || targetPage > maxPageCount)
             return;
 
         setPageNumber(targetPage);
@@ -201,7 +201,7 @@ export default function Table(props: Readonly<Props>): React.ReactNode {
                                 </div>
                                 <div className="column-toggle-list">
                                     {data.headers.map((header) => (
-                                        <div
+                                        <button
                                             key={header.id}
                                             className="column-toggle-item"
                                             onClick={() => toggleColumn(header.id)}
@@ -210,7 +210,7 @@ export default function Table(props: Readonly<Props>): React.ReactNode {
                                                 {visibleColumns.has(header.id) && <Check size={14} />}
                                             </div>
                                             <span>{header.label}</span>
-                                        </div>
+                                        </button>
                                     ))}
                                 </div>
                             </div>
@@ -265,9 +265,16 @@ export default function Table(props: Readonly<Props>): React.ReactNode {
                                                 disabled={sortBy !== header.id}
                                                 onClick={() => setAscending(!ascending)}
                                             >
-                                                {sortBy === header.id ?
-                                                    (ascending ? <SortAsc /> : <SortDesc />) :
-                                                    <SortAsc className="disabled" />}
+                                                {ascending ?
+                                                    <SortAsc className={
+                                                        sortBy === header.id ?
+                                                            "" :
+                                                            "disabled"} /> :
+                                                    <SortDesc className={
+                                                        sortBy === header.id ?
+                                                            "" :
+                                                            "disabled"
+                                                    } />}
                                             </button>
                                         </div>
                                     </div>
