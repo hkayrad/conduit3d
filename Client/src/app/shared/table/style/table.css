@@ -319,6 +319,10 @@ kbd {
 }
 .data-table-wrapper .data-table table tr th .header-content {
   display: flex;
+  color: #FFFFFF;
+  background: none;
+  width: 100%;
+  border: none;
   justify-content: space-between;
   align-items: center;
   gap: 0.5rem;
@@ -338,6 +342,8 @@ kbd {
 .data-table-wrapper .data-table table tr th .header-content .header-actions {
   display: flex;
   align-items: center;
+  background: none;
+  border: none;
 }
 .data-table-wrapper .data-table table tr th .header-content .header-actions button {
   display: flex;

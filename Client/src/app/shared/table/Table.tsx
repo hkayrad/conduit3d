@@ -252,12 +252,12 @@ export default function Table(props: Readonly<Props>): React.ReactNode {
                         <tr>
                             {filteredHeaders.map((header, _) => (
                                 <th id={`header-${header.id}`} key={`header-${header.id}`}>
-                                    <div
+                                    <button
                                         onClick={() => handleSort(header.id)}
                                         className="header-content"
                                     >
                                         <p className={sortBy === header.id ? "active" : ""} >{header.label}</p>
-                                        <div
+                                        <button
                                             onClick={e => e.stopPropagation()}
                                             className="header-actions"
                                         >
@@ -276,8 +276,8 @@ export default function Table(props: Readonly<Props>): React.ReactNode {
                                                             "disabled"
                                                     } />}
                                             </button>
-                                        </div>
-                                    </div>
+                                        </button>
+                                    </button>
                                 </th>
                             ))}
                         </tr>

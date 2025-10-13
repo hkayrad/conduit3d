@@ -156,6 +156,8 @@ kbd {
   gap: 1.5rem;
   border-radius: 0.25rem;
   transition: all 0.2s ease;
+  border: none;
+  text-align: left;
 }
 #global-search .results .result-item:hover {
   background-color: #4B4E73;

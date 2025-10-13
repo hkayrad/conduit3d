@@ -297,6 +297,10 @@
 
                     .header-content {
                         display: flex;
+                        color: global.$white;
+                        background: none;
+                        width: 100%;
+                        border: none;
                         justify-content: space-between;
                         align-items: center;
                         gap: .5rem;
@@ -319,6 +323,8 @@
                         .header-actions {
                             display: flex;
                             align-items: center;
+                            background: none;
+                            border: none;
 
                             button {
                                 display: flex;

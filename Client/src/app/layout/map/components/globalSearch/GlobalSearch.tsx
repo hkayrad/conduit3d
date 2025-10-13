@@ -36,7 +36,7 @@ export default function GlobalSearch(props: Readonly<Props>) {
         flyTo(feature)
     }
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>, feature: GeoJSON.Feature) => {
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, feature: GeoJSON.Feature) => {
         if (e.key === 'Enter') {
             handleGoTo(feature);
         }
@@ -68,7 +68,8 @@ export default function GlobalSearch(props: Readonly<Props>) {
                 id="global-search"
                 ref={searchContainerRef}
                 className={results.length > 0 && isFocused ? "with-results" : ""}
-                onBlur={handleBlur}>
+                onBlur={handleBlur}
+            >
                 <div className="search-bar">
                     <Search />
                     <input
@@ -83,7 +84,7 @@ export default function GlobalSearch(props: Readonly<Props>) {
                 {results.length > 0 && isFocused && (
                     <div className="results">
                         {results.map((result) => (
-                            <div
+                            <button
                                 key={result.id}
                                 className="result-item"
                                 onClick={() => handleGoTo(result.feature)}
@@ -98,7 +99,7 @@ export default function GlobalSearch(props: Readonly<Props>) {
                                 <div className="position" title={`Position: ${result.position[0]}, ${result.position[1]}`}>
                                     {result.position[0]}, {result.position[1]}
                                 </div>
-                            </div>
+                            </button>
                         ))}
                     </div>
                 )}
