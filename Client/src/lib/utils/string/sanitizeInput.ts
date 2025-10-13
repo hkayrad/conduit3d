@@ -68,11 +68,11 @@ export class InputSanitizer {
      */
     static preventXSS(input: string): string {
         return input
-            .replaceAll(/</, '&lt;')
-            .replaceAll(/>/, '&gt;')
-            .replaceAll(/"/, '&quot;')
-            .replaceAll(/'/, '&#x27;')
-            .replaceAll(/\//, '&#x2F;');
+            .replaceAll(/</g, '&lt;')
+            .replaceAll(/>/g, '&gt;')
+            .replaceAll(/"/g, '&quot;')
+            .replaceAll(/'/g, '&#x27;')
+            .replaceAll(/\//g, '&#x2F;');
     }
 
     /**

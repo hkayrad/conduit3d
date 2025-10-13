@@ -63,7 +63,7 @@ export default function MapSettings() {
     const formatLabel = useCallback((key: string): string => {
         const formatted = key
             .replace(/_COLOR$/, '')
-            .replaceAll(/_/, ' ')
+            .replaceAll(/_/g, ' ')
             .toLowerCase()
             .split(' ')
             .map(capitalizeFirstLetter)
