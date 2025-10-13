@@ -22,7 +22,7 @@ type Props = {
  * @param props - The props for the component
  * @returns The rendered component
  */
-export default function FeatureInfo(props: Props): React.ReactNode {
+export default function FeatureInfo(props: Readonly<Props>): React.ReactNode {
     const { info, zIndex, onClose, onFocus, onFlyTo } = props;
     const { object, coordinate, x, y } = info;
     const { properties } = object || {};
@@ -35,7 +35,7 @@ export default function FeatureInfo(props: Props): React.ReactNode {
 
     const windowRef = useRef<HTMLDivElement>(null);
 
-    const content = useMemo(() => InfoContent(properties, coordinate!), [coordinate, properties]);
+    const content = useMemo(() => InfoContent(properties, coordinate), [coordinate, properties]);
 
     const handleMouseDown = useCallback((e: React.MouseEvent) => {
         if (!windowRef.current)

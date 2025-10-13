@@ -33,12 +33,6 @@ public class TrafoBina
     [MaxLength(100)]
     public string Kodu { get; set; } = string.Empty;
 
-    // /// <summary>
-    // /// The geographical representation of the transformer station.
-    // /// </summary>
-    // [Column("geojson")]
-    // public required string GeoJson { get; set; }
-
     /// <summary>
     /// The Well-Known Binary (WKB) representation of the building.
     /// </summary>

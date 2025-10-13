@@ -73,6 +73,7 @@ kbd {
   display: flex;
   background: #2B2D42;
   color: #FFFFFF;
+  border: none;
   padding: 0.5rem;
   border-radius: 0.75rem;
   transition: background 0.3s ease !important;

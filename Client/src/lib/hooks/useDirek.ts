@@ -25,14 +25,7 @@ export function useDirek() {
         if (!agDirek)
             return [];
 
-        // Combine all chunks into a single FeatureCollection
-        const combinedFeatures: GeoJSON.Feature[] = [];
-        agDirek.forEach(chunk => {
-            if (chunk && chunk.features) {
-                combinedFeatures.push(...chunk.features);
-            }
-        });
-
+        const combinedFeatures = agDirek.flatMap(chunk => chunk?.features ?? []);
         const combinedCollection: GeoJSON.FeatureCollection = {
             type: "FeatureCollection",
             features: combinedFeatures
@@ -58,14 +51,7 @@ export function useDirek() {
         if (!ogMusDirek)
             return [];
 
-        // Combine all chunks into a single FeatureCollection
-        const combinedFeatures: GeoJSON.Feature[] = [];
-        ogMusDirek.forEach(chunk => {
-            if (chunk && chunk.features) {
-                combinedFeatures.push(...chunk.features);
-            }
-        });
-
+        const combinedFeatures = ogMusDirek.flatMap(chunk => chunk?.features ?? []);
         const combinedCollection: GeoJSON.FeatureCollection = {
             type: "FeatureCollection",
             features: combinedFeatures
@@ -91,14 +77,7 @@ export function useDirek() {
         if (!aydDirek)
             return [];
 
-        // Combine all chunks into a single FeatureCollection
-        const combinedFeatures: GeoJSON.Feature[] = [];
-        aydDirek.forEach(chunk => {
-            if (chunk && chunk.features) {
-                combinedFeatures.push(...chunk.features);
-            }
-        });
-
+        const combinedFeatures = aydDirek.flatMap(chunk => chunk?.features ?? []);
         const combinedCollection: GeoJSON.FeatureCollection = {
             type: "FeatureCollection",
             features: combinedFeatures

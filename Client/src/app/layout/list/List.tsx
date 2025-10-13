@@ -80,7 +80,7 @@ export default function List(): React.ReactNode {
             id: k,
             label: capitalizeFirstLetter(k),
         })).filter(header => header.id !== 'wkb') : [],
-        { id: 'actions', label: 'Actions' }
+        ...(features.length > 0 ? [{ id: 'actions', label: 'Actions' }] : [])
     ], [features]);
 
     const handleGoToFeature = (f: any) => {
@@ -95,33 +95,21 @@ export default function List(): React.ReactNode {
         navigate("/", { replace: false });
         dispatch(setSelectedViewType(C3D_MapViewType.Cartesian));
         flyTo(feature);
-
-        // const coords = findAverageLonLat(JSON.parse(feature.geoJson));
-        // dispatch(setViewState({
-        //     viewId: C3D_MapViewType.Cartesian,
-        //     viewState: {
-        //         longitude: coords[0],
-        //         latitude: coords[1],
-        //         zoom: 20,
-        //     }
-        // }))
-        // navigate("/", { replace: false });
     }
 
     // Memoized table rows
-    const rows = useMemo(() => [
-        ...features.map((f, index) => [
+    const rows = useMemo(() =>
+        features.map((f, index) => [
             index + 1,
             ...Object.entries(f).filter(([key, _]) => key !== 'wkb').map(([_, value]) => value === "" ? "-" : value),
-            <div className="action-button-wrapper">
+            <div className="action-button-wrapper" key={`action-btns-${f.id}`}>
                 <ActionButton
                     content={<MapPin />}
                     style="success"
                     onClick={() => handleGoToFeature(f)}
                 />
             </div>
-        ] as React.ReactNode[])
-    ], [features]);
+        ] as React.ReactNode[]), [features]);
 
     // Effects
     useEffect(() => {

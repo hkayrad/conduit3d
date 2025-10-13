@@ -69,6 +69,10 @@ kbd {
   display: flex;
   flex-direction: column;
   transition: margin-bottom 0.3s ease;
+  border: none;
+  color: #FFFFFF;
+  background: none;
+  text-align: left;
 }
 .layer-control-dropdown.closed {
   margin-bottom: 0px;

@@ -56,9 +56,6 @@ public class BuildingsContext(DbContextOptions options) : DbContext(options)
                 .HasColumnName("isyeri_sayisi");
             entity.Property(e => e.Yukseklik)
                 .HasColumnName("yukseklik");
-            // entity.Property(e => e.GeoJson)
-            // .HasComputedColumnSql("ST_AsGeoJSON(ST_Transform(geometry, 4326))")
-            // .HasColumnName("geojson");
             entity.Property(e => e.Wkb)
                 .HasComputedColumnSql("ST_AsBinary(ST_Transform(geometry, 4326))")
                 .HasColumnName("wkb");
@@ -102,9 +99,6 @@ public class BuildingsContext(DbContextOptions options) : DbContext(options)
                 .HasColumnName("isyeri_sayisi");
             entity.Property(e => e.Yukseklik)
                 .HasColumnName("yukseklik");
-            // entity.Property(e => e.GeoJson)
-            // .HasComputedColumnSql("ST_AsGeoJSON(ST_Transform(geometry, 4326))")
-            // .HasColumnName("geojson");
             entity.Property(e => e.Wkb)
                 .HasComputedColumnSql("ST_AsBinary(ST_Transform(geometry, 4326))")
                 .HasColumnName("wkb");
@@ -137,9 +131,6 @@ public class BuildingsContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.Kodu)
                 .HasMaxLength(20)
                 .HasColumnName("kodu");
-            // entity.Property(e => e.GeoJson)
-            //     .HasComputedColumnSql("ST_AsGeoJSON(ST_Transform(geometry, 4326))")
-            //     .HasColumnName("geojson");
             entity.Property(e => e.Wkb)
                 .HasComputedColumnSql("ST_AsBinary(ST_Transform(geometry, 4326))")
                 .HasColumnName("wkb");

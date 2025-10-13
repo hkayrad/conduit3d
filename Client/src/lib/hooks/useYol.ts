@@ -15,14 +15,7 @@ export function useYol() {
             if (!adrYol || adrYol.length === 0)
                 return [];
     
-            // Combine all chunks into a single FeatureCollection
-            const combinedFeatures: GeoJSON.Feature[] = [];
-            adrYol.forEach(chunk => {
-                if (chunk && chunk.features) {
-                    combinedFeatures.push(...chunk.features);
-                }
-            });
-    
+            const combinedFeatures = adrYol.flatMap(chunk => chunk?.features ?? []);
             const combinedCollection: GeoJSON.FeatureCollection = {
                 type: "FeatureCollection",
                 features: combinedFeatures

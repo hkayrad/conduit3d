@@ -10,7 +10,7 @@ type Props = {
  * @param param0 - The props for the component
  * @returns The rendered component
  */
-export default function Logo(props: Props): React.ReactNode {
+export default function Logo(props: Readonly<Props>): React.ReactNode {
     const { color = "Dark", type = "Long", size = "Small" } = props;
 
     return (

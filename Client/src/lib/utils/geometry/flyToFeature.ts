@@ -30,10 +30,17 @@ export function flyToFeature(
 
     const dataType = feature.properties!.dataType as FeatureType;
 
-    const zoomLevel = dataType === FeatureType.POLE ? 20 :
-        dataType === FeatureType.TRAFO ? 23 :
-            dataType === FeatureType.LINE || dataType === FeatureType.REKORTMAN ? 20 : zoom;
-
+    let zoomLevel = zoom;
+    switch (dataType) {
+        case FeatureType.POLE:
+        case FeatureType.LINE:
+        case FeatureType.REKORTMAN:
+            zoomLevel = 20;
+            break;
+        case FeatureType.TRAFO:
+            zoomLevel = 23;
+            break;
+    }
     setMapViewState((prevState) => ({
         ...prevState,
         [C3D_MapViewType.Cartesian]: {

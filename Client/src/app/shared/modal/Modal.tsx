@@ -10,7 +10,7 @@ type Props = {
  * @param props Props for the Modal component.
  * @returns The rendered Modal component.
  */
-export default function Modal(props: Props): React.ReactNode {
+export default function Modal(props: Readonly<Props>): React.ReactNode {
     const { children } = props;
 
     return (

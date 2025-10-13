@@ -30,11 +30,6 @@ public class PostgresqlAdrYolService(IUnitOfWork unitOfWork) : IAdrYolService
 
         extent ??= new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
 
-        if (extent.MinX == 0 && extent.MinY == 0 && extent.MaxX == 0 && extent.MaxY == 0)
-        {
-            extent = new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
-        }
-
         if (!extent.IsValid())
             return Response<List<AdrYol>>.ValidationError(BuildingsResources.GetString("invalidExtent"));
 
@@ -112,11 +107,6 @@ public class PostgresqlAdrYolService(IUnitOfWork unitOfWork) : IAdrYolService
     {
         extent ??= new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
 
-        if (extent.MinX == 0 && extent.MinY == 0 && extent.MaxX == 0 && extent.MaxY == 0)
-        {
-            extent = new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
-        }
-
         if (!extent.IsValid())
             return Response<int>.ValidationError(BuildingsResources.GetString("invalidExtent"));
 
@@ -171,11 +161,6 @@ public class PostgresqlAdrYolService(IUnitOfWork unitOfWork) : IAdrYolService
             };
 
         extent ??= new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
-
-        if (extent.MinX == 0 && extent.MinY == 0 && extent.MaxX == 0 && extent.MaxY == 0)
-        {
-            extent = new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
-        }
 
         if (!extent.IsValid())
             return new AdrYolResponse

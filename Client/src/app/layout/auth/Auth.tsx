@@ -21,7 +21,7 @@ function hasUserSession(): boolean {
  * @param param0 The props for the component
  * @returns The rendered component
  */
-export function RequireAuth({ children }: Props): React.ReactNode {
+export function RequireAuth({ children }: Readonly<Props>): React.ReactNode {
     if (!hasUserSession()) {
         return <Navigate to="/login" replace />
     }
@@ -34,7 +34,7 @@ export function RequireAuth({ children }: Props): React.ReactNode {
  * @param param0 The props for the component
  * @returns The rendered component
  */
-export function RequireNoAuth({ children }: Props): React.ReactNode {
+export function RequireNoAuth({ children }: Readonly<Props>): React.ReactNode {
     if (hasUserSession()) {
         return <Navigate to="/" replace />
     }
@@ -47,7 +47,7 @@ export function RequireNoAuth({ children }: Props): React.ReactNode {
  * @param param0 The props for the component
  * @returns The rendered component
  */
-export function RequireAdmin({ children }: Props): React.ReactNode {
+export function RequireAdmin({ children }: Readonly<Props>): React.ReactNode {
     if (!hasUserSession()) {
         return <Navigate to="/login" replace />
     }

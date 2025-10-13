@@ -6,6 +6,7 @@ import { AgHatResponse } from "../utils/protos/lines/agHat";
 import axios from "axios";
 import { OgHatResponse } from "../utils/protos/lines/ogHat";
 import { RekortmanResponse } from "../utils/protos/lines/rekortman";
+import { DEFAULT_EXTENT } from "../constants";
 
 /**
  * Class representing the AG Hat API
@@ -30,7 +31,7 @@ export class AgHatApi {
         sortBy: string = 'id',
         ascending: boolean = true,
         query: string = null!,
-        extent?: Extent
+        extent: Extent = DEFAULT_EXTENT
     ) {
         try {
             const response = await instance.get<ApiResponse<Hat[]>>(
@@ -75,12 +76,14 @@ export class AgHatApi {
      * @returns A promise that resolves to the count of AG Hat features.
      */
     static async fetchCount(
-        query: string = null!
+        query: string = null!,
+        extent: Extent = DEFAULT_EXTENT
     ) {
         try {
             const response = await instance.get<ApiResponse<number>>("agHat/count", {
                 params: {
-                    query
+                    query,
+                    ...extent
                 }
             });
             return response.data;
@@ -96,7 +99,7 @@ export class AgHatApi {
         sortBy: string = 'id',
         ascending: boolean = true,
         query: string = null!,
-        extent?: Extent
+        extent: Extent = DEFAULT_EXTENT
     ): Promise<AgHatResponse> {
         if (this._cancelTokens["fetchAllProto"])
             this._cancelTokens["fetchAllProto"].cancel("Operation canceled due to new request.");
@@ -124,11 +127,8 @@ export class AgHatApi {
 
             return decodedData;
         } catch (error) {
-            if (error === "Request cancelled") {
+            if (error === "Request cancelled")
                 Logger.warn("Request was cancelled by axios");
-                return Promise.reject(error);
-            }
-
             Logger.error("Fetch AgHat Proto error:", error);
             throw error;
         }
@@ -158,7 +158,7 @@ export class OgHatApi {
         sortBy: string = 'id',
         ascending: boolean = true,
         query: string = null!,
-        extent?: Extent
+        extent: Extent = DEFAULT_EXTENT
     ) {
         try {
             const response = await instance.get<ApiResponse<Hat[]>>(
@@ -204,12 +204,14 @@ export class OgHatApi {
      * @returns A promise that resolves to the count of OG Hat features.
      */
     static async fetchCount(
-        query: string = null!
+        query: string = null!,
+        extent: Extent = DEFAULT_EXTENT
     ) {
         try {
             const response = await instance.get<ApiResponse<number>>("ogHat/count", {
                 params: {
-                    query
+                    query,
+                    ...extent
                 }
             });
             return response.data;
@@ -225,7 +227,7 @@ export class OgHatApi {
         sortBy: string = 'id',
         ascending: boolean = true,
         query: string = null!,
-        extent?: Extent
+        extent: Extent = DEFAULT_EXTENT
     ): Promise<OgHatResponse> {
         if (this._cancelTokens["fetchAllProto"])
             this._cancelTokens["fetchAllProto"].cancel("Operation canceled due to new request.");
@@ -253,11 +255,8 @@ export class OgHatApi {
 
             return decodedData;
         } catch (error) {
-            if (error === "Request cancelled") {
+            if (error === "Request cancelled")
                 Logger.warn("Request was cancelled by axios");
-                return Promise.reject(error);
-            }
-
             Logger.error("Fetch OgHat Proto error:", error);
             throw error;
         }
@@ -287,7 +286,7 @@ export class RekortmanApi {
         sortBy: string = 'id',
         ascending: boolean = true,
         query: string = null!,
-        extent?: Extent
+        extent: Extent = DEFAULT_EXTENT
     ) {
         try {
             const response = await instance.get<ApiResponse<Rekortman[]>>(
@@ -332,12 +331,14 @@ export class RekortmanApi {
      * @returns A promise that resolves to the count of Rekortman features.
      */
     static async fetchCount(
-        query: string = null!
+        query: string = null!,
+        extent: Extent = DEFAULT_EXTENT
     ) {
         try {
             const response = await instance.get<ApiResponse<number>>("rekortman/count", {
                 params: {
-                    query
+                    query,
+                    ...extent
                 }
             });
             return response.data;
@@ -353,7 +354,7 @@ export class RekortmanApi {
         sortBy: string = 'id',
         ascending: boolean = true,
         query: string = null!,
-        extent?: Extent
+        extent: Extent = DEFAULT_EXTENT
     ): Promise<RekortmanResponse> {
         if (this._cancelTokens["fetchAllProto"])
             this._cancelTokens["fetchAllProto"].cancel("Operation canceled due to new request.");
@@ -381,11 +382,8 @@ export class RekortmanApi {
 
             return decodedData;
         } catch (error) {
-            if (error === "Request cancelled") {
+            if (error === "Request cancelled")
                 Logger.warn("Request was cancelled by axios");
-                return Promise.reject(error);
-            }
-
             Logger.error("Fetch OgHat Proto error:", error);
             throw error;
         }

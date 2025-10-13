@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace BuildingsService.Infrastructure;
 
-public class UnitOfWork(BuildingsContext context) : IUnitOfWork
+public sealed class UnitOfWork(BuildingsContext context) : IUnitOfWork
 {
     private readonly BuildingsContext _context = context ?? throw new ArgumentNullException(nameof(context));
     private BuildingsRepository? _buildingsRepository;

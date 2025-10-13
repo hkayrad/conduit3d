@@ -73,7 +73,7 @@ export function useMap() {
     const layerFilter: DeckProps['layerFilter'] = useCallback(
         ({ layer, viewport }: { layer: Layer, viewport: Viewport }) => {
             if (layer.id.includes("basemap"))
-                return layer.id.includes(viewport.id as string);
+                return layer.id.includes(viewport.id);
 
             return true;
         }, []);
@@ -141,14 +141,6 @@ export function useMap() {
                 }
             }));
 
-        // // Threshold scales inversely with zoom level
-        // // Higher zoom = smaller threshold (more frequent updates)
-        // // Lower zoom = larger threshold (less frequent updates)
-        // const baseThreshold = EXTENT_PADDING / 2;
-        // const zoomFactor = Math.pow(2, 15 - mapViewState.cartesian.zoom); // Exponential scaling
-        // const zoomBasedThreshold = baseThreshold * Math.max(1, Math.min(10, zoomFactor));
-        // Logger.table({ baseThreshold, zoomFactor, zoomBasedThreshold })
-
         const currentPos = convertDeckGLToLatLonWithOffset(
             mapViewState.firstPerson.position![0],
             mapViewState.firstPerson.position![1],
@@ -157,11 +149,11 @@ export function useMap() {
         );
 
         const deltaLonDistance = selectedViewType === C3D_MapViewType.Cartesian ?
-            Math.abs(lastRefreshPosition.longitude - mapViewState[selectedViewType].longitude!) :
+            Math.abs(lastRefreshPosition.longitude - mapViewState[selectedViewType].longitude) :
             Math.abs(lastRefreshPosition.longitude - currentPos.longitude);
 
         const deltaLatDistance = selectedViewType === C3D_MapViewType.Cartesian ?
-            Math.abs(lastRefreshPosition.latitude - mapViewState[selectedViewType].latitude!) :
+            Math.abs(lastRefreshPosition.latitude - mapViewState[selectedViewType].latitude) :
             Math.abs(lastRefreshPosition.latitude - currentPos.latitude);
 
         if (deltaLonDistance < LON_EXTENT_PADDING || deltaLatDistance < LAT_EXTENT_PADDING || mapViewState.cartesian.zoom < MIN_ZOOM_THRESHOLD) return;
@@ -178,7 +170,7 @@ export function useMap() {
 
         if (selectedViewType === C3D_MapViewType.Cartesian)
             dispatch(setLastRefreshPosition({
-                position: { longitude: mapViewState[selectedViewType].longitude!, latitude: mapViewState[selectedViewType].latitude! }
+                position: { longitude: mapViewState[selectedViewType].longitude, latitude: mapViewState[selectedViewType].latitude }
             }));
         else if (selectedViewType === C3D_MapViewType.FirstPerson)
             dispatch(setLastRefreshPosition({
@@ -236,7 +228,7 @@ export function useMap() {
                         position: [
                             prevState.firstPerson.position![0],
                             prevState.firstPerson.position![1],
-                            prevState.firstPerson.position![2] < 3 ? 3 : prevState.firstPerson.position![2]
+                            Math.max(3, prevState.firstPerson.position![2])
                             // BELKI StreetView icin SINIRLANIR
                         ]
                     }
@@ -249,16 +241,9 @@ export function useMap() {
      * @param info The picking info from the mouse move event
      */
     const handleMouseMove = useCallback((info: PickingInfo) => {
-        // if (info.object && info.layer?.id === 'building-bina-mvt-layer') {
-        //     // Ensure dataType is set for MVT features
-        //     if (!info.object.properties.dataType) {
-        //         info.object.properties.dataType = FeatureType.BUILDING;
-        //     }
-        //     // Continue with your existing click handling logic
-        // }
         setHoveredFeature(info.object);
         setMousePos({ x: info.x, y: info.y });
-        setMouseLonLat(info.coordinate ? info.coordinate : [0, 0]);
+        setMouseLonLat(info.coordinate ?? [0, 0]);
     }, []);
 
     /**

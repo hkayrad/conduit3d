@@ -54,8 +54,6 @@ export default function DynamicStreetView() {
     containerRef,
     streetView,
     isLoaded,
-    //@ts-ignore
-    error,
     updatePosition,
     updatePOV,
   } = useStreetView({

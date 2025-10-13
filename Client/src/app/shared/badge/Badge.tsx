@@ -11,7 +11,7 @@ type Props = {
  * @param props The props for the Badge component.
  * @returns The rendered component
  */
-export default function Badge(props: Props): React.ReactNode {
+export default function Badge(props: Readonly<Props>): React.ReactNode {
     const { label, color } = props;
 
     return (

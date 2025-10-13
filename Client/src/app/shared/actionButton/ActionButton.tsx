@@ -13,7 +13,7 @@ type Props = {
  * @param props The props for the ActionButton component.
  * @returns The rendered component
  */
-export default function ActionButton(props: Props): React.ReactNode {
+export default function ActionButton(props: Readonly<Props>): React.ReactNode {
     const { onClick, content, style, disabled } = props;
 
     return (

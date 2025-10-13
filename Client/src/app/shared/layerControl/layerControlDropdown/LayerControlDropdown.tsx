@@ -16,17 +16,19 @@ type Props = {
  * @param props - The props for the component
  * @returns The rendered component
  */
-export default function LayerControlDropdown(props: Props): React.ReactNode {
+export default function LayerControlDropdown(props: Readonly<Props>): React.ReactNode {
     const { icon, name, isLayerVisible, toggleLayer, children } = props;
 
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <div
+        <button
             className={`layer-control-dropdown ${isOpen && children ? "open" : "closed"}`}
             onClick={() => {
                 children ? setIsOpen(!isOpen) : toggleLayer();
-            }}>
+            }}
+            onKeyDown={() => { }}
+        >
             <div className="controller">
                 <div className="left">
                     {icon}
@@ -44,12 +46,16 @@ export default function LayerControlDropdown(props: Props): React.ReactNode {
                 </div>
             </div>
             {children &&
-                <div onClick={(e) => e.stopPropagation()} className={`content ${isOpen && children ? "open" : "closed"}`}>
+                <div
+                    onClick={(e) => e.stopPropagation()}
+                    onKeyDown={() => {}}
+                    className={`content ${isOpen && children ? "open" : "closed"}`}
+                >
                     <div className="content-wrapper">
                         {children}
                     </div>
                 </div>
             }
-        </div>
+        </button>
     )
 }

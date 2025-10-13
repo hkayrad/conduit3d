@@ -207,7 +207,7 @@ export function useAdmin() {
      * @returns void
      */
     const handleChangeItemsPerPage = useCallback((e: React.ChangeEvent<HTMLSelectElement>): void => {
-        const newItemsPerPage = parseInt(e.target.value);
+        const newItemsPerPage = Number.parseInt(e.target.value);
         dispatch(setItemsPerPage(newItemsPerPage));
         handleSetPageNumber(1); // Reset to first page on items per page change
     }, []);

@@ -66,12 +66,6 @@ public class AydDirek
     [Column("direk_boy_id")]
     public double DirekBoyId { get; set; }
 
-    // /// <summary>
-    // /// The geographical representation of the illumination pole.
-    // /// </summary>
-    // [Column("geojson")]
-    // public required string GeoJson { get; set; }
-
     /// <summary>
     /// The Well-Known Binary (WKB) representation of the illumination pole's geometry.
     /// </summary>

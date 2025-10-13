@@ -15,7 +15,7 @@ type Props = {
  * @param props - The props for the component
  * @returns The rendered component
  */
-export default function SettingToggleButton(props: Props): React.ReactNode {
+export default function SettingToggleButton(props: Readonly<Props>): React.ReactNode {
     const { active, toggle, hideLabel, showLabel, hideTitle, showTitle } = props;
 
     return (

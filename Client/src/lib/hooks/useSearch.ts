@@ -289,60 +289,76 @@ export function useSearch() {
             const queryPart = sanitizedQuery.split(":")[1].trim();
 
             switch (sanitizedQuery.split(":")[0]) {
-                case QueryKeywords.BINA:
+                case QueryKeywords.BINA: {
                     const binaResults = await _handleAdrBinaSearch(queryPart);
                     aggregatedResults = aggregatedResults.concat(binaResults);
                     break;
+                }
 
-                case QueryKeywords.TRAFO:
+                case QueryKeywords.TRAFO: {
                     const trafoResults = await _handleTrafoSearch(queryPart);
                     aggregatedResults = aggregatedResults.concat(trafoResults);
                     break;
+                }
 
-                case QueryKeywords.YOL:
+                case QueryKeywords.YOL: {
                     const yolResults = await _handleYolSearch(queryPart);
                     aggregatedResults = aggregatedResults.concat(yolResults);
                     break;
+                }
 
-                case QueryKeywords.AG_DIREK:
+                case QueryKeywords.AG_DIREK: {
                     const agDirekResults = await _handleAgDirekSearch(queryPart);
                     aggregatedResults = aggregatedResults.concat(agDirekResults);
                     break;
+                }
 
-                case QueryKeywords.OG_MUS_DIREK:
+                case QueryKeywords.OG_MUS_DIREK: {
                     const ogMusDirekResults = await _handleOgMusDirekSearch(queryPart);
                     aggregatedResults = aggregatedResults.concat(ogMusDirekResults);
                     break;
+                }
 
-                case QueryKeywords.AYD_DIREK:
+                case QueryKeywords.AYD_DIREK: {
                     const aydDirekResults = await _handleAydDirekSearch(queryPart);
                     aggregatedResults = aggregatedResults.concat(aydDirekResults);
                     break;
+                }
 
-                case QueryKeywords.DIREK:
+                case QueryKeywords.DIREK: {
                     const direkResults = await _handleDirekSearch(queryPart);
                     aggregatedResults = aggregatedResults.concat(direkResults);
                     break;
+                }
 
-                case QueryKeywords.AG_HAT:
+                case QueryKeywords.AG_HAT: {
                     const agHatResults = await _handleAgHatSearch(queryPart);
                     aggregatedResults = aggregatedResults.concat(agHatResults);
                     break;
+                }
 
-                case QueryKeywords.OG_HAT:
+                case QueryKeywords.OG_HAT: {
                     const ogHatResults = await _handleOgHatSearch(queryPart);
                     aggregatedResults = aggregatedResults.concat(ogHatResults);
                     break;
+                }
 
-                case QueryKeywords.REKORTMAN:
+                case QueryKeywords.REKORTMAN: {
                     const rekortmanResults = await _handleRekortmanSearch(queryPart);
                     aggregatedResults = aggregatedResults.concat(rekortmanResults);
                     break;
+                }
 
-                case QueryKeywords.HAT:
+                case QueryKeywords.HAT: {
                     const hatResults = await _handleHatSearch(queryPart);
                     aggregatedResults = aggregatedResults.concat(hatResults);
                     break;
+                }
+
+                default: {
+                    setResults([]);
+                    return;
+                }
             }
             setResults(aggregatedResults.slice(0, MAX_SEARCH_RESULTS));
 

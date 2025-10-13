@@ -61,14 +61,13 @@ public class UpdateUserDto : IValidatableObject
                 yield return new ValidationResult(UserResources.GetString("usernameTooShort"), [nameof(Username)]);
 
             // Username format check
-            if (!Regex.IsMatch(Username, @"^[a-zA-Z0-9_]+$"))
+            if (!Regex.IsMatch(Username, @"^[a-zA-Z0-9_]+$", RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds(250)))
                 yield return new ValidationResult(UserResources.GetString("usernameInvalid"), [nameof(Username)]);
         }
 
         // Email null check
-        if (!string.IsNullOrWhiteSpace(Email))
-            if (!Regex.IsMatch(Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
-                yield return new ValidationResult(UserResources.GetString("emailInvalid"), [nameof(Email)]);
+        if (!string.IsNullOrWhiteSpace(Email) && !Regex.IsMatch(Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds(250)))
+            yield return new ValidationResult(UserResources.GetString("emailInvalid"), [nameof(Email)]);
 
         // UserRole null check
         if (!string.IsNullOrWhiteSpace(UserRole))
@@ -91,7 +90,7 @@ public class UpdateUserDto : IValidatableObject
                 yield return new ValidationResult(UserResources.GetString("nameTooShort"), [nameof(Name)]);
 
             // Name format check
-            if (!Regex.IsMatch(Name, @"^[a-zA-Z\s]+$"))
+            if (!Regex.IsMatch(Name, @"^[a-zA-Z\s]+$", RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds(250)))
                 yield return new ValidationResult(UserResources.GetString("nameInvalid"), [nameof(Name)]);
         }
 
@@ -101,7 +100,7 @@ public class UpdateUserDto : IValidatableObject
         else
         {
             // Password complexity check
-            if (!Regex.IsMatch(Password, @"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"))
+            if (!Regex.IsMatch(Password, @"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$", RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds(250)))
                 yield return new ValidationResult(UserResources.GetString("passwordInvalid"), [nameof(Password)]);
         }
     }

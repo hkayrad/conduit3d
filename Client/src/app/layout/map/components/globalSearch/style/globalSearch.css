@@ -112,7 +112,6 @@ kbd {
   align-items: center;
   gap: 0.5rem;
   color: #FFFFFF;
-  margin-top: 0.75rem;
   border-radius: 0.25rem;
   margin: 0.75rem;
 }
@@ -157,6 +156,8 @@ kbd {
   gap: 1.5rem;
   border-radius: 0.25rem;
   transition: all 0.2s ease;
+  border: none;
+  text-align: left;
 }
 #global-search .results .result-item:hover {
   background-color: #4B4E73;

@@ -25,8 +25,8 @@ export default function MapSettings() {
     const categorizeColorSettings = useCallback(() => {
         const categories: Record<string, Array<[string, string]>> = {};
 
-        Object.entries(config).forEach(([key, value]) => {
-            if (!key.endsWith('_COLOR')) return;
+        for (const [key, value] of Object.entries(config)) {
+            if (!key.endsWith('_COLOR')) continue;
 
             // Extract category from key prefix
             let category = 'Other';
@@ -55,7 +55,7 @@ export default function MapSettings() {
                 categories[category] = [];
             }
             categories[category].push([key, value]);
-        });
+        }
 
         return categories;
     }, [config]);
@@ -63,7 +63,7 @@ export default function MapSettings() {
     const formatLabel = useCallback((key: string): string => {
         const formatted = key
             .replace(/_COLOR$/, '')
-            .replace(/_/g, ' ')
+            .replaceAll("_", ' ')
             .toLowerCase()
             .split(' ')
             .map(capitalizeFirstLetter)
@@ -142,7 +142,7 @@ export default function MapSettings() {
         if (value.length === 9) {
             // Extract alpha from 8-character hex (#rrggbbaa)
             const alphaHex = value.slice(7, 9);
-            return parseInt(alphaHex, 16) / 255;
+            return Number.parseInt(alphaHex, 16) / 255;
         }
         return 1; // Default to fully opaque
     };
@@ -170,7 +170,7 @@ export default function MapSettings() {
     }, [dispatch, config]);
 
     const handleAlphaChange = useCallback((key: string, e: React.ChangeEvent<HTMLInputElement>) => {
-        const newAlpha = parseFloat(e.target.value);
+        const newAlpha = Number.parseFloat(e.target.value);
         const currentHex = getHexFromConfig(config[key] || '#000000');
         const newValue = createColorWithAlpha(currentHex, newAlpha);
 
@@ -180,7 +180,9 @@ export default function MapSettings() {
     // Cleanup timeouts on unmount
     useEffect(() => {
         return () => {
-            Object.values(debounceTimeouts.current).forEach(clearTimeout);
+            for (const timeout of Object.values(debounceTimeouts.current)) {
+                clearTimeout(timeout);
+            }
         };
     }, []);
 

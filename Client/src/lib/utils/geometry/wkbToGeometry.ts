@@ -1,4 +1,4 @@
-import { Buffer } from "buffer";
+import { Buffer } from "node:buffer";
 import wkx from "wkx";
 import type { Geometry } from "geojson";
 

@@ -29,14 +29,7 @@ export function useHat() {
         if (!agHat)
             return [];
 
-        // Combine all chunks into a single FeatureCollection
-        const combinedFeatures: GeoJSON.Feature[] = [];
-        agHat.forEach(chunk => {
-            if (chunk && chunk.features) {
-                combinedFeatures.push(...chunk.features);
-            }
-        });
-
+        const combinedFeatures = agHat.flatMap(chunk => chunk?.features ?? []);
         const combinedCollection: GeoJSON.FeatureCollection = {
             type: "FeatureCollection",
             features: combinedFeatures
@@ -63,14 +56,7 @@ export function useHat() {
         if (!ogHat)
             return [];
 
-        // Combine all chunks into a single FeatureCollection
-        const combinedFeatures: GeoJSON.Feature[] = [];
-        ogHat.forEach(chunk => {
-            if (chunk && chunk.features) {
-                combinedFeatures.push(...chunk.features);
-            }
-        });
-
+        const combinedFeatures = ogHat.flatMap(chunk => chunk?.features ?? []);
         const combinedCollection: GeoJSON.FeatureCollection = {
             type: "FeatureCollection",
             features: combinedFeatures
@@ -97,14 +83,7 @@ export function useHat() {
         if (!rekortman)
             return [];
 
-        // Combine all chunks into a single FeatureCollection
-        const combinedFeatures: GeoJSON.Feature[] = [];
-        rekortman.forEach(chunk => {
-            if (chunk && chunk.features) {
-                combinedFeatures.push(...chunk.features);
-            }
-        });
-
+        const combinedFeatures = rekortman.flatMap(chunk => chunk?.features ?? []);
         const combinedCollection: GeoJSON.FeatureCollection = {
             type: "FeatureCollection",
             features: combinedFeatures

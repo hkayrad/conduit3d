@@ -19,7 +19,7 @@ type Props = {
  * @component
  * @param props - The props for the component
  */
-export default function AdrYolComponent(props: Props): null {
+export default function AdrYolComponent(props: Readonly<Props>): null {
     const { setData, extent, zoom, selectedViewType } = props;
     const dispatch = useAppDispatch();
     const abortControllerRef = useRef<AbortController | null>(null);
@@ -66,10 +66,8 @@ export default function AdrYolComponent(props: Props): null {
                 features: formattedData
             };
         } catch (error) {
-            if (error === "Request cancelled") {
+            if (error === "Request cancelled")
                 Logger.warn("Request was cancelled by axios");
-                return Promise.reject(error);
-            }
             Logger.error("Error fetching AdrYol data:", error);
             throw error;
         }

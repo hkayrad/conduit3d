@@ -53,13 +53,6 @@ public class OgHat
     [MaxLength(4)]
     public string Tipi { get; set; } = string.Empty;
 
-    // /// <summary>
-    // /// The geographical representation of the transmission line.
-    // /// </summary>
-    // [Required]
-    // [Column("geojson")]
-    // public required string GeoJson { get; set; }
-
     /// <summary>
     /// The Well-Known Binary (WKB) representation of the transmission line.
     /// </summary>

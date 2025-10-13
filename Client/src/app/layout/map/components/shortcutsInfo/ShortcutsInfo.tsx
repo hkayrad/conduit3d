@@ -12,14 +12,14 @@ export default function ShortcutsInfo() {
 
     return (
         <>
-            <div
+            <button
                 className="shortcut-container-icon"
                 onMouseEnter={() => setIsShortcutsInfoHovered(true)}
                 onMouseLeave={() => setIsShortcutsInfoHovered(false)}
                 onClick={() => setIsShortcutsInfoToggled(!isShortcutsInfoToggled)}
             >
                 <Keyboard />
-            </div>
+            </button>
             <div className={`shortcuts-info ${isShortcutsInfoHovered || isShortcutsInfoToggled ? "" : "hidden"}`}>
                 <h3>Keyboard Shortcuts</h3>
                 <p><span><kbd>Ctrl</kbd><kbd>Delete</kbd></span> : Close Popup Windows</p>

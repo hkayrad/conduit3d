@@ -25,7 +25,7 @@ instance.interceptors.response.use((response: AxiosResponse) => {
     return response;
 }, (error) => {
     if (error instanceof axios.Cancel)
-        return Promise.reject("Request cancelled");
+        return Promise.reject(new Error("Request cancelled"));
     
     Logger.error(error.response?.data);
     store.dispatch(setIsDataLoading(false));

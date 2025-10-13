@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import './style/fpsCounter.css';
 
-interface FpsCounterProps {
+interface Props {
     position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
     showDetails?: boolean;
     updateInterval?: number;
@@ -22,11 +22,9 @@ interface PerformanceMetrics {
     stability: number; // FPS stability percentage
 }
 
-export default function FpsCounter({
-    position = 'top-right',
-    showDetails = false,
-    updateInterval = 1000
-}: FpsCounterProps) {
+export default function FpsCounter(props: Readonly<Props>) {
+    const { position = 'top-right', showDetails = false, updateInterval = 1000 } = props;
+
     const [metrics, setMetrics] = useState<PerformanceMetrics>({
         fps: 0,
         frameTime: 0,

@@ -9,7 +9,7 @@ import type { LoginUserDto } from "../../../lib/types";
 import { Info, Loader, LogIn, ShieldX } from "lucide-react";
 import { clearUser, setUser } from "./authSlice";
 import { useAppDispatch } from "../../../lib/hooks";
-import { InputSanitizer } from "../../../lib/utils";
+import { InputSanitizer, Logger } from "../../../lib/utils";
 
 /**
  * Login component is responsible for rendering the login form and handling user authentication.
@@ -63,6 +63,7 @@ export default function Login(): React.ReactNode {
                 dispatch(clearUser());
                 setLoading(false);
                 setLoginError("An error occurred while trying to log in");
+                Logger.error("Login error:", error);
             }
         }, timeout);
     }

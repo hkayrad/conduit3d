@@ -10,7 +10,7 @@ type Props = {
  * @param props - The props for the component
  * @returns The rendered component
  */
-export default function MousePosition(props: Props): React.ReactNode {
+export default function MousePosition(props: Readonly<Props>): React.ReactNode {
     const { mouseLonLat } = props;
     return (
         <div id="mouse-position">

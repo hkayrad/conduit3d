@@ -38,11 +38,6 @@ public class PostgresqlAgHatService(IUnitOfWork unitOfWork) : IAgHatService
 
         extent ??= new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
 
-        if (extent.MinX == 0 && extent.MinY == 0 && extent.MaxX == 0 && extent.MaxY == 0)
-        {
-            extent = new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
-        }
-
         if (!extent.IsValid())
             return Response<List<AgHat>>.ValidationError(LinesResources.GetString("invalidExtent"));
 
@@ -100,11 +95,6 @@ public class PostgresqlAgHatService(IUnitOfWork unitOfWork) : IAgHatService
     public async Task<Response<int>> GetCountAsync(Extent? extent, string? query, CancellationToken cancellationToken)
     {
         extent ??= new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
-
-        if (extent.MinX == 0 && extent.MinY == 0 && extent.MaxX == 0 && extent.MaxY == 0)
-        {
-            extent = new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
-        }
 
         if (!extent.IsValid())
             return Response<int>.ValidationError(LinesResources.GetString("invalidExtent"));
@@ -175,11 +165,6 @@ public class PostgresqlAgHatService(IUnitOfWork unitOfWork) : IAgHatService
             };
 
         extent ??= new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
-
-        if (extent.MinX == 0 && extent.MinY == 0 && extent.MaxX == 0 && extent.MaxY == 0)
-        {
-            extent = new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
-        }
 
         if (!extent.IsValid())
             return new AgHatResponse

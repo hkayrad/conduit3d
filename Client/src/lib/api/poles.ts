@@ -6,6 +6,7 @@ import { AgDirekResponse } from "../utils/protos/poles/agDirek";
 import axios from "axios";
 import { OgMusDirekResponse } from "../utils/protos/poles/ogMusDirek";
 import { AydDirekResponse } from "../utils/protos/poles/aydDirek";
+import { DEFAULT_EXTENT } from "../constants";
 
 /** 
  * Class representing the AG Direk API 
@@ -30,7 +31,7 @@ export class AgDirekApi {
         sortBy: string = 'id',
         ascending: boolean = true,
         query: string = null!,
-        extent?: Extent
+        extent: Extent = DEFAULT_EXTENT
     ) {
         try {
             const response = await instance.get<ApiResponse<Direk[]>>("agDirek", {
@@ -71,12 +72,14 @@ export class AgDirekApi {
      * @returns A promise that resolves to the count of AG Direk features.
      */
     static async fetchCount(
-        query: string = null!
+        query: string = null!,
+        extent: Extent = DEFAULT_EXTENT
     ) {
         try {
             const response = await instance.get<ApiResponse<number>>("agDirek/count", {
                 params: {
-                    query
+                    query,
+                    ...extent
                 }
             });
             return response.data;
@@ -93,7 +96,7 @@ export class AgDirekApi {
         sortBy: string = 'id',
         ascending: boolean = true,
         query: string = null!,
-        extent?: Extent
+        extent: Extent = DEFAULT_EXTENT
     ): Promise<AgDirekResponse> {
         if (this._cancelTokens["fetchAllProto"])
             this._cancelTokens["fetchAllProto"].cancel("Operation canceled due to new request.");
@@ -121,12 +124,9 @@ export class AgDirekApi {
 
             return decodedData;
         } catch (error) {
-            if (error === "Request cancelled") {
+            if (error === "Request cancelled")
                 Logger.warn("Request was cancelled by axios");
-                return Promise.reject(error);
-            }
-
-            Logger.error("Fetch AgHat Proto error:", error);
+            Logger.error("Fetch AgDirek Proto error:", error);
             throw error;
         }
     }
@@ -155,7 +155,8 @@ export class OgMusDirekApi {
         sortBy: string = 'id',
         ascending: boolean = true,
         query: string = null!,
-        extent?: Extent) {
+        extent: Extent = DEFAULT_EXTENT
+    ) {
         try {
             const response = await instance.get<ApiResponse<Direk[]>>("ogMusDirek", {
                 params: {
@@ -194,12 +195,14 @@ export class OgMusDirekApi {
      * @returns A promise that resolves to the count of OG Mus Direk features.
      */
     static async fetchCount(
-        query: string = null!
+        query: string = null!,
+        extent: Extent = DEFAULT_EXTENT
     ) {
         try {
             const response = await instance.get<ApiResponse<number>>("ogMusDirek/count", {
                 params: {
-                    query
+                    query,
+                    ...extent
                 }
             });
             return response.data;
@@ -215,7 +218,7 @@ export class OgMusDirekApi {
         sortBy: string = 'id',
         ascending: boolean = true,
         query: string = null!,
-        extent?: Extent
+        extent: Extent = DEFAULT_EXTENT
     ): Promise<OgMusDirekResponse> {
         if (this._cancelTokens["fetchAllProto"])
             this._cancelTokens["fetchAllProto"].cancel("Operation canceled due to new request.");
@@ -243,12 +246,9 @@ export class OgMusDirekApi {
 
             return decodedData;
         } catch (error) {
-            if (error === "Request cancelled") {
+            if (error === "Request cancelled")
                 Logger.warn("Request was cancelled by axios");
-                return Promise.reject(error);
-            }
-
-            Logger.error("Fetch AgHat Proto error:", error);
+            Logger.error("Fetch OgMusDirek Proto error:", error);
             throw error;
         }
     }
@@ -277,7 +277,7 @@ export class AydDirekApi {
         sortBy: string = 'id',
         ascending: boolean = true,
         query: string = null!,
-        extent?: Extent
+        extent: Extent = DEFAULT_EXTENT
     ) {
         try {
             const response = await instance.get<ApiResponse<Direk[]>>("aydDirek", {
@@ -317,12 +317,14 @@ export class AydDirekApi {
      * @returns A promise that resolves to the count of Ayd Direk features.
      */
     static async fetchCount(
-        query: string = null!
+        query: string = null!,
+        extent: Extent = DEFAULT_EXTENT
     ) {
         try {
             const response = await instance.get<ApiResponse<number>>("aydDirek/count", {
                 params: {
-                    query
+                    query,
+                    ...extent
                 }
             });
             return response.data;
@@ -338,7 +340,7 @@ export class AydDirekApi {
         sortBy: string = 'id',
         ascending: boolean = true,
         query: string = null!,
-        extent?: Extent
+        extent: Extent = DEFAULT_EXTENT
     ): Promise<AydDirekResponse> {
         if (this._cancelTokens["fetchAllProto"])
             this._cancelTokens["fetchAllProto"].cancel("Operation canceled due to new request.");
@@ -366,12 +368,9 @@ export class AydDirekApi {
 
             return decodedData;
         } catch (error) {
-            if (error === "Request cancelled") {
+            if (error === "Request cancelled")
                 Logger.warn("Request was cancelled by axios");
-                return Promise.reject(error);
-            }
-
-            Logger.error("Fetch AgHat Proto error:", error);
+            Logger.error("Fetch AydDirek Proto error:", error);
             throw error;
         }
     }

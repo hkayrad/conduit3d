@@ -17,7 +17,7 @@ type Props = {
  * @param props - Props for the UserActionModalContent component
  * @returns The rendered component
  */
-export default function UserActionModalContent(props: Props) {
+export default function UserActionModalContent(props: Readonly<Props>) {
     const { title, user, setUser, handleSubmit, handleCloseModal, isPasswordRequired = false, errorText } = props;
 
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);

@@ -16,7 +16,7 @@ type Props = {
  * @param props - The props for the component
  * @returns The rendered component
  */
-export default function LayerControlFilter(props: Props): React.ReactNode {
+export default function LayerControlFilter(props: Readonly<Props>): React.ReactNode {
     const { label, typeList, filters, filterKey, setFilters } = props;
 
     return (

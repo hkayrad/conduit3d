@@ -1,6 +1,6 @@
 import { Building, PlugZap, Search, UtilityPole, Waypoints } from "lucide-react";
 import "./style/globalSearch.css";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useSearch } from "../../../../../lib/hooks/useSearch";
 import { FeatureType } from "../../../../../lib/enums";
 
@@ -18,9 +18,10 @@ type Props = {
     searchInputRef: React.RefObject<HTMLInputElement>;
 }
 
-export default function GlobalSearch(props: Props) {
+export default function GlobalSearch(props: Readonly<Props>) {
     const { flyTo, searchInputRef } = props;
 
+    const searchContainerRef = useRef<HTMLDivElement>(null);
     // Custom hook to handle search logic
     const { query, setQuery, results, handleSearch, isFocused, setIsFocused } = useSearch();
 
@@ -34,6 +35,18 @@ export default function GlobalSearch(props: Props) {
         setQuery("");
         flyTo(feature)
     }
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, feature: GeoJSON.Feature) => {
+        if (e.key === 'Enter') {
+            handleGoTo(feature);
+        }
+    };
+
+    const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
+        if (searchContainerRef.current && !searchContainerRef.current.contains(e.relatedTarget as Node)) {
+            setIsFocused(false);
+        }
+    };
 
     // Effects
     useEffect(() => {
@@ -51,7 +64,12 @@ export default function GlobalSearch(props: Props) {
                 <div className="shortcut">Press <kbd>Esc</kbd> to unfocus the search</div>
                 <div className="hint">Keywords: bina, trafo, yol, direk, agdirek, ogmusdirek, ayddirek, hat, aghat, oghat, rekortman</div>
             </div>
-            <div id="global-search" className={results.length > 0 && isFocused ? "with-results" : ""}>
+            <div
+                id="global-search"
+                ref={searchContainerRef}
+                className={results.length > 0 && isFocused ? "with-results" : ""}
+                onBlur={handleBlur}
+            >
                 <div className="search-bar">
                     <Search />
                     <input
@@ -61,13 +79,18 @@ export default function GlobalSearch(props: Props) {
                         value={query}
                         onChange={handleQueryChange}
                         onFocus={() => setIsFocused(true)}
-                        onBlur={() => setTimeout(() => setIsFocused(false), 200)} // Delay to allow click event on results
                     />
                 </div>
                 {results.length > 0 && isFocused && (
                     <div className="results">
-                        {results.map(result => (
-                            <div key={result.id} className="result-item" onClick={() => handleGoTo(result.feature)}>
+                        {results.map((result) => (
+                            <button
+                                key={result.id}
+                                className="result-item"
+                                onClick={() => handleGoTo(result.feature)}
+                                onKeyDown={(e) => handleKeyDown(e, result.feature)}
+                                tabIndex={0}
+                            >
                                 <div className="icon">{ICONS[result.type]}</div>
                                 <div className="text">
                                     <div className="title" title={result.title}>{result.title}</div>
@@ -76,7 +99,7 @@ export default function GlobalSearch(props: Props) {
                                 <div className="position" title={`Position: ${result.position[0]}, ${result.position[1]}`}>
                                     {result.position[0]}, {result.position[1]}
                                 </div>
-                            </div>
+                            </button>
                         ))}
                     </div>
                 )}

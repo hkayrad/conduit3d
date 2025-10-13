@@ -28,7 +28,7 @@ type Props = {
  * @param props Props for the Table component.
  * @returns The rendered Table component.
  */
-export default function Table(props: Props): React.ReactNode {
+export default function Table(props: Readonly<Props>): React.ReactNode {
     const {
         tableName,
         pageNumber,
@@ -59,9 +59,9 @@ export default function Table(props: Props): React.ReactNode {
     }
 
     const handleGoToPage = (): void => {
-        const targetPage = parseInt(gotoPageInput);
+        const targetPage = Number.parseInt(gotoPageInput);
 
-        if (isNaN(targetPage) || targetPage < 1 || targetPage > maxPageCount)
+        if (Number.isNaN(targetPage) || targetPage < 1 || targetPage > maxPageCount)
             return;
 
         setPageNumber(targetPage);
@@ -201,7 +201,7 @@ export default function Table(props: Props): React.ReactNode {
                                 </div>
                                 <div className="column-toggle-list">
                                     {data.headers.map((header) => (
-                                        <div
+                                        <button
                                             key={header.id}
                                             className="column-toggle-item"
                                             onClick={() => toggleColumn(header.id)}
@@ -210,7 +210,7 @@ export default function Table(props: Props): React.ReactNode {
                                                 {visibleColumns.has(header.id) && <Check size={14} />}
                                             </div>
                                             <span>{header.label}</span>
-                                        </div>
+                                        </button>
                                     ))}
                                 </div>
                             </div>
@@ -252,12 +252,12 @@ export default function Table(props: Props): React.ReactNode {
                         <tr>
                             {filteredHeaders.map((header, _) => (
                                 <th id={`header-${header.id}`} key={`header-${header.id}`}>
-                                    <div
+                                    <button
                                         onClick={() => handleSort(header.id)}
                                         className="header-content"
                                     >
                                         <p className={sortBy === header.id ? "active" : ""} >{header.label}</p>
-                                        <div
+                                        <button
                                             onClick={e => e.stopPropagation()}
                                             className="header-actions"
                                         >
@@ -265,12 +265,19 @@ export default function Table(props: Props): React.ReactNode {
                                                 disabled={sortBy !== header.id}
                                                 onClick={() => setAscending(!ascending)}
                                             >
-                                                {sortBy === header.id ?
-                                                    (ascending ? <SortAsc /> : <SortDesc />) :
-                                                    <SortAsc className="disabled" />}
+                                                {ascending ?
+                                                    <SortAsc className={
+                                                        sortBy === header.id ?
+                                                            "" :
+                                                            "disabled"} /> :
+                                                    <SortDesc className={
+                                                        sortBy === header.id ?
+                                                            "" :
+                                                            "disabled"
+                                                    } />}
                                             </button>
-                                        </div>
-                                    </div>
+                                        </button>
+                                    </button>
                                 </th>
                             ))}
                         </tr>

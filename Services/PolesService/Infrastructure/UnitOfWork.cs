@@ -5,7 +5,7 @@ using PolesService.Infrastructure.Repositories;
 
 namespace PolesService.Infrastructure;
 
-public class UnitOfWork(PolesContext context) : IUnitOfWork
+public sealed class UnitOfWork(PolesContext context) : IUnitOfWork
 {
     private readonly PolesContext _context = context ?? throw new ArgumentNullException(nameof(context));
     private AgDirekRepository? _agDirekRepository;

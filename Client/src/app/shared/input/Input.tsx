@@ -19,23 +19,35 @@ type Props = {
  * @param props - The props for the component
  * @returns The rendered component
  */
-export default function Input(props: Props): React.ReactNode {
+export default function Input(props: Readonly<Props>): React.ReactNode {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    const { type = "text", id, name, label, required, placeholder, state, setState } = props;
 
-    const { type, id, name, label, required, placeholder, state, setState } = props;
+    const getAutoCompleteValue = (name?: string) => {
+        if (name === "password") {
+            return "current-password";
+        }
+        if (name === "username") {
+            return "username";
+        }
+        return "off";
+    };
+
+    const inputType = type === "password" && isPasswordVisible ? "text" : type;
+    const autoCompleteValue = getAutoCompleteValue(name);
 
     return (
         <div className="input-container">
             <label className="input-element">
                 {label && <p>{label}{required && <span className="error-fg">*</span>}</p>}
                 <input
-                    type={type ? type === "password" && isPasswordVisible ? "text" : type : "text"}
+                    type={inputType}
                     id={id}
                     name={name}
                     required={required}
                     placeholder={placeholder}
                     value={state}
-                    autoComplete={name === "password" ? "current-password" : name === "username" ? "username" : "off"}
+                    autoComplete={autoCompleteValue}
                     onChange={(e) => setState(e.target.value)}
                 />
             </label>

@@ -36,7 +36,7 @@ type FeatureProperties = {
  * @param props - The props for the component
  * @returns The rendered component
  */
-export default function HoverCard(props: Props): React.ReactNode {
+export default function HoverCard(props: Readonly<Props>): React.ReactNode {
     const { hoveredFeature, mousePos } = props;
 
     const properties = hoveredFeature?.properties as FeatureProperties | undefined;
@@ -62,7 +62,7 @@ export default function HoverCard(props: Props): React.ReactNode {
             if (deltaTime > 0) {
                 const velocityX = deltaX / deltaTime; // pixels per millisecond
                 const velocityY = deltaY / deltaTime;
-                const magnitude = Math.sqrt(velocityX * velocityX + velocityY * velocityY);
+                const magnitude = Math.hypot(velocityX, velocityY);
 
                 velocityRef.current = {
                     x: velocityX * 1000, // Convert to pixels per second

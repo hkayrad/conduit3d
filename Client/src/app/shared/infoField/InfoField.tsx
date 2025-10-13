@@ -10,7 +10,7 @@ type Props = {
  * @param param0 - The props for the component
  * @returns The rendered component
  */
-export default function InfoField({ label, value, capitalize = false }: Props): React.ReactNode | null {
+export default function InfoField({ label, value, capitalize = false }: Readonly<Props>): React.ReactNode | null {
     if (!value) return null;
 
     return (
