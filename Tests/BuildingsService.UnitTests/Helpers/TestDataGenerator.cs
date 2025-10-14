@@ -33,6 +33,32 @@ public class TestDataGenerator
         };
     }
 
+    public static Building GenerateBuilding(
+        int id = 1,
+        string adi = "Test Building",
+        string siteAdi = "Test Site",
+        string kodu = "Test Kodu",
+        int binaKatSayisi = 5,
+        int daireSayisi = 10,
+        int isyeriSayisi = 2,
+        double yukseklik = 15.5,
+        byte[]? wkb = null
+    )
+    {
+        return new Building
+        {
+            Id = id,
+            Adi = adi,
+            SiteAdi = siteAdi,
+            Kodu = kodu,
+            BinaKatSayisi = binaKatSayisi,
+            DaireSayisi = daireSayisi,
+            IsyeriSayisi = isyeriSayisi,
+            Yukseklik = yukseklik,
+            Wkb = wkb ?? [1, 2, 3, 4, 5]
+        };
+    }
+
     public static AdrYol GenerateAdrYol(
         int id = 1,
         string adi = "Test Road",
@@ -79,6 +105,16 @@ public class TestDataGenerator
         for (var i = 1; i <= count; i++)
         {
             list.Add(GenerateAdrBina(id: i, adi: $"Test Building {i}"));
+        }
+        return list;
+    }
+
+    public static List<Building> GenerateBuildingList(int count)
+    {
+        var list = new List<Building>();
+        for (var i = 1; i <= count; i++)
+        {
+            list.Add(GenerateBuilding(id: i, adi: $"Test Building {i}"));
         }
         return list;
     }
