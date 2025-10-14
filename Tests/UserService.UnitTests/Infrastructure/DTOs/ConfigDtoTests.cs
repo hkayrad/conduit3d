@@ -37,10 +37,10 @@ public class ConfigDtoTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    public void Validate_WithNullOrEmptyKey_ShouldReturnRequiredError(string invalidKey)
+    public void Validate_WithNullOrEmptyKey_ShouldReturnRequiredError(string? invalidKey)
     {
         // Arrange
-        var dto = TestDataGenerator.GenerateConfigDto(key: invalidKey);
+        var dto = TestDataGenerator.GenerateConfigDto(key: invalidKey!);
 
         // Act
         var results = ValidateModel(dto);
@@ -69,10 +69,10 @@ public class ConfigDtoTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    public void Validate_WithNullOrEmptyValue_ShouldReturnRequiredError(string invalidValue)
+    public void Validate_WithNullOrEmptyValue_ShouldReturnRequiredError(string? invalidValue)
     {
         // Arrange
-        var dto = TestDataGenerator.GenerateConfigDto(value: invalidValue);
+        var dto = TestDataGenerator.GenerateConfigDto(value: invalidValue!);
 
         // Act
         var results = ValidateModel(dto);

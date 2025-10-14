@@ -40,10 +40,10 @@ public class UserDtoTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    public void Validate_WithNullOrWhitespaceUsername_ShouldReturnUsernameNullError(string invalidUsername)
+    public void Validate_WithNullOrWhitespaceUsername_ShouldReturnUsernameNullError(string? invalidUsername)
     {
         // Arrange
-        var dto = TestDataGenerator.GenerateUserDto(username: invalidUsername);
+        var dto = TestDataGenerator.GenerateUserDto(username: invalidUsername!);
 
         // Act
         var results = ValidateModel(dto);
@@ -105,10 +105,10 @@ public class UserDtoTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    public void Validate_WithNullOrWhitespaceEmail_ShouldReturnEmailNullError(string invalidEmail)
+    public void Validate_WithNullOrWhitespaceEmail_ShouldReturnEmailNullError(string? invalidEmail)
     {
         // Arrange
-        var dto = TestDataGenerator.GenerateUserDto(email: invalidEmail);
+        var dto = TestDataGenerator.GenerateUserDto(email: invalidEmail!);
 
         // Act
         var results = ValidateModel(dto);
@@ -157,10 +157,10 @@ public class UserDtoTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    public void Validate_WithNullOrWhitespaceUserRole_ShouldReturnUserRoleNullError(string invalidUserRole)
+    public void Validate_WithNullOrWhitespaceUserRole_ShouldReturnUserRoleNullError(string? invalidUserRole)
     {
         // Arrange
-        var dto = TestDataGenerator.GenerateUserDto(userRole: invalidUserRole);
+        var dto = TestDataGenerator.GenerateUserDto(userRole: invalidUserRole!);
 
         // Act
         var results = ValidateModel(dto);
@@ -178,10 +178,10 @@ public class UserDtoTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    public void Validate_WithNullOrWhitespaceName_ShouldReturnNameNullError(string invalidName)
+    public void Validate_WithNullOrWhitespaceName_ShouldReturnNameNullError(string? invalidName)
     {
         // Arrange
-        var dto = TestDataGenerator.GenerateUserDto(name: invalidName);
+        var dto = TestDataGenerator.GenerateUserDto(name: invalidName!);
 
         // Act
         var results = ValidateModel(dto);

@@ -40,10 +40,10 @@ public class AddUserDtoTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    public void Validate_WithNullOrWhitespacePassword_ShouldReturnPasswordNullError(string invalidPassword)
+    public void Validate_WithNullOrWhitespacePassword_ShouldReturnPasswordNullError(string? invalidPassword)
     {
         // Arrange
-        var dto = TestDataGenerator.GenerateAddUserDto(password: invalidPassword);
+        var dto = TestDataGenerator.GenerateAddUserDto(password: invalidPassword!);
 
         // Act
         var results = ValidateModel(dto);
@@ -80,10 +80,10 @@ public class AddUserDtoTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    public void Validate_WithNullOrWhitespaceUsername_ShouldReturnUsernameNullError(string invalidUsername)
+    public void Validate_WithNullOrWhitespaceUsername_ShouldReturnUsernameNullError(string? invalidUsername)
     {
         // Arrange
-        var dto = TestDataGenerator.GenerateAddUserDto(username: invalidUsername);
+        var dto = TestDataGenerator.GenerateAddUserDto(username: invalidUsername!);
 
         // Act
         var results = ValidateModel(dto);
@@ -142,10 +142,10 @@ public class AddUserDtoTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    public void Validate_WithNullOrWhitespaceName_ShouldReturnNameNullError(string invalidName)
+    public void Validate_WithNullOrWhitespaceName_ShouldReturnNameNullError(string? invalidName)
     {
         // Arrange
-        var dto = TestDataGenerator.GenerateAddUserDto(name: invalidName);
+        var dto = TestDataGenerator.GenerateAddUserDto(name: invalidName!);
 
         // Act
         var results = ValidateModel(dto);
