@@ -9,15 +9,15 @@ namespace BuildingsService.Infrastructure;
 public sealed class UnitOfWork(BuildingsContext context) : IUnitOfWork
 {
     private readonly BuildingsContext _context = context ?? throw new ArgumentNullException(nameof(context));
-    private BuildingsRepository? _buildingsRepository;
-    private AdrBinaRepository? _adrBuildingsRepository;
-    private TrafoBinaRepository? _trafoBuildingsRepository;
-    private AdrYolRepository? _adrYolRepository;
+    private IBuildingsRepository? _buildingsRepository;
+    private IAdrBinaRepository? _adrBuildingsRepository;
+    private ITrafoBinaRepository? _trafoBuildingsRepository;
+    private IAdrYolRepository? _adrYolRepository;
     private IDbContextTransaction? _transaction;
     private bool _disposed = false;
 
     /// <inheritdoc />
-    public BuildingsRepository BuildingsRepository
+    public IBuildingsRepository BuildingsRepository
     {
         get
         {
@@ -26,7 +26,7 @@ public sealed class UnitOfWork(BuildingsContext context) : IUnitOfWork
     }
 
     /// <inheritdoc />
-    public AdrBinaRepository AdrBuildingsRepository
+    public IAdrBinaRepository AdrBuildingsRepository
     {
         get
         {
@@ -35,7 +35,7 @@ public sealed class UnitOfWork(BuildingsContext context) : IUnitOfWork
     }
 
     /// <inheritdoc />
-    public TrafoBinaRepository TrafoBuildingsRepository
+    public ITrafoBinaRepository TrafoBuildingsRepository
     {
         get
         {
@@ -43,7 +43,7 @@ public sealed class UnitOfWork(BuildingsContext context) : IUnitOfWork
         }
     }
 
-    public AdrYolRepository AdrYolRepository
+    public IAdrYolRepository AdrYolRepository
     {
         get
         {
