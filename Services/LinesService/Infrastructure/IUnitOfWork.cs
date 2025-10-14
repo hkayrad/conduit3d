@@ -11,17 +11,17 @@ public interface IUnitOfWork : IDisposable
     /// <summary>
     /// Gets the repository for managing AgHat entities.
     /// </summary>
-    AgHatRepository AgHatRepository { get; }
+    IAgHatRepository AgHatRepository { get; }
 
     /// <summary>
     /// Gets the repository for managing OgHat entities.
     /// </summary>
-    OgHatRepository OgHatRepository { get; }
+    IOgHatRepository OgHatRepository { get; }
 
     /// <summary>
     /// Gets the repository for managing Rekortman entities.
     /// </summary>
-    RekortmanRepository RekortmanRepository { get; }
+    IRekortmanRepository RekortmanRepository { get; }
 
     /// <summary>
     /// Saves changes to the database.

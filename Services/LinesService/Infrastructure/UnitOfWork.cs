@@ -13,14 +13,14 @@ namespace LinesService.Infrastructure;
 public sealed class UnitOfWork(LinesContext context) : IUnitOfWork
 {
     private readonly LinesContext _context = context ?? throw new ArgumentNullException(nameof(context));
-    private AgHatRepository? _agHatRepository;
-    private OgHatRepository? _ogHatRepository;
-    private RekortmanRepository? _rekortmanRepository;
+    private IAgHatRepository? _agHatRepository;
+    private IOgHatRepository? _ogHatRepository;
+    private IRekortmanRepository? _rekortmanRepository;
     private IDbContextTransaction? _transaction;
     private bool _disposed = false;
 
     /// <inheritdoc />
-    public AgHatRepository AgHatRepository
+    public IAgHatRepository AgHatRepository
     {
         get
         {
@@ -29,7 +29,7 @@ public sealed class UnitOfWork(LinesContext context) : IUnitOfWork
     }
 
     /// <inheritdoc />
-    public OgHatRepository OgHatRepository
+    public IOgHatRepository OgHatRepository
     {
         get
         {
@@ -38,7 +38,7 @@ public sealed class UnitOfWork(LinesContext context) : IUnitOfWork
     }
 
     /// <inheritdoc />
-    public RekortmanRepository RekortmanRepository
+    public IRekortmanRepository RekortmanRepository
     {
         get
         {

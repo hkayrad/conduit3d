@@ -11,22 +11,22 @@ public interface IUnitOfWork : IDisposable
     /// <summary>
     /// Gets the repository for managing Buildings entities.
     /// </summary>
-    BuildingsRepository BuildingsRepository { get; }
+    IBuildingsRepository BuildingsRepository { get; }
 
     /// <summary>
     /// Gets the repository for managing AdrBina entities.
     /// </summary>
-    AdrBinaRepository AdrBuildingsRepository { get; }
+    IAdrBinaRepository AdrBuildingsRepository { get; }
 
     /// <summary>
     /// Gets the repository for managing TrafoBina entities.
     /// </summary>
-    TrafoBinaRepository TrafoBuildingsRepository { get; }
+    ITrafoBinaRepository TrafoBuildingsRepository { get; }
 
     /// <summary>
     /// Gets the repository for managing AdrYol entities.
     /// </summary>
-    AdrYolRepository AdrYolRepository { get; }
+    IAdrYolRepository AdrYolRepository { get; }
 
     /// <summary>
     /// Saves changes to the database.

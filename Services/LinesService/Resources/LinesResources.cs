@@ -21,7 +21,12 @@ public static class LinesResources
     /// <returns>The localized string.</returns>
     public static string GetString(string key, params object[]? args)
     {
+        if (key is null)
+        {
+            return null!;
+        }
+
         var format = _resourceManager.GetString(key) ?? key;
-        return args == null ? format : string.Format(format, args);
+        return args == null || args.Length == 0 ? format : string.Format(format, args);
     }
 }

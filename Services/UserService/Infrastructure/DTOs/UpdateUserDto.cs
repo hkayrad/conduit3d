@@ -61,12 +61,12 @@ public class UpdateUserDto : IValidatableObject
                 yield return new ValidationResult(UserResources.GetString("usernameTooShort"), [nameof(Username)]);
 
             // Username format check
-            if (!Regex.IsMatch(Username, @"^[a-zA-Z0-9_]+$", RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds(250)))
+            if (!Regex.IsMatch(Username, @"^[a-zA-Z0-9_]+$", RegexOptions.None, TimeSpan.FromMilliseconds(250)))
                 yield return new ValidationResult(UserResources.GetString("usernameInvalid"), [nameof(Username)]);
         }
 
         // Email null check
-        if (!string.IsNullOrWhiteSpace(Email) && !Regex.IsMatch(Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds(250)))
+        if (!string.IsNullOrWhiteSpace(Email) && !Regex.IsMatch(Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.None, TimeSpan.FromMilliseconds(250)))
             yield return new ValidationResult(UserResources.GetString("emailInvalid"), [nameof(Email)]);
 
         // UserRole null check
@@ -90,18 +90,12 @@ public class UpdateUserDto : IValidatableObject
                 yield return new ValidationResult(UserResources.GetString("nameTooShort"), [nameof(Name)]);
 
             // Name format check
-            if (!Regex.IsMatch(Name, @"^[a-zA-Z\s]+$", RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds(250)))
+            if (!Regex.IsMatch(Name, @"^[a-zA-Z\s]+$", RegexOptions.None, TimeSpan.FromMilliseconds(250)))
                 yield return new ValidationResult(UserResources.GetString("nameInvalid"), [nameof(Name)]);
         }
 
-        // Password null check
-        if (string.IsNullOrWhiteSpace(Password))
-            yield return new ValidationResult(UserResources.GetString("passwordNull"), [nameof(Password)]);
-        else
-        {
-            // Password complexity check
-            if (!Regex.IsMatch(Password, @"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$", RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds(250)))
-                yield return new ValidationResult(UserResources.GetString("passwordInvalid"), [nameof(Password)]);
-        }
+        // Password complexity check
+        if (!string.IsNullOrWhiteSpace(Password) && !Regex.IsMatch(Password, @"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$", RegexOptions.None, TimeSpan.FromMilliseconds(250)))
+            yield return new ValidationResult(UserResources.GetString("passwordInvalid"), [nameof(Password)]);
     }
 }

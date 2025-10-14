@@ -13,14 +13,11 @@ public class LoginUserDto : IValidatableObject
     /// <summary>
     /// The username of the user.
     /// </summary>
-    [Required]
-    [MaxLength(100)]
     public required string Username { get; set; }
 
     /// <summary>
     /// The password of the user.
     /// </summary>
-    [Required]
     public required string Password { get; set; }
 
     /// <summary>
@@ -44,7 +41,7 @@ public class LoginUserDto : IValidatableObject
                 yield return new ValidationResult(UserResources.GetString("usernameTooShort"), [nameof(Username)]);
 
             // Username format check
-            if (!Regex.IsMatch(Username, @"^[a-zA-Z0-9_]+$", RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds(250)))
+            if (!Regex.IsMatch(Username, @"^[a-zA-Z0-9_]+$", RegexOptions.None, TimeSpan.FromMilliseconds(250)))
                 yield return new ValidationResult(UserResources.GetString("usernameInvalid"), [nameof(Username)]);
         }
 

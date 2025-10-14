@@ -8,14 +8,14 @@ namespace PolesService.Infrastructure;
 public sealed class UnitOfWork(PolesContext context) : IUnitOfWork
 {
     private readonly PolesContext _context = context ?? throw new ArgumentNullException(nameof(context));
-    private AgDirekRepository? _agDirekRepository;
-    private AydDirekRepository? _aydDirekRepository;
-    private OgMusDirekRepository? _ogMusDirekRepository;
+    private IAgDirekRepository? _agDirekRepository;
+    private IAydDirekRepository? _aydDirekRepository;
+    private IOgMusDirekRepository? _ogMusDirekRepository;
     private IDbContextTransaction? _transaction;
     private bool _disposed = false;
 
     /// <inheritdoc />
-    public AgDirekRepository AgDirekRepository
+    public IAgDirekRepository AgDirekRepository
     {
         get
         {
@@ -24,7 +24,7 @@ public sealed class UnitOfWork(PolesContext context) : IUnitOfWork
     }
 
     /// <inheritdoc />
-    public AydDirekRepository AydDirekRepository
+    public IAydDirekRepository AydDirekRepository
     {
         get
         {
@@ -33,7 +33,7 @@ public sealed class UnitOfWork(PolesContext context) : IUnitOfWork
     }
 
     /// <inheritdoc />
-    public OgMusDirekRepository OgMusDirekRepository
+    public IOgMusDirekRepository OgMusDirekRepository
     {
         get
         {

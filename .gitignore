@@ -11,6 +11,9 @@
 Client/.scannerwork/
 analyze.sh
 
+# Coverage files
+Coverage/
+
 # User-specific files
 *.rsuser
 *.suo

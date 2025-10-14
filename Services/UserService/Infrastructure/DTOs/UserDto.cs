@@ -57,7 +57,7 @@ public class UserDto : IValidatableObject
                 yield return new ValidationResult(UserResources.GetString("usernameTooShort"), [nameof(Username)]);
 
             // Username format check
-            if (!Regex.IsMatch(Username, @"^[a-zA-Z0-9_]+$", RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds(250)))
+            if (!Regex.IsMatch(Username, @"^[a-zA-Z0-9_]+$", RegexOptions.None, TimeSpan.FromMilliseconds(250)))
                 yield return new ValidationResult(UserResources.GetString("usernameInvalid"), [nameof(Username)]);
         }
 
@@ -65,7 +65,7 @@ public class UserDto : IValidatableObject
         if (string.IsNullOrWhiteSpace(Email))
             yield return new ValidationResult(UserResources.GetString("emailNull"), [nameof(Email)]);
         // Email format check
-        else if (!Regex.IsMatch(Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds(250)))
+        else if (!Regex.IsMatch(Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.None, TimeSpan.FromMilliseconds(250)))
             yield return new ValidationResult(UserResources.GetString("emailInvalid"), [nameof(Email)]);
 
         // UserRole null check
@@ -93,7 +93,7 @@ public class UserDto : IValidatableObject
                 yield return new ValidationResult(UserResources.GetString("nameTooShort"), [nameof(Name)]);
 
             // Name format check
-            if (!Regex.IsMatch(Name, @"^[a-zA-Z\s]+$", RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds(250)))
+            if (!Regex.IsMatch(Name, @"^[a-zA-Z\s]+$", RegexOptions.None, TimeSpan.FromMilliseconds(250)))
                 yield return new ValidationResult(UserResources.GetString("nameInvalid"), [nameof(Name)]);
         }
     }
