@@ -11,17 +11,17 @@ public interface IUnitOfWork : IDisposable
     /// <summary>
     /// Gets the repository for managing AgDirek entities.
     /// </summary>
-    AgDirekRepository AgDirekRepository { get; }
+    IAgDirekRepository AgDirekRepository { get; }
 
     /// <summary>
     /// Gets the repository for managing AydDirek entities.
     /// </summary>
-    AydDirekRepository AydDirekRepository { get; }
+    IAydDirekRepository AydDirekRepository { get; }
 
     /// <summary>
     /// Gets the repository for managing OgMusDirek entities.
     /// </summary>
-    OgMusDirekRepository OgMusDirekRepository { get; }
+    IOgMusDirekRepository OgMusDirekRepository { get; }
 
     /// <summary>
     /// Saves changes to the database.

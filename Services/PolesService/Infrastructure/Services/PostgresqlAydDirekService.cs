@@ -33,18 +33,7 @@ public class PostgresqlAydDirekService(IUnitOfWork unitOfWork) : IAydDirekServic
         if (pageNumber < 1)
             return Response<List<AydDirek>>.ValidationError(PolesResources.GetString("invalidPageNumber"));
 
-        string[] allowedSortColumns = [
-            "Id",
-            "Kodu",
-            "Adi",
-            "Cinsi",
-            "Tipi",
-            "DirekNo",
-            "BoyOzellik",
-            "DirekBoyId"
-        ];
-
-        if (!allowedSortColumns.Contains(sortBy))
+        if (!AllowedSortingColumns.PoleColumns.Contains(sortBy))
             return Response<List<AydDirek>>.ValidationError(PolesResources.GetString("invalidSortBy"));
 
         extent ??= new Extent { MinX = -180, MaxX = 180, MinY = -90, MaxY = 90 };
@@ -166,19 +155,7 @@ public class PostgresqlAydDirekService(IUnitOfWork unitOfWork) : IAydDirekServic
                 Data = { }
             };
 
-        string[] allowedSortColumns =
-        [
-            "Id",
-            "Kodu",
-            "Adi",
-            "Cinsi",
-            "Tipi",
-            "DirekNo",
-            "BoyOzellik",
-            "DirekBoyId"
-        ];
-
-        if (!allowedSortColumns.Contains(sortBy))
+        if (!AllowedSortingColumns.PoleColumns.Contains(sortBy))
             return new AydDirekResponse
             {
                 IsSuccess = false,
@@ -200,7 +177,7 @@ public class PostgresqlAydDirekService(IUnitOfWork unitOfWork) : IAydDirekServic
 
         try
         {
-            var buildings = await _unitOfWork.AydDirekRepository.GetAllAsync(pageNumber,
+            var poles = await _unitOfWork.AydDirekRepository.GetAllAsync(pageNumber,
                                                                     pageSize,
                                                                     sortBy,
                                                                     ascending,
@@ -208,7 +185,7 @@ public class PostgresqlAydDirekService(IUnitOfWork unitOfWork) : IAydDirekServic
                                                                     query,
                                                                     cancellationToken);
 
-            if (buildings == null || buildings.Count == 0)
+            if (poles == null || poles.Count == 0)
                 return new AydDirekResponse
                 {
                     IsSuccess = false,
@@ -217,30 +194,30 @@ public class PostgresqlAydDirekService(IUnitOfWork unitOfWork) : IAydDirekServic
                     Data = { }
                 };
 
-            var buildingsResponse = new AydDirekResponse
+            var polesResponse = new AydDirekResponse
             {
                 IsSuccess = true,
                 Message = PolesResources.GetString("polesRetrieved"),
                 StatusCode = (int)HttpStatusCode.OK,
             };
 
-            foreach (var building in buildings)
+            foreach (var pole in poles)
             {
-                buildingsResponse.Data.Add(new AydDirekProto
+                polesResponse.Data.Add(new AydDirekProto
                 {
-                    Id = building.Id,
-                    Kodu = building.Kodu ?? string.Empty,
-                    Adi = building.Adi ?? string.Empty,
-                    Cinsi = building.Cinsi ?? string.Empty,
-                    Tipi = building.Tipi ?? string.Empty,
-                    DirekNo = building.DirekNo ?? string.Empty,
-                    BoyOzellik = building.BoyOzellik ?? string.Empty,
-                    DirekBoyId = building.DirekBoyId,
-                    Wkb = Convert.ToBase64String(building.Wkb)
+                    Id = pole.Id,
+                    Kodu = pole.Kodu ?? string.Empty,
+                    Adi = pole.Adi ?? string.Empty,
+                    Cinsi = pole.Cinsi ?? string.Empty,
+                    Tipi = pole.Tipi ?? string.Empty,
+                    DirekNo = pole.DirekNo ?? string.Empty,
+                    BoyOzellik = pole.BoyOzellik ?? string.Empty,
+                    DirekBoyId = pole.DirekBoyId,
+                    Wkb = Convert.ToBase64String(pole.Wkb)
                 });
             }
 
-            return buildingsResponse;
+            return polesResponse;
         }
         catch (NpgsqlException ex)
         {

@@ -177,7 +177,7 @@ public class PostgresqlOgMusDirekService(IUnitOfWork unitOfWork) : IOgMusDirekSe
 
         try
         {
-            var buildings = await _unitOfWork.OgMusDirekRepository.GetAllAsync(pageNumber,
+            var poles = await _unitOfWork.OgMusDirekRepository.GetAllAsync(pageNumber,
                                                                     pageSize,
                                                                     sortBy,
                                                                     ascending,
@@ -185,7 +185,7 @@ public class PostgresqlOgMusDirekService(IUnitOfWork unitOfWork) : IOgMusDirekSe
                                                                     query,
                                                                     cancellationToken);
 
-            if (buildings == null || buildings.Count == 0)
+            if (poles == null || poles.Count == 0)
                 return new OgMusDirekResponse
                 {
                     IsSuccess = false,
@@ -194,30 +194,30 @@ public class PostgresqlOgMusDirekService(IUnitOfWork unitOfWork) : IOgMusDirekSe
                     Data = { }
                 };
 
-            var buildingsResponse = new OgMusDirekResponse
+            var polesResponse = new OgMusDirekResponse
             {
                 IsSuccess = true,
                 Message = PolesResources.GetString("polesRetrieved"),
                 StatusCode = (int)HttpStatusCode.OK,
             };
 
-            foreach (var building in buildings)
+            foreach (var pole in poles)
             {
-                buildingsResponse.Data.Add(new OgMusDirekProto
+                polesResponse.Data.Add(new OgMusDirekProto
                 {
-                    Id = building.Id,
-                    Kodu = building.Kodu ?? string.Empty,
-                    Adi = building.Adi ?? string.Empty,
-                    Cinsi = building.Cinsi ?? string.Empty,
-                    Tipi = building.Tipi ?? string.Empty,
-                    DirekNo = building.DirekNo ?? string.Empty,
-                    BoyOzellik = building.BoyOzellik ?? string.Empty,
-                    DirekBoyId = building.DirekBoyId,
-                    Wkb = Convert.ToBase64String(building.Wkb)
+                    Id = pole.Id,
+                    Kodu = pole.Kodu ?? string.Empty,
+                    Adi = pole.Adi ?? string.Empty,
+                    Cinsi = pole.Cinsi ?? string.Empty,
+                    Tipi = pole.Tipi ?? string.Empty,
+                    DirekNo = pole.DirekNo ?? string.Empty,
+                    BoyOzellik = pole.BoyOzellik ?? string.Empty,
+                    DirekBoyId = pole.DirekBoyId,
+                    Wkb = Convert.ToBase64String(pole.Wkb)
                 });
             }
 
-            return buildingsResponse;
+            return polesResponse;
         }
         catch (NpgsqlException ex)
         {
