@@ -11,8 +11,10 @@ public static class ErrorParser
         {
             if (ex.Message.Contains("username"))
                 return "A record with the same username already exists.";
-            if (ex.Message.Contains("email"))
+            else if (ex.Message.Contains("email"))
                 return "A record with the same email already exists.";
+            else
+                return "A record with the same unique field already exists.";
         }
         else if (ex.Message.Contains("violates foreign key constraint"))
             return "The operation violates a foreign key constraint.";
