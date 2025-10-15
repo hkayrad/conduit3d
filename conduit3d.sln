@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingsService.UnitTests"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.UnitTests", "Tests\Common.UnitTests\Common.UnitTests.csproj", "{318A089A-24A0-4C8E-B23C-9AC7E33F9E16}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService.IntegrationTests", "Tests\UserService.IntegrationTests\UserService.IntegrationTests.csproj", "{A28BE918-BCD1-43B5-9966-E3E737894286}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -157,6 +159,18 @@ Global
 		{318A089A-24A0-4C8E-B23C-9AC7E33F9E16}.Release|x64.Build.0 = Release|Any CPU
 		{318A089A-24A0-4C8E-B23C-9AC7E33F9E16}.Release|x86.ActiveCfg = Release|Any CPU
 		{318A089A-24A0-4C8E-B23C-9AC7E33F9E16}.Release|x86.Build.0 = Release|Any CPU
+		{A28BE918-BCD1-43B5-9966-E3E737894286}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A28BE918-BCD1-43B5-9966-E3E737894286}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A28BE918-BCD1-43B5-9966-E3E737894286}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A28BE918-BCD1-43B5-9966-E3E737894286}.Debug|x64.Build.0 = Debug|Any CPU
+		{A28BE918-BCD1-43B5-9966-E3E737894286}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A28BE918-BCD1-43B5-9966-E3E737894286}.Debug|x86.Build.0 = Debug|Any CPU
+		{A28BE918-BCD1-43B5-9966-E3E737894286}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A28BE918-BCD1-43B5-9966-E3E737894286}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A28BE918-BCD1-43B5-9966-E3E737894286}.Release|x64.ActiveCfg = Release|Any CPU
+		{A28BE918-BCD1-43B5-9966-E3E737894286}.Release|x64.Build.0 = Release|Any CPU
+		{A28BE918-BCD1-43B5-9966-E3E737894286}.Release|x86.ActiveCfg = Release|Any CPU
+		{A28BE918-BCD1-43B5-9966-E3E737894286}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -171,5 +185,6 @@ Global
 		{E6BC7FB0-4196-44CE-89FE-75026A88332D} = {6A16938B-45DC-4E36-B997-34743CE21E89}
 		{A26D06A8-1A27-49F0-A338-7FBDFF9FA016} = {6A16938B-45DC-4E36-B997-34743CE21E89}
 		{318A089A-24A0-4C8E-B23C-9AC7E33F9E16} = {6A16938B-45DC-4E36-B997-34743CE21E89}
+		{A28BE918-BCD1-43B5-9966-E3E737894286} = {6A16938B-45DC-4E36-B997-34743CE21E89}
 	EndGlobalSection
 EndGlobal
