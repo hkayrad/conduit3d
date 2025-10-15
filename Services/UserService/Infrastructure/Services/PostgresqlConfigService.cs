@@ -57,7 +57,7 @@ public class PostgresqlConfigService(IUnitOfWork unitOfWork) : IConfigService
             var configToDelete = config.FirstOrDefault(c => c.Key == key);
             if (configToDelete == null)
             {
-                return Response<string>.Failure(UserResources.GetString("noConfigFound"));
+                return Response<string>.NotFound(UserResources.GetString("noConfigFound"));
             }
 
             var result = await _unitOfWork.ConfigRepository.DeleteConfigValueAsync(key);
