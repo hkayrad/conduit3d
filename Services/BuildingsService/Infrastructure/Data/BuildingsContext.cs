@@ -59,21 +59,28 @@ public class BuildingsContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.Wkb)
                 .HasComputedColumnSql("ST_AsBinary(ST_Transform(geometry, 4326))")
                 .HasColumnName("wkb");
-            entity.HasGeneratedTsVectorColumn(
-                e => e.SearchableText,
-                "simple",
-                e => new
-                {
-                    e.Id,
-                    e.Kodu,
-                    e.SiteAdi,
-                    e.Adi,
-                    e.BinaKatSayisi,
-                    e.DaireSayisi,
-                    e.IsyeriSayisi,
-                    e.Yukseklik
-                }
-            );
+            if (Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory")
+            {
+                entity.HasGeneratedTsVectorColumn(
+                    e => e.SearchableText,
+                    "simple",
+                    e => new
+                    {
+                        e.Id,
+                        e.Kodu,
+                        e.SiteAdi,
+                        e.Adi,
+                        e.BinaKatSayisi,
+                        e.DaireSayisi,
+                        e.IsyeriSayisi,
+                        e.Yukseklik
+                    }
+                );
+            }
+            else
+            {
+                entity.Ignore(e => e.SearchableText);
+            }
         });
 
         modelBuilder.Entity<AdrBina>(entity =>
@@ -102,21 +109,28 @@ public class BuildingsContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.Wkb)
                 .HasComputedColumnSql("ST_AsBinary(ST_Transform(geometry, 4326))")
                 .HasColumnName("wkb");
-            entity.HasGeneratedTsVectorColumn(
-                e => e.SearchableText,
-                "simple",
-                e => new
-                {
-                    e.Id,
-                    e.Kodu,
-                    e.SiteAdi,
-                    e.Adi,
-                    e.BinaKatSayisi,
-                    e.DaireSayisi,
-                    e.IsyeriSayisi,
-                    e.Yukseklik
-                }
-            );
+            if (Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory")
+            {
+                entity.HasGeneratedTsVectorColumn(
+                    e => e.SearchableText,
+                    "simple",
+                    e => new
+                    {
+                        e.Id,
+                        e.Kodu,
+                        e.SiteAdi,
+                        e.Adi,
+                        e.BinaKatSayisi,
+                        e.DaireSayisi,
+                        e.IsyeriSayisi,
+                        e.Yukseklik
+                    }
+                );
+            }
+            else
+            {
+                entity.Ignore(e => e.SearchableText);
+            }
         });
 
         modelBuilder.Entity<TrafoBina>(entity =>
@@ -134,16 +148,23 @@ public class BuildingsContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.Wkb)
                 .HasComputedColumnSql("ST_AsBinary(ST_Transform(geometry, 4326))")
                 .HasColumnName("wkb");
-            entity.HasGeneratedTsVectorColumn(
-                e => e.SearchableText,
-                "simple",
-                e => new
-                {
-                    e.Id,
-                    e.Adi,
-                    e.Kodu
-                }
-            );
+            if (Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory")
+            {
+                entity.HasGeneratedTsVectorColumn(
+                    e => e.SearchableText,
+                    "simple",
+                    e => new
+                    {
+                        e.Id,
+                        e.Adi,
+                        e.Kodu
+                    }
+                );
+            }
+            else
+            {
+                entity.Ignore(e => e.SearchableText);
+            }
         });
 
         modelBuilder.Entity<AdrYol>(entity =>
@@ -171,20 +192,27 @@ public class BuildingsContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.Wkb)
                 .HasComputedColumnSql("ST_AsBinary(ST_Transform(geometry, 4326))")
                 .HasColumnName("wkb");
-            entity.HasGeneratedTsVectorColumn(
-                e => e.SearchableText,
-                "simple",
-                e => new
-                {
-                    e.Id,
-                    e.Genislik,
-                    e.SeritSayisi,
-                    e.Yapisi,
-                    e.Tipi,
-                    e.Kodu,
-                    e.Adi
-                }
-            );
+            if (Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory")
+            {
+                entity.HasGeneratedTsVectorColumn(
+                    e => e.SearchableText,
+                    "simple",
+                    e => new
+                    {
+                        e.Id,
+                        e.Genislik,
+                        e.SeritSayisi,
+                        e.Yapisi,
+                        e.Tipi,
+                        e.Kodu,
+                        e.Adi
+                    }
+                );
+            }
+            else
+            {
+                entity.Ignore(e => e.SearchableText);
+            }
         });
 
     }

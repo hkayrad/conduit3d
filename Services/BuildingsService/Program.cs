@@ -113,16 +113,17 @@ builder.Services.AddSwaggerGen(config =>
     });
 });
 
-// Get PostgreSQL connection string
-string? postgresqlConnectionString = Environment.GetEnvironmentVariable("POSTGRESQL_CONNECTION_STRING");
-
-// Validate the connection string
-if (string.IsNullOrEmpty(postgresqlConnectionString))
-    throw new InvalidOperationException("POSTGRESQL_CONNECTION_STRING environment variable is not set.");
-
 // Connect to the sdb if the connection string is valid
 builder.Services.AddDbContext<BuildingsContext>(options =>
 {
+
+    // Get PostgreSQL connection string
+    string? postgresqlConnectionString = Environment.GetEnvironmentVariable("POSTGRESQL_CONNECTION_STRING");
+
+    // Validate the connection string
+    if (string.IsNullOrEmpty(postgresqlConnectionString))
+        throw new InvalidOperationException("POSTGRESQL_CONNECTION_STRING environment variable is not set.");
+
     options.UseNpgsql(postgresqlConnectionString,
     o => o.UseNetTopologySuite()
         );
@@ -180,3 +181,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 await app.RunAsync();
+
+public partial class Program { };
