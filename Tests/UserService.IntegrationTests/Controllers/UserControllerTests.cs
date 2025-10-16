@@ -237,9 +237,6 @@ public class UserControllerTests : IClassFixture<WebApplicationFactory<Program>>
         var content = await response.Content.ReadAsStringAsync();
         _output.WriteLine($"Response: {content}");
 
-
-
-
         // Assert
         var result = await response.Content.ReadFromJsonAsync<Response<User>>();
         result.Should().NotBeNull();
