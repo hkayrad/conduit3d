@@ -10,123 +10,30 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Conduit3D.Common.Infrastructure.Formatters;
 using Conduit3D.Common.Infrastructure.Utilities;
+using Conduit3D.Common.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers(options =>
-{
-    options.OutputFormatters.Add(new ProtobufOutputFormatter());
-});
+builder.Services.AddControllers(OutputFormatterConfiguration.AddOutputFormatters);
 
 // Configure API versioning
-builder.Services.AddApiVersioning(options =>
-{
-    options.DefaultApiVersion = new ApiVersion(1, 0);
-    options.AssumeDefaultVersionWhenUnspecified = true;
-    options.ReportApiVersions = true;
-    options.ApiVersionReader = ApiVersionReader.Combine(
-        new UrlSegmentApiVersionReader(),
-        new HeaderApiVersionReader("x-api-version")
-    );
-}).AddApiExplorer(options =>
-{
-    options.GroupNameFormat = "'v'VVV";
-    options.SubstituteApiVersionInUrl = true;
-});
+builder.Services
+    .AddApiVersioning(VersioningConfiguration.AddVersioning)
+    .AddApiExplorer(VersioningConfiguration.AddExplorer);
 
 // Custom error handler to send appropriate response to the user.
-builder.Services.Configure<ApiBehaviorOptions>(options =>
-{
-    options.InvalidModelStateResponseFactory = context =>
-    {
-        var errors = context.ModelState
-            .Where(x => x.Value?.Errors.Count > 0)
-            .ToDictionary(
-                x => x.Key,
-                x => x.Value!.Errors.Select(e => e.ErrorMessage).ToArray()
-            );
-
-        var response = new Response<object>
-        {
-            IsSuccess = false,
-            Message = LinesResources.GetString("oneOrMoreValidationError"),
-            Data = errors,
-            StatusCode = HttpStatusCode.BadRequest
-        };
-
-        return new BadRequestObjectResult(response);
-    };
-});
+builder.Services.Configure<ApiBehaviorOptions>(BehaviourConfiguration.Configure);
 
 // Configure Swagger
-builder.Services.AddSwaggerGen(config =>
-{
-    config.SwaggerDoc("v1", new OpenApiInfo { Title = "Conduit3D Lines API", Version = "v1" });
+builder.Services.AddSwaggerGen(
+    config => SwaggerConfiguration.Configure(config, 1, "Lines")
+);
 
-    // Use custom schema IDs to handle pbf and generic types collisions
-    config.CustomSchemaIds(type =>
-    {
-        if (type.IsGenericType)
-        {
-            var genericTypeName = type.GetGenericTypeDefinition().Name;
-
-            // Remove generic type suffixes like `1, `2, etc.
-            var backtickIndex = genericTypeName.IndexOf('`');
-            if (backtickIndex > 0)
-            {
-                genericTypeName = genericTypeName.Substring(0, backtickIndex);
-            }
-
-            // Get all generic arguments and build their names recursively
-            var genericArgs = type.GetGenericArguments()
-                .Select(arg => TypeDisplayName.Get(arg))
-                .ToArray();
-
-            return $"{genericTypeName}Of{string.Join("And", genericArgs)}";
-        }
-        return type.Name;
-    });
-
-    // Configure JWT authentication
-    config.AddSecurityDefinition("bearerAuth", new OpenApiSecurityScheme
-    {
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT",
-        Description = "JWT Authorization header using the Bearer scheme."
-    });
-
-    config.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "bearerAuth"
-                }
-            },
-            Array.Empty<string>()
-        }
-    });
-});
-
-// Connect to the db if the connection string is valid
-builder.Services.AddDbContext<LinesContext>(options =>
-{
-    // Get PostgreSQL connection string
-    string? postgresqlConnectionString = Environment.GetEnvironmentVariable("POSTGRESQL_CONNECTION_STRING");
-
-    // Validate the connection string
-    if (string.IsNullOrEmpty(postgresqlConnectionString))
-        throw new InvalidOperationException("POSTGRESQL_CONNECTION_STRING environment variable is not set.");
-
-    options.UseNpgsql(postgresqlConnectionString,
-     o => o.UseNetTopologySuite()
-         );
-});
+// Connect to the sdb if the connection string is valid
+builder.Services.AddDbContext<LinesContext>(
+    options => DbContextConfiguration.Configure(options, true)
+);
 
 // Inject dependencies
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
