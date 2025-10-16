@@ -86,7 +86,8 @@ public class OgHatRepository(LinesContext context) : IOgHatRepository
                                         cinsi,
                                         kesit,
                                         tipi,
-                                        ST_AsBinary(ST_Transform(geometry, 4326)) as wkb
+                                        ST_AsBinary(ST_Transform(geometry, 4326)) as wkb,
+                                        searchable_text
                                     FROM ""SBK_OGHAT""
                                     WHERE id = {id}");
         return await sqlQuery.FirstOrDefaultAsync(cancellationToken);

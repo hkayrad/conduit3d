@@ -76,7 +76,8 @@ public class AdrYolRepository(BuildingsContext context) : IAdrYolRepository
                                         tipi,
                                         kodu,
                                         adi,
-                                        ST_AsBinary(ST_Transform(geometry, 4326)) as wkb
+                                        ST_AsBinary(ST_Transform(geometry, 4326)) as wkb,
+                                        searchable_text
                                     FROM ""ADR_YOL""
                                     WHERE id = {id}");
         return await sqlQuery.FirstOrDefaultAsync(cancellationToken);

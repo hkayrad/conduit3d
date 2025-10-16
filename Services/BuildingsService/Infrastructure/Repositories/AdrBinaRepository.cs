@@ -91,7 +91,8 @@ public class AdrBinaRepository(BuildingsContext context) : IAdrBinaRepository
                                         daire_sayisi,
                                         isyeri_sayisi,
                                         yukseklik,
-                                        ST_AsBinary(ST_Transform(geometry, 4326)) as wkb
+                                        ST_AsBinary(ST_Transform(geometry, 4326)) as wkb,
+                                        searchable_text
                                     FROM ""ADR_BINA""
                                     WHERE id = {id}");
         return await sqlQuery.FirstOrDefaultAsync(cancellationToken);

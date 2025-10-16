@@ -90,7 +90,8 @@ public class OgMusDirekRepository(PolesContext context) : IOgMusDirekRepository
                                         direk_no,
                                         boy_ozellik,
                                         direk_boy_id,
-                                        ST_AsBinary(ST_Transform(geometry, 4326)) as wkb
+                                        ST_AsBinary(ST_Transform(geometry, 4326)) as wkb,
+                                        searchable_text
                                     FROM ""SBK_OGMUSDIREK""
                                     WHERE id = {id}");
         return await sqlQuery.FirstOrDefaultAsync(cancellationToken);
