@@ -80,7 +80,8 @@ public class TrafoBinaRepository(BuildingsContext context) : ITrafoBinaRepositor
                                         id, 
                                         adi, 
                                         kodu,
-                                        ST_AsBinary(ST_Transform(geometry, 4326)) as wkb
+                                        ST_AsBinary(ST_Transform(geometry, 4326)) as wkb,
+                                        searchable_text
                                     FROM ""SBK_TRAFOBINATIP""
                                     WHERE id = {id}");
         return await sqlQuery.FirstOrDefaultAsync(cancellationToken);

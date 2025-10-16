@@ -57,21 +57,30 @@ public class PolesContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.Wkb)
                 .HasComputedColumnSql("ST_AsBinary(ST_Transform(geometry, 4326))")
                 .HasColumnName("wkb");
-            entity.HasGeneratedTsVectorColumn(
-                p => p.SearchableText,
-                "simple",
-                p => new
-                {
-                    p.Id,
-                    p.Kodu,
-                    p.Adi,
-                    p.Cinsi,
-                    p.Tipi,
-                    p.DirekNo,
-                    p.BoyOzellik,
-                    p.DirekBoyId
-                }
-            );
+
+            if (Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory")
+            {
+                entity.HasGeneratedTsVectorColumn(
+                    p => p.SearchableText,
+                    "simple",
+                    p => new
+                    {
+                        p.Id,
+                        p.Kodu,
+                        p.Adi,
+                        p.Cinsi,
+                        p.Tipi,
+                        p.DirekNo,
+                        p.BoyOzellik,
+                        p.DirekBoyId
+                    }
+
+                );
+            }
+            else
+            {
+                entity.Ignore(e => e.SearchableText);
+            }
         });
 
         modelBuilder.Entity<AydDirek>(entity =>
@@ -104,21 +113,29 @@ public class PolesContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.Wkb)
                  .HasComputedColumnSql("ST_AsBinary(ST_Transform(geometry, 4326))")
                  .HasColumnName("wkb");
-            entity.HasGeneratedTsVectorColumn(
-                p => p.SearchableText,
-                "simple",
-                p => new
-                {
-                    p.Id,
-                    p.Kodu,
-                    p.Adi,
-                    p.Cinsi,
-                    p.Tipi,
-                    p.DirekNo,
-                    p.BoyOzellik,
-                    p.DirekBoyId
-                }
-            );
+
+            if (Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory")
+            {
+                entity.HasGeneratedTsVectorColumn(
+                    p => p.SearchableText,
+                    "simple",
+                    p => new
+                    {
+                        p.Id,
+                        p.Kodu,
+                        p.Adi,
+                        p.Cinsi,
+                        p.Tipi,
+                        p.DirekNo,
+                        p.BoyOzellik,
+                        p.DirekBoyId
+                    }
+                );
+            }
+            else
+            {
+                entity.Ignore(e => e.SearchableText);
+            }
         });
 
         modelBuilder.Entity<OgMusDirek>(entity =>
@@ -151,21 +168,28 @@ public class PolesContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.Wkb)
                 .HasComputedColumnSql("ST_AsBinary(ST_Transform(geometry, 4326))")
                 .HasColumnName("wkb");
-            entity.HasGeneratedTsVectorColumn(
-                p => p.SearchableText,
-                "simple",
-                p => new
-                {
-                    p.Id,
-                    p.Kodu,
-                    p.Adi,
-                    p.Cinsi,
-                    p.Tipi,
-                    p.DirekNo,
-                    p.BoyOzellik,
-                    p.DirekBoyId
-                }
-            );
+            if (Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory")
+            {
+                entity.HasGeneratedTsVectorColumn(
+                    p => p.SearchableText,
+                    "simple",
+                    p => new
+                    {
+                        p.Id,
+                        p.Kodu,
+                        p.Adi,
+                        p.Cinsi,
+                        p.Tipi,
+                        p.DirekNo,
+                        p.BoyOzellik,
+                        p.DirekBoyId
+                    }
+                );
+            }
+            else
+            {
+                entity.Ignore(e => e.SearchableText);
+            }
         });
     }
 }

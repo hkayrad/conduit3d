@@ -67,11 +67,18 @@ public class UsersContext(DbContextOptions options) : DbContext(options)
                 .HasColumnType("boolean")
                 .HasColumnName("is_active");
 
-            entity.HasGeneratedTsVectorColumn(
-                p => p.SearchableText,
-                "simple",
-                p => new { p.Id, p.Username, p.Email, p.UserRole, p.Name, p.CreatedAt, p.IsActive }
-            );
+            if (Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory")
+            {
+                entity.HasGeneratedTsVectorColumn(
+                    p => p.SearchableText,
+                    "simple",
+                    p => new { p.Id, p.Username, p.Email, p.UserRole, p.Name, p.CreatedAt, p.IsActive }
+                );
+            }
+            else
+            {
+                entity.Ignore(e => e.SearchableText);
+            }
         });
 
         modelBuilder.Entity<Config>(entity =>

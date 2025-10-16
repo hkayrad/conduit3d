@@ -1,3 +1,5 @@
+[![.NET Test](https://github.com/hkayrad/conduit3d/actions/workflows/dotnet-test.yml/badge.svg?branch=master)](https://github.com/hkayrad/conduit3d/actions/workflows/dotnet-test.yml)
+
 # Conduit3D Platform
 
 A microservices-based platform for managing geospatial electrical infrastructure data. Built with modern .NET technologies, React, and PostgreSQL/PostGIS for scalable 3D visualization and data management.

@@ -52,19 +52,26 @@ public class LinesContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.Wkb)
                 .HasComputedColumnSql("ST_AsBinary(ST_Transform(geometry, 4326))")
                 .HasColumnName("wkb");
-            entity.HasGeneratedTsVectorColumn(
-                e => e.SearchableText,
-                "simple",
-                e => new
-                {
-                    e.Id,
-                    e.Kodu,
-                    e.Adi,
-                    e.Cinsi,
-                    e.Kesit,
-                    e.Tipi
-                }
-            );
+            if (Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory")
+            {
+                entity.HasGeneratedTsVectorColumn(
+                    e => e.SearchableText,
+                    "simple",
+                    e => new
+                    {
+                        e.Id,
+                        e.Kodu,
+                        e.Adi,
+                        e.Cinsi,
+                        e.Kesit,
+                        e.Tipi
+                    }
+                );
+            }
+            else
+            {
+                entity.Ignore(e => e.SearchableText);
+            }
         });
 
         modelBuilder.Entity<OgHat>(entity =>
@@ -92,19 +99,26 @@ public class LinesContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.Wkb)
                 .HasComputedColumnSql("ST_AsBinary(ST_Transform(geometry, 4326))")
                 .HasColumnName("wkb");
-            entity.HasGeneratedTsVectorColumn(
-                e => e.SearchableText,
-                "simple",
-                e => new
-                {
-                    e.Id,
-                    e.Kodu,
-                    e.Adi,
-                    e.Cinsi,
-                    e.Kesit,
-                    e.Tipi
-                }
-            );
+            if (Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory")
+            {
+                entity.HasGeneratedTsVectorColumn(
+                    e => e.SearchableText,
+                    "simple",
+                    e => new
+                    {
+                        e.Id,
+                        e.Kodu,
+                        e.Adi,
+                        e.Cinsi,
+                        e.Kesit,
+                        e.Tipi
+                    }
+                );
+            }
+            else
+            {
+                entity.Ignore(e => e.SearchableText);
+            }
         });
 
         modelBuilder.Entity<Rekortman>(entity =>
@@ -129,18 +143,25 @@ public class LinesContext(DbContextOptions options) : DbContext(options)
             entity.Property(e => e.Wkb)
                 .HasComputedColumnSql("ST_AsBinary(ST_Transform(geometry, 4326))")
                 .HasColumnName("wkb");
-            entity.HasGeneratedTsVectorColumn(
-                e => e.SearchableText,
-                "simple",
-                e => new
-                {
-                    e.Id,
-                    e.Kodu,
-                    e.Adi,
-                    e.Tipi,
-                    e.Kesit
-                }
-            );
+            if (Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory")
+            {
+                entity.HasGeneratedTsVectorColumn(
+                    e => e.SearchableText,
+                    "simple",
+                    e => new
+                    {
+                        e.Id,
+                        e.Kodu,
+                        e.Adi,
+                        e.Tipi,
+                        e.Kesit
+                    }
+                );
+            }
+            else
+            {
+                entity.Ignore(e => e.SearchableText);
+            }
         });
     }
 }

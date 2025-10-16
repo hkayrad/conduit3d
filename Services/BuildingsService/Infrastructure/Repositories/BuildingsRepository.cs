@@ -90,7 +90,8 @@ public class BuildingsRepository(BuildingsContext context) : IBuildingsRepositor
                                         daire_sayisi,
                                         isyeri_sayisi,
                                         yukseklik,
-                                        ST_AsBinary(ST_Transform(geometry, 4326)) as wkb
+                                        ST_AsBinary(ST_Transform(geometry, 4326)) as wkb,
+                                        searchable_text
                                     FROM buildings
                                     WHERE id = {id}");
         return await sqlQuery.FirstOrDefaultAsync(cancellationToken);
