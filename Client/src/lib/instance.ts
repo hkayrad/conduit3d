@@ -5,7 +5,7 @@ import { Logger } from "./utils";
 
 // Create an Axios instance with default configuration
 const instance = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
+    baseURL: `${import.meta.env.VITE_API_URL}/v1`,
     headers: {
         "Content-Type": "application/json",
         "Accept": "application/json"

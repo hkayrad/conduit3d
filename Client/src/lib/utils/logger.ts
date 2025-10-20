@@ -1,5 +1,5 @@
 export class Logger {
-    static readonly isDebug: boolean = import.meta.env.VITE_ENVIRONMENT !== 'production';
+    static readonly isDebug: boolean = import.meta.env.VITE_USER_NODE_ENV === "development";
 
     static debug(message?: any, ...optionalParams: any[]) {
         if (Logger.isDebug) {

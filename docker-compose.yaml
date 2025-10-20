@@ -69,7 +69,7 @@ services:
       dockerfile: Services/UserService/Dockerfile
     container_name: user_service
     environment:
-      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
       - POSTGRESQL_CONNECTION_STRING=Host=user_database;Database=${USER_DB_NAME};Username=${USER_DB_USER};Password=${USER_DB_PASS}
       - JWT_SECRET=${JWT_SECRET}
       - JWT_ISSUER=${JWT_ISSUER}
@@ -90,7 +90,7 @@ services:
       dockerfile: Services/BuildingsService/Dockerfile
     container_name: buildings_service
     environment:
-      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
       - POSTGRESQL_CONNECTION_STRING=Host=buildings_database;Database=${BUILDINGS_DB_NAME};Username=${BUILDINGS_DB_USER};Password=${BUILDINGS_DB_PASS}
     depends_on:
       - buildings_database
@@ -107,7 +107,7 @@ services:
       dockerfile: Services/PolesService/Dockerfile
     container_name: poles_service
     environment:
-      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
       - POSTGRESQL_CONNECTION_STRING=Host=poles_database;Database=${POLES_DB_NAME};Username=${POLES_DB_USER};Password=${POLES_DB_PASS}
     depends_on:
       - poles_database
@@ -124,7 +124,7 @@ services:
       dockerfile: Services/LinesService/Dockerfile
     container_name: lines_service
     environment:
-      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
       - POSTGRESQL_CONNECTION_STRING=Host=lines_database;Database=${LINES_DB_NAME};Username=${LINES_DB_USER};Password=${LINES_DB_PASS}
     depends_on:
       - lines_database
@@ -142,7 +142,7 @@ services:
       args:
         VITE_API_URL: ${VITE_API_URL}
         VITE_TILE_SERVER_URL: ${VITE_TILE_SERVER_URL}
-        VITE_ENVIRONMENT: ${VITE_ENVIRONMENT}
+        VITE_USER_NODE_ENV: ${ENVIRONMENT}
     container_name: client
     networks:
       - api_gateway_network

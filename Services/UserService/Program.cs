@@ -24,7 +24,7 @@ builder.Services.Configure<ApiBehaviorOptions>(BehaviourConfiguration.Configure)
 
 // Configure Swagger
 builder.Services.AddSwaggerGen(
-    config => SwaggerConfiguration.Configure(config, 1, "Buildings")
+    config => SwaggerConfiguration.Configure(config, 1, "Users")
 );
 
 // Connect to the sdb if the connection string is valid
