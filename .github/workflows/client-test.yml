@@ -30,7 +30,7 @@ jobs:
         # Cache npm packages to speed up future builds.
         cache: 'npm'
         # If using a working-directory, you might need to specify this:
-        # cache-dependency-path: client/package-lock.json
+        cache-dependency-path: ./Client/package-lock.json
 
     - name: Install dependencies
       # 'npm ci' is recommended for CI for faster, more reliable installs.
