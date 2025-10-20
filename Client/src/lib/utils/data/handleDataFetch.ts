@@ -30,7 +30,7 @@ export const handleDataFetch = async (
         abortControllerRef.current = new AbortController();
         const signal = abortControllerRef.current.signal;
 
-        if (!extent.maxX || !extent.maxY || !extent.minX || !extent.minY) {
+        if (extent?.maxX == null || extent?.maxY == null || extent?.minX == null || extent?.minY == null) {
             isLoadingRef.current = false;
             return;
         }
