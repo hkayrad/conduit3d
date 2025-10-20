@@ -60,7 +60,7 @@ describe('CreateLayer', () => {
             );
             expect(eskisehirCall[0]).toMatchObject({
                 id: 'cartesian-eskisehir-basemap',
-                data: ['https://localhost/tiles/eskisehir/{z}/{x}/{y}'],
+                data: [`${process.env.VITE_TILE_SERVER_URL}/eskisehir/{z}/{x}/{y}`],
                 minZoom: 16,
                 maxZoom: 18,
                 visible: true,
