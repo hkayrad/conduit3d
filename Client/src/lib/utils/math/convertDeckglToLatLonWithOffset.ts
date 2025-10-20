@@ -4,6 +4,10 @@ export function convertDeckGLPositionToLatLonWithOffset(
     baseLatitude: number,
     baseLongitude: number
 ) {
+    if (typeof x !== 'number' || typeof y !== 'number' || typeof baseLatitude !== 'number' || typeof baseLongitude !== 'number') {
+        throw new TypeError('All arguments must be numbers');
+    }
+
     const METERS_TO_DEGREES_LAT = 1 / 111320;
     const METERS_TO_DEGREES_LON = 1 / (111320 * Math.cos(baseLatitude * Math.PI / 180));
 

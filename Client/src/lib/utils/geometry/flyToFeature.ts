@@ -14,14 +14,20 @@ import type { C3D_ViewState } from "../../types";
 export function flyToFeature(
     feature: GeoJSON.Feature,
     mapViewState: MapViewState,
-    setMapViewState: React.Dispatch<React.SetStateAction<C3D_ViewState>>) {
-    if (!feature) return;
+    setMapViewState: React.Dispatch<React.SetStateAction<C3D_ViewState>>
+) {
+    if (!feature?.geometry) return;
 
     // Get the bounding box of the feature using turf.bbox
     const [minLng, minLat, maxLng, maxLat] = bbox(feature);
 
+    // fitBounds requires width and height to be part of the viewport constructor
+    const viewport = new WebMercatorViewport({
+        ...mapViewState
+    });
+
     // Calculate the new center and zoom level to fit the feature within the viewport
-    const { longitude, latitude, zoom } = new WebMercatorViewport(mapViewState).fitBounds(
+    const { longitude, latitude, zoom } = viewport.fitBounds(
         [[minLng, minLat], [maxLng, maxLat]],
         {
             padding: 300

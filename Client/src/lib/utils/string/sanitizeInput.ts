@@ -36,7 +36,7 @@ export const ValidationPatterns = {
     FILENAME: /^[a-zA-Z0-9\-_.\s]+$/,
 
     // Remove special characters but keep Turkish characters
-    TURKISH_TEXT: /^[a-zA-ZçğıöşüÇĞIİÖŞÜ0-9\s.,\-_!?()]+$/,
+    TURKISH_TEXT: /^[a-zA-ZçğıöşüÇĞİÖŞÜ0-9\s.,\-_!?()]+$/,
 } as const;
 
 /**
@@ -105,11 +105,13 @@ export class InputSanitizer {
         // First remove dangerous content
         let sanitized = this.removeHtml(input);
         sanitized = this.removeScripts(sanitized);
+        sanitized = this.preventSQLInjection(sanitized);
+        sanitized = this.preventXSS(sanitized);
 
         // Then validate against allowed pattern
         if (!pattern.test(sanitized)) {
             // Remove non-matching characters
-            sanitized = sanitized.replaceAll(allowTurkish ? /[^a-zA-ZçğıöşüÇĞIİÖŞÜ0-9\s.,\-_!?()]/ : /[^a-zA-Z0-9\s.,\-_!?()]/, '');
+            sanitized = sanitized.replaceAll(allowTurkish ? /[^a-zA-ZçğıöşüÇĞİÖŞÜ0-9\s.,\-_!?()]/g : /[^a-zA-Z0-9\s.,\-_!?()]/g, '');
         }
 
         return sanitized.trim();
