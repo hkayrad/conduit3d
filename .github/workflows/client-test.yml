@@ -1,0 +1,40 @@
+# .github/workflows/client-test.yml
+
+name: Client Tests
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  test-client:
+    runs-on: ubuntu-latest
+
+    # If your client-side code is in a subdirectory (e.g., 'client'),
+    # you can set a default working directory for all run steps.
+    defaults:
+      run:
+        working-directory: ./Client
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        # Specify the Node.js version you need.
+        node-version: 20.x
+        # Cache npm packages to speed up future builds.
+        cache: 'npm'
+        # If using a working-directory, you might need to specify this:
+        # cache-dependency-path: client/package-lock.json
+
+    - name: Install dependencies
+      # 'npm ci' is recommended for CI for faster, more reliable installs.
+      run: npm ci
+
+    - name: Run tests
+      run: npm test
