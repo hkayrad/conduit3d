@@ -286,9 +286,10 @@ export function useSearch() {
                 return;
             }
 
+            const keyword = sanitizedQuery.split(":")[0];
             const queryPart = sanitizedQuery.split(":")[1].trim();
 
-            switch (sanitizedQuery.split(":")[0]) {
+            switch (keyword) {
                 case QueryKeywords.BINA: {
                     const binaResults = await _handleAdrBinaSearch(queryPart);
                     aggregatedResults = aggregatedResults.concat(binaResults);
