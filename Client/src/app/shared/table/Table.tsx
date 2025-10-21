@@ -108,12 +108,12 @@ export default function Table(props: Readonly<Props>): React.ReactNode {
         setVisibleColumns(newVisibleColumns);
     };
 
-    const toggleAllColumns = (show: boolean): void => {
-        if (show) {
-            setVisibleColumns(new Set(data.headers.map(header => header.id)));
-        } else {
-            setVisibleColumns(new Set());
-        }
+    const showAllColumns = (): void => {
+        setVisibleColumns(new Set(data.headers.map(header => header.id)));
+    };
+
+    const hideAllColumns = (): void => {
+        setVisibleColumns(new Set());
     };
 
     const filteredHeaders = useMemo(() =>
@@ -187,13 +187,13 @@ export default function Table(props: Readonly<Props>): React.ReactNode {
                             <div className="column-toggle-menu">
                                 <div className="column-toggle-header">
                                     <button
-                                        onClick={() => toggleAllColumns(true)}
+                                        onClick={showAllColumns}
                                         className="toggle-all-button"
                                     >
                                         Show All
                                     </button>
                                     <button
-                                        onClick={() => toggleAllColumns(false)}
+                                        onClick={hideAllColumns}
                                         className="toggle-all-button"
                                     >
                                         Hide All
@@ -284,9 +284,9 @@ export default function Table(props: Readonly<Props>): React.ReactNode {
                     </thead>
                     <tbody>
                         {data.rows.map((row, rowIndex) => (
-                            <tr key={rowIndex}>
+                            <tr key={Math.random().toString(36).substring(7) + rowIndex}>
                                 {getFilteredRowData(row).map((cell, cellIndex) => (
-                                    <td key={cellIndex}>{cell}</td>
+                                    <td key={Math.random().toString(36).substring(7) + cellIndex}>{cell}</td>
                                 ))}
                             </tr>
                         ))}

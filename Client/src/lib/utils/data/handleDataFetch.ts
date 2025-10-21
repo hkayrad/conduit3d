@@ -46,10 +46,6 @@ export const handleDataFetch = async (
 
             const chunk = await fetchNextChunk(currentPage, signal);
 
-            if (signal.aborted) {
-                break;
-            }
-
             if (chunk.features.length === 0) {
                 Logger.debug(`No more data available at page ${currentPage}`);
                 break;
