@@ -317,121 +317,95 @@ export function useMap() {
     }, [activePopups]);
 
     /**
-     * Handle key presses for global shortcuts
-     * @param e The keyboard event
+     * Handle Escape key press
      */
-    const handleKeyPresses = useCallback((e: KeyboardEvent) => {
-
+    const handleEscapeKey = useCallback((e: KeyboardEvent) => {
         if (e.code === "Escape" && searchInputRef.current === document.activeElement) {
             e.preventDefault();
             if (searchInputRef.current)
                 searchInputRef.current.blur();
         }
+    }, [searchInputRef]);
 
-        if (e.ctrlKey && !e.altKey && !e.shiftKey && searchInputRef.current !== document.activeElement) {
-
-            if (e.code === "Slash") {
-                e.preventDefault();
-                e.stopPropagation();
-                if (searchInputRef.current)
-                    searchInputRef.current.focus();
-            }
-
-            if (e.code === "Delete") {
-                e.preventDefault();
-                setActivePopups([]);
-            }
-
-
-            if (e.code === "Comma") {
-                e.preventDefault();
-                dispatch(toggleSettingsWindow())
-            }
+    /**
+     * Handle Ctrl key combinations
+     */
+    const handleCtrlKeys = useCallback((e: KeyboardEvent) => {
+        if (!e.ctrlKey || e.altKey || e.shiftKey || searchInputRef.current === document.activeElement) {
+            return;
         }
+
+        if (e.code === "Slash") {
+            e.preventDefault();
+            e.stopPropagation();
+            if (searchInputRef.current)
+                searchInputRef.current.focus();
+        } else if (e.code === "Delete") {
+            e.preventDefault();
+            setActivePopups([]);
+        } else if (e.code === "Comma") {
+            e.preventDefault();
+            dispatch(toggleSettingsWindow());
+        }
+    }, [searchInputRef, dispatch]);
+
+    /**
+     * Handle Shift key combinations for view and display toggles
+     */
+    const handleShiftViewKeys = useCallback((e: KeyboardEvent) => {
+        const keyActions: Record<string, () => void> = {
+            KeyW: () => dispatch(toggleWireframe()),
+            KeyS: () => dispatch(toggleStreetView()),
+            KeyC: () => dispatch(setSelectedViewType(C3D_MapViewType.Cartesian)),
+            KeyF: () => dispatch(setSelectedViewType(C3D_MapViewType.FirstPerson)),
+            KeyP: () => setShowFpsCounter(prev => !prev),
+        };
+
+        const action = keyActions[e.code];
+        if (action) {
+            e.preventDefault();
+            action();
+        }
+    }, [dispatch]);
+
+    /**
+     * Handle Shift key combinations for layer toggles
+     */
+    const handleShiftLayerKeys = useCallback((e: KeyboardEvent) => {
+        const layerMap: Record<string, C3D_MapLayers> = {
+            Digit1: C3D_MapLayers.AdrBina,
+            Digit2: C3D_MapLayers.TrafoBina,
+            Digit3: C3D_MapLayers.AdrYol,
+            Digit4: C3D_MapLayers.AgDirek,
+            Digit5: C3D_MapLayers.OgMusDirek,
+            Digit6: C3D_MapLayers.AydDirek,
+            Digit7: C3D_MapLayers.AgHat,
+            Digit8: C3D_MapLayers.OgHat,
+            Digit9: C3D_MapLayers.Rekortman,
+            Digit0: C3D_MapLayers.Basemap,
+        };
+
+        const layer = layerMap[e.code];
+        if (layer) {
+            e.preventDefault();
+            dispatch(toggleMapLayerVisibility({ layer }));
+        }
+    }, [dispatch]);
+
+    /**
+     * Handle key presses for global shortcuts
+     * @param e The keyboard event
+     */
+    const handleKeyPresses = useCallback((e: KeyboardEvent) => {
+        handleEscapeKey(e);
+
+        handleCtrlKeys(e);
 
         if (e.shiftKey && !e.altKey && !e.ctrlKey && searchInputRef.current !== document.activeElement) {
-
-            // Toggle Wireframe mode
-            if (e.code === "KeyW") {
-                e.preventDefault();
-                dispatch(toggleWireframe());
-            }
-
-            // Toggle Street View Visibility
-            if (e.code === "KeyS") {
-                e.preventDefault();
-                dispatch(toggleStreetView());
-            }
-
-            // Toggle between Cartesian and First Person views
-            if (e.code === "KeyC") {
-                e.preventDefault();
-                dispatch(setSelectedViewType(C3D_MapViewType.Cartesian));
-            }
-
-            if (e.code === "KeyF") {
-                e.preventDefault();
-                dispatch(setSelectedViewType(C3D_MapViewType.FirstPerson));
-            }
-
-            // Toggle FPS Counter
-            if (e.code === "KeyP") {
-                e.preventDefault();
-                setShowFpsCounter(prev => !prev);
-            }
-
-            // Toggle layers
-            if (e.code === "Digit1") {
-                e.preventDefault();
-                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.AdrBina }));
-            }
-
-            if (e.code === "Digit2") {
-                e.preventDefault();
-                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.TrafoBina }));
-            }
-
-            if (e.code === "Digit3") {
-                e.preventDefault();
-                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.AdrYol }));
-            }
-
-            if (e.code === "Digit4") {
-                e.preventDefault();
-                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.AgDirek }));
-            }
-
-            if (e.code === "Digit5") {
-                e.preventDefault();
-                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.OgMusDirek }));
-            }
-
-            if (e.code === "Digit6") {
-                e.preventDefault();
-                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.AydDirek }));
-            }
-
-            if (e.code === "Digit7") {
-                e.preventDefault();
-                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.AgHat }));
-            }
-
-            if (e.code === "Digit8") {
-                e.preventDefault();
-                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.OgHat }));
-            }
-
-            if (e.code === "Digit9") {
-                e.preventDefault();
-                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.Rekortman }));
-            }
-
-            if (e.code === "Digit0") {
-                e.preventDefault();
-                dispatch(toggleMapLayerVisibility({ layer: C3D_MapLayers.Basemap }));
-            }
+            handleShiftViewKeys(e);
+            handleShiftLayerKeys(e);
         }
-    }, [searchInputRef]);
+    }, [searchInputRef, handleEscapeKey, handleCtrlKeys, handleShiftViewKeys, handleShiftLayerKeys]);
 
     // Fly to a given feature
     const flyTo = useCallback((
