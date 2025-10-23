@@ -1,4 +1,6 @@
-[![.NET Test](https://github.com/hkayrad/conduit3d/actions/workflows/dotnet-test.yml/badge.svg?branch=master)](https://github.com/hkayrad/conduit3d/actions/workflows/dotnet-test.yml)
+[![Backend Test](https://github.com/hkayrad/conduit3d/actions/workflows/backend-test.yml/badge.svg?branch=master)](https://github.com/hkayrad/conduit3d/actions/workflows/backend-test.yml)
+[![Frontend Test](https://github.com/hkayrad/conduit3d/actions/workflows/frontend-test.yml/badge.svg?branch=master)](https://github.com/hkayrad/conduit3d/actions/workflows/frontend-test.yml)
+
 
 # Conduit3D Platform
 

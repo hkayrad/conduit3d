@@ -1,6 +1,6 @@
-# .github/workflows/dotnet-test.yml
+# .github/workflows/backend-test.yml
 
-name: .NET Test
+name: Backend Test
 
 on:
   push:

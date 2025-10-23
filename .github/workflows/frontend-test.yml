@@ -1,6 +1,6 @@
-# .github/workflows/client-test.yml
+# .github/workflows/frontend-test.yml
 
-name: Client Tests
+name: Frontend Tests
 
 on:
   push:
