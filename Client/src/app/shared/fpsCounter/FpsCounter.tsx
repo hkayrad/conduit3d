@@ -197,7 +197,10 @@ export default function FpsCounter(props: Readonly<Props>) {
     };
 
     return (
-        <div className={`fps-counter fps-counter--${position}`}>
+        <div 
+            className={`fps-counter fps-counter--${position}`}
+            data-testid="fps-counter"
+            >
             <div className="fps-display">
                 <span
                     className="fps-value"

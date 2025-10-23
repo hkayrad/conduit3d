@@ -14,6 +14,7 @@ export default function Loader(): React.ReactNode {
     return (
         <div
             className={`loader ${isDataLoading ? "visible" : ""}`}
+            data-testid="loader"
         >
             <LoaderIcon id="loader-icon" />
         </div>

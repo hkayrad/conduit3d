@@ -10,6 +10,7 @@
 .sonarqube/
 Client/.scannerwork/
 analyze.sh
+Client/**/__screenshots__/
 
 # Coverage files
 Coverage/

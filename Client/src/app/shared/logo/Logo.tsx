@@ -15,6 +15,7 @@ export default function Logo(props: Readonly<Props>): React.ReactNode {
     return (
         <img
             id="logo"
+            data-testid="logo"
             fetchPriority="high"
             src={`logo/Color=${color}, Type=${type}, Size=${size}.svg`}
             alt={`${color} ${type} ${size} logo`}

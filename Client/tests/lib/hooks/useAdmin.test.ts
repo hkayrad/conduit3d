@@ -14,6 +14,7 @@ vi.mock('../../../src/app/layout/admin/adminSlice', () => ({
             ascending: true,
             query: '',
         },
+        reducers: {}
     },
     selectAdminState: vi.fn(() => ({
         itemsPerPage: 10,

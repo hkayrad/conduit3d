@@ -1,7 +1,7 @@
 import "./style/header.css"
-import Logo from "./components/Logo";
 import Links from "./components/Links";
 import { NavLink } from "react-router";
+import Logo from "../logo/Logo";
 
 /**
  * Header component displays the application header.
