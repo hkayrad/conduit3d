@@ -261,21 +261,33 @@ export default function Table(props: Readonly<Props>): React.ReactNode {
                                             onClick={e => e.stopPropagation()}
                                             className="header-actions"
                                         >
-                                            <button
-                                                disabled={sortBy !== header.id}
-                                                onClick={() => setAscending(!ascending)}
-                                            >
-                                                {ascending ?
-                                                    <SortAsc className={
-                                                        sortBy === header.id ?
-                                                            "" :
-                                                            "disabled"} /> :
-                                                    <SortDesc className={
-                                                        sortBy === header.id ?
-                                                            "" :
-                                                            "disabled"
-                                                    } />}
-                                            </button>
+                                            {
+                                                sortBy === header.id ?
+                                                    <button
+                                                        disabled={sortBy !== header.id}
+                                                        onClick={() => setAscending(!ascending)}
+                                                    >
+                                                        {ascending ?
+                                                            <SortAsc className={
+                                                                sortBy === header.id ?
+                                                                    "" :
+                                                                    "disabled"} /> :
+                                                            <SortDesc className={
+                                                                sortBy === header.id ?
+                                                                    "" :
+                                                                    "disabled"
+                                                            } />}
+                                                    </button> :
+                                                    <button
+                                                        disabled={sortBy !== header.id}
+                                                        onClick={() => setAscending(!ascending)}
+                                                    >
+                                                        <SortAsc className={
+                                                            sortBy === header.id ?
+                                                                "" :
+                                                                "disabled"} />
+                                                    </button>
+                                            }
                                         </button>
                                     </button>
                                 </th>
