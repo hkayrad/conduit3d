@@ -15,7 +15,7 @@ const ICONS: Record<FeatureType, React.ReactNode> = {
 
 type Props = {
     flyTo: (feature: GeoJSON.Feature) => void;
-    searchInputRef: React.RefObject<HTMLInputElement>;
+    searchInputRef: React.Ref<HTMLInputElement>;
 }
 
 export default function GlobalSearch(props: Readonly<Props>) {

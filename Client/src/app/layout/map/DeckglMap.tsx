@@ -27,7 +27,7 @@ import FeatureInfo from "./components/featureInfo/FeatureInfo";
 import ShortcutsInfo from "./components/shortcutsInfo/ShortcutsInfo";
 import ViewToggle from "./components/viewToggle/ViewToggle";
 import GlobalSearch from "./components/globalSearch/GlobalSearch";
-import DynmicStreetView from "./components/streetView/DynamicStreetView";
+import DynamicStreetView from "./components/streetView/DynamicStreetView";
 import MapSettings from "./components/mapSettings/MapSettings";
 import FpsCounter from "../../shared/fpsCounter/FpsCounter";
 
@@ -192,6 +192,7 @@ export default function DeckglMap(): React.ReactNode {
         mapViewState,
         setMapViewState,
         hoveredFeature,
+        selectedFeature,
         handleViewStateChange,
         mousePos,
         mouseLonLat,
@@ -239,6 +240,7 @@ export default function DeckglMap(): React.ReactNode {
                     hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
                     .5,
                     selectedViewType === C3D_MapViewType.Cartesian ? (yol.visibility && cartesian.zoom >= 15) : yol.visibility,
+                    selectedFeature
                 )
             )
         ),
@@ -252,7 +254,8 @@ export default function DeckglMap(): React.ReactNode {
                     hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
                     hat.id.includes("HAVAİ") ? overgroundLineWidth : undergroundLineWidth,
                     selectedViewType === C3D_MapViewType.Cartesian ? (hat.visibility && cartesian.zoom >= 15) : hat.visibility,
-                    hat.cinsi
+                    hat.cinsi,
+                    selectedFeature
                 )
             )
         ),
@@ -265,7 +268,8 @@ export default function DeckglMap(): React.ReactNode {
                     direk.color,
                     hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
                     selectedViewType === C3D_MapViewType.Cartesian ? (direk.visibility && cartesian.zoom >= 15) : direk.visibility,
-                    isWireframe
+                    isWireframe,
+                    selectedFeature
                 )
             )
         ),
@@ -274,7 +278,11 @@ export default function DeckglMap(): React.ReactNode {
             id: `adr-bina-layer-${index}`,
             data: chunk,
             getElevation: (d) => d.properties.yukseklik,
-            getFillColor: isWireframe ? [0, 0, 0, 0] : hexToRgba(config.ADR_BINA_COLOR) || COLORS.ADR_BINA,
+            getFillColor: (d) => {
+                if (isWireframe) return [0, 0, 0, 0];
+                const isSelected = selectedFeature && d.properties?.id === selectedFeature.properties?.id;
+                return isSelected ? (hexToRgba(config.HOVER_COLOR) || COLORS.HOVER) : (hexToRgba(config.ADR_BINA_COLOR) || COLORS.ADR_BINA);
+            },
             filled: true,
             extruded: true,
             pickable: !isWireframe,
@@ -282,13 +290,20 @@ export default function DeckglMap(): React.ReactNode {
             highlightColor: hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
             visible: selectedViewType === C3D_MapViewType.Cartesian ? (visibility.adrBina && cartesian.zoom >= 15) : visibility.adrBina,
             wireframe: isWireframe,
+            updateTriggers: {
+                getFillColor: [selectedFeature, isWireframe, config.HOVER_COLOR, config.ADR_BINA_COLOR]
+            }
         })),
 
         ...buildingBina.map((chunk, index) => new GeoJsonLayer({
             id: `building-bina-layer-${index}`,
             data: chunk,
             getElevation: (d) => d.properties.yukseklik,
-            getFillColor: isWireframe ? [0, 0, 0, 0] : hexToRgba(config.ADR_BINA_COLOR) || COLORS.ADR_BINA,
+            getFillColor: (d) => {
+                if (isWireframe) return [0, 0, 0, 0];
+                const isSelected = selectedFeature && d.properties?.id === selectedFeature.properties?.id;
+                return isSelected ? (hexToRgba(config.HOVER_COLOR) || COLORS.HOVER) : (hexToRgba(config.ADR_BINA_COLOR) || COLORS.ADR_BINA);
+            },
             filled: true,
             extruded: true,
             pickable: !isWireframe,
@@ -296,6 +311,9 @@ export default function DeckglMap(): React.ReactNode {
             highlightColor: hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
             visible: selectedViewType === C3D_MapViewType.Cartesian ? (visibility.adrBina && cartesian.zoom >= 15) : visibility.adrBina,
             wireframe: isWireframe,
+            updateTriggers: {
+                getFillColor: [selectedFeature, isWireframe, config.HOVER_COLOR, config.ADR_BINA_COLOR]
+            }
         })),
 
         ...trafoBina.map((chunk, index) => new ColumnLayer({
@@ -303,7 +321,11 @@ export default function DeckglMap(): React.ReactNode {
             data: chunk.features,
             getPosition: d => d.geometry.coordinates,
             getElevation: d => d.properties.yukseklik,
-            getFillColor: isWireframe ? [0, 0, 0, 0] : hexToRgba(config.TRAFO_BINA_COLOR) || COLORS.TRAFO_BINA,
+            getFillColor: (d) => {
+                if (isWireframe) return [0, 0, 0, 0];
+                const isSelected = selectedFeature && d.properties?.id === selectedFeature.properties?.id;
+                return isSelected ? (hexToRgba(config.HOVER_COLOR) || COLORS.HOVER) : (hexToRgba(config.TRAFO_BINA_COLOR) || COLORS.TRAFO_BINA);
+            },
             extruded: true,
             pickable: !isWireframe,
             autoHighlight: true,
@@ -314,6 +336,9 @@ export default function DeckglMap(): React.ReactNode {
             filled: true,
             visible: selectedViewType === C3D_MapViewType.Cartesian ? (visibility.trafoBina && cartesian.zoom >= 15) : visibility.trafoBina,
             wireframe: isWireframe,
+            updateTriggers: {
+                getFillColor: [selectedFeature, isWireframe, config.HOVER_COLOR, config.TRAFO_BINA_COLOR]
+            }
         }))
     ], [
         filters,
@@ -327,7 +352,8 @@ export default function DeckglMap(): React.ReactNode {
         trafoBina,
         overgroundLineWidth,
         undergroundLineWidth,
-        config
+        config,
+        selectedFeature
     ]);
 
     // Add keyboard event listener
@@ -443,7 +469,7 @@ export default function DeckglMap(): React.ReactNode {
                 <GlobalSearch flyTo={flyTo} searchInputRef={searchInputRef} />
                 <MapSettings />
                 {/* <StaticStreetView /> */}
-                <DynmicStreetView />
+                <DynamicStreetView />
                 <LayerControl />
                 <HoverCard
                     hoveredFeature={hoveredFeature}

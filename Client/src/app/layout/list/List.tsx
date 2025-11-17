@@ -120,10 +120,12 @@ export default function List(): React.ReactNode {
   );
 
   const handleGoToFeature = (f: any) => {
+    const { wkb, ...rest } = f;
     const feature = {
       type: "Feature",
-      geometry: wkbToGeometry(f.wkb),
+      geometry: wkbToGeometry(wkb),
       properties: {
+        ...rest,
         dataType: mappedFeatureTypes[featureType],
       },
     } as GeoJSON.Feature;

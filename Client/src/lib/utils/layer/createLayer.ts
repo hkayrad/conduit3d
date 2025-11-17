@@ -49,6 +49,7 @@ export class CreateLayer {
      * @param lineWidth The line width.
      * @param visibility Whether the layer should be visible.
      * @param type The hat type.
+     * @param selectedFeature The currently selected feature for highlighting.
      * @returns A PathLayer instance.
      */
     static Hat(
@@ -58,27 +59,34 @@ export class CreateLayer {
         highlightColor: [number, number, number, number],
         lineWidth: number,
         visibility: boolean,
-        type: string) {
+        type: string,
+        selectedFeature: GeoJSON.Feature | null = null) {
         const dashArray = type == HatCinsi.BARA ? [4, 2] : [10, 2];
+        const isSelected = (d: GeoJSON.Feature) =>
+            selectedFeature && d.properties?.id === selectedFeature.properties?.id;
+
         if (type == HatCinsi.HAVAI)
             return new PathLayer({
                 id: id,
                 data: data ?? [],
                 getPath: d => d.geometry.coordinates,
-                getColor: color,
+                getColor: d => isSelected(d) ? highlightColor : color,
                 getWidth: lineWidth,
                 pickable: true,
                 billboard: true,
                 autoHighlight: true,
                 highlightColor: highlightColor,
                 visible: visibility,
+                updateTriggers: {
+                    getColor: selectedFeature
+                }
             })
         else
             return new PathLayer({
                 id: id,
                 data: data ?? [],
                 getPath: d => d.geometry.coordinates,
-                getColor: color,
+                getColor: d => isSelected(d) ? highlightColor : color,
                 getWidth: lineWidth,
                 pickable: true,
                 billboard: false,
@@ -89,6 +97,9 @@ export class CreateLayer {
                 getDashArray: dashArray,
                 dashJustified: true,
                 dashGapPickable: true,
+                updateTriggers: {
+                    getColor: selectedFeature
+                }
             })
     }
 
@@ -98,6 +109,7 @@ export class CreateLayer {
      * @param data The feature data.
      * @param color The fill color.
      * @param visibility Whether the layer should be visible.
+     * @param selectedFeature The currently selected feature for highlighting.
      * @returns A ColumnLayer instance.
      */
     static Direk(
@@ -106,14 +118,18 @@ export class CreateLayer {
         color: [number, number, number, number],
         highlightColor: [number, number, number, number],
         visibility: boolean,
-        wireframe: boolean = false
+        wireframe: boolean = false,
+        selectedFeature: GeoJSON.Feature | null = null
     ) {
+        const isSelected = (d: GeoJSON.Feature) =>
+            selectedFeature && d.properties?.id === selectedFeature.properties?.id;
+
         return new ColumnLayer({
             id: id,
             data: data ?? [],
             getPosition: d => d.geometry.coordinates,
             getElevation: d => d.properties.yukseklik,
-            getFillColor: wireframe ? [0, 0, 0, 0] : color,
+            getFillColor: wireframe ? [0, 0, 0, 0] : (d => isSelected(d) ? highlightColor : color),
             extruded: true,
             pickable: !wireframe,
             autoHighlight: true,
@@ -123,6 +139,9 @@ export class CreateLayer {
             diskResolution: wireframe ? 4 : 12,
             visible: visibility,
             wireframe: wireframe,
+            updateTriggers: {
+                getFillColor: [selectedFeature, wireframe]
+            }
         })
     }
 
@@ -133,17 +152,24 @@ export class CreateLayer {
         highlightColor: [number, number, number, number],
         lineWidth: number,
         visibility: boolean,
+        selectedFeature: GeoJSON.Feature | null = null
     ) {
+        const isSelected = (d: GeoJSON.Feature) =>
+            selectedFeature && d.properties?.id === selectedFeature.properties?.id;
+
         return new PathLayer({
             id: id,
             data: data ?? [],
             getPath: d => d.geometry.coordinates,
-            getColor: color,
+            getColor: d => isSelected(d) ? highlightColor : color,
             getWidth: lineWidth,
             pickable: true,
             autoHighlight: true,
             highlightColor: highlightColor,
-            visible: visibility
+            visible: visibility,
+            updateTriggers: {
+                getColor: selectedFeature
+            }
         })
     }
 }
