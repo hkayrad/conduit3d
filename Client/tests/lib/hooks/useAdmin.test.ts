@@ -4,31 +4,55 @@ vi.mock('../../../src/lib/hooks/reduxHooks', () => ({
     useAppSelector: vi.fn(),
     useAppDispatch: vi.fn(() => mockDispatch),
 }));
-vi.mock('../../../src/app/layout/admin/adminSlice', () => ({
-    adminSlice: {
-        name: 'admin',
-        initialState: {
-            itemsPerPage: 10,
-            pageNumber: 1,
-            sortBy: 'id',
-            ascending: true,
-            query: '',
-        },
-        reducers: {}
-    },
-    selectAdminState: vi.fn(() => ({
+vi.mock('../../../src/app/layout/admin/adminSlice', () => {
+    const mockReducer = vi.fn((state = {
         itemsPerPage: 10,
         pageNumber: 1,
         sortBy: 'id',
         ascending: true,
         query: '',
-    }),),
-    setItemsPerPage: vi.fn((payload) => ({ type: 'admin/setItemsPerPage', payload })),
-    setPageNumber: vi.fn((payload) => ({ type: 'admin/setPageNumber', payload })),
-    setSortBy: vi.fn((payload) => ({ type: 'admin/setSortBy', payload })),
-    setAscending: vi.fn((payload) => ({ type: 'admin/setAscending', payload })),
-    setQuery: vi.fn((payload) => ({ type: 'admin/setQuery', payload })),
-}));
+    }) => state);
+
+    return {
+        adminSlice: {
+            name: 'admin',
+            initialState: {
+                itemsPerPage: 10,
+                pageNumber: 1,
+                sortBy: 'id',
+                ascending: true,
+                query: '',
+            },
+            reducers: {},
+            reducer: mockReducer,
+            actions: {
+                setItemsPerPage: vi.fn((payload) => ({ type: 'admin/setItemsPerPage', payload })),
+                setPageNumber: vi.fn((payload) => ({ type: 'admin/setPageNumber', payload })),
+                setSortBy: vi.fn((payload) => ({ type: 'admin/setSortBy', payload })),
+                setAscending: vi.fn((payload) => ({ type: 'admin/setAscending', payload })),
+                setQuery: vi.fn((payload) => ({ type: 'admin/setQuery', payload })),
+            }
+        },
+        selectAdminState: vi.fn(() => ({
+            itemsPerPage: 10,
+            pageNumber: 1,
+            sortBy: 'id',
+            ascending: true,
+            query: '',
+        })),
+        selectItemsPerPage: vi.fn(() => 10),
+        selectPageNumber: vi.fn(() => 1),
+        selectSortBy: vi.fn(() => 'id'),
+        selectSortOrder: vi.fn(() => true),
+        selectQuery: vi.fn(() => ''),
+        setItemsPerPage: vi.fn((payload) => ({ type: 'admin/setItemsPerPage', payload })),
+        setPageNumber: vi.fn((payload) => ({ type: 'admin/setPageNumber', payload })),
+        setSortBy: vi.fn((payload) => ({ type: 'admin/setSortBy', payload })),
+        setAscending: vi.fn((payload) => ({ type: 'admin/setAscending', payload })),
+        setQuery: vi.fn((payload) => ({ type: 'admin/setQuery', payload })),
+        default: mockReducer,
+    };
+});
 
 // Mock API calls
 vi.mock('../../../src/lib/api/user', () => ({

@@ -1,11 +1,11 @@
 import "./style/actionButton.css";
 
 type Props = {
-    content: React.ReactNode;
-    style: "success" | "error" | "warning";
-    disabled?: boolean;
-    onClick: () => void;
-}
+  content: React.ReactNode;
+  style: "success" | "error" | "warning";
+  disabled?: boolean;
+  onClick: () => void;
+};
 
 /**
  * ActionButton component displays a button with various styles.
@@ -14,11 +14,15 @@ type Props = {
  * @returns The rendered component
  */
 export default function ActionButton(props: Readonly<Props>): React.ReactNode {
-    const { onClick, content, style, disabled } = props;
+  const { onClick, content, style, disabled } = props;
 
-    return (
-        <button className={`action-button ${style}`} disabled={disabled} onClick={onClick}>
-            {content}
-        </button>
-    )
+  return (
+    <button
+      className={`action-button ${style}`}
+      disabled={disabled}
+      onClick={onClick}
+    >
+      {content}
+    </button>
+  );
 }

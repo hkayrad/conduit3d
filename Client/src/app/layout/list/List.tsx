@@ -2,9 +2,22 @@ import "./style/list.css";
 import Table from "../../shared/table/Table";
 import React, { useEffect, useMemo } from "react";
 import { useAppDispatch, useAppSelector, useList } from "../../../lib/hooks";
-import { selectListState, setAscending, setFeatureType, setPageNumber, setQuery, setSortBy } from "./listSlice";
+import {
+  selectListState,
+  setAscending,
+  setFeatureType,
+  setPageNumber,
+  setQuery,
+  setSortBy,
+} from "./listSlice";
 import { capitalizeFirstLetter } from "../../../lib/utils";
-import { Building, MapPin, PlugZap, UtilityPole, Waypoints } from "lucide-react";
+import {
+  Building,
+  MapPin,
+  PlugZap,
+  UtilityPole,
+  Waypoints,
+} from "lucide-react";
 import ActionButton from "../../shared/actionButton/ActionButton";
 import { useNavigate, useOutletContext } from "react-router";
 import { C3D_MapViewType, FeatureType, ListDataType } from "../../../lib/enums";
@@ -17,163 +30,200 @@ import { wkbToGeometry } from "../../../lib/utils/geometry/wkbToGeometry";
  * @returns The List component renders a list of features with pagination, sorting, and filtering capabilities.
  */
 export default function List(): React.ReactNode {
-    const { flyTo } = useOutletContext<{ flyTo: (feature: GeoJSON.Feature) => void }>();
+  const { flyTo } = useOutletContext<{
+    flyTo: (feature: GeoJSON.Feature) => void;
+  }>();
 
-    // Redux state
-    const { itemsPerPage, pageNumber, sortBy, ascending, featureType, query } = useAppSelector(selectListState)
+  // Redux state
+  const { itemsPerPage, pageNumber, sortBy, ascending, featureType, query } =
+    useAppSelector(selectListState);
 
-    // Redux hooks
-    const dispatch = useAppDispatch();
-    const navigate = useNavigate();
+  // Redux hooks
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
-    // List hook
-    const {
-        features,
-        featureCount,
-        tableData,
-        setTableData,
-        handleChangeItemsPerPage,
-        handleSetPageNumber,
-        handleSetSortBy,
-        handleSetAscending,
-        handleSetQuery,
-        handleRefreshData
-    } = useList()
+  // List hook
+  const {
+    features,
+    featureCount,
+    tableData,
+    setTableData,
+    handleChangeItemsPerPage,
+    handleSetPageNumber,
+    handleSetSortBy,
+    handleSetAscending,
+    handleSetQuery,
+    handleRefreshData,
+  } = useList();
 
-    // Memoized feature type selector sections
-    const featureTypeSelectorSections = useMemo(() => [{
+  // Memoized feature type selector sections
+  const featureTypeSelectorSections = useMemo(
+    () => [
+      {
         sectionLabel: "Binalar",
         sectionIcon: <Building />,
-        types: [ListDataType.AdrBina, ListDataType.TrafoBina]
-    },
-    {
+        types: [ListDataType.AdrBina, ListDataType.TrafoBina],
+      },
+      {
         sectionLabel: "Yollar",
         sectionIcon: <Waypoints />,
-        types: [ListDataType.AdrYol]
-    },
-    {
+        types: [ListDataType.AdrYol],
+      },
+      {
         sectionLabel: "Direkler",
         sectionIcon: <UtilityPole />,
-        types: [ListDataType.AgDirek, ListDataType.OgMusDirek, ListDataType.AydDirek]
-    }, {
+        types: [
+          ListDataType.AgDirek,
+          ListDataType.OgMusDirek,
+          ListDataType.AydDirek,
+        ],
+      },
+      {
         sectionLabel: "Hatlar",
         sectionIcon: <PlugZap />,
-        types: [ListDataType.AgHat, ListDataType.OgHat, ListDataType.Rekortman]
-    }], []);
+        types: [ListDataType.AgHat, ListDataType.OgHat, ListDataType.Rekortman],
+      },
+    ],
+    [],
+  );
 
-    const mappedFeatureTypes = useMemo(() => ({
-        [ListDataType.AdrBina]: FeatureType.BUILDING,
-        [ListDataType.TrafoBina]: FeatureType.TRAFO,
-        [ListDataType.AdrYol]: FeatureType.YOL,
-        [ListDataType.AgDirek]: FeatureType.POLE,
-        [ListDataType.OgMusDirek]: FeatureType.POLE,
-        [ListDataType.AydDirek]: FeatureType.POLE,
-        [ListDataType.AgHat]: FeatureType.LINE,
-        [ListDataType.OgHat]: FeatureType.LINE,
-        [ListDataType.Rekortman]: FeatureType.REKORTMAN,
-    }), [])
+  const mappedFeatureTypes = useMemo(
+    () => ({
+      [ListDataType.AdrBina]: FeatureType.BUILDING,
+      [ListDataType.TrafoBina]: FeatureType.TRAFO,
+      [ListDataType.AdrYol]: FeatureType.YOL,
+      [ListDataType.AgDirek]: FeatureType.POLE,
+      [ListDataType.OgMusDirek]: FeatureType.POLE,
+      [ListDataType.AydDirek]: FeatureType.POLE,
+      [ListDataType.AgHat]: FeatureType.LINE,
+      [ListDataType.OgHat]: FeatureType.LINE,
+      [ListDataType.Rekortman]: FeatureType.REKORTMAN,
+    }),
+    [],
+  );
 
-    // Memoized table headers
-    const headers = useMemo(() => [
-        { id: 'index', label: '#' },
-        ...features[0] ? Object.keys(features[0]).map(k => ({
-            id: k,
-            label: capitalizeFirstLetter(k),
-        })).filter(header => header.id !== 'wkb') : [],
-        ...(features.length > 0 ? [{ id: 'actions', label: 'Actions' }] : [])
-    ], [features]);
+  // Memoized table headers
+  const headers = useMemo(
+    () => [
+      { id: "index", label: "#" },
+      ...(features[0]
+        ? Object.keys(features[0])
+            .map((k) => ({
+              id: k,
+              label: capitalizeFirstLetter(k),
+            }))
+            .filter((header) => header.id !== "wkb")
+        : []),
+      ...(features.length > 0 ? [{ id: "actions", label: "Actions" }] : []),
+    ],
+    [features],
+  );
 
-    const handleGoToFeature = (f: any) => {
-        const feature = {
-            type: "Feature",
-            geometry: wkbToGeometry(f.wkb),
-            properties: {
-                dataType: mappedFeatureTypes[featureType],
-            }
-        } as GeoJSON.Feature;
+  const handleGoToFeature = (f: any) => {
+    const feature = {
+      type: "Feature",
+      geometry: wkbToGeometry(f.wkb),
+      properties: {
+        dataType: mappedFeatureTypes[featureType],
+      },
+    } as GeoJSON.Feature;
 
-        navigate("/", { replace: false });
-        dispatch(setSelectedViewType(C3D_MapViewType.Cartesian));
-        flyTo(feature);
-    }
+    navigate("/", { replace: false });
+    dispatch(setSelectedViewType(C3D_MapViewType.Cartesian));
+    flyTo(feature);
+  };
 
-    // Memoized table rows
-    const rows = useMemo(() =>
-        features.map((f, index) => [
+  // Memoized table rows
+  const rows = useMemo(
+    () =>
+      features.map(
+        (f, index) =>
+          [
             index + 1,
-            ...Object.entries(f).filter(([key, _]) => key !== 'wkb').map(([_, value]) => value === "" ? "-" : value),
+            ...Object.entries(f)
+              .filter(([key, _]) => key !== "wkb")
+              .map(([_, value]) => (value === "" ? "-" : value)),
             <div className="action-button-wrapper" key={`action-btns-${f.id}`}>
-                <ActionButton
-                    content={<MapPin />}
-                    style="success"
-                    onClick={() => handleGoToFeature(f)}
-                />
+              <ActionButton
+                content={<MapPin />}
+                style="success"
+                onClick={() => handleGoToFeature(f)}
+              />
+            </div>,
+          ] as React.ReactNode[],
+      ),
+    [features],
+  );
+
+  // Effects
+  useEffect(() => {
+    handleRefreshData();
+  }, [featureType, itemsPerPage, pageNumber, sortBy, ascending]);
+
+  // Query handler with debounce
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      dispatch(setPageNumber(1));
+      handleRefreshData();
+    }, 250);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [query]);
+
+  useEffect(() => {
+    /* Reset pagination and sorting on feature type change */
+    dispatch(setPageNumber(1));
+    dispatch(setSortBy("id"));
+    dispatch(setAscending(true));
+    dispatch(setQuery(""));
+  }, [featureType]);
+
+  useEffect(() => {
+    setTableData({ headers, rows });
+  }, [headers, rows]);
+
+  return (
+    <div id="list-page">
+      <div className="feature-type-selector">
+        <h2>Feature Type</h2>
+        <div className="feature-type-sections">
+          {featureTypeSelectorSections.map((section, _) => (
+            <div
+              key={`div-${section.sectionLabel}`}
+              className="feature-type-section"
+            >
+              <h3>{section.sectionLabel}</h3>
+              {section.types.map((type, _) => (
+                <button
+                  key={`btn-${type}`}
+                  className={featureType === type ? "selected" : ""}
+                  onClick={() => dispatch(setFeatureType(type))}
+                >
+                  {section.sectionIcon}
+                  {capitalizeFirstLetter(type)}
+                </button>
+              ))}
             </div>
-        ] as React.ReactNode[]), [features]);
-
-    // Effects
-    useEffect(() => {
-        handleRefreshData();
-    }, [featureType, itemsPerPage, pageNumber, sortBy, ascending]);
-
-    // Query handler with debounce
-    useEffect(() => {
-        const delayDebounceFn = setTimeout(() => {
-            dispatch(setPageNumber(1));
-            handleRefreshData();
-        }, 250)
-
-        return () => clearTimeout(delayDebounceFn)
-    }, [query])
-
-    useEffect(() => {
-        /* Reset pagination and sorting on feature type change */
-        dispatch(setPageNumber(1));
-        dispatch(setSortBy("id"));
-        dispatch(setAscending(true));
-        dispatch(setQuery(""));
-    }, [featureType]);
-
-    useEffect(() => {
-        setTableData({ headers, rows });
-    }, [headers, rows])
-
-    return <div id="list-page">
-        <div className="feature-type-selector">
-            <h2>Feature Type</h2>
-            <div className="feature-type-sections">
-                {featureTypeSelectorSections.map((section, _) => (
-                    <div key={`div-${section.sectionLabel}`} className="feature-type-section">
-                        <h3>{section.sectionLabel}</h3>
-                        {section.types.map((type, _) => (
-                            <button
-                                key={`btn-${type}`}
-                                className={featureType === type ? "selected" : ""}
-                                onClick={() => dispatch(setFeatureType(type))}
-                            >
-                                {section.sectionIcon}
-                                {capitalizeFirstLetter(type)}
-                            </button>
-                        ))}
-                    </div>
-                ))}
-            </div>
+          ))}
         </div>
-        <div className="divider" />
-        <Table
-            tableName={featureType}
-            pageNumber={pageNumber}
-            itemsPerPage={itemsPerPage}
-            sortBy={sortBy}
-            ascending={ascending}
-            query={query}
-            setQuery={handleSetQuery}
-            setPageNumber={handleSetPageNumber}
-            setSortBy={handleSetSortBy}
-            setAscending={handleSetAscending}
-            setItemsPerPage={handleChangeItemsPerPage}
-            onRefresh={handleRefreshData}
-            data={tableData}
-            totalDataCount={featureCount} />
+      </div>
+      <div className="divider" />
+      <Table
+        tableName={featureType}
+        pageNumber={pageNumber}
+        itemsPerPage={itemsPerPage}
+        sortBy={sortBy}
+        ascending={ascending}
+        query={query}
+        setQuery={handleSetQuery}
+        setPageNumber={handleSetPageNumber}
+        setSortBy={handleSetSortBy}
+        setAscending={handleSetAscending}
+        setItemsPerPage={handleChangeItemsPerPage}
+        onRefresh={handleRefreshData}
+        data={tableData}
+        totalDataCount={featureCount}
+      />
     </div>
+  );
 }
