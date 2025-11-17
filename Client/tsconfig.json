@@ -10,7 +10,10 @@
   ],
   "compilerOptions": {
     "types": [
-      "@vitest/browser/providers/playwright"
+      "vitest/browser",
+      "@vitest/browser/providers/playwright",
+      "@testing-library/jest-dom/vitest",
+      "vitest/globals"
     ]
   }
 }

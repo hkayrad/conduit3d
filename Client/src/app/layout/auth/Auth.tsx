@@ -1,20 +1,12 @@
-import { useSelector } from "react-redux"
-import { Navigate } from "react-router"
-import { selectUserState } from "./authSlice"
-import { UserRoles } from "../../../lib/enums"
+import { useSelector } from "react-redux";
+import { Navigate } from "react-router";
+import { selectUserState } from "./authSlice";
+import { UserRoles } from "../../../lib/enums";
+import { hasUserSession } from "../../../lib/utils";
 
 type Props = {
-    children: React.ReactNode
-}
-
-/**
- * Checks if the user has an active session.
- * @returns True if the user has a session, false otherwise.
- */
-function hasUserSession(): boolean {
-    // Check for user session cookie
-    return document.cookie.includes('user_session=')
-}
+  children: React.ReactNode;
+};
 
 /**
  * RequireAuth component is responsible for protecting routes that require authentication.
@@ -22,11 +14,11 @@ function hasUserSession(): boolean {
  * @returns The rendered component
  */
 export function RequireAuth({ children }: Readonly<Props>): React.ReactNode {
-    if (!hasUserSession()) {
-        return <Navigate to="/login" replace />
-    }
+  if (!hasUserSession()) {
+    return <Navigate to="/login" replace />;
+  }
 
-    return <>{children}</>
+  return <>{children}</>;
 }
 
 /**
@@ -35,11 +27,11 @@ export function RequireAuth({ children }: Readonly<Props>): React.ReactNode {
  * @returns The rendered component
  */
 export function RequireNoAuth({ children }: Readonly<Props>): React.ReactNode {
-    if (hasUserSession()) {
-        return <Navigate to="/" replace />
-    }
+  if (hasUserSession()) {
+    return <Navigate to="/" replace />;
+  }
 
-    return <>{children}</>
+  return <>{children}</>;
 }
 
 /**
@@ -48,15 +40,15 @@ export function RequireNoAuth({ children }: Readonly<Props>): React.ReactNode {
  * @returns The rendered component
  */
 export function RequireAdmin({ children }: Readonly<Props>): React.ReactNode {
-    if (!hasUserSession()) {
-        return <Navigate to="/login" replace />
-    }
+  const user = useSelector(selectUserState);
 
-    const user = useSelector(selectUserState);
+  if (!hasUserSession()) {
+    return <Navigate to="/login" replace />;
+  }
 
-    if (user?.userRole !== UserRoles.ADMIN) {
-        return <Navigate to="/" replace />
-    }
+  if (user?.userRole !== UserRoles.ADMIN) {
+    return <Navigate to="/" replace />;
+  }
 
-    return <>{children}</>
+  return <>{children}</>;
 }

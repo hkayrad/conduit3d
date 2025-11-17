@@ -21,7 +21,12 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": false,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "types": [
+      "vitest/globals",
+      "@testing-library/jest-dom",
+      "google.maps"
+    ]
   },
   "include": ["src"]
 }

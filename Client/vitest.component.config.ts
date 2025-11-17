@@ -3,6 +3,12 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
 	plugins: [react()],
+	resolve: {
+		alias: {
+			'wkx': '/tests/mocks/wkx.mock.ts',
+			'node:buffer': '/tests/mocks/buffer.mock.ts'
+		}
+	},
 	test: {
 		coverage: {
 			reporter: ['text', 'lcov']
