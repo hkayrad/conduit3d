@@ -351,7 +351,7 @@ describe('useMap', () => {
     describe('flyTo', () => {
         it('should call flyToFeature utility', () => {
             const { result } = renderHook(() => useMap());
-            const feature = { type: 'Feature' } as GeoJSON.Feature;
+            const feature = { type: 'Feature', geometry: { type: 'Point', coordinates: [0, 0] } } as GeoJSON.Feature;
 
             act(() => {
                 result.current.flyTo(feature);
@@ -365,17 +365,19 @@ describe('useMap', () => {
         });
 
         it('should switch to Cartesian view if not already active', () => {
+            // Set up selector to return FirstPerson view
             vi.mocked(reduxHooks.useAppSelector).mockReturnValue({
                 ...mockMapState,
                 selectedViewType: C3D_MapViewType.FirstPerson,
             });
             const { result } = renderHook(() => useMap());
-            const feature = { type: 'Feature' } as GeoJSON.Feature;
+            const feature = { type: 'Feature', geometry: { type: 'Point', coordinates: [0, 0] } } as GeoJSON.Feature;
 
             act(() => {
                 result.current.flyTo(feature);
             });
 
+            // Check that dispatch was called to switch to Cartesian
             expect(mockDispatch).toHaveBeenCalledWith(mapSlice.setSelectedViewType(C3D_MapViewType.Cartesian));
             expect(Utils.flyToFeature).toHaveBeenCalled();
         });

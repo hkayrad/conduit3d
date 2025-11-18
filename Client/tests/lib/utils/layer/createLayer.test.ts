@@ -117,7 +117,6 @@ describe('CreateLayer', () => {
                 id: 'hat-1',
                 data: mockData,
                 getWidth: 5,
-                getColor: color,
                 visible: true,
                 billboard: true,
                 autoHighlight: true,
@@ -174,7 +173,6 @@ describe('CreateLayer', () => {
             expect(layer.props).toMatchObject({
                 id: 'direk-1',
                 data: mockData,
-                getFillColor: color,
                 visible: true,
                 pickable: true,
                 wireframe: false,
@@ -216,7 +214,6 @@ describe('CreateLayer', () => {
             expect(layer.props).toMatchObject({
                 id: 'yol-1',
                 data: mockData,
-                getColor: color,
                 getWidth: 2,
                 pickable: true,
                 autoHighlight: true,
