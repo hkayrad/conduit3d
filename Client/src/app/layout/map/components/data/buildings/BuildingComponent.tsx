@@ -1,16 +1,24 @@
-import { useEffect, useRef } from "react";
-import type { Extent } from "../../../../../../lib/types"
+import { useCallback, useEffect, useRef } from "react";
+import type { Extent } from "../../../../../../lib/types";
 import { BuildingsApi } from "../../../../../../lib/api";
-import { Logger, wkbToGeometry, handleDataFetch } from "../../../../../../lib/utils";
-import { CHUNK_SIZE, DEFAULT_FLOOR_COUNT, DEFAULT_FLOOR_HEIGHT } from "../../../../../../lib/constants";
+import {
+  Logger,
+  wkbToGeometry,
+  handleDataFetch,
+} from "../../../../../../lib/utils";
+import {
+  CHUNK_SIZE,
+  DEFAULT_FLOOR_COUNT,
+  DEFAULT_FLOOR_HEIGHT,
+} from "../../../../../../lib/constants";
 import { C3D_MapViewType, FeatureType } from "../../../../../../lib/enums";
 
 type Props = {
-    setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection[]>>,
-    extent: Extent,
-    zoom: number,
-    selectedViewType: C3D_MapViewType
-}
+  setData: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection[]>>;
+  extent: Extent;
+  zoom: number;
+  selectedViewType: C3D_MapViewType;
+};
 
 /**
  * BuildingComponent is responsible for fetching and rendering the ADR BINA data.
@@ -18,60 +26,85 @@ type Props = {
  * @param props - The props for the component
  */
 export default function BuildingComponent(props: Readonly<Props>): null {
-    const { setData, extent, zoom, selectedViewType } = props;
-    const abortControllerRef = useRef<AbortController | null>(null);
-    const isLoadingRef = useRef<boolean>(false);
+  const { setData, extent, zoom, selectedViewType } = props;
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const isLoadingRef = useRef<boolean>(false);
 
-    const fetchNextChunk = async (page: number, signal?: AbortSignal): Promise<GeoJSON.FeatureCollection> => {
-        try {
-            const response = await BuildingsApi.fetchAllProto(CHUNK_SIZE, page, 'id', true, null!, extent);
+  const fetchNextChunk = useCallback(
+    async (
+      page: number,
+      signal?: AbortSignal,
+    ): Promise<GeoJSON.FeatureCollection> => {
+      try {
+        const response = await BuildingsApi.fetchAllProto(
+          CHUNK_SIZE,
+          page,
+          "id",
+          true,
+          null!,
+          extent,
+        );
 
-            if (signal?.aborted) {
-                Logger.debug("Request aborted");
-                return { type: "FeatureCollection", features: [] };
-            }
-
-            if (!response.isSuccess) {
-                if (response.statusCode === 404) {
-                    Logger.debug("No Building data found in the specified extent.");
-                    return { type: "FeatureCollection", features: [] };
-                }
-                Logger.error("Error fetching Building data");
-                return { type: "FeatureCollection", features: [] };
-            }
-
-            const formattedData: GeoJSON.Feature[] = response.data.map((rawData) => (
-                {
-                    type: "Feature",
-                    geometry: wkbToGeometry(rawData.wkb),
-                    properties: {
-                        id: rawData.id,
-                        dataType: FeatureType.BUILDING,
-                        adi: rawData.adi,
-                        kodu: rawData.kodu,
-                        siteAdi: rawData.siteAdi,
-                        binaKatSayisi: rawData.binaKatSayisi,
-                        daireSayisi: rawData.daireSayisi,
-                        isyeriSayisi: rawData.isyeriSayisi,
-                        // Assumed average floor count as 5 and floor height as 2.5 meters if not provided
-                        yukseklik: rawData.yukseklik || ((rawData.binaKatSayisi || DEFAULT_FLOOR_COUNT) * DEFAULT_FLOOR_HEIGHT),
-                    }
-                }));
-            return {
-                type: "FeatureCollection",
-                features: formattedData
-            };
-        } catch (error) {
-            if (error === "Request cancelled")
-                Logger.warn("Request was cancelled by axios");
-            Logger.error("Error fetching AdrBina data:", error);
-            throw error;
+        if (signal?.aborted) {
+          Logger.debug("Request aborted");
+          return { type: "FeatureCollection", features: [] };
         }
-    }
 
-    useEffect(() => {
-        handleDataFetch(isLoadingRef, abortControllerRef, extent, zoom, selectedViewType,  fetchNextChunk, setData);
-    }, [extent, zoom, selectedViewType]);
+        if (!response.isSuccess) {
+          if (response.statusCode === 404) {
+            Logger.debug("No Building data found in the specified extent.");
+            return { type: "FeatureCollection", features: [] };
+          }
+          Logger.error("Error fetching Building data");
+          return { type: "FeatureCollection", features: [] };
+        }
 
-    return null;
+        const formattedData: GeoJSON.Feature[] = response.data.map(
+          (rawData) => ({
+            type: "Feature",
+            geometry: wkbToGeometry(rawData.wkb),
+            properties: {
+              id: rawData.id,
+              dataType: FeatureType.BUILDING,
+              adi: rawData.adi,
+              kodu: rawData.kodu,
+              siteAdi: rawData.siteAdi,
+              binaKatSayisi: rawData.binaKatSayisi,
+              daireSayisi: rawData.daireSayisi,
+              isyeriSayisi: rawData.isyeriSayisi,
+              // Assumed average floor count as 5 and floor height as 2.5 meters if not provided
+              yukseklik:
+                rawData.yukseklik ||
+                (rawData.binaKatSayisi || DEFAULT_FLOOR_COUNT) *
+                  DEFAULT_FLOOR_HEIGHT,
+            },
+          }),
+        );
+        return {
+          type: "FeatureCollection",
+          features: formattedData,
+        };
+      } catch (error) {
+        if (error === "Request cancelled")
+          Logger.warn("Request was cancelled by axios");
+        Logger.error("Error fetching AdrBina data:", error);
+        throw error;
+      }
+    },
+    [extent],
+  );
+
+  useEffect(() => {
+    handleDataFetch(
+      isLoadingRef,
+      abortControllerRef,
+      extent,
+      zoom,
+      selectedViewType,
+      fetchNextChunk,
+      setData,
+    );
+  }, [extent, zoom, selectedViewType, fetchNextChunk, setData]);
+
+  return null;
 }

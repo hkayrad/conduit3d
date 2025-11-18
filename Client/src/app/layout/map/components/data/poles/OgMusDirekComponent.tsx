@@ -35,67 +35,72 @@ export default function OgMusDirekComponent(props: Readonly<Props>): null {
   const abortControllerRef = useRef<AbortController | null>(null);
   const isLoadingRef = useRef<boolean>(false);
 
-  const fetchNextChunk = async (
-    page: number,
-    signal?: AbortSignal,
-  ): Promise<GeoJSON.FeatureCollection> => {
-    try {
-      const response = await OgMusDirekApi.fetchAllProto(
-        CHUNK_SIZE,
-        page,
-        "id",
-        true,
-        null!,
-        extent,
-      );
+  const fetchNextChunk = useCallback(
+    async (
+      page: number,
+      signal?: AbortSignal,
+    ): Promise<GeoJSON.FeatureCollection> => {
+      try {
+        const response = await OgMusDirekApi.fetchAllProto(
+          CHUNK_SIZE,
+          page,
+          "id",
+          true,
+          null!,
+          extent,
+        );
 
-      if (signal?.aborted) {
-        Logger.debug("Request aborted");
-        return { type: "FeatureCollection", features: [] };
-      }
-
-      if (!response.isSuccess) {
-        if (response.statusCode === 404) {
-          Logger.debug("No OgMusDirek data found in the specified extent.");
+        if (signal?.aborted) {
+          Logger.debug("Request aborted");
           return { type: "FeatureCollection", features: [] };
         }
-        Logger.error("Error fetching OgMusDirek data");
-        return { type: "FeatureCollection", features: [] };
-      }
 
-      const formattedData: GeoJSON.Feature[] = response.data.map((rawData) => {
-        const height = Number(
-          rawData.boyOzellik.split("/")[0].replace(",", "."),
-        );
-        return {
-          type: "Feature",
-          geometry: wkbToGeometry(rawData.wkb),
-          properties: {
-            id: rawData.id,
-            dataType: FeatureType.POLE,
-            kodu: rawData.kodu,
-            adi: rawData.adi,
-            cinsi: rawData.cinsi,
-            tipi: rawData.tipi,
-            direkNo: rawData.direkNo,
-            boyOzellik: rawData.boyOzellik,
-            direkBoyId: rawData.direkBoyId,
-            yukseklik: height ? height : 10,
+        if (!response.isSuccess) {
+          if (response.statusCode === 404) {
+            Logger.debug("No OgMusDirek data found in the specified extent.");
+            return { type: "FeatureCollection", features: [] };
+          }
+          Logger.error("Error fetching OgMusDirek data");
+          return { type: "FeatureCollection", features: [] };
+        }
+
+        const formattedData: GeoJSON.Feature[] = response.data.map(
+          (rawData) => {
+            const height = Number(
+              rawData.boyOzellik.split("/")[0].replace(",", "."),
+            );
+            return {
+              type: "Feature",
+              geometry: wkbToGeometry(rawData.wkb),
+              properties: {
+                id: rawData.id,
+                dataType: FeatureType.POLE,
+                kodu: rawData.kodu,
+                adi: rawData.adi,
+                cinsi: rawData.cinsi,
+                tipi: rawData.tipi,
+                direkNo: rawData.direkNo,
+                boyOzellik: rawData.boyOzellik,
+                direkBoyId: rawData.direkBoyId,
+                yukseklik: height ? height : 10,
+              },
+            };
           },
-        };
-      });
+        );
 
-      return {
-        type: "FeatureCollection",
-        features: formattedData,
-      };
-    } catch (error) {
-      if (error === "Request cancelled")
-        Logger.warn("Request was cancelled by axios");
-      Logger.error("Error fetching OgMusDirek data:", error);
-      throw error;
-    }
-  };
+        return {
+          type: "FeatureCollection",
+          features: formattedData,
+        };
+      } catch (error) {
+        if (error === "Request cancelled")
+          Logger.warn("Request was cancelled by axios");
+        Logger.error("Error fetching OgMusDirek data:", error);
+        throw error;
+      }
+    },
+    [extent],
+  );
 
   const handleOgMusDirekTypesFetch = useCallback(async () => {
     try {
@@ -109,7 +114,7 @@ export default function OgMusDirekComponent(props: Readonly<Props>): null {
     } catch (error) {
       Logger.error("Error fetching OgMusDirek types:", error);
     }
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     handleDataFetch(
@@ -121,11 +126,11 @@ export default function OgMusDirekComponent(props: Readonly<Props>): null {
       fetchNextChunk,
       setData,
     );
-  }, [extent, zoom, selectedViewType]);
+  }, [extent, zoom, selectedViewType, fetchNextChunk, setData]);
 
   useEffect(() => {
     handleOgMusDirekTypesFetch();
-  }, []);
+  }, [handleOgMusDirekTypesFetch]);
 
   return null;
 }

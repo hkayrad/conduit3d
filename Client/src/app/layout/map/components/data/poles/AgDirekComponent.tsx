@@ -35,7 +35,7 @@ export default function AgDirekComponent(props: Readonly<Props>): null {
   const abortControllerRef = useRef<AbortController | null>(null);
   const isLoadingRef = useRef<boolean>(false);
 
-  const fetchNextChunk = async (
+  const fetchNextChunk = useCallback(async (
     page: number,
     signal?: AbortSignal,
   ): Promise<GeoJSON.FeatureCollection> => {
@@ -95,7 +95,7 @@ export default function AgDirekComponent(props: Readonly<Props>): null {
       Logger.error("Error fetching AgDirek data:", error);
       throw error;
     }
-  };
+  }, [extent])
 
   const handleAgDirekTypesFetch = useCallback(async () => {
     try {
@@ -107,7 +107,7 @@ export default function AgDirekComponent(props: Readonly<Props>): null {
     } catch (error) {
       Logger.error("Error fetching AgDirek types:", error);
     }
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     handleDataFetch(
@@ -119,11 +119,11 @@ export default function AgDirekComponent(props: Readonly<Props>): null {
       fetchNextChunk,
       setData,
     );
-  }, [extent, zoom, selectedViewType]);
+  }, [extent, zoom, selectedViewType, fetchNextChunk, setData]);
 
   useEffect(() => {
     handleAgDirekTypesFetch();
-  }, []);
+  }, [handleAgDirekTypesFetch]);
 
   return null;
 }

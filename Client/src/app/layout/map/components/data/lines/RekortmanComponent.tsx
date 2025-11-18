@@ -39,70 +39,73 @@ export default function RekortmanComponent(props: Readonly<Props>): null {
   const abortControllerRef = useRef<AbortController | null>(null);
   const isLoadingRef = useRef<boolean>(false);
 
-  const fetchNextChunk = async (
-    page: number,
-    signal?: AbortSignal,
-  ): Promise<GeoJSON.FeatureCollection> => {
-    try {
-      const response = await RekortmanApi.fetchAllProto(
-        CHUNK_SIZE,
-        page,
-        "id",
-        true,
-        null!,
-        extent,
-      );
+  const fetchNextChunk = useCallback(
+    async (
+      page: number,
+      signal?: AbortSignal,
+    ): Promise<GeoJSON.FeatureCollection> => {
+      try {
+        const response = await RekortmanApi.fetchAllProto(
+          CHUNK_SIZE,
+          page,
+          "id",
+          true,
+          null!,
+          extent,
+        );
 
-      if (signal?.aborted) {
-        Logger.debug("Request aborted");
-        return { type: "FeatureCollection", features: [] };
-      }
-
-      if (!response.isSuccess) {
-        if (response.statusCode === 404) {
-          Logger.debug("No Rekortman data found in the specified extent.");
+        if (signal?.aborted) {
+          Logger.debug("Request aborted");
           return { type: "FeatureCollection", features: [] };
         }
-        Logger.error("Error fetching Rekortman data");
-        return { type: "FeatureCollection", features: [] };
-      }
 
-      const allSegments: GeoJSON.Feature[] = [];
+        if (!response.isSuccess) {
+          if (response.statusCode === 404) {
+            Logger.debug("No Rekortman data found in the specified extent.");
+            return { type: "FeatureCollection", features: [] };
+          }
+          Logger.error("Error fetching Rekortman data");
+          return { type: "FeatureCollection", features: [] };
+        }
 
-      for (const rawData of response.data) {
-        const feature = {
-          type: "Feature",
-          geometry: wkbToGeometry(rawData.wkb),
-          properties: {
-            id: rawData.id,
-            dataType: FeatureType.LINE,
-            kodu: rawData.kodu,
-            adi: rawData.adi,
-            kesit: rawData.kesit,
-            tipi: rawData.tipi,
-          },
+        const allSegments: GeoJSON.Feature[] = [];
+
+        for (const rawData of response.data) {
+          const feature = {
+            type: "Feature",
+            geometry: wkbToGeometry(rawData.wkb),
+            properties: {
+              id: rawData.id,
+              dataType: FeatureType.LINE,
+              kodu: rawData.kodu,
+              adi: rawData.adi,
+              kesit: rawData.kesit,
+              tipi: rawData.tipi,
+            },
+          };
+          const segments: GeoJSON.Feature[] = lineStringToSegments(
+            feature,
+            rawData.tipi as HatCinsi,
+            rawData.tipi as HatTipi,
+            allPoles,
+            -0.1,
+          );
+          allSegments.push(...segments);
+        }
+
+        return {
+          type: "FeatureCollection",
+          features: allSegments,
         };
-        const segments: GeoJSON.Feature[] = lineStringToSegments(
-          feature,
-          rawData.tipi as HatCinsi,
-          rawData.tipi as HatTipi,
-          allPoles,
-          -0.1,
-        );
-        allSegments.push(...segments);
+      } catch (error) {
+        if (error === "Request cancelled")
+          Logger.warn("Request was cancelled by axios");
+        Logger.error("Error fetching AgHat data:", error);
+        throw error;
       }
-
-      return {
-        type: "FeatureCollection",
-        features: allSegments,
-      };
-    } catch (error) {
-      if (error === "Request cancelled")
-        Logger.warn("Request was cancelled by axios");
-      Logger.error("Error fetching AgHat data:", error);
-      throw error;
-    }
-  };
+    },
+    [allPoles, extent],
+  );
 
   const handleRekortmanTypesFetch = useCallback(async () => {
     try {
@@ -116,7 +119,7 @@ export default function RekortmanComponent(props: Readonly<Props>): null {
     } catch (error) {
       Logger.error("Error fetching Rekortman types:", error);
     }
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (allPoles.length <= 0) return;
@@ -130,11 +133,11 @@ export default function RekortmanComponent(props: Readonly<Props>): null {
       fetchNextChunk,
       setData,
     );
-  }, [allPoles, extent]);
+  }, [allPoles, extent, fetchNextChunk, selectedViewType, setData, zoom]);
 
   useEffect(() => {
     handleRekortmanTypesFetch();
-  }, []);
+  }, [handleRekortmanTypesFetch]);
 
   return null;
 }
