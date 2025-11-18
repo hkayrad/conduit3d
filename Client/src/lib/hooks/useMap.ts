@@ -27,6 +27,7 @@ import {
 	setLastRefreshPosition,
 	setSelectedViewType,
 	setViewState,
+	toggleBasemapOpacity,
 	toggleMapLayerVisibility,
 	toggleSettingsWindow,
 	toggleStreetView,
@@ -76,6 +77,7 @@ export function useMap() {
 			return new MapView({
 				id: C3D_MapViewType.Cartesian,
 				// viewState: { ...mapViewState.cartesian },
+				farZMultiplier: 1000,
 				controller: true,
 			});
 		} else if (selectedViewType === C3D_MapViewType.FirstPerson) {
@@ -274,7 +276,7 @@ export function useMap() {
 							position: [
 								prevState.firstPerson.position![0],
 								prevState.firstPerson.position![1],
-								Math.max(3, prevState.firstPerson.position![2]),
+								Math.max(-100, prevState.firstPerson.position![2]), //Min height limiter
 								// BELKI StreetView icin SINIRLANIR
 							],
 						},
@@ -402,6 +404,9 @@ export function useMap() {
 			} else if (e.code === "Comma") {
 				e.preventDefault();
 				dispatch(toggleSettingsWindow());
+			} else if (e.code === "Period") {
+				e.preventDefault();
+				dispatch(toggleBasemapOpacity());
 			}
 		},
 		[searchInputRef, dispatch],

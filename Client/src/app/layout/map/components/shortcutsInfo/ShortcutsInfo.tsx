@@ -35,7 +35,7 @@ export default function ShortcutsInfo() {
           <p data-testid="show-admin-settings">
             <span>
               <kbd>Ctrl</kbd>
-              <kbd>Comma</kbd>
+              <kbd>Comma (,)</kbd>
             </span>{" "}
             : Toggle Settings Window
           </p>
@@ -43,9 +43,16 @@ export default function ShortcutsInfo() {
         <p>
           <span>
             <kbd>Ctrl</kbd>
-            <kbd>/</kbd>
+            <kbd>Slash (/)</kbd>
           </span>{" "}
           : Focus Search Bar
+        </p>
+        <p>
+          <span>
+            <kbd>Ctrl</kbd>
+            <kbd>Period (.)</kbd>
+          </span>{" "}
+          : Toggle Basemap Opacity
         </p>
         <p>
           <span>
