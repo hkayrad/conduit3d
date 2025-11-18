@@ -1,24 +1,24 @@
 # TODO
-
- - Add auto windows adjustment
- - Add feature highligt on goto button click
- - CACHE CONTROL 
- - Create custom FirstPersonController to handle WASD control
+- [] raster veri acma
+- [] armaturleri goster, tablo gelicek
+- [] openlayers kullanarak cizim
+- [x] featurelari yerin altindan gormeye de izin ver
+- [x] highlight on gotos
 
 # NOTES
 I tried sticking the REKORTMAN to the height of the pole. It caused so many calculations so it is discarded.
 
-|feature|geojson|wkb|diff|%|
-|-|-|-|-|-|s
-|adrbina|403kb|323kb|-80kb|%80.14|
-|buildings|2358kb|2077kb|-281kb|%88.08|
-|buildings_200k|65mb|56mb|-9mb|%86.15|
-|aghat|861kb|655kb|-196kb|%76.07|
-|oghat|136kb|105kb|-21kb|%77.21|
-|rekortman|226kb|172kb|-54kb|%76.11|
-|agdirek|70.9kb|57.3kb|-13.6kb|%80.82|
-|ogdirek|22.1kb|17.8kb|-4.3kb|%80.54|
-|ayddirek|57.8kb|47.1kb|-10.7kb|%81.49|
+|feature|geojson|wkb|diff|diff%|%|
+|-|-|-|-|-|-|
+|adrbina|403kb|323kb|-80kb|-%19.86|%80.14|
+|buildings|2358kb|2077kb|-281kb|-%11.92|%88.08|
+|buildings_200k|65mb|56mb|-9mb|-%13.85|%86.15|
+|aghat|861kb|655kb|-196kb|-%23.93|%76.07|
+|oghat|136kb|105kb|-21kb|-%22.79|%77.21|
+|rekortman|226kb|172kb|-54kb|-%23.89|%76.11|
+|agdirek|70.9kb|57.3kb|-13.6kb|-%19.18|%80.82|
+|ogdirek|22.1kb|17.8kb|-4.3kb|-%19.46|%80.54|
+|ayddirek|57.8kb|47.1kb|-10.7kb|-%18.51|%81.49|
 
 ### Optimization Notes
 
