@@ -13,488 +13,467 @@ import { DEFAULT_EXTENT } from "../constants";
  * Class representing the ADR Bina API
  */
 export class AdrBinaApi {
-    /**
-     * Fetch all ADR buildings within the specified extent.
-     * @param pageSize Number of buildings per page.
-     * @param pageNumber The page number to fetch.
-     * @param sortBy The field to sort by.
-     * @param ascending Whether to sort in ascending order.
-     * @param query Optional search query to filter buildings.
-     * @param extent The geographical extent to filter the buildings.
-     * @returns A promise that resolves to the list of ADR buildings.
-     */
-    private static _cancelTokens: { [key: string]: CancelTokenSource } = {};
+	/**
+	 * Fetch all ADR buildings within the specified extent.
+	 * @param pageSize Number of buildings per page.
+	 * @param pageNumber The page number to fetch.
+	 * @param sortBy The field to sort by.
+	 * @param ascending Whether to sort in ascending order.
+	 * @param query Optional search query to filter buildings.
+	 * @param extent The geographical extent to filter the buildings.
+	 * @returns A promise that resolves to the list of ADR buildings.
+	 */
+	private static _cancelTokens: { [key: string]: CancelTokenSource } = {};
 
-    static async fetchAll(
-        pageSize: number = 200000,
-        pageNumber: number = 1,
-        sortBy: string = 'id',
-        ascending: boolean = true,
-        query: string = null!,
-        extent: Extent = DEFAULT_EXTENT
-    ) {
-        if (this._cancelTokens["fetchAll"])
-            this._cancelTokens["fetchAll"].cancel("Operation canceled due to new request.");
+	static async fetchAll(
+		pageSize: number = 200000,
+		pageNumber: number = 1,
+		sortBy: string = "id",
+		ascending: boolean = true,
+		query: string = null!,
+		extent: Extent = DEFAULT_EXTENT,
+	) {
+		if (this._cancelTokens["fetchAll"]) this._cancelTokens["fetchAll"].cancel("Operation canceled due to new request.");
 
-        this._cancelTokens["fetchAll"] = axios.CancelToken.source();
+		this._cancelTokens["fetchAll"] = axios.CancelToken.source();
 
-        try {
-            const response = await instance.get<ApiResponse<AdrBina[]>>("adrBina", {
-                params: {
-                    pageSize: pageSize,
-                    pageNumber: pageNumber,
-                    sortBy: capitalizeFirstLetter(sortBy),
-                    ascending: ascending,
-                    query: query,
-                    ...extent,
-                },
-                cancelToken: this._cancelTokens["fetchAll"].token,
-            });
+		try {
+			const response = await instance.get<ApiResponse<AdrBina[]>>("adrBina", {
+				params: {
+					pageSize: pageSize,
+					pageNumber: pageNumber,
+					sortBy: capitalizeFirstLetter(sortBy),
+					ascending: ascending,
+					query: query,
+					...extent,
+				},
+				cancelToken: this._cancelTokens["fetchAll"].token,
+			});
 
-            return response.data;
-        } catch (error) {
-            Logger.error("Fetch AdrBina error:", error);
-            throw error;
-        }
-    }
+			return response.data;
+		} catch (error) {
+			Logger.error("Fetch AdrBina error:", error);
+			throw error;
+		}
+	}
 
-    /**
-     * Fetch the count of AdrBina.
-     * @param query Optional search query to filter features.
-     * @returns A promise that resolves to the count of AdrBina.
-     */
-    static async fetchCount(
-        query: string = null!,
-        extent: Extent = DEFAULT_EXTENT
-    ) {
-        if (this._cancelTokens["fetchCount"])
-            this._cancelTokens["fetchCount"].cancel("Operation canceled due to new request.");
+	/**
+	 * Fetch the count of AdrBina.
+	 * @param query Optional search query to filter features.
+	 * @returns A promise that resolves to the count of AdrBina.
+	 */
+	static async fetchCount(query: string = null!, extent: Extent = DEFAULT_EXTENT) {
+		if (this._cancelTokens["fetchCount"])
+			this._cancelTokens["fetchCount"].cancel("Operation canceled due to new request.");
 
-        this._cancelTokens["fetchCount"] = axios.CancelToken.source();
+		this._cancelTokens["fetchCount"] = axios.CancelToken.source();
 
-        try {
-            const response = await instance.get<ApiResponse<number>>("adrBina/count", {
-                params: {
-                    query,
-                    ...extent,
-                },
-                cancelToken: this._cancelTokens["fetchCount"].token,
-            });
-            return response.data;
-        } catch (error) {
-            Logger.error("Fetch AdrBina count error:", error);
-            throw error;
-        }
-    }
+		try {
+			const response = await instance.get<ApiResponse<number>>("adrBina/count", {
+				params: {
+					query,
+					...extent,
+				},
+				cancelToken: this._cancelTokens["fetchCount"].token,
+			});
+			return response.data;
+		} catch (error) {
+			Logger.error("Fetch AdrBina count error:", error);
+			throw error;
+		}
+	}
 
-    static async fetchAllProto(
-        pageSize: number = 200000,
-        pageNumber: number = 1,
-        sortBy: string = 'id',
-        ascending: boolean = true,
-        query: string = null!,
-        extent: Extent = DEFAULT_EXTENT
-    ): Promise<AdrBinaResponse> {
-        if (this._cancelTokens["fetchAllProto"])
-            this._cancelTokens["fetchAllProto"].cancel("Operation canceled due to new request.");
+	static async fetchAllProto(
+		pageSize: number = 200000,
+		pageNumber: number = 1,
+		sortBy: string = "id",
+		ascending: boolean = true,
+		query: string = null!,
+		extent: Extent = DEFAULT_EXTENT,
+	): Promise<AdrBinaResponse> {
+		if (this._cancelTokens["fetchAllProto"])
+			this._cancelTokens["fetchAllProto"].cancel("Operation canceled due to new request.");
 
-        this._cancelTokens["fetchAllProto"] = axios.CancelToken.source();
+		this._cancelTokens["fetchAllProto"] = axios.CancelToken.source();
 
-        try {
-            const protoResponse = await instance.get<ArrayBuffer>("adrBina/pbf", {
-                params: {
-                    pageSize: pageSize,
-                    pageNumber: pageNumber,
-                    sortBy: capitalizeFirstLetter(sortBy),
-                    ascending: ascending,
-                    query: query,
-                    ...extent,
-                },
-                cancelToken: this._cancelTokens["fetchAllProto"].token,
-                headers: {
-                    'Accept': 'application/x-protobuf'
-                },
-                responseType: 'arraybuffer',
-            });
+		try {
+			const protoResponse = await instance.get<ArrayBuffer>("adrBina/pbf", {
+				params: {
+					pageSize: pageSize,
+					pageNumber: pageNumber,
+					sortBy: capitalizeFirstLetter(sortBy),
+					ascending: ascending,
+					query: query,
+					...extent,
+				},
+				cancelToken: this._cancelTokens["fetchAllProto"].token,
+				headers: {
+					Accept: "application/x-protobuf",
+				},
+				responseType: "arraybuffer",
+			});
 
-            const decodedData = AdrBinaResponse.decode(new Uint8Array(protoResponse.data));
+			const decodedData = AdrBinaResponse.decode(new Uint8Array(protoResponse.data));
 
-            return decodedData;
-        } catch (error) {
-            if (error === "Request cancelled")
-                Logger.warn("Request was cancelled by axios");
-            Logger.error("Fetch AdrBina Proto error:", error);
-            throw error;
-        }
-    }
+			return decodedData;
+		} catch (error) {
+			if (error === "Request cancelled") Logger.warn("Request was cancelled by axios");
+			Logger.error("Fetch AdrBina Proto error:", error);
+			throw error;
+		}
+	}
 }
 
 /**
  * Class representing the Trafo Bina API
  */
 export class TrafoBinaApi {
-    /**
-     * Fetch all transformer stations within the specified extent.
-     * @param pageSize Number of buildings per page.
-     * @param pageNumber The page number to fetch.
-     * @param sortBy The field to sort by.
-     * @param ascending Whether to sort in ascending order.
-     * @param query Optional search query to filter buildings.
-     * @param extent The geographical extent to filter the buildings.
-     * @returns A promise that resolves to the list of transformer stations.
-     */
-    private static _cancelTokens: { [key: string]: CancelTokenSource } = {};
+	/**
+	 * Fetch all transformer stations within the specified extent.
+	 * @param pageSize Number of buildings per page.
+	 * @param pageNumber The page number to fetch.
+	 * @param sortBy The field to sort by.
+	 * @param ascending Whether to sort in ascending order.
+	 * @param query Optional search query to filter buildings.
+	 * @param extent The geographical extent to filter the buildings.
+	 * @returns A promise that resolves to the list of transformer stations.
+	 */
+	private static _cancelTokens: { [key: string]: CancelTokenSource } = {};
 
-    static async fetchAll(
-        pageSize: number = 200000,
-        pageNumber: number = 1,
-        sortBy: string = 'id',
-        ascending: boolean = true,
-        query: string = null!,
-        extent: Extent = DEFAULT_EXTENT
-    ) {
-        if (this._cancelTokens["fetchAll"])
-            this._cancelTokens["fetchAll"].cancel("Operation canceled due to new request.");
+	static async fetchAll(
+		pageSize: number = 200000,
+		pageNumber: number = 1,
+		sortBy: string = "id",
+		ascending: boolean = true,
+		query: string = null!,
+		extent: Extent = DEFAULT_EXTENT,
+	) {
+		if (this._cancelTokens["fetchAll"]) this._cancelTokens["fetchAll"].cancel("Operation canceled due to new request.");
 
-        this._cancelTokens["fetchAll"] = axios.CancelToken.source();
+		this._cancelTokens["fetchAll"] = axios.CancelToken.source();
 
-        try {
-            const response = await instance.get<ApiResponse<TrafoBina[]>>("trafoBina", {
-                params: {
-                    pageSize,
-                    pageNumber,
-                    sortBy: capitalizeFirstLetter(sortBy),
-                    ascending,
-                    query,
-                    ...extent,
-                },
-                cancelToken: this._cancelTokens["fetchAll"].token,
-            });
-            return response.data;
-        } catch (error) {
-            if (error === "Request cancelled")
-                Logger.warn("Request was cancelled by axios");
-            Logger.error("Fetch TrafoBina error:", error);
-            throw error;
-        }
-    }
+		try {
+			const response = await instance.get<ApiResponse<TrafoBina[]>>("trafoBina", {
+				params: {
+					pageSize,
+					pageNumber,
+					sortBy: capitalizeFirstLetter(sortBy),
+					ascending,
+					query,
+					...extent,
+				},
+				cancelToken: this._cancelTokens["fetchAll"].token,
+			});
+			return response.data;
+		} catch (error) {
+			if (error === "Request cancelled") Logger.warn("Request was cancelled by axios");
+			Logger.error("Fetch TrafoBina error:", error);
+			throw error;
+		}
+	}
 
-    /**
-     * Fetch the count of transformer stations.
-     * @param query Optional search query to filter features.
-     * @returns A promise that resolves to the count of transformer stations.
-     */
-    static async fetchCount(
-        query: string = null!,
-        extent: Extent = DEFAULT_EXTENT
-    ) {
-        if (this._cancelTokens["fetchCount"])
-            this._cancelTokens["fetchCount"].cancel("Operation canceled due to new request.");
+	/**
+	 * Fetch the count of transformer stations.
+	 * @param query Optional search query to filter features.
+	 * @returns A promise that resolves to the count of transformer stations.
+	 */
+	static async fetchCount(query: string = null!, extent: Extent = DEFAULT_EXTENT) {
+		if (this._cancelTokens["fetchCount"])
+			this._cancelTokens["fetchCount"].cancel("Operation canceled due to new request.");
 
-        this._cancelTokens["fetchCount"] = axios.CancelToken.source();
+		this._cancelTokens["fetchCount"] = axios.CancelToken.source();
 
-        try {
-            const response = await instance.get<ApiResponse<number>>("trafoBina/count", {
-                params: {
-                    query,
-                    ...extent,
-                },
-                cancelToken: this._cancelTokens["fetchCount"].token,
-            });
-            return response.data;
-        } catch (error) {
-            Logger.error("Fetch TrafoBina count error:", error);
-            throw error;
-        }
-    }
+		try {
+			const response = await instance.get<ApiResponse<number>>("trafoBina/count", {
+				params: {
+					query,
+					...extent,
+				},
+				cancelToken: this._cancelTokens["fetchCount"].token,
+			});
+			return response.data;
+		} catch (error) {
+			Logger.error("Fetch TrafoBina count error:", error);
+			throw error;
+		}
+	}
 
-    static async fetchAllProto(
-        pageSize: number = 200000,
-        pageNumber: number = 1,
-        sortBy: string = 'id',
-        ascending: boolean = true,
-        query: string = null!,
-        extent: Extent = DEFAULT_EXTENT
-    ): Promise<TrafoBinaResponse> {
-        if (this._cancelTokens["fetchAllProto"])
-            this._cancelTokens["fetchAllProto"].cancel("Operation canceled due to new request.");
+	static async fetchAllProto(
+		pageSize: number = 200000,
+		pageNumber: number = 1,
+		sortBy: string = "id",
+		ascending: boolean = true,
+		query: string = null!,
+		extent: Extent = DEFAULT_EXTENT,
+	): Promise<TrafoBinaResponse> {
+		if (this._cancelTokens["fetchAllProto"])
+			this._cancelTokens["fetchAllProto"].cancel("Operation canceled due to new request.");
 
-        this._cancelTokens["fetchAllProto"] = axios.CancelToken.source();
+		this._cancelTokens["fetchAllProto"] = axios.CancelToken.source();
 
-        try {
-            const protoResponse = await instance.get<ArrayBuffer>("trafoBina/pbf", {
-                params: {
-                    pageSize: pageSize,
-                    pageNumber: pageNumber,
-                    sortBy: capitalizeFirstLetter(sortBy),
-                    ascending: ascending,
-                    query: query,
-                    ...extent,
-                },
-                cancelToken: this._cancelTokens["fetchAllProto"].token,
-                headers: {
-                    'Accept': 'application/x-protobuf'
-                },
-                responseType: 'arraybuffer'
-            });
+		try {
+			const protoResponse = await instance.get<ArrayBuffer>("trafoBina/pbf", {
+				params: {
+					pageSize: pageSize,
+					pageNumber: pageNumber,
+					sortBy: capitalizeFirstLetter(sortBy),
+					ascending: ascending,
+					query: query,
+					...extent,
+				},
+				cancelToken: this._cancelTokens["fetchAllProto"].token,
+				headers: {
+					Accept: "application/x-protobuf",
+				},
+				responseType: "arraybuffer",
+			});
 
-            const decodedData = TrafoBinaResponse.decode(new Uint8Array(protoResponse.data));
+			const decodedData = TrafoBinaResponse.decode(new Uint8Array(protoResponse.data));
 
-            return decodedData;
-        } catch (error) {
-            if (error === "Request cancelled")
-                Logger.warn("Request was cancelled by axios");
-            Logger.error("Fetch TrafoBina Proto error:", error);
-            throw error;
-        }
-    }
+			return decodedData;
+		} catch (error) {
+			if (error === "Request cancelled") Logger.warn("Request was cancelled by axios");
+			Logger.error("Fetch TrafoBina Proto error:", error);
+			throw error;
+		}
+	}
 }
 
 /**
  * Class representing the Buildings API
  */
 export class BuildingsApi {
-    /**
-     * Fetch all ADR buildings within the specified extent.
-     * @param pageSize Number of buildings per page.
-     * @param pageNumber The page number to fetch.
-     * @param sortBy The field to sort by.
-     * @param ascending Whether to sort in ascending order.
-     * @param query Optional search query to filter buildings.
-     * @param extent The geographical extent to filter the buildings.
-     * @returns A promise that resolves to the list of ADR buildings.
-     */
-    private static _cancelTokens: { [key: string]: CancelTokenSource } = {};
+	/**
+	 * Fetch all ADR buildings within the specified extent.
+	 * @param pageSize Number of buildings per page.
+	 * @param pageNumber The page number to fetch.
+	 * @param sortBy The field to sort by.
+	 * @param ascending Whether to sort in ascending order.
+	 * @param query Optional search query to filter buildings.
+	 * @param extent The geographical extent to filter the buildings.
+	 * @returns A promise that resolves to the list of ADR buildings.
+	 */
+	private static _cancelTokens: { [key: string]: CancelTokenSource } = {};
 
-    static async fetchAll(
-        pageSize: number = 200000,
-        pageNumber: number = 1,
-        sortBy: string = 'id',
-        ascending: boolean = true,
-        query: string = null!,
-        extent: Extent = DEFAULT_EXTENT
-    ) {
-        if (this._cancelTokens["fetchAll"])
-            this._cancelTokens["fetchAll"].cancel("Operation canceled due to new request.");
+	static async fetchAll(
+		pageSize: number = 200000,
+		pageNumber: number = 1,
+		sortBy: string = "id",
+		ascending: boolean = true,
+		query: string = null!,
+		extent: Extent = DEFAULT_EXTENT,
+	) {
+		if (this._cancelTokens["fetchAll"]) this._cancelTokens["fetchAll"].cancel("Operation canceled due to new request.");
 
-        this._cancelTokens["fetchAll"] = axios.CancelToken.source();
+		this._cancelTokens["fetchAll"] = axios.CancelToken.source();
 
-        try {
-            const response = await instance.get<ApiResponse<Building[]>>("buildings", {
-                params: {
-                    pageSize: pageSize,
-                    pageNumber: pageNumber,
-                    sortBy: capitalizeFirstLetter(sortBy),
-                    ascending: ascending,
-                    query: query,
-                    ...extent,
-                },
-                cancelToken: this._cancelTokens["fetchAll"].token,
-            });
-            return response.data;
-        } catch (error) {
-            Logger.error("Fetch AdrBina error:", error);
-            throw error;
-        }
-    }
+		try {
+			const response = await instance.get<ApiResponse<Building[]>>("buildings", {
+				params: {
+					pageSize: pageSize,
+					pageNumber: pageNumber,
+					sortBy: capitalizeFirstLetter(sortBy),
+					ascending: ascending,
+					query: query,
+					...extent,
+				},
+				cancelToken: this._cancelTokens["fetchAll"].token,
+			});
+			return response.data;
+		} catch (error) {
+			Logger.error("Fetch AdrBina error:", error);
+			throw error;
+		}
+	}
 
-    /**
-     * Fetch the count of AdrBina.
-     * @param query Optional search query to filter features.
-     * @returns A promise that resolves to the count of AdrBina.
-     */
-    static async fetchCount(
-        query: string = null!,
-        extent: Extent = DEFAULT_EXTENT
-    ) {
-        if (this._cancelTokens["fetchCount"])
-            this._cancelTokens["fetchCount"].cancel("Operation canceled due to new request.");
+	/**
+	 * Fetch the count of AdrBina.
+	 * @param query Optional search query to filter features.
+	 * @returns A promise that resolves to the count of AdrBina.
+	 */
+	static async fetchCount(query: string = null!, extent: Extent = DEFAULT_EXTENT) {
+		if (this._cancelTokens["fetchCount"])
+			this._cancelTokens["fetchCount"].cancel("Operation canceled due to new request.");
 
-        this._cancelTokens["fetchCount"] = axios.CancelToken.source();
+		this._cancelTokens["fetchCount"] = axios.CancelToken.source();
 
-        try {
-            const response = await instance.get<ApiResponse<number>>("buildings/count", {
-                params: {
-                    query,
-                    ...extent,
-                },
-                cancelToken: this._cancelTokens["fetchCount"].token,
-            });
-            return response.data;
-        } catch (error) {
-            Logger.error("Fetch AdrBina count error:", error);
-            throw error;
-        }
-    }
+		try {
+			const response = await instance.get<ApiResponse<number>>("buildings/count", {
+				params: {
+					query,
+					...extent,
+				},
+				cancelToken: this._cancelTokens["fetchCount"].token,
+			});
+			return response.data;
+		} catch (error) {
+			Logger.error("Fetch AdrBina count error:", error);
+			throw error;
+		}
+	}
 
-    static async fetchAllProto(
-        pageSize: number = 200000,
-        pageNumber: number = 1,
-        sortBy: string = 'id',
-        ascending: boolean = true,
-        query: string = null!,
-        extent: Extent = DEFAULT_EXTENT
-    ): Promise<BuildingsResponse> {
-        if (this._cancelTokens["fetchAllProto"])
-            this._cancelTokens["fetchAllProto"].cancel("Operation canceled due to new request.");
+	static async fetchAllProto(
+		pageSize: number = 200000,
+		pageNumber: number = 1,
+		sortBy: string = "id",
+		ascending: boolean = true,
+		query: string = null!,
+		extent: Extent = DEFAULT_EXTENT,
+	): Promise<BuildingsResponse> {
+		if (this._cancelTokens["fetchAllProto"])
+			this._cancelTokens["fetchAllProto"].cancel("Operation canceled due to new request.");
 
-        this._cancelTokens["fetchAllProto"] = axios.CancelToken.source();
+		this._cancelTokens["fetchAllProto"] = axios.CancelToken.source();
 
-        try {
-            const protoResponse = await instance.get<ArrayBuffer>("buildings/pbf", {
-                params: {
-                    pageSize: pageSize,
-                    pageNumber: pageNumber,
-                    sortBy: capitalizeFirstLetter(sortBy),
-                    ascending: ascending,
-                    query: query,
-                    ...extent,
-                },
-                cancelToken: this._cancelTokens["fetchAllProto"].token,
-                headers: {
-                    'Accept': 'application/x-protobuf'
-                },
-                responseType: 'arraybuffer'
-            });
-            const decodedData = BuildingsResponse.decode(new Uint8Array(protoResponse.data));
+		try {
+			const protoResponse = await instance.get<ArrayBuffer>("buildings/pbf", {
+				params: {
+					pageSize: pageSize,
+					pageNumber: pageNumber,
+					sortBy: capitalizeFirstLetter(sortBy),
+					ascending: ascending,
+					query: query,
+					...extent,
+				},
+				cancelToken: this._cancelTokens["fetchAllProto"].token,
+				headers: {
+					Accept: "application/x-protobuf",
+				},
+				responseType: "arraybuffer",
+			});
+			const decodedData = BuildingsResponse.decode(new Uint8Array(protoResponse.data));
 
-            return decodedData;
-        } catch (error) {
-            if (error === "Request cancelled")
-                Logger.warn("Request was cancelled by axios");
-            Logger.error("Fetch Buildings Proto error:", error);
-            throw error;
-        }
-    }
+			return decodedData;
+		} catch (error) {
+			if (error === "Request cancelled") Logger.warn("Request was cancelled by axios");
+			Logger.error("Fetch Buildings Proto error:", error);
+			throw error;
+		}
+	}
 }
 
 export class AdrYolApi {
-    /**
-     * Fetch all ADR yol within the specified extent.
-     * @param pageSize Number of buildings per page.
-     * @param pageNumber The page number to fetch.
-     * @param sortBy The field to sort by.
-     * @param ascending Whether to sort in ascending order.
-     * @param query Optional search query to filter buildings.
-     * @param extent The geographical extent to filter the buildings.
-     * @returns A promise that resolves to the list of ADR buildings.
-     */
-    private static _cancelTokens: { [key: string]: CancelTokenSource } = {};
+	/**
+	 * Fetch all ADR yol within the specified extent.
+	 * @param pageSize Number of buildings per page.
+	 * @param pageNumber The page number to fetch.
+	 * @param sortBy The field to sort by.
+	 * @param ascending Whether to sort in ascending order.
+	 * @param query Optional search query to filter buildings.
+	 * @param extent The geographical extent to filter the buildings.
+	 * @returns A promise that resolves to the list of ADR buildings.
+	 */
+	private static _cancelTokens: { [key: string]: CancelTokenSource } = {};
 
-    static async fetchAll(
-        pageSize: number = 200000,
-        pageNumber: number = 1,
-        sortBy: string = 'id',
-        ascending: boolean = true,
-        query: string = null!,
-        extent: Extent = DEFAULT_EXTENT
-    ) {
-        if (this._cancelTokens["fetchAll"])
-            this._cancelTokens["fetchAll"].cancel("Operation canceled due to new request.");
+	static async fetchAll(
+		pageSize: number = 200000,
+		pageNumber: number = 1,
+		sortBy: string = "id",
+		ascending: boolean = true,
+		query: string = null!,
+		extent: Extent = DEFAULT_EXTENT,
+	) {
+		if (this._cancelTokens["fetchAll"]) this._cancelTokens["fetchAll"].cancel("Operation canceled due to new request.");
 
-        this._cancelTokens["fetchAll"] = axios.CancelToken.source();
+		this._cancelTokens["fetchAll"] = axios.CancelToken.source();
 
-        try {
-            const response = await instance.get<ApiResponse<AdrYol[]>>("adrYol", {
-                params: {
-                    pageSize: pageSize,
-                    pageNumber: pageNumber,
-                    sortBy: capitalizeFirstLetter(sortBy),
-                    ascending: ascending,
-                    query: query,
-                    ...extent,
-                },
-                cancelToken: this._cancelTokens["fetchAll"].token,
-            });
+		try {
+			const response = await instance.get<ApiResponse<AdrYol[]>>("adrYol", {
+				params: {
+					pageSize: pageSize,
+					pageNumber: pageNumber,
+					sortBy: capitalizeFirstLetter(sortBy),
+					ascending: ascending,
+					query: query,
+					...extent,
+				},
+				cancelToken: this._cancelTokens["fetchAll"].token,
+			});
 
-            return response.data;
-        } catch (error) {
-            Logger.error("Fetch AdrYol error:", error);
-            throw error;
-        }
-    }
+			return response.data;
+		} catch (error) {
+			Logger.error("Fetch AdrYol error:", error);
+			throw error;
+		}
+	}
 
-    /**
-     * Fetch all AG Direk feature types.
-     * @returns A promise that resolves to the list of AG Direk feature types.
-     */
-    static async fetchTypes() {
-        try {
-            const response = await instance.get<ApiResponse<string[]>>("adrYol/types");
-            return response.data;
-        } catch (error) {
-            Logger.error("Fetch AdrYol types error:", error);
-            throw error;
-        }
-    }
+	/**
+	 * Fetch all AG Direk feature types.
+	 * @returns A promise that resolves to the list of AG Direk feature types.
+	 */
+	static async fetchTypes() {
+		try {
+			const response = await instance.get<ApiResponse<string[]>>("adrYol/types");
+			return response.data;
+		} catch (error) {
+			Logger.error("Fetch AdrYol types error:", error);
+			throw error;
+		}
+	}
 
-    /**
-     * Fetch the count of AdrYol.
-     * @param query Optional search query to filter features.
-     * @returns A promise that resolves to the count of AdrYol.
-     */
-    static async fetchCount(
-        query: string = null!,
-        extent: Extent = DEFAULT_EXTENT
-    ) {
-        if (this._cancelTokens["fetchCount"])
-            this._cancelTokens["fetchCount"].cancel("Operation canceled due to new request.");
+	/**
+	 * Fetch the count of AdrYol.
+	 * @param query Optional search query to filter features.
+	 * @returns A promise that resolves to the count of AdrYol.
+	 */
+	static async fetchCount(query: string = null!, extent: Extent = DEFAULT_EXTENT) {
+		if (this._cancelTokens["fetchCount"])
+			this._cancelTokens["fetchCount"].cancel("Operation canceled due to new request.");
 
-        this._cancelTokens["fetchCount"] = axios.CancelToken.source();
+		this._cancelTokens["fetchCount"] = axios.CancelToken.source();
 
-        try {
-            const response = await instance.get<ApiResponse<number>>("adrYol/count", {
-                params: {
-                    query,
-                    ...extent,
-                },
-                cancelToken: this._cancelTokens["fetchCount"].token,
-            });
-            return response.data;
-        } catch (error) {
-            Logger.error("Fetch AdrYol count error:", error);
-            throw error;
-        }
-    }
+		try {
+			const response = await instance.get<ApiResponse<number>>("adrYol/count", {
+				params: {
+					query,
+					...extent,
+				},
+				cancelToken: this._cancelTokens["fetchCount"].token,
+			});
+			return response.data;
+		} catch (error) {
+			Logger.error("Fetch AdrYol count error:", error);
+			throw error;
+		}
+	}
 
-    static async fetchAllProto(
-        pageSize: number = 200000,
-        pageNumber: number = 1,
-        sortBy: string = 'id',
-        ascending: boolean = true,
-        query: string = null!,
-        extent: Extent = DEFAULT_EXTENT
-    ): Promise<AdrYolResponse> {
-        if (this._cancelTokens["fetchAllProto"])
-            this._cancelTokens["fetchAllProto"].cancel("Operation canceled due to new request.");
+	static async fetchAllProto(
+		pageSize: number = 200000,
+		pageNumber: number = 1,
+		sortBy: string = "id",
+		ascending: boolean = true,
+		query: string = null!,
+		extent: Extent = DEFAULT_EXTENT,
+	): Promise<AdrYolResponse> {
+		if (this._cancelTokens["fetchAllProto"])
+			this._cancelTokens["fetchAllProto"].cancel("Operation canceled due to new request.");
 
-        this._cancelTokens["fetchAllProto"] = axios.CancelToken.source();
+		this._cancelTokens["fetchAllProto"] = axios.CancelToken.source();
 
-        try {
-            const protoResponse = await instance.get<ArrayBuffer>("adrYol/pbf", {
-                params: {
-                    pageSize: pageSize,
-                    pageNumber: pageNumber,
-                    sortBy: capitalizeFirstLetter(sortBy),
-                    ascending: ascending,
-                    query: query,
-                    ...extent,
-                },
-                cancelToken: this._cancelTokens["fetchAllProto"].token,
-                headers: {
-                    'Accept': 'application/x-protobuf'
-                },
-                responseType: 'arraybuffer',
-            });
+		try {
+			const protoResponse = await instance.get<ArrayBuffer>("adrYol/pbf", {
+				params: {
+					pageSize: pageSize,
+					pageNumber: pageNumber,
+					sortBy: capitalizeFirstLetter(sortBy),
+					ascending: ascending,
+					query: query,
+					...extent,
+				},
+				cancelToken: this._cancelTokens["fetchAllProto"].token,
+				headers: {
+					Accept: "application/x-protobuf",
+				},
+				responseType: "arraybuffer",
+			});
 
-            const decodedData = AdrYolResponse.decode(new Uint8Array(protoResponse.data));
+			const decodedData = AdrYolResponse.decode(new Uint8Array(protoResponse.data));
 
-            return decodedData;
-        } catch (error) {
-            if (error === "Request cancelled")
-                Logger.warn("Request was cancelled by axios");
-            Logger.error("Fetch AdrBina Proto error:", error);
-            throw error;
-        }
-    }
+			return decodedData;
+		} catch (error) {
+			if (error === "Request cancelled") Logger.warn("Request was cancelled by axios");
+			Logger.error("Fetch AdrBina Proto error:", error);
+			throw error;
+		}
+	}
 }

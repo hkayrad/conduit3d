@@ -61,7 +61,6 @@ export default function DeckglMap(): React.ReactNode {
     isWireframe,
     focusedView,
     basemapOpacity,
-    filters,
   } = useAppSelector(selectMapState);
   const { cartesian, firstPerson } = viewState;
   const config = useAppSelector(selectConfig);
@@ -176,12 +175,7 @@ export default function DeckglMap(): React.ReactNode {
         },
       ],
     }),
-    [
-      config.ADR_BINA_COLOR,
-      selectedViewType,
-      visibility.basemap,
-      visibility.adrBina,
-    ],
+    [selectedViewType, visibility.basemap, visibility.adrBina, adrBinaColor],
   );
 
   const ambientLight = useMemo(
@@ -203,14 +197,11 @@ export default function DeckglMap(): React.ReactNode {
   );
   const effects = useMemo(
     () => [new LightingEffect({ ambientLight, directionalLight })],
-    [],
+    [ambientLight, directionalLight],
   );
 
   // React-Router Hooks
   const location = useLocation();
-
-  // Local State
-  const [cursor, setCursor] = useState<string>("default");
 
   // GeoJSON Data States
   const [adrBina, setAdrBina] = useState<GeoJSON.FeatureCollection[]>([]);
@@ -291,7 +282,7 @@ export default function DeckglMap(): React.ReactNode {
             `${hat.id}-layer`,
             hat.data,
             hat.color,
-            hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
+            hexToRgba(config.HOVER_COLOR || "#ffffff") || COLORS.HOVER,
             hat.id.includes("HAVAİ")
               ? overgroundLineWidth
               : undergroundLineWidth,
@@ -312,7 +303,7 @@ export default function DeckglMap(): React.ReactNode {
             `${yol.id}-layer`,
             yol.data,
             yol.color,
-            hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
+            hexToRgba(config.HOVER_COLOR || "#ffffff") || COLORS.HOVER,
             0.5,
             selectedViewType === C3D_MapViewType.Cartesian
               ? yol.visibility && cartesian.zoom >= 15
@@ -328,7 +319,7 @@ export default function DeckglMap(): React.ReactNode {
             `${direk.id}-layer`,
             direk.data,
             direk.color,
-            hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
+            hexToRgba(config.HOVER_COLOR || "#ffffff") || COLORS.HOVER,
             selectedViewType === C3D_MapViewType.Cartesian
               ? direk.visibility && cartesian.zoom >= 15
               : direk.visibility,
@@ -350,14 +341,16 @@ export default function DeckglMap(): React.ReactNode {
                 selectedFeature &&
                 d.properties?.id === selectedFeature.properties?.id;
               return isSelected
-                ? hexToRgba(config.HOVER_COLOR) || COLORS.HOVER
-                : hexToRgba(config.ADR_BINA_COLOR) || COLORS.ADR_BINA;
+                ? hexToRgba(config.HOVER_COLOR || "#ffffff") || COLORS.HOVER
+                : hexToRgba(config.ADR_BINA_COLOR || "#ffffff") ||
+                    COLORS.ADR_BINA;
             },
             filled: true,
             extruded: true,
             pickable: !isWireframe,
             autoHighlight: true,
-            highlightColor: hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
+            highlightColor:
+              hexToRgba(config.HOVER_COLOR || "#ffffff") || COLORS.HOVER,
             visible:
               selectedViewType === C3D_MapViewType.Cartesian
                 ? visibility.adrBina && cartesian.zoom >= 15
@@ -386,14 +379,16 @@ export default function DeckglMap(): React.ReactNode {
                 selectedFeature &&
                 d.properties?.id === selectedFeature.properties?.id;
               return isSelected
-                ? hexToRgba(config.HOVER_COLOR) || COLORS.HOVER
-                : hexToRgba(config.ADR_BINA_COLOR) || COLORS.ADR_BINA;
+                ? hexToRgba(config.HOVER_COLOR || "#ffffff") || COLORS.HOVER
+                : hexToRgba(config.ADR_BINA_COLOR || "#ffffff") ||
+                    COLORS.ADR_BINA;
             },
             filled: true,
             extruded: true,
             pickable: !isWireframe,
             autoHighlight: true,
-            highlightColor: hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
+            highlightColor:
+              hexToRgba(config.HOVER_COLOR || "#ffffff") || COLORS.HOVER,
             visible:
               selectedViewType === C3D_MapViewType.Cartesian
                 ? visibility.adrBina && cartesian.zoom >= 15
@@ -424,12 +419,14 @@ export default function DeckglMap(): React.ReactNode {
                 d.properties?.id === selectedFeature.properties?.id;
               return isSelected
                 ? hexToRgba(config.HOVER_COLOR) || COLORS.HOVER
-                : hexToRgba(config.TRAFO_BINA_COLOR) || COLORS.TRAFO_BINA;
+                : hexToRgba(config.TRAFO_BINA_COLOR || "#ffffff") ||
+                    COLORS.TRAFO_BINA;
             },
             extruded: true,
             pickable: !isWireframe,
             autoHighlight: true,
-            highlightColor: hexToRgba(config.HOVER_COLOR) || COLORS.HOVER,
+            highlightColor:
+              hexToRgba(config.HOVER_COLOR || "#ffffff") || COLORS.HOVER,
             radius: 1,
             elevationScale: 1,
             diskResolution: 4,
@@ -451,7 +448,6 @@ export default function DeckglMap(): React.ReactNode {
       ),
     ],
     [
-      filters,
       visibility,
       isWireframe,
       yolLayerData,
@@ -464,6 +460,9 @@ export default function DeckglMap(): React.ReactNode {
       undergroundLineWidth,
       config,
       selectedFeature,
+      basemapOpacity,
+      cartesian.zoom,
+      selectedViewType,
     ],
   );
 
@@ -512,7 +511,7 @@ export default function DeckglMap(): React.ReactNode {
         },
       }));
     }
-  }, [firstPerson, focusedView]);
+  }, [firstPerson, focusedView, setMapViewState]);
 
   // Adjust line widths based on zoom level or camera height
   useEffect(() => {
@@ -546,7 +545,12 @@ export default function DeckglMap(): React.ReactNode {
         ),
       );
     }
-  }, [mapViewState, selectedViewType]);
+  }, [
+    mapViewState,
+    selectedViewType,
+    setOvergroundLineWidth,
+    setUndergroundLineWidth,
+  ]);
 
   // Handle view state changes
   useEffect(() => {
@@ -612,15 +616,6 @@ export default function DeckglMap(): React.ReactNode {
           widgets={widgets}
           onClick={handleClick}
           onHover={handleMouseMove}
-          getCursor={({ isDragging, isHovering }) => {
-            const newCursor = isDragging
-              ? "grabbing"
-              : isHovering
-                ? "pointer"
-                : "default";
-            setCursor(newCursor);
-            return newCursor;
-          }}
           effects={effects}
         >
           <MapLibre
@@ -629,7 +624,6 @@ export default function DeckglMap(): React.ReactNode {
             attributionControl={false}
             maxZoom={25}
             boxZoom={false}
-            cursor={cursor}
           />
         </DeckGL>
       </div>

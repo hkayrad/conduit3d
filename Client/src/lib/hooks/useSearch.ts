@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Logger, findAverageLonLat, InputSanitizer, wkbToGeometry } from "../utils";
 import {
 	AdrBinaApi,
@@ -34,247 +34,289 @@ export function useSearch() {
 		}>
 	>([]);
 
-	const _wrapInFeature = (geometry: GeoJSON.Geometry, properties: GeoJSON.GeoJsonProperties): GeoJSON.Feature => {
-		return {
-			type: "Feature",
-			geometry,
-			properties: properties,
-		};
-	};
+	const _wrapInFeature = useCallback(
+		(geometry: GeoJSON.Geometry, properties: GeoJSON.GeoJsonProperties): GeoJSON.Feature => {
+			return {
+				type: "Feature",
+				geometry,
+				properties: properties,
+			};
+		},
+		[],
+	);
 
 	// Feature Converters
-	const _convertToDirekFeature = (direkType: string, direk: Direk) => {
-		const geometry: GeoJSON.Geometry = wkbToGeometry(direk.wkb);
-		return {
-			id: `direk-${direkType}-${direk.id}`,
-			title: `${direk.cinsi} ${direk.tipi} (${direk.boyOzellik})`,
-			subtitle: `No: ${direk.direkNo} | Id: ${direk.id}`,
-			type: FeatureType.POLE,
-			position: findAverageLonLat(geometry, 2),
-			feature: _wrapInFeature(geometry, {
-				id: direk.id,
-			}),
-		};
-	};
-
-	const _convertToHatFeature = (hatType: FeatureType, hat: any) => {
-		const geometry: GeoJSON.Geometry = wkbToGeometry(hat.wkb);
-		if (hatType === FeatureType.REKORTMAN)
+	const _convertToDirekFeature = useCallback(
+		(direkType: string, direk: Direk) => {
+			const geometry: GeoJSON.Geometry = wkbToGeometry(direk.wkb);
 			return {
-				id: `hat-rekortman-${hat.id}`,
-				title: `Rekortman ${hat.tipi}`,
+				id: `direk-${direkType}-${direk.id}`,
+				title: `${direk.cinsi} ${direk.tipi} (${direk.boyOzellik})`,
+				subtitle: `No: ${direk.direkNo} | Id: ${direk.id}`,
+				type: FeatureType.POLE,
+				position: findAverageLonLat(geometry, 2),
+				feature: _wrapInFeature(geometry, {
+					id: direk.id,
+				}),
+			};
+		},
+		[_wrapInFeature],
+	);
+
+	const _convertToHatFeature = useCallback(
+		(hatType: FeatureType, hat: any) => {
+			const geometry: GeoJSON.Geometry = wkbToGeometry(hat.wkb);
+			if (hatType === FeatureType.REKORTMAN)
+				return {
+					id: `hat-rekortman-${hat.id}`,
+					title: `Rekortman ${hat.tipi}`,
+					subtitle: `Kesit: ${hat.kesit} | Id: ${hat.id}`,
+					type: FeatureType.REKORTMAN,
+					position: findAverageLonLat(geometry, 2),
+					feature: _wrapInFeature(geometry, {
+						id: hat.id,
+					}),
+				};
+
+			return {
+				id: `hat-${hat.id}`,
+				title: `${hat.tipi} ${hat.cinsi}`,
 				subtitle: `Kesit: ${hat.kesit} | Id: ${hat.id}`,
-				type: FeatureType.REKORTMAN,
+				type: FeatureType.LINE,
 				position: findAverageLonLat(geometry, 2),
 				feature: _wrapInFeature(geometry, {
 					id: hat.id,
 				}),
 			};
-
-		return {
-			id: `hat-${hat.id}`,
-			title: `${hat.tipi} ${hat.cinsi}`,
-			subtitle: `Kesit: ${hat.kesit} | Id: ${hat.id}`,
-			type: FeatureType.LINE,
-			position: findAverageLonLat(geometry, 2),
-			feature: _wrapInFeature(geometry, {
-				id: hat.id,
-			}),
-		};
-	};
+		},
+		[_wrapInFeature],
+	);
 
 	// Search handlers
-	const _handleAdrBinaSearch = async (query: string) => {
-		const response = await AdrBinaApi.fetchAll(MAX_SEARCH_RESULTS, 1, "id", true, query);
+	const _handleAdrBinaSearch = useCallback(
+		async (query: string) => {
+			const response = await AdrBinaApi.fetchAll(MAX_SEARCH_RESULTS, 1, "id", true, query);
 
-		if (!response.isSuccess) {
-			Logger.error("Bina API error:", response.message);
-			return [];
-		}
+			if (!response.isSuccess) {
+				Logger.error("Bina API error:", response.message);
+				return [];
+			}
 
-		const results = response.data.map((bina) => {
-			const geometry: GeoJSON.Geometry = wkbToGeometry(bina.wkb);
+			const results = response.data.map((bina) => {
+				const geometry: GeoJSON.Geometry = wkbToGeometry(bina.wkb);
 
-			return {
-				id: `bina-${bina.id}`,
-				title: bina.adi || "İsimsiz Bina",
-				subtitle: bina.id,
-				type: FeatureType.BUILDING,
-				position: findAverageLonLat(geometry, 2),
-				feature: _wrapInFeature(geometry, {
-					id: bina.id,
-				}),
-			};
-		});
+				return {
+					id: `bina-${bina.id}`,
+					title: bina.adi || "İsimsiz Bina",
+					subtitle: bina.id,
+					type: FeatureType.BUILDING,
+					position: findAverageLonLat(geometry, 2),
+					feature: _wrapInFeature(geometry, {
+						id: bina.id,
+					}),
+				};
+			});
 
-		return results;
-	};
+			return results;
+		},
+		[_wrapInFeature],
+	);
 
-	const _handleTrafoSearch = async (query: string) => {
-		const response = await TrafoBinaApi.fetchAll(MAX_SEARCH_RESULTS, 1, "id", true, query);
+	const _handleTrafoSearch = useCallback(
+		async (query: string) => {
+			const response = await TrafoBinaApi.fetchAll(MAX_SEARCH_RESULTS, 1, "id", true, query);
 
-		if (!response.isSuccess) {
-			Logger.error("Trafo API error:", response.message);
-			return [];
-		}
+			if (!response.isSuccess) {
+				Logger.error("Trafo API error:", response.message);
+				return [];
+			}
 
-		const results = response.data.map((trafo) => {
-			const geometry: GeoJSON.Geometry = wkbToGeometry(trafo.wkb);
-			return {
-				id: `trafo-${trafo.id}`,
-				title: trafo.adi || "İsimsiz Trafo",
-				subtitle: `Kodu: ${trafo.kodu} | Id: ${trafo.id}`,
-				type: FeatureType.TRAFO,
-				position: findAverageLonLat(geometry, 2),
-				feature: _wrapInFeature(geometry, {
-					id: trafo.id,
-				}),
-			};
-		});
+			const results = response.data.map((trafo) => {
+				const geometry: GeoJSON.Geometry = wkbToGeometry(trafo.wkb);
+				return {
+					id: `trafo-${trafo.id}`,
+					title: trafo.adi || "İsimsiz Trafo",
+					subtitle: `Kodu: ${trafo.kodu} | Id: ${trafo.id}`,
+					type: FeatureType.TRAFO,
+					position: findAverageLonLat(geometry, 2),
+					feature: _wrapInFeature(geometry, {
+						id: trafo.id,
+					}),
+				};
+			});
 
-		return results;
-	};
+			return results;
+		},
+		[_wrapInFeature],
+	);
 
-	const _handleYolSearch = async (query: string) => {
-		const response = await AdrYolApi.fetchAll(MAX_SEARCH_RESULTS, 1, "id", true, query);
+	const _handleYolSearch = useCallback(
+		async (query: string) => {
+			const response = await AdrYolApi.fetchAll(MAX_SEARCH_RESULTS, 1, "id", true, query);
 
-		if (!response.isSuccess) {
-			Logger.error("Yol API error:", response.message);
-			return [];
-		}
+			if (!response.isSuccess) {
+				Logger.error("Yol API error:", response.message);
+				return [];
+			}
 
-		const results = response.data.map((yol) => {
-			const geometry: GeoJSON.Geometry = wkbToGeometry(yol.wkb);
-			return {
-				id: `yol-${yol.id}`,
-				title: yol.adi || "İsimsiz Yol",
-				subtitle: `Kodu: ${yol.kodu} | Id: ${yol.id}`,
-				type: FeatureType.YOL,
-				position: findAverageLonLat(geometry, 2),
-				feature: _wrapInFeature(geometry, {
-					id: yol.id,
-				}),
-			};
-		});
+			const results = response.data.map((yol) => {
+				const geometry: GeoJSON.Geometry = wkbToGeometry(yol.wkb);
+				return {
+					id: `yol-${yol.id}`,
+					title: yol.adi || "İsimsiz Yol",
+					subtitle: `Kodu: ${yol.kodu} | Id: ${yol.id}`,
+					type: FeatureType.YOL,
+					position: findAverageLonLat(geometry, 2),
+					feature: _wrapInFeature(geometry, {
+						id: yol.id,
+					}),
+				};
+			});
 
-		return results;
-	};
+			return results;
+		},
+		[_wrapInFeature],
+	);
 
-	const _handleAgDirekSearch = async (query: string) => {
-		const response = await AgDirekApi.fetchAll(MAX_SEARCH_RESULTS, 1, "id", true, query);
+	const _handleAgDirekSearch = useCallback(
+		async (query: string) => {
+			const response = await AgDirekApi.fetchAll(MAX_SEARCH_RESULTS, 1, "id", true, query);
 
-		if (!response.isSuccess) {
-			Logger.error("AG Direk API error:", response.message);
-			return [];
-		}
+			if (!response.isSuccess) {
+				Logger.error("AG Direk API error:", response.message);
+				return [];
+			}
 
-		const results = response.data.map((direk) => _convertToDirekFeature("ag", direk));
+			const results = response.data.map((direk) => _convertToDirekFeature("ag", direk));
 
-		return results;
-	};
+			return results;
+		},
+		[_convertToDirekFeature],
+	);
 
-	const _handleOgMusDirekSearch = async (query: string) => {
-		const response = await OgMusDirekApi.fetchAll(MAX_SEARCH_RESULTS, 1, "id", true, query);
+	const _handleOgMusDirekSearch = useCallback(
+		async (query: string) => {
+			const response = await OgMusDirekApi.fetchAll(MAX_SEARCH_RESULTS, 1, "id", true, query);
 
-		if (!response.isSuccess) {
-			Logger.error("OG Mus Direk API error:", response.message);
-			return [];
-		}
+			if (!response.isSuccess) {
+				Logger.error("OG Mus Direk API error:", response.message);
+				return [];
+			}
 
-		const results = response.data.map((direk) => _convertToDirekFeature("og", direk));
+			const results = response.data.map((direk) => _convertToDirekFeature("og", direk));
 
-		return results;
-	};
+			return results;
+		},
+		[_convertToDirekFeature],
+	);
 
-	const _handleAydDirekSearch = async (query: string) => {
-		const response = await AydDirekApi.fetchAll(MAX_SEARCH_RESULTS, 1, "id", true, query);
+	const _handleAydDirekSearch = useCallback(
+		async (query: string) => {
+			const response = await AydDirekApi.fetchAll(MAX_SEARCH_RESULTS, 1, "id", true, query);
 
-		if (!response.isSuccess) {
-			Logger.error("AYD Direk API error:", response.message);
-			return [];
-		}
+			if (!response.isSuccess) {
+				Logger.error("AYD Direk API error:", response.message);
+				return [];
+			}
 
-		const results = response.data.map((direk) => _convertToDirekFeature("ayd", direk));
+			const results = response.data.map((direk) => _convertToDirekFeature("ayd", direk));
 
-		return results;
-	};
+			return results;
+		},
+		[_convertToDirekFeature],
+	);
 
-	const _handleDirekSearch = async (query: string) => {
-		const [agResult, aydResult, ogResult] = await Promise.all([
-			_handleAgDirekSearch(query),
-			_handleAydDirekSearch(query),
-			_handleOgMusDirekSearch(query),
-		]);
+	const _handleDirekSearch = useCallback(
+		async (query: string) => {
+			const [agResult, aydResult, ogResult] = await Promise.all([
+				_handleAgDirekSearch(query),
+				_handleAydDirekSearch(query),
+				_handleOgMusDirekSearch(query),
+			]);
 
-		const results: any[] = [];
+			const results: any[] = [];
 
-		if (agResult.length > 0) results.push(...agResult);
+			if (agResult.length > 0) results.push(...agResult);
 
-		if (ogResult.length > 0) results.push(...ogResult);
+			if (ogResult.length > 0) results.push(...ogResult);
 
-		if (aydResult.length > 0) results.push(...aydResult);
+			if (aydResult.length > 0) results.push(...aydResult);
 
-		return results;
-	};
+			return results;
+		},
+		[_handleAgDirekSearch, _handleOgMusDirekSearch, _handleAydDirekSearch],
+	);
 
-	const _handleAgHatSearch = async (query: string) => {
-		const response = await AgHatApi.fetchAll(MAX_SEARCH_RESULTS, 1, "id", true, query);
+	const _handleAgHatSearch = useCallback(
+		async (query: string) => {
+			const response = await AgHatApi.fetchAll(MAX_SEARCH_RESULTS, 1, "id", true, query);
 
-		if (!response.isSuccess) {
-			Logger.error("AG Hat API error:", response.message);
-			return [];
-		}
+			if (!response.isSuccess) {
+				Logger.error("AG Hat API error:", response.message);
+				return [];
+			}
 
-		const results = response.data.map((hat) => _convertToHatFeature(FeatureType.LINE, hat));
+			const results = response.data.map((hat) => _convertToHatFeature(FeatureType.LINE, hat));
 
-		return results;
-	};
+			return results;
+		},
+		[_convertToHatFeature],
+	);
 
-	const _handleOgHatSearch = async (query: string) => {
-		const response = await OgHatApi.fetchAll(MAX_SEARCH_RESULTS, 1, "id", true, query);
+	const _handleOgHatSearch = useCallback(
+		async (query: string) => {
+			const response = await OgHatApi.fetchAll(MAX_SEARCH_RESULTS, 1, "id", true, query);
 
-		if (!response.isSuccess) {
-			Logger.error("OG Hat API error:", response.message);
-			return [];
-		}
+			if (!response.isSuccess) {
+				Logger.error("OG Hat API error:", response.message);
+				return [];
+			}
 
-		const results = response.data.map((hat) => _convertToHatFeature(FeatureType.LINE, hat));
+			const results = response.data.map((hat) => _convertToHatFeature(FeatureType.LINE, hat));
 
-		return results;
-	};
+			return results;
+		},
+		[_convertToHatFeature],
+	);
 
-	const _handleRekortmanSearch = async (query: string) => {
-		const response = await RekortmanApi.fetchAll(MAX_SEARCH_RESULTS, 1, "id", true, query);
+	const _handleRekortmanSearch = useCallback(
+		async (query: string) => {
+			const response = await RekortmanApi.fetchAll(MAX_SEARCH_RESULTS, 1, "id", true, query);
 
-		if (!response.isSuccess) {
-			Logger.error("Rekortman API error:", response.message);
-			return [];
-		}
+			if (!response.isSuccess) {
+				Logger.error("Rekortman API error:", response.message);
+				return [];
+			}
 
-		const results = response.data.map((hat) => _convertToHatFeature(FeatureType.REKORTMAN, hat));
+			const results = response.data.map((hat) => _convertToHatFeature(FeatureType.REKORTMAN, hat));
 
-		return results;
-	};
+			return results;
+		},
+		[_convertToHatFeature],
+	);
 
-	const _handleHatSearch = async (hatQuery: string) => {
-		const [agResults, ogResults, rekortmanResults] = await Promise.all([
-			_handleAgHatSearch(hatQuery),
-			_handleOgHatSearch(hatQuery),
-			_handleRekortmanSearch(hatQuery),
-		]);
+	const _handleHatSearch = useCallback(
+		async (hatQuery: string) => {
+			const [agResults, ogResults, rekortmanResults] = await Promise.all([
+				_handleAgHatSearch(hatQuery),
+				_handleOgHatSearch(hatQuery),
+				_handleRekortmanSearch(hatQuery),
+			]);
 
-		const results: any[] = [];
+			const results: any[] = [];
 
-		if (agResults.length > 0) results.push(...agResults);
+			if (agResults.length > 0) results.push(...agResults);
 
-		if (ogResults.length > 0) results.push(...ogResults);
+			if (ogResults.length > 0) results.push(...ogResults);
 
-		if (rekortmanResults.length > 0) results.push(...rekortmanResults);
+			if (rekortmanResults.length > 0) results.push(...rekortmanResults);
 
-		return results;
-	};
+			return results;
+		},
+		[_handleAgHatSearch, _handleOgHatSearch, _handleRekortmanSearch],
+	);
 
-	const handleSearch = async () => {
+	const handleSearch = useCallback(async () => {
 		if (query.trim() === "") {
 			setResults([]);
 			return;
@@ -382,6 +424,19 @@ export function useSearch() {
 			Logger.error("Search error:", error);
 			setResults([]);
 		}
-	};
+	}, [
+		_handleAdrBinaSearch,
+		_handleAgHatSearch,
+		_handleOgHatSearch,
+		_handleRekortmanSearch,
+		_handleHatSearch,
+		_handleAydDirekSearch,
+		_handleDirekSearch,
+		_handleAgDirekSearch,
+		_handleOgMusDirekSearch,
+		_handleTrafoSearch,
+		_handleYolSearch,
+		query,
+	]);
 	return { query, setQuery, results, handleSearch, isFocused, setIsFocused };
 }

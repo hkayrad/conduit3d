@@ -1,6 +1,5 @@
 import "./style/layerControl.css";
 import {
-  Blend,
   Building,
   ChevronRight,
   Circle,
@@ -28,6 +27,7 @@ import LayerControlDropdown from "../../../../shared/layerControl/layerControlDr
 import LayerControlFilter from "../../../../shared/layerControl/layerControlFilter/LayerControlFilter";
 import SettingToggleButton from "../../../../shared/layerControl/settingToggleButton/SettingToggleButton";
 import { C3D_MapLayers, C3D_MapViewType } from "../../../../../lib/enums";
+import { useCallback } from "react";
 
 /**
  * LayerControl component manages the visibility and settings of map layers.
@@ -48,25 +48,28 @@ export default function LayerControl(): React.ReactNode {
     basemapOpacity,
   } = useAppSelector(selectMapState);
 
-  const handleControlsToggle = () => {
+  const handleControlsToggle = useCallback(() => {
     dispatch(setIsLayerControlsOpen(!isLayerControlsOpen));
-  };
+  }, [dispatch, isLayerControlsOpen]);
 
-  const handleHoverInfoToggle = () => {
+  const handleHoverInfoToggle = useCallback(() => {
     dispatch(setIsHoverInfoVisible(!isHoverInfoVisible));
-  };
+  }, [dispatch, isHoverInfoVisible]);
 
-  const handleLayerToggle = (layer: keyof MapState["visibility"]) => {
-    const isVisible = visibility[layer];
-    dispatch(setMapLayerVisibility({ layer, visible: !isVisible }));
-  };
+  const handleLayerToggle = useCallback(
+    (layer: keyof MapState["visibility"]) => {
+      const isVisible = visibility[layer];
+      dispatch(setMapLayerVisibility({ layer, visible: !isVisible }));
+    },
+    [dispatch, visibility],
+  );
 
-  const handleFilterToggle = (
-    newFilters: string[],
-    filterKey: keyof MapState["filters"],
-  ) => {
-    dispatch(setFilter({ filter: filterKey, tipi: newFilters }));
-  };
+  const handleFilterToggle = useCallback(
+    (newFilters: string[], filterKey: keyof MapState["filters"]) => {
+      dispatch(setFilter({ filter: filterKey, tipi: newFilters }));
+    },
+    [dispatch],
+  );
 
   return (
     <>

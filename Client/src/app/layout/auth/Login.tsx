@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import { UserApi } from "../../../lib/api";
 import Logo from "../../shared/logo/Logo";
 import Input from "../../shared/input/Input";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import type { LoginUserDto } from "../../../lib/types";
 import { Info, Loader, LogIn, ShieldX } from "lucide-react";
 import { clearUser, setUser } from "./authSlice";
@@ -27,47 +27,48 @@ export default function Login(): React.ReactNode {
 
   const navigate = useNavigate();
 
-  const handleLogin = async (
-    e: React.FormEvent<HTMLFormElement>,
-  ): Promise<void> => {
-    e.preventDefault();
+  const handleLogin = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+      e.preventDefault();
 
-    const user: LoginUserDto = {
-      username: InputSanitizer.sanitizeText(username),
-      password: InputSanitizer.sanitizeText(password),
-    };
+      const user: LoginUserDto = {
+        username: InputSanitizer.sanitizeText(username),
+        password: InputSanitizer.sanitizeText(password),
+      };
 
-    if (!user.username || !user.password) {
-      setLoginError("Please fill in all fields");
-      setLoading(false);
-      return;
-    }
+      if (!user.username || !user.password) {
+        setLoginError("Please fill in all fields");
+        setLoading(false);
+        return;
+      }
 
-    setLoading(true);
+      setLoading(true);
 
-    // Basic brute force attack mitigation
-    const timeout = Math.random() * 1000 + 500;
-    setTimeout(async () => {
-      try {
-        const response = await UserApi.login(user);
+      // Basic brute force attack mitigation
+      const timeout = Math.random() * 1000 + 500;
+      setTimeout(async () => {
+        try {
+          const response = await UserApi.login(user);
 
-        if (!response.isSuccess) {
+          if (!response.isSuccess) {
+            dispatch(clearUser());
+            setLoading(false);
+            setLoginError("Invalid username or password");
+            return;
+          }
+
+          dispatch(setUser(response.data));
+          navigate("/", { replace: true });
+        } catch (error) {
           dispatch(clearUser());
           setLoading(false);
-          setLoginError("Invalid username or password");
-          return;
+          setLoginError("An error occurred while trying to log in");
+          Logger.error("Login error:", error);
         }
-
-        dispatch(setUser(response.data));
-        navigate("/", { replace: true });
-      } catch (error) {
-        dispatch(clearUser());
-        setLoading(false);
-        setLoginError("An error occurred while trying to log in");
-        Logger.error("Login error:", error);
-      }
-    }, timeout);
-  };
+      }, timeout);
+    },
+    [dispatch, navigate, password, username],
+  );
 
   return (
     <div id="login">

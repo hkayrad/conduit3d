@@ -1,7 +1,7 @@
 import { Outlet } from "react-router";
 import Header from "./shared/header/Header";
 import Loader from "./shared/loader/Loader";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { ConfigApi } from "../lib/api";
 import { useAppDispatch } from "../lib/hooks";
 import { setConfig } from "./configSlice";
@@ -11,27 +11,35 @@ import { setConfig } from "./configSlice";
  * @returns The rendered component
  */
 export default function App(): React.ReactNode {
-    const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
-    const handleConfigFetch = async () => {
-        const response = await ConfigApi.fetchConfig();
-        
-        if (response.isSuccess)
-            dispatch(setConfig(response.data.reduce((acc, curr) => {
-                acc[curr.key] = curr.value;
-                return acc;
-            }, {} as Record<string, string>)));
-        else
-            console.error("Failed to fetch config:", response.message);
-    }
+  const handleConfigFetch = useCallback(async () => {
+    const response = await ConfigApi.fetchConfig();
 
-    useEffect(() => {
-        handleConfigFetch();
-    }, [])
+    if (response.isSuccess)
+      dispatch(
+        setConfig(
+          response.data.reduce(
+            (acc, curr) => {
+              acc[curr.key] = curr.value;
+              return acc;
+            },
+            {} as Record<string, string>,
+          ),
+        ),
+      );
+    else console.error("Failed to fetch config:", response.message);
+  }, [dispatch]);
 
-    return <>
-        <Header />
-        <Loader />
-        <Outlet />
+  useEffect(() => {
+    handleConfigFetch();
+  }, [handleConfigFetch]);
+
+  return (
+    <>
+      <Header />
+      <Loader />
+      <Outlet />
     </>
+  );
 }

@@ -4,56 +4,49 @@ import type { RootState } from "../../../lib/store";
 import { ListDataType } from "../../../lib/enums";
 
 export interface ListState {
-    itemsPerPage: number,
-    pageNumber: number,
-    sortBy: string,
-    ascending: boolean,
-    featureType: ListDataType,
-    query: string
+	itemsPerPage: number;
+	pageNumber: number;
+	sortBy: string;
+	ascending: boolean;
+	featureType: ListDataType;
+	query: string;
 }
 
 const initialState: ListState = {
-    itemsPerPage: 10,
-    pageNumber: 1,
-    sortBy: 'id',
-    ascending: true,
-    featureType: ListDataType.AdrBina,
-    query: ""
+	itemsPerPage: 10,
+	pageNumber: 1,
+	sortBy: "id",
+	ascending: true,
+	featureType: ListDataType.AdrBina,
+	query: "",
 };
 
 export const listSlice = createSlice({
-    name: 'list',
-    initialState,
-    reducers: {
-        setItemsPerPage: (state, action: PayloadAction<ListState['itemsPerPage']>) => {
-            state.itemsPerPage = action.payload;
-        },
-        setPageNumber: (state, action: PayloadAction<ListState['pageNumber']>) => {
-            state.pageNumber = action.payload;
-        },
-        setSortBy: (state, action: PayloadAction<ListState['sortBy']>) => {
-            state.sortBy = action.payload;
-        },
-        setAscending: (state, action: PayloadAction<ListState['ascending']>) => {
-            state.ascending = action.payload;
-        },
-        setFeatureType: (state, action: PayloadAction<ListState['featureType']>) => {
-            state.featureType = action.payload;
-        },
-        setQuery: (state, action: PayloadAction<ListState['query']>) => {
-            state.query = action.payload;
-        }
-    }
+	name: "list",
+	initialState,
+	reducers: {
+		setItemsPerPage: (state, action: PayloadAction<ListState["itemsPerPage"]>) => {
+			state.itemsPerPage = action.payload;
+		},
+		setPageNumber: (state, action: PayloadAction<ListState["pageNumber"]>) => {
+			state.pageNumber = action.payload;
+		},
+		setSortBy: (state, action: PayloadAction<ListState["sortBy"]>) => {
+			state.sortBy = action.payload;
+		},
+		setAscending: (state, action: PayloadAction<ListState["ascending"]>) => {
+			state.ascending = action.payload;
+		},
+		setFeatureType: (state, action: PayloadAction<ListState["featureType"]>) => {
+			state.featureType = action.payload;
+		},
+		setQuery: (state, action: PayloadAction<ListState["query"]>) => {
+			state.query = action.payload;
+		},
+	},
 });
 
-export const {
-    setItemsPerPage,
-    setPageNumber,
-    setSortBy,
-    setAscending,
-    setFeatureType,
-    setQuery
-} = listSlice.actions;
+export const { setItemsPerPage, setPageNumber, setSortBy, setAscending, setFeatureType, setQuery } = listSlice.actions;
 
 export const selectListState = (state: RootState) => state.list;
 

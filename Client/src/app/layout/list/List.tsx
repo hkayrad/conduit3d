@@ -1,6 +1,6 @@
 import "./style/list.css";
 import Table from "../../shared/table/Table";
-import React, { useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { useAppDispatch, useAppSelector, useList } from "../../../lib/hooks";
 import {
   selectListState,
@@ -119,21 +119,24 @@ export default function List(): React.ReactNode {
     [features],
   );
 
-  const handleGoToFeature = (f: any) => {
-    const { wkb, ...rest } = f;
-    const feature = {
-      type: "Feature",
-      geometry: wkbToGeometry(wkb),
-      properties: {
-        ...rest,
-        dataType: mappedFeatureTypes[featureType],
-      },
-    } as GeoJSON.Feature;
+  const handleGoToFeature = useCallback(
+    (f: any) => {
+      const { wkb, ...rest } = f;
+      const feature = {
+        type: "Feature",
+        geometry: wkbToGeometry(wkb),
+        properties: {
+          ...rest,
+          dataType: mappedFeatureTypes[featureType],
+        },
+      } as GeoJSON.Feature;
 
-    navigate("/", { replace: false });
-    dispatch(setSelectedViewType(C3D_MapViewType.Cartesian));
-    flyTo(feature);
-  };
+      navigate("/", { replace: false });
+      dispatch(setSelectedViewType(C3D_MapViewType.Cartesian));
+      flyTo(feature);
+    },
+    [dispatch, featureType, flyTo, mappedFeatureTypes, navigate],
+  );
 
   // Memoized table rows
   const rows = useMemo(
@@ -143,8 +146,8 @@ export default function List(): React.ReactNode {
           [
             index + 1,
             ...Object.entries(f)
-              .filter(([key, _]) => key !== "wkb")
-              .map(([_, value]) => (value === "" ? "-" : value)),
+              .filter(([key]) => key !== "wkb")
+              .map(([, value]) => (value === "" ? "-" : value)),
             <div className="action-button-wrapper" key={`action-btns-${f.id}`}>
               <ActionButton
                 content={<MapPin />}
@@ -154,13 +157,20 @@ export default function List(): React.ReactNode {
             </div>,
           ] as React.ReactNode[],
       ),
-    [features],
+    [features, handleGoToFeature],
   );
 
   // Effects
   useEffect(() => {
     handleRefreshData();
-  }, [featureType, itemsPerPage, pageNumber, sortBy, ascending]);
+  }, [
+    featureType,
+    itemsPerPage,
+    pageNumber,
+    sortBy,
+    ascending,
+    handleRefreshData,
+  ]);
 
   // Query handler with debounce
   useEffect(() => {
@@ -170,7 +180,7 @@ export default function List(): React.ReactNode {
     }, 250);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [query]);
+  }, [query, dispatch]);
 
   useEffect(() => {
     /* Reset pagination and sorting on feature type change */
@@ -178,24 +188,24 @@ export default function List(): React.ReactNode {
     dispatch(setSortBy("id"));
     dispatch(setAscending(true));
     dispatch(setQuery(""));
-  }, [featureType]);
+  }, [featureType, dispatch]);
 
   useEffect(() => {
     setTableData({ headers, rows });
-  }, [headers, rows]);
+  }, [headers, rows, setTableData]);
 
   return (
     <div id="list-page">
       <div className="feature-type-selector">
         <h2>Feature Type</h2>
         <div className="feature-type-sections">
-          {featureTypeSelectorSections.map((section, _) => (
+          {featureTypeSelectorSections.map((section) => (
             <div
               key={`div-${section.sectionLabel}`}
               className="feature-type-section"
             >
               <h3>{section.sectionLabel}</h3>
-              {section.types.map((type, _) => (
+              {section.types.map((type) => (
                 <button
                   key={`btn-${type}`}
                   className={featureType === type ? "selected" : ""}

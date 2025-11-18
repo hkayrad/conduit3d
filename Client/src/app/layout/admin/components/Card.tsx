@@ -1,10 +1,10 @@
 type Props = {
-    title: string,
-    icon: React.ReactNode,
-    number: number
-    numberColor?: string,
-    info?: string
-}
+  title: string;
+  icon: React.ReactNode;
+  number: number;
+  numberColor?: string;
+  info?: string;
+};
 
 /**
  * Card component for displaying a statistic with an icon.
@@ -13,18 +13,18 @@ type Props = {
  * @returns The rendered card component.
  */
 export default function Card(props: Readonly<Props>): React.ReactNode {
-    const { title, icon, number, info, numberColor } = props;
+  const { title, icon, number, info, numberColor } = props;
 
-    return (
-        <div className="card">
-            <div className="upper">
-                <p>{title}</p>
-                <div className="icon">{icon}</div>
-            </div>
-            <div className="lower">
-                <p className={`content ${numberColor}-fg`}>{number}</p>
-                {info && <p className="info">{info}</p>}
-            </div>
-        </div>
-    )
+  return (
+    <div className="card">
+      <div className="upper">
+        <p>{title}</p>
+        <div className="icon">{icon}</div>
+      </div>
+      <div className="lower">
+        <p className={`content ${numberColor}-fg`}>{number}</p>
+        {info && <p className="info">{info}</p>}
+      </div>
+    </div>
+  );
 }

@@ -76,21 +76,19 @@ export function useMap() {
 		if (selectedViewType === C3D_MapViewType.Cartesian) {
 			return new MapView({
 				id: C3D_MapViewType.Cartesian,
-				// viewState: { ...mapViewState.cartesian },
 				farZMultiplier: 1000,
 				controller: true,
 			});
 		} else if (selectedViewType === C3D_MapViewType.FirstPerson) {
 			return new FirstPersonView({
 				id: C3D_MapViewType.FirstPerson,
-				// viewState: { ...mapViewState.firstPerson },
 				controller: true,
 				far: 10000,
 			});
 		} else {
 			return null;
 		}
-	}, [selectedViewType, mapViewState]);
+	}, [selectedViewType]);
 
 	/**
 	 * Filter layers based on the current viewport
@@ -221,12 +219,12 @@ export function useMap() {
 					position: { longitude: currentPos.longitude, latitude: currentPos.latitude },
 				}),
 			);
-	}, [focusedView, location, mapViewState, selectedViewType, lastRefreshPosition]);
+	}, [focusedView, mapViewState, selectedViewType, lastRefreshPosition, dispatch]);
 
 	/**
 	 * Handle dragging in First Person view
 	 */
-	const handleFirstPersonDrag = () => {
+	const handleFirstPersonDrag = useCallback(() => {
 		if (selectedViewType !== C3D_MapViewType.FirstPerson) return;
 		if (focusedView !== "deckgl") return;
 
@@ -241,7 +239,15 @@ export function useMap() {
 				},
 			}),
 		);
-	};
+	}, [
+		dispatch,
+		focusedView,
+		viewState.firstPerson,
+		selectedViewType,
+		mapViewState.firstPerson.bearing,
+		mapViewState.firstPerson.pitch,
+		mapViewState.firstPerson.position,
+	]);
 
 	/**
 	 * Handle view state changes
