@@ -112,48 +112,48 @@ export default function DeckglMap(): React.ReactNode {
         },
       },
       layers: [
-        {
-          id: "turkey-layer",
-          type: "raster",
-          source: "turkey",
-          "source-layer": "turkey",
-          layout: {
-            visibility:
-              selectedViewType === C3D_MapViewType.Cartesian &&
-              visibility.basemap
-                ? "visible"
-                : "none",
-          },
-          maxzoom: 16,
-        },
-        {
-          id: "eskisehir-layer",
-          type: "raster",
-          source: "eskisehir",
-          "source-layer": "eskisehir",
-          layout: {
-            visibility:
-              selectedViewType === C3D_MapViewType.Cartesian &&
-              visibility.basemap
-                ? "visible"
-                : "none",
-          },
-          maxzoom: 16,
-        },
-        {
-          id: "erzurum-layer",
-          type: "raster",
-          source: "erzurum",
-          "source-layer": "erzurum",
-          layout: {
-            visibility:
-              selectedViewType === C3D_MapViewType.Cartesian &&
-              visibility.basemap
-                ? "visible"
-                : "none",
-          },
-          maxzoom: 16,
-        },
+        // {
+        //   id: "turkey-layer",
+        //   type: "raster",
+        //   source: "turkey",
+        //   "source-layer": "turkey",
+        //   layout: {
+        //     visibility:
+        //       selectedViewType === C3D_MapViewType.Cartesian &&
+        //       visibility.basemap
+        //         ? "visible"
+        //         : "none",
+        //   },
+        //   maxzoom: 16,
+        // },
+        // {
+        //   id: "eskisehir-layer",
+        //   type: "raster",
+        //   source: "eskisehir",
+        //   "source-layer": "eskisehir",
+        //   layout: {
+        //     visibility:
+        //       selectedViewType === C3D_MapViewType.Cartesian &&
+        //       visibility.basemap
+        //         ? "visible"
+        //         : "none",
+        //   },
+        //   maxzoom: 16,
+        // },
+        // {
+        //   id: "erzurum-layer",
+        //   type: "raster",
+        //   source: "erzurum",
+        //   "source-layer": "erzurum",
+        //   layout: {
+        //     visibility:
+        //       selectedViewType === C3D_MapViewType.Cartesian &&
+        //       visibility.basemap
+        //         ? "visible"
+        //         : "none",
+        //   },
+        //   maxzoom: 16,
+        // },
         {
           id: "all_buildings-layer",
           source: "all_buildings",
@@ -175,7 +175,7 @@ export default function DeckglMap(): React.ReactNode {
         },
       ],
     }),
-    [selectedViewType, visibility.basemap, visibility.adrBina, adrBinaColor],
+    [selectedViewType, visibility.adrBina, adrBinaColor],
   );
 
   const ambientLight = useMemo(
@@ -226,8 +226,14 @@ export default function DeckglMap(): React.ReactNode {
   } = useHat();
 
   // Direk hook
-  const { setAgDirek, setOgMusDirek, setAydDirek, direkLayerData, allPoles } =
-    useDirek();
+  const {
+    setAgDirek,
+    setOgMusDirek,
+    setAydDirek,
+    direkLayerData,
+    aydDirekFormatted,
+    allPoles,
+  } = useDirek();
 
   const { yolLayerData, setAdrYol } = useYol();
 
@@ -254,6 +260,8 @@ export default function DeckglMap(): React.ReactNode {
     handleKeyPresses,
     flyTo,
   } = useMap();
+
+  useEffect(() => console.log(aydDirekFormatted), [aydDirekFormatted]);
 
   // Memoized widgets
   const widgets = useMemo(() => {
@@ -326,6 +334,20 @@ export default function DeckglMap(): React.ReactNode {
             isWireframe,
             selectedFeature,
           ),
+        ),
+      ),
+
+      ...aydDirekFormatted.map((aydDirek) =>
+        CreateLayer.AydDirek(
+          `${aydDirek.id}-layer`,
+          aydDirek.data,
+          aydDirek.color,
+          hexToRgba(config.HOVER_COLOR || "#ffffff") || COLORS.HOVER,
+          selectedViewType === C3D_MapViewType.Cartesian
+            ? aydDirek.visibility && cartesian.zoom >= 15
+            : aydDirek.visibility,
+          isWireframe,
+          selectedFeature,
         ),
       ),
 
@@ -463,6 +485,7 @@ export default function DeckglMap(): React.ReactNode {
       basemapOpacity,
       cartesian.zoom,
       selectedViewType,
+      aydDirekFormatted,
     ],
   );
 

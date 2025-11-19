@@ -49,13 +49,6 @@ export default function ShortcutsInfo() {
         </p>
         <p>
           <span>
-            <kbd>Ctrl</kbd>
-            <kbd>Period (.)</kbd>
-          </span>{" "}
-          : Toggle Basemap Opacity
-        </p>
-        <p>
-          <span>
             <kbd>Esc</kbd>
           </span>{" "}
           : Unfocus Search Bar
@@ -66,6 +59,13 @@ export default function ShortcutsInfo() {
             <kbd>W</kbd>
           </span>{" "}
           : Wireframe Mode
+        </p>
+        <p>
+          <span>
+            <kbd>Shift</kbd>
+            <kbd>Period (.)</kbd>
+          </span>{" "}
+          : Toggle Basemap Opacity
         </p>
         <p>
           <span>
