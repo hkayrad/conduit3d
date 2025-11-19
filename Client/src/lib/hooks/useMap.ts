@@ -410,9 +410,6 @@ export function useMap() {
 			} else if (e.code === "Comma") {
 				e.preventDefault();
 				dispatch(toggleSettingsWindow());
-			} else if (e.code === "Period") {
-				e.preventDefault();
-				dispatch(toggleBasemapOpacity());
 			}
 		},
 		[searchInputRef, dispatch],
@@ -429,6 +426,7 @@ export function useMap() {
 				KeyC: () => dispatch(setSelectedViewType(C3D_MapViewType.Cartesian)),
 				KeyF: () => dispatch(setSelectedViewType(C3D_MapViewType.FirstPerson)),
 				KeyP: () => setShowFpsCounter((prev) => !prev),
+				Period: () => dispatch(toggleBasemapOpacity()),
 			};
 
 			const action = keyActions[e.code];

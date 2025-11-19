@@ -1,6 +1,7 @@
-import { BitmapLayer, ColumnLayer, PathLayer, TileLayer } from "deck.gl";
+import { BitmapLayer, ColumnLayer, PathLayer, SimpleMeshLayer, TileLayer } from "deck.gl";
 import { PathStyleExtension } from "@deck.gl/extensions";
 import { C3D_MapViewType, HatCinsi } from "../../enums";
+import { OBJLoader } from "@loaders.gl/obj";
 
 /**
  * Class for creating different types of layers.
@@ -51,7 +52,7 @@ export class CreateLayer {
 			pickable: true,
 			highlightColor: [60, 60, 60, 40],
 			// https://wiki.openstreetmap.org/wiki/Zoom_levels
-			minZoom: 16,
+			minZoom: 0,
 			maxZoom: 18,
 			tileSize: 256,
 			visible: visibility,
@@ -170,6 +171,36 @@ export class CreateLayer {
 			wireframe: wireframe,
 			updateTriggers: {
 				getFillColor: [selectedFeature, wireframe],
+			},
+		});
+	}
+
+	static AydDirek(
+		id: string,
+		data: GeoJSON.Feature[],
+		color: [number, number, number, number],
+		highlightColor: [number, number, number, number],
+		visibility: boolean,
+		wireframe: boolean = false,
+		selectedFeature: GeoJSON.Feature | null = null,
+	) {
+		const isSelected = (d: GeoJSON.Feature) => selectedFeature && d.properties?.id === selectedFeature.properties?.id;
+
+		return new SimpleMeshLayer({
+			id: id,
+			data: data ?? [],
+			getPosition: (d) => d.geometry.coordinates,
+			getColor: (d) => (wireframe ? [0, 0, 0, 128] : isSelected(d) ? highlightColor : color),
+			pickable: !wireframe,
+			autoHighlight: true,
+			highlightColor: highlightColor,
+			visible: visibility,
+			wireframe: wireframe,
+			getScale: (d) => [d.properties.yukseklik, d.properties.yukseklik, d.properties.yukseklik],
+			mesh: "/model.obj",
+			loaders: [OBJLoader],
+			updateTriggers: {
+				getColor: [selectedFeature, wireframe],
 			},
 		});
 	}

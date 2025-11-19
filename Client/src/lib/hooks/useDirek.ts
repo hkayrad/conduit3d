@@ -107,7 +107,8 @@ export function useDirek() {
 		setOgMusDirek,
 		aydDirek,
 		setAydDirek,
-		direkLayerData: [agDirekFormatted, ogMusDirekFormatted, aydDirekFormatted],
+		direkLayerData: [agDirekFormatted, ogMusDirekFormatted],
+		aydDirekFormatted,
 		allPoles,
 	};
 }
