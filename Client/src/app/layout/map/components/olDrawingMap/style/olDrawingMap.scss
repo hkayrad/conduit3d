@@ -1,0 +1,66 @@
+@use "../../../../../../global.scss" as global;
+
+.ol-drawing-map-controls {
+    position: absolute;
+    top: 5rem;
+    left: 1rem;
+    z-index: 1000;
+    background-color: global.$primary;
+    padding: 10px;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+
+    .drawing-group {
+        display: flex;
+        gap: 5px;
+        padding-right: 10px;
+        border-right: 1px solid global.$primary-lighter;
+    }
+
+    button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        border: none;
+        border-radius: 0.5rem;
+        background-color: global.$primary-light;
+        color: global.$white;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+            background-color: global.$primary-lighter;
+        }
+
+        &.active {
+            background-color: global.$primary-lighter;
+            /* Distinct active color */
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: global.$primary-light; // Ensure it doesn't look active
+            box-shadow: none;
+
+            &:hover {
+                background-color: global.$primary-light;
+            }
+        }
+
+        &.clear-btn {
+            background-color: global.$error;
+            color: global.$white;
+            border: 1px solid global.$error;
+
+            &:hover {
+                background-color: #b71c1c; // Darker red
+            }
+        }
+    }
+}

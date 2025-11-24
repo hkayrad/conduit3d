@@ -5,12 +5,12 @@
     top: 5rem;
     right: 1rem;
     z-index: 1000;
-    transition: all .3s ease;
+    transition: all 0.3s ease;
     border: none;
-    border-radius: .5rem;
+    border-radius: 0.5rem;
     background-color: global.$primary;
     color: global.$white;
-    padding: .75rem;
+    padding: 0.75rem;
     display: flex;
     align-items: center;
     outline: none;
@@ -24,6 +24,26 @@
     }
 }
 
+#toggleDraw {
+    position: absolute;
+    z-index: 1000;
+    top: 8rem;
+    right: 1rem;
+    padding: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: global.$primary;
+    border: none;
+    color: global.$white;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+
+    &.open {
+        right: 21rem;
+    }
+}
+
 .layer-control-content {
     z-index: 1000;
     position: absolute;
@@ -31,9 +51,9 @@
     right: -20rem;
     width: 20rem;
     min-height: 6.125rem;
-    transition: all .3s ease;
+    transition: all 0.3s ease;
     background: global.$primary;
-    padding: 1rem .75rem 1rem 1rem;
+    padding: 1rem 0.75rem 1rem 1rem;
     border-radius: 12px 0 0 12px;
     color: global.$white;
     display: flex;
@@ -44,7 +64,7 @@
     user-select: none;
 
     &::-webkit-scrollbar {
-        width: .5rem;
+        width: 0.5rem;
     }
 
     &::-webkit-scrollbar-track {

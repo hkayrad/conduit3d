@@ -53,7 +53,7 @@ export class CreateLayer {
 			highlightColor: [60, 60, 60, 40],
 			// https://wiki.openstreetmap.org/wiki/Zoom_levels
 			minZoom: 0,
-			maxZoom: 18,
+			// maxZoom: 18,
 			tileSize: 256,
 			visible: visibility,
 			opacity: opacity,
@@ -197,7 +197,7 @@ export class CreateLayer {
 			visible: visibility,
 			wireframe: wireframe,
 			getScale: (d) => [d.properties.yukseklik, d.properties.yukseklik, d.properties.yukseklik],
-			mesh: "/model.obj",
+			mesh: "/aydDirek.obj",
 			loaders: [OBJLoader],
 			updateTriggers: {
 				getColor: [selectedFeature, wireframe],

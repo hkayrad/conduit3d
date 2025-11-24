@@ -13,22 +13,22 @@ public class BuildingsContext(DbContextOptions options) : DbContext(options)
     /// <summary>
     /// DbSet for buildings entities
     /// </summary>
-    public DbSet<Building> Buildings { get; set; }
+    public required DbSet<Building> Buildings { get; set; }
 
     /// <summary>
     /// DbSet for ADR_BINA entities
     /// </summary>
-    public DbSet<AdrBina> AdrBuildings { get; set; }
+    public required DbSet<AdrBina> AdrBuildings { get; set; }
 
     /// <summary>
     /// DbSet for SBK_TRAFOBINATIP entities
     /// </summary>
-    public DbSet<TrafoBina> TrafoBuildings { get; set; }
+    public required DbSet<TrafoBina> TrafoBuildings { get; set; }
 
     /// <summary>
     /// DbSet for ADR_YOL entities
     /// </summary>
-    public DbSet<AdrYol> AdrYol { get; set; }
+    public required DbSet<AdrYol> AdrYol { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

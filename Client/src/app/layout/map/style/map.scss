@@ -1,0 +1,84 @@
+@use "../../../../global.scss";
+@import "../../../../../node_modules/ol/ol.css";
+
+#map-grid {
+    overflow: hidden !important;
+    position: relative;
+    display: grid;
+    width: 100dvw;
+    height: 100dvh;
+
+    &.hide {
+        display: none !important;
+    }
+
+    #deckgl-map {
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+
+        &:only-child {
+            grid-column: 1 / -1 !important;
+        }
+
+        .top-left {
+            top: 5rem !important;
+            left: 1rem !important;
+
+            .deck-widget {
+                margin-top: 0px !important;
+                margin-left: 0px !important;
+                background: none !important;
+                border: none !important;
+
+                .deck-widget-button-group {
+                    gap: 0px;
+                    background: none !important;
+
+                    .deck-widget-icon-button {
+                        background: global.$primary !important;
+
+                        .deck-widget-icon {
+                            background: global.$white !important;
+                        }
+                    }
+                }
+
+                &.deck-widget-compass {
+                    .deck-widget-button {
+                        background: none !important;
+
+                        button {
+                            background: global.$primary !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .resizer-gutter {
+        width: 5px;
+        cursor: col-resize;
+        background-color: #f1f1f1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: background-color 0.2s;
+        z-index: 10;
+
+        &:hover,
+        &.resizing {
+            background-color: #ccc;
+        }
+
+        &::after {
+            content: "";
+            width: 2px;
+            height: 20px;
+            background-color: #999;
+            border-radius: 1px;
+        }
+    }
+}

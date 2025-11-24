@@ -1,4 +1,4 @@
-import "./style/layerControl.css";
+import "./style/layerControl.scss";
 import {
   Building,
   ChevronRight,
@@ -7,6 +7,8 @@ import {
   Eye,
   EyeClosed,
   Layers2,
+  Pencil,
+  PenOff,
   PlugZap,
   UtilityPole,
   Waypoints,
@@ -29,12 +31,18 @@ import SettingToggleButton from "../../../../shared/layerControl/settingToggleBu
 import { C3D_MapLayers, C3D_MapViewType } from "../../../../../lib/enums";
 import { useCallback } from "react";
 
+type Props = {
+  isDrawOpen: boolean;
+  onDrawClick: () => void;
+};
+
 /**
  * LayerControl component manages the visibility and settings of map layers.
  * @component
  * @returns The rendered component
  */
-export default function LayerControl(): React.ReactNode {
+export default function LayerControl(props: Props): React.ReactNode {
+  const { isDrawOpen, onDrawClick } = props;
   const dispatch = useAppDispatch();
   const {
     isLayerControlsOpen,
@@ -82,6 +90,13 @@ export default function LayerControl(): React.ReactNode {
         }
       >
         {isLayerControlsOpen ? <ChevronRight /> : <Layers2 />}
+      </button>
+      <button
+        id="toggleDraw"
+        className={`shadow ${isLayerControlsOpen ? "open" : "closed"}`}
+        onClick={onDrawClick}
+      >
+        {isDrawOpen ? <PenOff /> : <Pencil />}
       </button>
       <div
         className={`layer-control-content
