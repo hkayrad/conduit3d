@@ -1,25 +1,25 @@
-@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap");
 
-$primary: #2B2D42;
-$primary-light: #3B3E5A;
-$primary-lighter: #4B4E73;
-$success: #4CAF50;
-$warning: #FFC107;
-$error: #D32F2F;
-$white: #FFFFFF;
+$primary: #2b2d42;
+$primary-light: #3b3e5a;
+$primary-lighter: #4b4e73;
+$success: #4caf50;
+$warning: #ffc107;
+$error: #d32f2f;
+$white: #ffffff;
 $gray: #7d8488;
-$gray-light: #D3D3D3;
-$off-white: #F8F8F8;
+$gray-light: #d3d3d3;
+$off-white: #f8f8f8;
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Lexend', sans-serif;
+    font-family: "Lexend", sans-serif;
     font-size: 16px;
 
     &::-webkit-scrollbar {
-        width: .5rem;
+        width: 0.5rem;
     }
 
     &::-webkit-scrollbar-track {
@@ -69,13 +69,13 @@ $off-white: #F8F8F8;
 }
 
 .shadow {
-    box-shadow: 0 .25rem .5rem rgba(#000000, .15);
+    box-shadow: 0 0.25rem 0.5rem rgba(#000000, 0.15);
 }
 
 kbd {
     background: $white;
     color: $primary;
-    padding: .0625rem .25rem;
-    border-radius: .25rem;
+    padding: 0.0625rem 0.25rem;
+    border-radius: 0.25rem;
     white-space: nowrap;
 }

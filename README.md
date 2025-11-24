@@ -1,7 +1,6 @@
 [![Backend Test](https://github.com/hkayrad/conduit3d/actions/workflows/backend-test.yml/badge.svg?branch=master)](https://github.com/hkayrad/conduit3d/actions/workflows/backend-test.yml)
 [![Frontend Test](https://github.com/hkayrad/conduit3d/actions/workflows/frontend-test.yml/badge.svg?branch=master)](https://github.com/hkayrad/conduit3d/actions/workflows/frontend-test.yml)
 
-
 # Conduit3D Platform
 
 A microservices-based platform for managing geospatial electrical infrastructure data. Built with modern .NET technologies, React, and PostgreSQL/PostGIS for scalable 3D visualization and data management.
@@ -13,15 +12,18 @@ Conduit3D is a modular platform designed for electrical utility companies to man
 ## 🏗️ Architecture
 
 ### Microservices
+
 - **[AuthService](Services/AuthService/)** - User authentication and authorization with JWT
 - **[BuildingsService](Services/BuildingsService/)** - Building data management with PostGIS
 - **[LinesService](Services/LinesService/)** - Electrical line infrastructure management
 - **[PolesService](Services/PolesService/)** - Electrical pole infrastructure management
 
 ### Frontend
+
 - **[Client](Client/)** - React TypeScript application with 3D geospatial visualization
 
 ### Infrastructure
+
 - **[ApiGateway](ApiGateway/)** - Caddy-based reverse proxy with JWT validation
 - **[Common](Common/)** - Shared domain models and utilities
 - **[TileService](TileService/)** - Map tile serving for geospatial visualization
@@ -29,6 +31,7 @@ Conduit3D is a modular platform designed for electrical utility companies to man
 ## 🔧 Tech Stack
 
 ### Backend Services
+
 - **ASP.NET Core 8.0** - Web API framework
 - **Entity Framework Core** - ORM with PostgreSQL provider
 - **PostgreSQL/PostGIS** - Spatial database for geospatial data
@@ -36,6 +39,7 @@ Conduit3D is a modular platform designed for electrical utility companies to man
 - **Swagger/OpenAPI** - API documentation
 
 ### Frontend [(Dependency List)](Client/package.json)
+
 - **React 19** - Modern UI framework
 - **TypeScript** - Type-safe development
 - **Vite** - Fast build tool and development server
@@ -43,6 +47,7 @@ Conduit3D is a modular platform designed for electrical utility companies to man
 - **Deck.gl** - Interactive geospatial visualization
 
 ### Infrastructure
+
 - **Docker & Docker Compose** - Containerization and orchestration
 - **Caddy** - Modern web server and reverse proxy
 - **PostGIS** - Spatial database extensions
@@ -50,6 +55,7 @@ Conduit3D is a modular platform designed for electrical utility companies to man
 ## 🚦 Getting Started
 
 ### Prerequisites
+
 - [Docker](https://www.docker.com/products/docker-desktop)
 - [.NET 8 SDK](https://dotnet.microsoft.com/download) (for local development)
 - [Node.js 18+](https://nodejs.org/) (for frontend development)
@@ -57,12 +63,14 @@ Conduit3D is a modular platform designed for electrical utility companies to man
 ### Quick Start with Docker
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd conduit3d
    ```
 
 2. **Set up environment variables**
+
    ```bash
    # Copy and configure environment variables
    cp .env.example .env
@@ -70,6 +78,7 @@ Conduit3D is a modular platform designed for electrical utility companies to man
    ```
 
 3. **Start all services**
+
    ```bash
    # Build and start all services
    docker compose up --build -d
@@ -78,7 +87,7 @@ Conduit3D is a modular platform designed for electrical utility companies to man
 4. **Access the application**
    - **Main Application**: https://\<domain>
    - **API Gateway**: https://\<domain>/api
-   - **API Documentation**: 
+   - **API Documentation**:
      - Auth: https://\<domain>/api/docs/auth/swagger
      - Buildings: https://\<domain>/api/docs/buildings/swagger
      - Lines: https://\<domain>/api/docs/lines/swagger
@@ -87,6 +96,7 @@ Conduit3D is a modular platform designed for electrical utility companies to man
 ## 📋 API Endpoints
 
 ### Authentication (`/api/v1/auth`)
+
 - `POST /login` - User authentication
 - `GET /` - List users (paginated)
 - `GET /count` - Get user count
@@ -132,16 +142,18 @@ Conduit3D is a modular platform designed for electrical utility companies to man
 ### Local Development Setup
 
 1. **Backend Services**
+
    ```bash
    # Start databases only
    docker compose up auth_database buildings_database lines_database poles_database -d
-   
+
    # Run services locally
    cd Services/AuthService
    dotnet run
    ```
 
 2. **Frontend Development**
+
    ```bash
    cd Client
    npm install
@@ -157,47 +169,51 @@ Conduit3D is a modular platform designed for electrical utility companies to man
 
 ### Environment Variables
 
-| Variable | Description |
-|----------|-------------|
-| `JWT_ISSUER` | JWT Issuer for signing |
-| `JWT_AUDIENCE` | JWT Audience for signing |
-| `JWT_SIGNING_ALGORITHM` | Algorithm |
-| `JWT_SECRET` | JWT Secret for signing |
-| `JWT_SECRET_BASE64` | JWT Secret in BASE64 |
+| Variable                  | Description                  |
+| ------------------------- | ---------------------------- |
+| `JWT_ISSUER`              | JWT Issuer for signing       |
+| `JWT_AUDIENCE`            | JWT Audience for signing     |
+| `JWT_SIGNING_ALGORITHM`   | Algorithm                    |
+| `JWT_SECRET`              | JWT Secret for signing       |
+| `JWT_SECRET_BASE64`       | JWT Secret in BASE64         |
 | `JWT_EXPIRATION_TIME_HRS` | JWT Expiration Time in hours |
-| `AUTH_DB_NAME` | Auth database name |
-| `AUTH_DB_USER` | Auth database user |
-| `AUTH_DB_PASS` | Auth database password |
-| `BUILDINGS_DB_NAME` | Buildings database name |
-| `BUILDINGS_DB_USER` | Buildings database user |
-| `BUILDINGS_DB_PASS` | Buildings database password |
-| `LINES_DB_NAME` | Lines database name |
-| `LINES_DB_USER` | Lines database user |
-| `LINES_DB_PASS` | Lines database password |
-| `POLES_DB_NAME` | Poles database name |
-| `POLES_DB_USER` | Poles database user |
-| `POLES_DB_PASS` | Poles database password |
-| `VITE_API_URL` | API url to use in client |
-| `VITE_TILE_SERVER_URL` | Tile server to use in client |
+| `AUTH_DB_NAME`            | Auth database name           |
+| `AUTH_DB_USER`            | Auth database user           |
+| `AUTH_DB_PASS`            | Auth database password       |
+| `BUILDINGS_DB_NAME`       | Buildings database name      |
+| `BUILDINGS_DB_USER`       | Buildings database user      |
+| `BUILDINGS_DB_PASS`       | Buildings database password  |
+| `LINES_DB_NAME`           | Lines database name          |
+| `LINES_DB_USER`           | Lines database user          |
+| `LINES_DB_PASS`           | Lines database password      |
+| `POLES_DB_NAME`           | Poles database name          |
+| `POLES_DB_USER`           | Poles database user          |
+| `POLES_DB_PASS`           | Poles database password      |
+| `VITE_API_URL`            | API url to use in client     |
+| `VITE_TILE_SERVER_URL`    | Tile server to use in client |
 
 ## 🗺️ Key Features
 
 ### 3D Geospatial Visualization
+
 - Interactive 3D maps for electrical infrastructure
 - Real-time data visualization
 - Spatial query capabilities
 
 ### User Management
+
 - Role-based access control
 - JWT-based authentication
 - Admin panel for user administration
 
 ### Infrastructure Management
+
 - CRUD operations for all asset types
 - Geospatial data with PostGIS integration
 - RESTful APIs with OpenAPI documentation
 
 ### Scalable Architecture
+
 - Microservices-based design
 - Docker containerization
 - API Gateway
@@ -221,20 +237,14 @@ Conduit3D is a modular platform designed for electrical utility companies to man
 - api_gateway
 ```
 
-<!-- ## 🧪 Testing
+## 🧪 Testing
 
 ```bash
-# Run all service tests
-docker compose -f docker-compose.test.yml up --build
+chmod +X ./analyze.sh
+./analyze.sh
 
-# Individual service testing
-cd Services/AuthService
-dotnet test
-
-# Frontend testing
-cd Client
-npm test
-``` -->
+# Select what you want to test.
+```
 
 <!-- ## 📊 Monitoring & Health Checks
 
@@ -263,13 +273,3 @@ npm test
 ## 📄 License
 
 This project is proprietary software. All rights reserved.
-
-## 📞 Support
-
-For support and questions, please contact the development team or create an issue in the repository.
-
----
-
-**Conduit3D Platform** - Modern electrical infrastructure
-
-Initially developed by Hakan Kayra Doğan - [hkayrad.tr](https://hkayrad.tr)

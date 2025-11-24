@@ -13,17 +13,17 @@ public class LinesContext(DbContextOptions options) : DbContext(options)
     /// <summary>
     /// DbSet for SBK_AGHAT entities
     /// </summary>
-    public DbSet<AgHat> AgHatlar { get; set; }
+    public required DbSet<AgHat> AgHatlar { get; set; }
 
     /// <summary>
     /// DbSet for SBK_OGHAT entities
     /// </summary>
-    public DbSet<OgHat> OgHatlar { get; set; }
+    public required DbSet<OgHat> OgHatlar { get; set; }
 
     /// <summary>
     /// DbSet for SBK_REKORTMAN entities
     /// </summary>
-    public DbSet<Rekortman> Rekortmanlar { get; set; }
+    public required DbSet<Rekortman> Rekortmanlar { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

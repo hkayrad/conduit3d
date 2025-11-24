@@ -13,12 +13,12 @@ public class UsersContext(DbContextOptions options) : DbContext(options)
     /// <summary>
     /// DbSet for users entities
     /// </summary>
-    public DbSet<User> Users { get; set; }
+    public required DbSet<User> Users { get; set; }
 
     /// <summary>
     /// DbSet for config entities
     /// </summary>
-    public DbSet<Config> Configs { get; set; }
+    public required DbSet<Config> Configs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

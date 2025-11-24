@@ -1,7 +1,7 @@
 import "@deck.gl/widgets/stylesheet.css";
 import "deck.gl/stylesheet.css";
 import "maplibre-gl/dist/maplibre-gl.css";
-import "./style/deckglMap.css";
+import "./style/map.scss";
 
 import { COLORS, DEBOUNCE_TIME_MS } from "../../../lib/constants";
 import {
@@ -21,16 +21,16 @@ import {
   Layer,
   LightingEffect,
 } from "@deck.gl/core";
-import { ColumnLayer, GeoJsonLayer } from "deck.gl";
+import { GeoJsonLayer, SimpleMeshLayer } from "deck.gl";
 import { DeckGL } from "@deck.gl/react";
 import { CompassWidget, ZoomWidget } from "@deck.gl/widgets";
 import {
   Map as MapLibre,
   type StyleSpecification,
 } from "react-map-gl/maplibre";
-import { useEffect, useMemo, useState } from "react";
-import { Outlet, useLocation } from "react-router";
 
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Outlet, useLocation } from "react-router";
 import { selectMapState, setFocusedView } from "./mapSlice";
 import { selectConfig } from "../../configSlice";
 import LayerControl from "./components/layerControl/LayerControl";
@@ -45,6 +45,9 @@ import GlobalSearch from "./components/globalSearch/GlobalSearch";
 import DynamicStreetView from "./components/streetView/DynamicStreetView";
 import MapSettings from "./components/mapSettings/MapSettings";
 import FpsCounter from "../../shared/fpsCounter/FpsCounter";
+import OlDrawingMap from "./components/olDrawingMap/OlDrawingMap";
+
+import { OBJLoader } from "@loaders.gl/obj";
 
 /**
  * DeckglMap component renders the Deck.gl map with various layers and controls.
@@ -209,6 +212,46 @@ export default function DeckglMap(): React.ReactNode {
     [],
   );
   const [trafoBina, setTrafoBina] = useState<GeoJSON.FeatureCollection[]>([]);
+
+  // Layout and Resizing State
+
+  const [isOlMapVisible, setIsOlMapVisible] = useState(false);
+  const [leftPanelWidth, setLeftPanelWidth] = useState(93); // Percentage
+  const isResizingRef = useRef(false);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isResizingRef.current) return;
+
+      // Calculate percentage
+      const newWidth = (e.clientX / window.innerWidth) * 100;
+
+      // Clamp between 10% and 90% to prevent total collapse
+      if (newWidth >= 10 && newWidth <= 90) {
+        setLeftPanelWidth(newWidth);
+      }
+    };
+
+    const handleMouseUp = () => {
+      if (isResizingRef.current) {
+        isResizingRef.current = false;
+        document.body.style.cursor = "default";
+      }
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, []);
+
+  const startResizing = () => {
+    isResizingRef.current = true;
+    document.body.style.cursor = "col-resize";
+  };
 
   // Redux hooks
   const dispatch = useAppDispatch();
@@ -429,13 +472,12 @@ export default function DeckglMap(): React.ReactNode {
 
       ...trafoBina.map(
         (chunk, index) =>
-          new ColumnLayer({
+          new SimpleMeshLayer({
             id: `trafo-bina-layer-${index}`,
-            data: chunk.features,
+            data: chunk.features ?? [],
             getPosition: (d) => d.geometry.coordinates,
-            getElevation: (d) => d.properties.yukseklik,
-            getFillColor: (d) => {
-              if (isWireframe) return [0, 0, 0, 0];
+            getColor: (d) => {
+              if (isWireframe) return [0, 0, 0, 255];
               const isSelected =
                 selectedFeature &&
                 d.properties?.id === selectedFeature.properties?.id;
@@ -444,29 +486,60 @@ export default function DeckglMap(): React.ReactNode {
                 : hexToRgba(config.TRAFO_BINA_COLOR || "#ffffff") ||
                     COLORS.TRAFO_BINA;
             },
-            extruded: true,
             pickable: !isWireframe,
             autoHighlight: true,
             highlightColor:
               hexToRgba(config.HOVER_COLOR || "#ffffff") || COLORS.HOVER,
-            radius: 1,
-            elevationScale: 1,
-            diskResolution: 4,
-            filled: true,
             visible:
               selectedViewType === C3D_MapViewType.Cartesian
                 ? visibility.trafoBina && cartesian.zoom >= 15
                 : visibility.trafoBina,
             wireframe: isWireframe,
+            getScale: [6, 6, 6],
+            mesh: "/trafo.obj",
+            loaders: [OBJLoader],
             updateTriggers: {
-              getFillColor: [
-                selectedFeature,
-                isWireframe,
-                config.HOVER_COLOR,
-                config.TRAFO_BINA_COLOR,
-              ],
+              getColor: [selectedFeature, isWireframe],
             },
           }),
+        // new ColumnLayer({
+        //   id: `trafo-bina-layer-${index}`,
+        //   data: chunk.features,
+        //   getPosition: (d) => d.geometry.coordinates,
+        //   getElevation: (d) => d.properties.yukseklik,
+        //   getFillColor: (d) => {
+        //     if (isWireframe) return [0, 0, 0, 0];
+        //     const isSelected =
+        //       selectedFeature &&
+        //       d.properties?.id === selectedFeature.properties?.id;
+        //     return isSelected
+        //       ? hexToRgba(config.HOVER_COLOR) || COLORS.HOVER
+        //       : hexToRgba(config.TRAFO_BINA_COLOR || "#ffffff") ||
+        //           COLORS.TRAFO_BINA;
+        //   },
+        //   extruded: true,
+        //   pickable: !isWireframe,
+        //   autoHighlight: true,
+        //   highlightColor:
+        //     hexToRgba(config.HOVER_COLOR || "#ffffff") || COLORS.HOVER,
+        //   radius: 1,
+        //   elevationScale: 1,
+        //   diskResolution: 4,
+        //   filled: true,
+        //   visible:
+        //     selectedViewType === C3D_MapViewType.Cartesian
+        //       ? visibility.trafoBina && cartesian.zoom >= 15
+        //       : visibility.trafoBina,
+        //   wireframe: isWireframe,
+        //   updateTriggers: {
+        //     getFillColor: [
+        //       selectedFeature,
+        //       isWireframe,
+        //       config.HOVER_COLOR,
+        //       config.TRAFO_BINA_COLOR,
+        //     ],
+        //   },
+        // }),
       ),
     ],
     [
@@ -488,6 +561,10 @@ export default function DeckglMap(): React.ReactNode {
       aydDirekFormatted,
     ],
   );
+
+  const openOlContainer = () => {
+    setIsOlMapVisible((prev) => !prev);
+  };
 
   // Add keyboard event listener
   useEffect(() => {
@@ -589,66 +666,125 @@ export default function DeckglMap(): React.ReactNode {
   return (
     <>
       <Outlet context={{ flyTo }} />
-      <div id="map-page" className={location.pathname === "/" ? "" : "hide"}>
-        <DataComponent
-          allPoles={allPoles}
-          setBuildingBina={setBuildingBina}
-          setAdrBina={setAdrBina}
-          setTrafoBina={setTrafoBina}
-          setAdrYol={setAdrYol}
-          setAgDirek={setAgDirek}
-          setOgMusDirek={setOgMusDirek}
-          setAydDirek={setAydDirek}
-          setAgHat={setAgHat}
-          setOgHat={setOgHat}
-          setRekortman={setRekortman}
-        />
-        {/* Dynamically create the FeatureInfo components */}
-        {activePopups.map((popup) => (
-          <FeatureInfo
-            key={popup.id}
-            info={popup.info}
-            zIndex={popup.zIndex}
-            onFocus={() => handleFocusPopup(popup.id)}
-            onClose={() => handleClosePopup(popup.id)}
-            onFlyTo={() => flyTo(popup.info.object)}
+      <div
+        id="map-grid"
+        style={{
+          gridTemplateColumns: isOlMapVisible
+            ? `${leftPanelWidth}% 5px auto`
+            : "1fr",
+        }}
+        className={location.pathname === "/" ? "" : "hide"}
+      >
+        {isOlMapVisible && (
+          <OlDrawingMap
+            isVisible={isOlMapVisible}
+            hatLayerData={hatLayerData}
+            direkLayerData={direkLayerData}
+            yolLayerData={yolLayerData}
+            adrBina={adrBina}
+            buildingBina={buildingBina}
+            trafoBina={trafoBina}
+            visibility={visibility}
+            config={config}
           />
-        ))}
-        <GlobalSearch flyTo={flyTo} searchInputRef={searchInputRef} />
-        <MapSettings />
-        {/* <StaticStreetView /> */}
-        <DynamicStreetView />
-        <LayerControl />
-        <HoverCard hoveredFeature={hoveredFeature} mousePos={mousePos} />
-        <ViewToggle />
-        <ShortcutsInfo />
-        <MousePosition mouseLonLat={mouseLonLat} />
-        <Attribution />
-        {showFpsCounter && (
-          <FpsCounter position="top-left" showDetails={true} />
         )}
-        <DeckGL
-          controller
-          views={views}
-          viewState={mapViewState[selectedViewType]}
-          onViewStateChange={({ viewId, viewState }) =>
-            handleViewStateChange(viewId as C3D_MapViewType, viewState)
-          }
-          layers={layers}
-          layerFilter={layerFilter}
-          widgets={widgets}
-          onClick={handleClick}
-          onHover={handleMouseMove}
-          effects={effects}
-        >
-          <MapLibre
-            mapStyle={MAP_STYLE}
-            reuseMaps
-            attributionControl={false}
-            maxZoom={25}
-            boxZoom={false}
+
+        {isOlMapVisible && (
+          <div className="resizer-gutter" onMouseDown={startResizing} />
+        )}
+
+        <div id="deckgl-map">
+          <DataComponent
+            allPoles={allPoles}
+            setBuildingBina={setBuildingBina}
+            setAdrBina={setAdrBina}
+            setTrafoBina={setTrafoBina}
+            setAdrYol={setAdrYol}
+            setAgDirek={setAgDirek}
+            setOgMusDirek={setOgMusDirek}
+            setAydDirek={setAydDirek}
+            setAgHat={setAgHat}
+            setOgHat={setOgHat}
+            setRekortman={setRekortman}
           />
-        </DeckGL>
+          {/* Dynamically create the FeatureInfo components */}
+          {activePopups.map((popup) => (
+            <FeatureInfo
+              key={popup.id}
+              info={popup.info}
+              zIndex={popup.zIndex}
+              onFocus={() => handleFocusPopup(popup.id)}
+              onClose={() => handleClosePopup(popup.id)}
+              onFlyTo={() => flyTo(popup.info.object)}
+            />
+          ))}
+          {!isOlMapVisible ? (
+            <>
+              <GlobalSearch flyTo={flyTo} searchInputRef={searchInputRef} />
+              <MapSettings />
+              {/* <StaticStreetView /> */}
+              <HoverCard hoveredFeature={hoveredFeature} mousePos={mousePos} />
+              <ShortcutsInfo />
+              <DynamicStreetView />
+              <ViewToggle />
+              <Attribution />
+              <MousePosition mouseLonLat={mouseLonLat} />
+              {showFpsCounter && (
+                <FpsCounter position="top-left" showDetails={true} />
+              )}
+              <DeckGL
+                controller
+                views={views}
+                viewState={mapViewState[selectedViewType]}
+                onViewStateChange={({ viewId, viewState }) =>
+                  handleViewStateChange(viewId as C3D_MapViewType, viewState)
+                }
+                layers={layers}
+                layerFilter={layerFilter}
+                widgets={widgets}
+                onClick={handleClick}
+                onHover={handleMouseMove}
+                effects={effects}
+                useDevicePixels={false}
+              >
+                <MapLibre
+                  mapStyle={MAP_STYLE}
+                  reuseMaps
+                  attributionControl={false}
+                  maxZoom={25}
+                  boxZoom={false}
+                />
+              </DeckGL>
+            </>
+          ) : (
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "var(--background-color, #1a1a1a)",
+                color: "var(--text-secondary, #888)",
+                fontSize: "14px",
+                fontFamily: "system-ui, -apple-system, sans-serif",
+              }}
+            >
+              <div style={{ textAlign: "center" }}>
+                <div style={{ marginBottom: "8px", opacity: 0.6 }}>
+                  DeckGL map is paused
+                </div>
+                <div style={{ fontSize: "12px", opacity: 0.4 }}>
+                  Close the drawing panel to resume
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+        <LayerControl
+          isDrawOpen={isOlMapVisible}
+          onDrawClick={openOlContainer}
+        />
       </div>
     </>
   );

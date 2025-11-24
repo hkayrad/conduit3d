@@ -13,17 +13,17 @@ public class PolesContext(DbContextOptions options) : DbContext(options)
     /// <summary>
     /// DbSet for SBK_AGDIREK entities
     /// </summary>
-    public DbSet<AgDirek> AgHatlar { get; set; }
+    public required DbSet<AgDirek> AgHatlar { get; set; }
 
     /// <summary>
     /// DbSet for SBK_AYDDIREK entities
     /// </summary>
-    public DbSet<AydDirek> AydHatlar { get; set; }
+    public required DbSet<AydDirek> AydHatlar { get; set; }
 
     /// <summary>
     /// DbSet for SBK_OGMUSDIREK entities
     /// </summary>
-    public DbSet<OgMusDirek> OgMusHatlar { get; set; }
+    public required DbSet<OgMusDirek> OgMusHatlar { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
