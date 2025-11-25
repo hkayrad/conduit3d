@@ -1,7 +1,8 @@
 import './style/modal.css';
 
 type Props = {
-    children: React.ReactNode
+    children: React.ReactNode;
+    className?: string;
 }
 
 /**
@@ -11,11 +12,11 @@ type Props = {
  * @returns The rendered Modal component.
  */
 export default function Modal(props: Readonly<Props>): React.ReactNode {
-    const { children } = props;
+    const { children, className = "" } = props;
 
     return (
         <div className="modal-overlay">
-            <div className="modal">
+            <div className={`modal ${className}`}>
                 {children}
             </div>
         </div>

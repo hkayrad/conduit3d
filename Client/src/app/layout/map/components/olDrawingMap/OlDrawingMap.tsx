@@ -7,30 +7,52 @@ import OlVectorLayer from "ol/layer/Vector";
 import OlOSM from "ol/source/OSM";
 import OlVectorSource from "ol/source/Vector";
 import OlView from "ol/View";
+import MapBrowserEvent from "ol/MapBrowserEvent";
 import { Draw, Modify, Snap } from "ol/interaction";
 import type { C3D_LayerViewState, Config } from "../../../../../lib/types";
+import InfoContent from "../../../../shared/infoContent/InfoContent";
 import type { Type } from "ol/geom/Geometry";
 import GeoJSON from "ol/format/GeoJSON";
 import { Style, Stroke, Fill, Circle as CircleStyle } from "ol/style";
+import { fromLonLat, toLonLat } from "ol/proj";
+import SaveFeatureModal from "./components/SaveFeatureModal";
 
 type Props = {
   isVisible: boolean;
   hatLayerData: any[];
   direkLayerData: any[];
+  aydDirekData: any[];
   yolLayerData: any[];
   adrBina: GeoJSON.FeatureCollection[];
   buildingBina: GeoJSON.FeatureCollection[];
   trafoBina: GeoJSON.FeatureCollection[];
   visibility: C3D_LayerViewState;
   config: Config;
+  viewState: {
+    longitude: number;
+    latitude: number;
+    zoom: number;
+  };
+  onViewStateChange: (viewState: {
+    longitude: number;
+    latitude: number;
+    zoom: number;
+  }) => void;
 };
 
 type DrawingMode = "Point" | "LineString" | "Polygon" | "None";
 
+type HoverInfo = {
+  x: number;
+  y: number;
+  properties: Record<string, any>;
+} | null;
+
 // Helper functions
 const generateRandomColor = () =>
-  `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
-
+  `#${Math.floor(Math.random() * 16777215)
+    .toString(16)
+    .padStart(6, "0")}`;
 
 const normalizeGeoJSONData = (data: any) => {
   if (!data) return null;
@@ -54,7 +76,9 @@ const normalizeGeoJSONData = (data: any) => {
   return data;
 };
 
-const normalizeColor = (color: string | [number, number, number, number]): string => {
+const normalizeColor = (
+  color: string | [number, number, number, number],
+): string => {
   if (Array.isArray(color)) {
     // Convert [r, g, b, a] to rgba string
     return `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3] / 255})`;
@@ -139,12 +163,15 @@ export default function OlDrawingMap(props: Props) {
     isVisible,
     hatLayerData,
     direkLayerData,
+    aydDirekData,
     yolLayerData,
     adrBina,
     buildingBina,
     trafoBina,
     visibility,
     config,
+    viewState,
+    onViewStateChange,
   } = props;
 
   const olContainerRef = useRef<HTMLDivElement>(null);
@@ -152,6 +179,19 @@ export default function OlDrawingMap(props: Props) {
   const sourceRef = useRef<OlVectorSource>(new OlVectorSource());
   const [drawingMode, setDrawingMode] = useState<DrawingMode>("None");
   const [hasFeatures, setHasFeatures] = useState(false);
+  const [hoverInfo, setHoverInfo] = useState<HoverInfo>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentGeometryType, setCurrentGeometryType] = useState<
+    "Point" | "LineString" | "Polygon" | "None"
+  >("None");
+
+  const viewStateRef = useRef(viewState);
+  const onViewStateChangeRef = useRef(onViewStateChange);
+
+  useEffect(() => {
+    viewStateRef.current = viewState;
+    onViewStateChangeRef.current = onViewStateChange;
+  }, [viewState, onViewStateChange]);
 
   // Initialize OpenLayers map
   useEffect(() => {
@@ -185,9 +225,9 @@ export default function OlDrawingMap(props: Props) {
         vectorLayer,
       ],
       view: new OlView({
-        center: [4595997.358926718, 4851468.48885042],
+        center: fromLonLat([viewState.longitude, viewState.latitude]),
         projection: "EPSG:3857",
-        zoom: 15,
+        zoom: viewState.zoom,
         // Performance: disable smooth animations
         enableRotation: false,
       }),
@@ -207,12 +247,33 @@ export default function OlDrawingMap(props: Props) {
       updateFeatureState,
     );
 
+    // Handle view state changes
+    const handleMoveEnd = () => {
+      const view = map.getView();
+      const center = view.getCenter();
+      const zoom = view.getZoom();
+
+      if (center && zoom !== undefined) {
+        const [longitude, latitude] = toLonLat(center);
+        // Use the current global zoom from the ref to prevent syncing zoom changes
+        // from OpenLayers back to the global state.
+        onViewStateChangeRef.current({
+          longitude,
+          latitude,
+          zoom: viewStateRef.current.zoom,
+        });
+      }
+    };
+
+    map.on("moveend", handleMoveEnd);
+
     return () => {
       map.setTarget(undefined);
       sourceRef.current.un(
         ["addfeature", "removefeature", "clear"],
         updateFeatureState,
       );
+      map.un("moveend", handleMoveEnd);
     };
   }, []);
 
@@ -232,6 +293,52 @@ export default function OlDrawingMap(props: Props) {
       }
     });
 
+    // Hover interaction handler
+    const handlePointerMove = (evt: MapBrowserEvent<any>) => {
+      if (evt.dragging) {
+        setHoverInfo(null);
+        return;
+      }
+
+      const pixel = map.getEventPixel(evt.originalEvent);
+      const feature = map.forEachFeatureAtPixel(pixel, (feature) => feature);
+
+      // Change cursor
+      const element = map.getTargetElement();
+      if (element) {
+        element.style.cursor = feature ? "pointer" : "";
+      }
+
+      if (feature) {
+        const properties = feature.getProperties();
+        // Filter internal properties and geometry
+        const filteredProps: Record<string, any> = {};
+        Object.keys(properties).forEach((key) => {
+          const value = properties[key];
+          if (
+            key !== "geometry" &&
+            !key.startsWith("ol_") &&
+            typeof value !== "object" &&
+            typeof value !== "function"
+          ) {
+            filteredProps[key] = value;
+          }
+        });
+
+        if (Object.keys(filteredProps).length > 0) {
+          setHoverInfo({
+            x: pixel[0],
+            y: pixel[1],
+            properties: filteredProps,
+          });
+        } else {
+          setHoverInfo(null);
+        }
+      } else {
+        setHoverInfo(null);
+      }
+    };
+
     // Always add Modify and Snap
     const modify = new Modify({ source: sourceRef.current });
     map.addInteraction(modify);
@@ -246,13 +353,27 @@ export default function OlDrawingMap(props: Props) {
         sourceRef.current.clear();
       });
 
-      draw.on("drawend", () => {
+      draw.on("drawend", (event) => {
+        const feature = event.feature;
+        const geometry = feature.getGeometry();
+        const type = geometry?.getType();
+
+        if (type === "Point" || type === "LineString" || type === "Polygon") {
+          setCurrentGeometryType(type);
+        }
+
         setTimeout(() => {
           setDrawingMode("None");
         }, 0);
       });
 
       map.addInteraction(draw);
+
+      // Clear hover info when entering draw mode
+      setHoverInfo(null);
+    } else {
+      // Add hover listener only when NOT drawing
+      map.on("pointermove", handlePointerMove);
     }
 
     const snap = new Snap({ source: sourceRef.current });
@@ -269,6 +390,8 @@ export default function OlDrawingMap(props: Props) {
           map.removeInteraction(interaction);
         }
       });
+      // Cleanup listener
+      map.un("pointermove", handlePointerMove);
     };
   }, [drawingMode]);
 
@@ -297,7 +420,12 @@ export default function OlDrawingMap(props: Props) {
         group.forEach((layer: any) => {
           if (layer.visibility) {
             const color = layer.color || generateRandomColor();
-            const vectorLayer = createVectorLayer(layer.data, color, width, isPoint);
+            const vectorLayer = createVectorLayer(
+              layer.data,
+              color,
+              width,
+              isPoint,
+            );
             if (vectorLayer) map.addLayer(vectorLayer);
           }
         });
@@ -337,10 +465,15 @@ export default function OlDrawingMap(props: Props) {
       if (direkLayerData) {
         addLayersFromGroups(direkLayerData, 2, true);
       }
+
+      if (aydDirekData) {
+        addLayersFromGroups(aydDirekData, 2, true);
+      }
     }
   }, [
     hatLayerData,
     direkLayerData,
+    aydDirekData,
     yolLayerData,
     adrBina,
     buildingBina,
@@ -356,7 +489,7 @@ export default function OlDrawingMap(props: Props) {
       style={{ position: "relative", width: "100%", height: "100%" }}
     >
       <div className="ol-drawing-map-controls">
-        <div className="drawing-group">
+        <div className={`drawing-group ${hasFeatures ? "" : "hideBorder"}`}>
           <button
             onClick={() =>
               setDrawingMode((prev) => (prev === "Point" ? "None" : "Point"))
@@ -391,27 +524,66 @@ export default function OlDrawingMap(props: Props) {
         </div>
         <button
           onClick={() => sourceRef.current.clear()}
-          className="clear-btn"
+          className={`clear-btn ${hasFeatures ? "" : "hidden"}`}
           title="Clear All"
         >
           <Trash2 size={20} />
         </button>
         <button
           onClick={() => {
-            // TODO: Implement save functionality
-            console.log("Save clicked");
+            setIsModalOpen(true);
           }}
+          className={`${hasFeatures ? "" : "hidden"}`}
           title="Save"
           disabled={!hasFeatures}
         >
           <Save size={20} />
         </button>
       </div>
+      <SaveFeatureModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={(featureType, attributes) => {
+          console.log("Saving feature with type:", featureType);
+          console.log("Attributes:", attributes);
+          setIsModalOpen(false);
+          // TODO: Implement actual save logic
+        }}
+        geometryType={currentGeometryType}
+      />
       <div
         id="ol-map"
         style={{ width: "100%", height: "100%" }}
         ref={olContainerRef}
       ></div>
+      {hoverInfo && (
+        <div
+          className="ol-hover-card"
+          style={{
+            left: hoverInfo.x,
+            top: hoverInfo.y,
+          }}
+        >
+          {hoverInfo.properties.dataType ? (
+            <>
+              <h3>
+                <span>{hoverInfo.properties.dataType}</span>
+              </h3>
+              <div className="divider"></div>
+            </>
+          ) : (
+            Object.keys(hoverInfo.properties).length > 1 && (
+              <>
+                <h3>
+                  <span>Feature Details</span>
+                </h3>
+                <div className="divider"></div>
+              </>
+            )
+          )}
+          {InfoContent(hoverInfo.properties)}
+        </div>
+      )}
     </div>
   );
 }

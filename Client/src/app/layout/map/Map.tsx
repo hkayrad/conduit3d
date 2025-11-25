@@ -115,20 +115,20 @@ export default function DeckglMap(): React.ReactNode {
         },
       },
       layers: [
-        // {
-        //   id: "turkey-layer",
-        //   type: "raster",
-        //   source: "turkey",
-        //   "source-layer": "turkey",
-        //   layout: {
-        //     visibility:
-        //       selectedViewType === C3D_MapViewType.Cartesian &&
-        //       visibility.basemap
-        //         ? "visible"
-        //         : "none",
-        //   },
-        //   maxzoom: 16,
-        // },
+        {
+          id: "turkey-layer",
+          type: "raster",
+          source: "turkey",
+          "source-layer": "turkey",
+          layout: {
+            visibility:
+              selectedViewType === C3D_MapViewType.Cartesian &&
+              visibility.basemap
+                ? "visible"
+                : "none",
+          },
+          maxzoom: 16,
+        },
         // {
         //   id: "eskisehir-layer",
         //   type: "raster",
@@ -178,7 +178,7 @@ export default function DeckglMap(): React.ReactNode {
         },
       ],
     }),
-    [selectedViewType, visibility.adrBina, adrBinaColor],
+    [selectedViewType, visibility.adrBina, adrBinaColor, visibility.basemap],
   );
 
   const ambientLight = useMemo(
@@ -680,12 +680,20 @@ export default function DeckglMap(): React.ReactNode {
             isVisible={isOlMapVisible}
             hatLayerData={hatLayerData}
             direkLayerData={direkLayerData}
+            aydDirekData={[aydDirekFormatted]}
             yolLayerData={yolLayerData}
             adrBina={adrBina}
             buildingBina={buildingBina}
             trafoBina={trafoBina}
             visibility={visibility}
             config={config}
+            viewState={mapViewState.cartesian}
+            onViewStateChange={(newViewState) =>
+              handleViewStateChange(C3D_MapViewType.Cartesian, {
+                ...mapViewState.cartesian,
+                ...newViewState,
+              })
+            }
           />
         )}
 

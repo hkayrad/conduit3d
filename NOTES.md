@@ -5,6 +5,10 @@
 - [x] featurelari yerin altindan gormeye de izin ver
 - [x] highlight on gotos
 
+5 -> AG
+28 -> AYD
+
+
 # NOTES
 I tried sticking the REKORTMAN to the height of the pole. It caused so many calculations so it is discarded.
 
