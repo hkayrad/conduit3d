@@ -11,6 +11,7 @@ public sealed class UnitOfWork(PolesContext context) : IUnitOfWork
     private IAgDirekRepository? _agDirekRepository;
     private IAydDirekRepository? _aydDirekRepository;
     private IOgMusDirekRepository? _ogMusDirekRepository;
+    private IArmaturRepository? _armaturRepository;
     private IDbContextTransaction? _transaction;
     private bool _disposed = false;
 
@@ -38,6 +39,15 @@ public sealed class UnitOfWork(PolesContext context) : IUnitOfWork
         get
         {
             return _ogMusDirekRepository ??= new OgMusDirekRepository(_context);
+        }
+    }
+
+    /// <inheritdoc />
+    public IArmaturRepository ArmaturRepository
+    {
+        get
+        {
+            return _armaturRepository ??= new ArmaturRepository(_context);
         }
     }
 

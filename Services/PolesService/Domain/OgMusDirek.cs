@@ -32,7 +32,7 @@ public class OgMusDirek
     [MaxLength(50)]
     public string Adi { get; set; } = string.Empty;
 
-    /// <summary> 
+    /// <summary>
     /// The type of the medium voltage pole.
     /// </summary>
     [Column("cinsi")]

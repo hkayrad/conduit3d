@@ -33,5 +33,8 @@
   <ItemGroup>
     <Protobuf Include="Protos\aydDirek.proto" GrpcServices="Server" />
   </ItemGroup>
+  <ItemGroup>
+    <Protobuf Include="Protos\armatur.proto" GrpcServices="Server" />
+  </ItemGroup>
 
 </Project>

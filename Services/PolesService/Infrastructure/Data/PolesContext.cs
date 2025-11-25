@@ -25,6 +25,8 @@ public class PolesContext(DbContextOptions options) : DbContext(options)
     /// </summary>
     public required DbSet<OgMusDirek> OgMusHatlar { get; set; }
 
+    public required DbSet<Armatur> Armaturler { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AgDirek>(entity =>
@@ -191,5 +193,21 @@ public class PolesContext(DbContextOptions options) : DbContext(options)
                 entity.Ignore(e => e.SearchableText);
             }
         });
+
+        modelBuilder.Entity<Armatur>(
+            entity =>
+            {
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("id");
+                entity.Property(e => e.BagliTabloId)
+                    .HasColumnName("bagli_tablo_id");
+                entity.Property(e => e.BagliTabloKayitId)
+                    .HasColumnName("bagli_tablo_kayit_id");
+                entity.Property(e => e.Wkb)
+                    .HasComputedColumnSql("ST_AsBinary(ST_Transform(geometry, 4326))")
+                    .HasColumnName("wkb");
+            }
+        );
     }
 }
