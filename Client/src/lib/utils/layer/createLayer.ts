@@ -52,8 +52,8 @@ export class CreateLayer {
 			pickable: true,
 			highlightColor: [60, 60, 60, 40],
 			// https://wiki.openstreetmap.org/wiki/Zoom_levels
-			minZoom: 0,
-			// maxZoom: 18,
+			minZoom: 16,
+			maxZoom: 18,
 			tileSize: 256,
 			visible: visibility,
 			opacity: opacity,

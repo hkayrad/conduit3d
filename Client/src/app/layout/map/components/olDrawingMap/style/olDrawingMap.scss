@@ -18,6 +18,11 @@
         gap: 5px;
         padding-right: 10px;
         border-right: 1px solid global.$primary-lighter;
+
+        &.hideBorder {
+            border-right: none !important;
+            padding-right: 0 !important;
+        }
     }
 
     button {
@@ -62,5 +67,58 @@
                 background-color: #b71c1c; // Darker red
             }
         }
+    }
+}
+
+.hidden {
+    display: none !important;
+}
+
+.ol-hover-card {
+    position: absolute;
+    z-index: 1100;
+    background: global.$primary;
+    color: global.$white;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    width: fit-content;
+    pointer-events: none;
+    transform: translate(10px, 10px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+
+    display: flex;
+    flex-direction: column;
+    min-width: fit-content;
+    gap: 0.25rem;
+
+    h3 {
+        min-width: fit-content;
+        margin: 0;
+        font-size: 0.875rem;
+        gap: 0.25rem;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+
+        span {
+            text-transform: uppercase;
+        }
+    }
+
+    .divider {
+        height: 1px;
+        background: rgba(global.$white, 0.3);
+        margin: 0.25rem 0;
+    }
+
+    p {
+        min-width: fit-content;
+        display: flex;
+        flex-direction: row;
+        gap: 0.25rem;
+        flex-wrap: nowrap;
+        word-wrap: normal;
+        text-wrap-mode: nowrap;
+        margin: 0;
     }
 }

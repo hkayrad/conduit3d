@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import "./style/hoverCard.css";
-import { FeatureType } from "../../../../../lib/enums";
 import { selectIsHoverInfoVisible } from "../../mapSlice";
 import { useAppSelector } from "../../../../../lib/hooks";
 import InfoContent from "../../../../shared/infoContent/InfoContent";
@@ -8,26 +7,6 @@ import InfoContent from "../../../../shared/infoContent/InfoContent";
 type Props = {
   mousePos: { x: number; y: number };
   hoveredFeature: GeoJSON.Feature | null;
-};
-
-type FeatureProperties = {
-  dataType: FeatureType;
-  adi?: string;
-  kodu?: string;
-  siteAdi?: string;
-  binaKatSayisi?: number;
-  daireSayisi?: number;
-  isyeriSayisi?: number;
-  yukseklik?: number;
-  direkNo?: string;
-  cinsi?: string;
-  tipi?: string;
-  kesit?: string;
-  boyOzellik?: string;
-  direkBoyId?: number;
-  genislik?: number;
-  seritSayisi?: number;
-  yapisi?: string;
 };
 
 /**
@@ -39,9 +18,7 @@ type FeatureProperties = {
 export default function HoverCard(props: Readonly<Props>): React.ReactNode {
   const { hoveredFeature, mousePos } = props;
 
-  const properties = hoveredFeature?.properties as
-    | FeatureProperties
-    | undefined;
+  const properties = hoveredFeature?.properties;
 
   const hoverCardRef = useRef<HTMLDivElement>(null);
   const lastPositionRef = useRef<{ x: number; y: number } | null>(null);
@@ -130,10 +107,10 @@ export default function HoverCard(props: Readonly<Props>): React.ReactNode {
       className={`${hoveredFeature && isHoverInfoVisible && mouseVelocity.magnitude < 1000 ? "visible" : "hidden"}`}
       id="hover-card"
     >
-      {hoveredFeature && (
+      {hoveredFeature && properties && (
         <div id="content">
           <h3>
-            <span>{hoveredFeature.properties!.dataType}</span>
+            <span>{properties.dataType || "Feature Details"}</span>
           </h3>
           <div id="divider"></div>
           {content}
