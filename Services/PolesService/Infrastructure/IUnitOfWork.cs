@@ -6,7 +6,7 @@ namespace PolesService.Infrastructure;
 /// <summary>
 /// Unit of Work interface for managing repositories.
 /// </summary>
-public interface IUnitOfWork : IDisposable  
+public interface IUnitOfWork : IDisposable
 {
     /// <summary>
     /// Gets the repository for managing AgDirek entities.
@@ -22,6 +22,11 @@ public interface IUnitOfWork : IDisposable
     /// Gets the repository for managing OgMusDirek entities.
     /// </summary>
     IOgMusDirekRepository OgMusDirekRepository { get; }
+
+    /// <summary>
+    /// Gets the repository for managing Armatur entities.
+    /// </summary>
+    IArmaturRepository ArmaturRepository { get; }
 
     /// <summary>
     /// Saves changes to the database.

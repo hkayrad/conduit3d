@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+message ArmaturResponse {
+    bool isSuccess = 1;
+    string message = 2;
+    int32 statusCode = 3;
+    repeated ArmaturProto data = 4;
+}
+
+message ArmaturProto {
+    int32 id = 1;
+    int32 bagliTabloId = 2;
+    int32 bagliTabloKayitId = 3;
+    string wkb = 4;
+}

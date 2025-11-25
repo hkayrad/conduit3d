@@ -32,7 +32,7 @@ public class AydDirek
     [MaxLength(50)]
     public string Adi { get; set; } = string.Empty;
 
-    /// <summary> 
+    /// <summary>
     /// The type of the illumination pole.
     /// </summary>
     [Column("cinsi")]

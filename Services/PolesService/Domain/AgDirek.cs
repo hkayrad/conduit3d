@@ -2,7 +2,6 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using NpgsqlTypes;
 
 namespace PolesService.Domain;
@@ -33,7 +32,7 @@ public class AgDirek
     [MaxLength(50)]
     public string Adi { get; set; } = string.Empty;
 
-    /// <summary> 
+    /// <summary>
     /// The type of the low voltage pole.
     /// </summary>
     [Column("cinsi")]

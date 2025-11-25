@@ -40,6 +40,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAgDirekService, PostgresqlAgDirekService>();
 builder.Services.AddScoped<IAydDirekService, PostgresqlAydDirekService>();
 builder.Services.AddScoped<IOgMusDirekService, PostgresqlOgMusDirekService>();
+builder.Services.AddScoped<IArmaturService, PostgresqlArmaturService>();
 
 var app = builder.Build();
 

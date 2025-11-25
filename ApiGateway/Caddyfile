@@ -236,7 +236,8 @@
         reverse_proxy poles_service:8080
     }
 
-    handle /api/v1/ogMusDirek* {
+
+    handle /api/v1/armatur* {
         jwtauth {
 	    	sign_key {$JWT_SECRET_BASE64}
 	    	sign_alg HS256
