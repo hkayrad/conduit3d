@@ -14,6 +14,7 @@ import RekortmanComponent from "./lines/RekortmanComponent";
 import AgDirekComponent from "./poles/AgDirekComponent";
 import AydDirekComponent from "./poles/AydDirekComponent";
 import OgMusDirekComponent from "./poles/OgMusDirekComponent";
+import ArmaturComponent from "./armatur/ArmaturComponent";
 
 type Props = {
   allPoles: GeoJSON.Feature[];
@@ -37,6 +38,8 @@ type Props = {
   setRekortman: React.Dispatch<
     React.SetStateAction<GeoJSON.FeatureCollection[]>
   >;
+  setArmatur: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection[]>>;
+  refreshTrigger: number;
 };
 
 /**
@@ -58,6 +61,7 @@ export default function DataComponent(props: Readonly<Props>): React.ReactNode {
     setAgHat,
     setOgHat,
     setRekortman,
+    setArmatur,
   } = props;
 
   const extent = useAppSelector(selectExtent);
@@ -78,6 +82,7 @@ export default function DataComponent(props: Readonly<Props>): React.ReactNode {
         extent={extent}
         zoom={zoom}
         selectedViewType={selectedViewType}
+        refreshTrigger={props.refreshTrigger}
       />
       <TrafoBinaComponent
         setData={setTrafoBina}
@@ -128,6 +133,12 @@ export default function DataComponent(props: Readonly<Props>): React.ReactNode {
       <RekortmanComponent
         setData={setRekortman}
         allPoles={allPoles}
+        extent={extent}
+        zoom={zoom}
+        selectedViewType={selectedViewType}
+      />
+      <ArmaturComponent
+        setData={setArmatur}
         extent={extent}
         zoom={zoom}
         selectedViewType={selectedViewType}

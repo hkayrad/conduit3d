@@ -1,4 +1,4 @@
-import "./style/shortcutsInfo.css";
+import "./style/shortcutsInfo.scss";
 import { Keyboard } from "lucide-react";
 import { useState } from "react";
 import { useAppSelector } from "../../../../../lib/hooks";
@@ -21,7 +21,7 @@ export default function ShortcutsInfo() {
         <Keyboard />
       </button>
       <div
-        className={`shortcuts-info ${isShortcutsInfoHovered || isShortcutsInfoToggled ? "" : "hidden"}`}
+        className={`shortcuts-info ${isShortcutsInfoHovered || isShortcutsInfoToggled ? "" : "shortcuts-hidden"}`}
       >
         <h3>Keyboard Shortcuts</h3>
         <p>

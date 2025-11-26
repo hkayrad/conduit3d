@@ -18,6 +18,7 @@ type Props = {
   extent: Extent;
   zoom: number;
   selectedViewType: C3D_MapViewType;
+  refreshTrigger: number;
 };
 
 /**
@@ -79,7 +80,7 @@ export default function AdrBinaComponent(props: Readonly<Props>): null {
               yukseklik:
                 rawData.yukseklik ||
                 (rawData.binaKatSayisi || DEFAULT_FLOOR_COUNT) *
-                  DEFAULT_FLOOR_HEIGHT,
+                DEFAULT_FLOOR_HEIGHT,
             },
           }));
 
@@ -107,7 +108,7 @@ export default function AdrBinaComponent(props: Readonly<Props>): null {
       fetchNextChunk,
       setData,
     );
-  }, [extent, zoom, selectedViewType, fetchNextChunk, setData]);
+  }, [extent, zoom, selectedViewType, fetchNextChunk, setData, props.refreshTrigger]);
 
   return null;
 }

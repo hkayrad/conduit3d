@@ -1,16 +1,17 @@
 # TODO
 - [] raster veri acma
-- [] armaturleri goster, tablo gelicek
+- [x] armaturleri goster, tablo gelicek
 - [] openlayers kullanarak cizim
 - [x] featurelari yerin altindan gormeye de izin ver
 - [x] highlight on gotos
+
+- [] ortalama enerji kaybi hesabi
 
 5 -> AG
 28 -> AYD
 
 
 # NOTES
-I tried sticking the REKORTMAN to the height of the pole. It caused so many calculations so it is discarded.
 
 |feature|geojson|wkb|diff|diff%|%|
 |-|-|-|-|-|-|

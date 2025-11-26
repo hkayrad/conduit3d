@@ -22,7 +22,9 @@ export default function LayerControlDropdown(props: Readonly<Props>): React.Reac
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <button
+        <div
+            role="button"
+            tabIndex={0}
             className={`layer-control-dropdown ${isOpen && children ? "open" : "closed"}`}
             onClick={() => {
                 children ? setIsOpen(!isOpen) : toggleLayer();
@@ -48,7 +50,7 @@ export default function LayerControlDropdown(props: Readonly<Props>): React.Reac
             {children &&
                 <div
                     onClick={(e) => e.stopPropagation()}
-                    onKeyDown={() => {}}
+                    onKeyDown={() => { }}
                     className={`content ${isOpen && children ? "open" : "closed"}`}
                 >
                     <div className="content-wrapper">
@@ -56,6 +58,6 @@ export default function LayerControlDropdown(props: Readonly<Props>): React.Reac
                     </div>
                 </div>
             }
-        </button>
+        </div>
     )
 }

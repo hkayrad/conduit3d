@@ -232,6 +232,12 @@ export default function LayerControl(props: Props): React.ReactNode {
               setFilters={handleFilterToggle}
             />
           </LayerControlDropdown>
+          <LayerControlDropdown
+            icon={<UtilityPole />}
+            name="Armatur"
+            isLayerVisible={visibility.armatur}
+            toggleLayer={() => handleLayerToggle(C3D_MapLayers.Armatur)}
+          ></LayerControlDropdown>
         </LayerControlSection>
         <LayerControlSection title="lines">
           <LayerControlDropdown

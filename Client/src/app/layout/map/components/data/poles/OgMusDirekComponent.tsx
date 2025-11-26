@@ -66,7 +66,7 @@ export default function OgMusDirekComponent(props: Readonly<Props>): null {
 
         const formattedData: GeoJSON.Feature[] = response.data.map(
           (rawData) => {
-            const height = Number(
+            const height = Number.parseFloat(
               rawData.boyOzellik.split("/")[0].replace(",", "."),
             );
             return {

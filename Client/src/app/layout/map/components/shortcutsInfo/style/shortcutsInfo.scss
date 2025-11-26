@@ -34,7 +34,7 @@
     transition: all .3s ease;
     transform: translateX(0);
 
-    &.hidden {
+    &.shortcuts-hidden {
         transform: translateX(-120%);
     }
 

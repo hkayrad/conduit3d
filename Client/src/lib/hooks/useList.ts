@@ -4,6 +4,7 @@ import {
 	AdrYolApi,
 	AgDirekApi,
 	AgHatApi,
+	ArmaturApi,
 	AydDirekApi,
 	OgHatApi,
 	OgMusDirekApi,
@@ -50,6 +51,7 @@ export function useList() {
 			[ListDataType.AgHat]: AgHatApi,
 			[ListDataType.OgHat]: OgHatApi,
 			[ListDataType.Rekortman]: RekortmanApi,
+			[ListDataType.Armatur]: ArmaturApi,
 		}),
 		[],
 	);

@@ -5,7 +5,8 @@ export default defineConfig({
     plugins: [react()],
     test: {
         coverage: {
-            reporter: ['text', 'lcov']
+            reporter: ['text', 'lcov'],
+            reportOnFailure: true,
         },
         name: 'Unit Tests',
         environment: 'jsdom',

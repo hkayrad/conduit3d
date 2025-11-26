@@ -182,7 +182,7 @@ public class PostgresqlAdrBinaService(IUnitOfWork unitOfWork) : IAdrBinaService
             };
 
             foreach (var building in buildings)
-            {   
+            {
                 buildingsResponse.Data.Add(new AdrBinaProto
                 {
                     Id = building.Id,
@@ -218,6 +218,49 @@ public class PostgresqlAdrBinaService(IUnitOfWork unitOfWork) : IAdrBinaService
                 StatusCode = (int)HttpStatusCode.InternalServerError,
                 Data = { }
             };
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<Response<AdrBina>> AddAsync(AdrBina entity, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var addedEntity = await _unitOfWork.AdrBuildingsRepository.AddAsync(entity, cancellationToken);
+            return Response<AdrBina>.Success(addedEntity, BuildingsResources.GetString("buildingAdded"));
+        }
+        catch (NpgsqlException ex)
+        {
+            return Response<AdrBina>.DatabaseError(BuildingsResources.GetString("buildingAdditionFailed", ex.Message));
+        }
+        catch (Exception ex)
+        {
+            return Response<AdrBina>.UnhandledError(BuildingsResources.GetString("buildingAdditionFailed", ex.Message));
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<Response<bool>> DeleteAsync(int id, CancellationToken cancellationToken)
+    {
+        if (id <= 0)
+            return Response<bool>.ValidationError(BuildingsResources.GetString("invalidId"));
+
+        try
+        {
+            var deleted = await _unitOfWork.AdrBuildingsRepository.DeleteAsync(id, cancellationToken);
+
+            if (!deleted)
+                return Response<bool>.NotFound(BuildingsResources.GetString("noBuildingFound", id));
+
+            return Response<bool>.Success(true, BuildingsResources.GetString("buildingDeleted"));
+        }
+        catch (NpgsqlException ex)
+        {
+            return Response<bool>.DatabaseError(BuildingsResources.GetString("buildingDeletionFailed", ex.Message));
+        }
+        catch (Exception ex)
+        {
+            return Response<bool>.UnhandledError(BuildingsResources.GetString("buildingDeletionFailed", ex.Message));
         }
     }
 }

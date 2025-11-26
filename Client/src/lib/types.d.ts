@@ -1,6 +1,5 @@
 import type { FirstPersonViewState, MapViewState } from "deck.gl"
 import type { C3D_MapViewType, HatCinsi } from "./enums"
-import wkx from "wkx";
 
 export type ApiResponse<T> = {
     isSuccess: boolean,
@@ -84,7 +83,7 @@ export type AdrYol = {
     seritSayisi: number,
     yapisi: string,
     tipi: string,
-    kodu: string, 
+    kodu: string,
     adi: string,
     wkb: string
 }
@@ -121,6 +120,17 @@ export type Direk = {
     direkBoyId: number,
     wkb: any
     // geoJson: string
+}
+
+export type Armatur = {
+    id: number,
+    kodu: string,
+    adi: string,
+    marka: string,
+    model: string,
+    guc: string,
+    bagli_tablo_kayit_id: number,
+    wkb: any
 }
 
 export type PopupState = {

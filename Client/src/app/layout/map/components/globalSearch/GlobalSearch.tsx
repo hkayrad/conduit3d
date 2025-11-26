@@ -1,11 +1,12 @@
 import {
   Building,
+  LampDesk,
   PlugZap,
   Search,
   UtilityPole,
   Waypoints,
 } from "lucide-react";
-import "./style/globalSearch.css";
+import "./style/globalSearch.scss";
 import { useCallback, useEffect, useRef } from "react";
 import { useSearch } from "../../../../../lib/hooks/useSearch";
 import { FeatureType } from "../../../../../lib/enums";
@@ -17,6 +18,7 @@ const ICONS: Record<FeatureType, React.ReactNode> = {
   [FeatureType.LINE]: <PlugZap />,
   [FeatureType.REKORTMAN]: <PlugZap />,
   [FeatureType.YOL]: <Waypoints />,
+  [FeatureType.ARMATUR]: <LampDesk />
 };
 
 type Props = {
@@ -83,7 +85,7 @@ export default function GlobalSearch(props: Readonly<Props>) {
 
   return (
     <>
-      <div className={`info-card ${isFocused ? "" : "hidden"}`}>
+      <div className={`info-card ${isFocused ? "" : "info-card-hidden"}`}>
         <div className="shortcut">
           Press <kbd>Ctrl</kbd> <kbd>/</kbd> to focus the search bar
         </div>

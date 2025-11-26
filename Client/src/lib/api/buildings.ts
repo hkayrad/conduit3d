@@ -25,6 +25,36 @@ export class AdrBinaApi {
 	 */
 	private static _cancelTokens: { [key: string]: CancelTokenSource } = {};
 
+	/**
+	 * Create a new AdrBina.
+	 * @param building The building data to create.
+	 * @returns A promise that resolves to the created AdrBina.
+	 */
+	static async create(building: Partial<AdrBina>) {
+		try {
+			const response = await instance.post<ApiResponse<AdrBina>>("adrBina", building);
+			return response.data;
+		} catch (error) {
+			Logger.error("Create AdrBina error:", error);
+			throw error;
+		}
+	}
+
+	/**
+	 * Delete an AdrBina by ID.
+	 * @param id The ID of the building to delete.
+	 * @returns A promise that resolves to true if deleted, false otherwise.
+	 */
+	static async delete(id: number): Promise<boolean> {
+		try {
+			const response = await instance.delete(`adrBina/${id}`);
+			return response.data.isSuccess;
+		} catch (error) {
+			Logger.error("Delete AdrBina error:", error);
+			throw error;
+		}
+	}
+
 	static async fetchAll(
 		pageSize: number = 200000,
 		pageNumber: number = 1,
