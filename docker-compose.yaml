@@ -124,7 +124,7 @@ services:
       dockerfile: Services/LinesService/Dockerfile
     container_name: lines_service
     environment:
-      - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
+      - ASPNETCORE_ENVIRONMENT=${NODE_ENV}
       - POSTGRESQL_CONNECTION_STRING=Host=lines_database;Database=${LINES_DB_NAME};Username=${LINES_DB_USER};Password=${LINES_DB_PASS}
     depends_on:
       - lines_database
@@ -153,7 +153,7 @@ services:
     container_name: tile_server
     networks:
       - api_gateway_network
-    # ports: 
+    # ports:
     #   - "3001:3000"
     volumes:
       - tile_data:/tileData

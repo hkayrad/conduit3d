@@ -41,5 +41,6 @@ export const COLORS: { [name: string]: [number, number, number, number] } = {
     AG_HAT: [255, 140, 0, 255],        // Dark orange, opaque
     OG_HAT: [138, 43, 226, 255],       // Blue violet, opaque
     REKORTMAN: [255, 0, 255, 255],
-    ADR_YOL: [128, 0, 128, 255]        // Purple, opaque
+    ADR_YOL: [128, 0, 128, 255],       // Purple, opaque
+    ARMATUR: [255, 215, 0, 255]        // Gold, opaque
 };

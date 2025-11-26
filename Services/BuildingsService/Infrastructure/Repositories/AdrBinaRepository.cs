@@ -39,7 +39,7 @@ public class AdrBinaRepository(BuildingsContext context) : IAdrBinaRepository
                                             CancellationToken cancellationToken)
     {
         // ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson,
-        var sqlQuery = _dbSet.FromSql($@"SELECT 
+        var sqlQuery = _dbSet.FromSql($@"SELECT
                                         id,
                                         kodu,
                                         site_adi,
@@ -52,10 +52,10 @@ public class AdrBinaRepository(BuildingsContext context) : IAdrBinaRepository
                                         searchable_text
                                     FROM ""ADR_BINA""
                                     WHERE ST_Transform(geometry, 4326) && ST_MakeEnvelope(
-                                        {extent.MinX}, 
-                                        {extent.MinY}, 
+                                        {extent.MinX},
+                                        {extent.MinY},
                                         {extent.MaxX},
-                                        {extent.MaxY}, 
+                                        {extent.MaxY},
                                         4326
                                     )");
 
@@ -82,7 +82,7 @@ public class AdrBinaRepository(BuildingsContext context) : IAdrBinaRepository
     {
         // ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson
 
-        var sqlQuery = _dbSet.FromSql($@"SELECT 
+        var sqlQuery = _dbSet.FromSql($@"SELECT
                                         id,
                                         kodu,
                                         site_adi,
@@ -114,5 +114,65 @@ public class AdrBinaRepository(BuildingsContext context) : IAdrBinaRepository
             ));
 
         return await sqlQuery.CountAsync(cancellationToken);
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Adds a new ADR_BINA entity using native SQL to handle geometry transformation.
+    /// </remarks>
+    public async Task<AdrBina> AddAsync(AdrBina entity, CancellationToken cancellationToken)
+    {
+        Console.WriteLine(entity);
+
+        var sql = @"
+            INSERT INTO ""ADR_BINA"" (
+                kodu,
+                site_adi,
+                adi,
+                bina_kat_sayisi,
+                daire_sayisi,
+                isyeri_sayisi,
+                yukseklik,
+                geometry
+            )
+            VALUES (
+                {0},
+                {1},
+                {2},
+                {3},
+                {4},
+                {5},
+                {6},
+                ST_Transform(ST_GeomFromWKB({7}, 4326), 3857)
+            )
+            RETURNING id";
+
+        var result = await _context.Database.SqlQueryRaw<int>(
+            sql,
+            entity.Kodu ?? (object)DBNull.Value,
+            entity.SiteAdi ?? (object)DBNull.Value,
+            entity.Adi ?? (object)DBNull.Value,
+            entity.BinaKatSayisi,
+            entity.DaireSayisi,
+            entity.IsyeriSayisi,
+            entity.Yukseklik,
+            entity.Wkb
+        ).ToListAsync(cancellationToken);
+
+        var id = result.Single();
+
+        entity.Id = id;
+        return entity;
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Deletes an ADR_BINA entity by its ID using native SQL.
+    /// </remarks>
+    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
+    {
+        var sql = @"DELETE FROM ""ADR_BINA"" WHERE id = {0}";
+        var rowsAffected = await _context.Database.ExecuteSqlRawAsync(sql, new object[] { id }, cancellationToken);
+        return rowsAffected > 0;
     }
 }

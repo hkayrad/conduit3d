@@ -2,7 +2,7 @@ import { BitmapLayer, ColumnLayer, PathLayer, SimpleMeshLayer, TileLayer } from 
 import { PathStyleExtension } from "@deck.gl/extensions";
 import { C3D_MapViewType, HatCinsi } from "../../enums";
 import { OBJLoader } from "@loaders.gl/obj";
-
+import { OFFSET_CUBE_MESH } from "../../utils";
 /**
  * Class for creating different types of layers.
  */
@@ -154,23 +154,48 @@ export class CreateLayer {
 	) {
 		const isSelected = (d: GeoJSON.Feature) => selectedFeature && d.properties?.id === selectedFeature.properties?.id;
 
-		return new ColumnLayer({
+		if (wireframe) {
+			return new ColumnLayer({
+				id: `${id}-wireframe`,
+				data: data ?? [],
+				getPosition: (d) => d.geometry.coordinates,
+				getElevation: (d) => d.properties.yukseklik,
+				getFillColor: [0, 0, 0, 0],
+				getLineWidth: 2,
+				getLineColor: (d) => (isSelected(d) ? highlightColor : color),
+				extruded: true,
+				pickable: false,
+				radius: 0.5,
+				elevationScale: 1,
+				diskResolution: 6,
+				visible: visibility,
+				wireframe: true,
+				updateTriggers: {
+					getLineColor: [selectedFeature],
+				},
+			});
+		}
+
+		const mesh = id.includes("ag-direk") ? "/obj/lv.obj" : "/obj/mv.obj";
+		const scale = id.includes("ag-direk") ? .01 : .01; // Adjust scale if needed
+		const rotation: [number, number, number] = id.includes("ag-direk") ? [0, -45, 0] : [0, 0, 0]; // Adjust rotation if needed
+
+		return new SimpleMeshLayer({
 			id: id,
 			data: data ?? [],
 			getPosition: (d) => d.geometry.coordinates,
-			getElevation: (d) => d.properties.yukseklik,
-			getFillColor: wireframe ? [0, 0, 0, 0] : (d) => (isSelected(d) ? highlightColor : color),
-			extruded: true,
-			pickable: !wireframe,
+			getColor: (d) => (isSelected(d) ? highlightColor : color),
+			pickable: true,
 			autoHighlight: true,
 			highlightColor: highlightColor,
-			radius: 0.5,
-			elevationScale: 1,
-			diskResolution: wireframe ? 4 : 12,
 			visible: visibility,
-			wireframe: wireframe,
+			wireframe: false,
+			getScale: (d) => [d.properties.yukseklik * scale, d.properties.yukseklik * scale, d.properties.yukseklik * scale],
+			getOrientation: rotation,
+			mesh: mesh,
+			loaders: [OBJLoader],
 			updateTriggers: {
-				getFillColor: [selectedFeature, wireframe],
+				getColor: [selectedFeature],
 			},
 		});
 	}
@@ -186,21 +211,43 @@ export class CreateLayer {
 	) {
 		const isSelected = (d: GeoJSON.Feature) => selectedFeature && d.properties?.id === selectedFeature.properties?.id;
 
+		if (wireframe) {
+			return new ColumnLayer({
+				id: `${id}-wireframe`,
+				data: data ?? [],
+				getPosition: (d) => d.geometry.coordinates,
+				getElevation: (d) => d.properties.yukseklik,
+				getFillColor: [0, 0, 0, 0],
+				getLineWidth: 2,
+				getLineColor: (d) => (isSelected(d) ? highlightColor : color),
+				extruded: true,
+				pickable: false,
+				radius: 0.3,
+				elevationScale: 1,
+				diskResolution: 6,
+				visible: visibility,
+				wireframe: true,
+				updateTriggers: {
+					getLineColor: [selectedFeature],
+				},
+			});
+		}
+
 		return new SimpleMeshLayer({
 			id: id,
 			data: data ?? [],
 			getPosition: (d) => d.geometry.coordinates,
-			getColor: (d) => (wireframe ? [0, 0, 0, 128] : isSelected(d) ? highlightColor : color),
-			pickable: !wireframe,
+			getColor: (d) => (isSelected(d) ? highlightColor : color),
+			pickable: true,
 			autoHighlight: true,
 			highlightColor: highlightColor,
 			visible: visibility,
-			wireframe: wireframe,
+			wireframe: false,
 			getScale: (d) => [d.properties.yukseklik, d.properties.yukseklik, d.properties.yukseklik],
-			mesh: "/aydDirek.obj",
+			mesh: "/obj/aydDirek.obj",
 			loaders: [OBJLoader],
 			updateTriggers: {
-				getColor: [selectedFeature, wireframe],
+				getColor: [selectedFeature],
 			},
 		});
 	}
@@ -228,6 +275,40 @@ export class CreateLayer {
 			visible: visibility,
 			updateTriggers: {
 				getColor: selectedFeature,
+			},
+		});
+	}
+
+	static Armatur(
+		id: string,
+		data: GeoJSON.Feature[],
+		color: [number, number, number, number],
+		highlightColor: [number, number, number, number],
+		visibility: boolean,
+		wireframe: boolean = false,
+		selectedFeature: GeoJSON.Feature | null = null,
+	) {
+		const isSelected = (d: GeoJSON.Feature) => selectedFeature && d.properties?.id === selectedFeature.properties?.id;
+
+		return new SimpleMeshLayer({
+			id: id,
+			data: data ?? [],
+			getPosition: (d: any) => [d.geometry.coordinates[0], d.geometry.coordinates[1], d.properties.poleHeight - 1 || 9],
+			getColor: (d) => (isSelected(d) ? highlightColor : color),
+			pickable: !wireframe,
+			autoHighlight: true,
+			highlightColor: highlightColor,
+			mesh: wireframe ? OFFSET_CUBE_MESH : "/obj/armatur.obj",
+			loaders: wireframe ? undefined : [OBJLoader],
+			getScale: wireframe ? [1, 3.0, 0.3] : [.01, .01, .01], // Longer rectangular prism for wireframe, scaled obj otherwise
+			getOrientation: wireframe ? [0, 315, 0] : [0, 45, 0], // Rotate 90 degrees in wireframe
+			visible: visibility,
+			wireframe: wireframe,
+			updateTriggers: {
+				getColor: [selectedFeature, wireframe],
+				getPosition: [data],
+				getScale: [wireframe],
+				getMesh: [wireframe]
 			},
 		});
 	}

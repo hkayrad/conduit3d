@@ -11,7 +11,8 @@ export default defineConfig({
 	},
 	test: {
 		coverage: {
-			reporter: ['text', 'lcov']
+			reporter: ['text', 'lcov'],
+			reportOnFailure: true,
 		},
 		name: 'Component Tests',
 		include: ['./tests/app/**/*.test.tsx'],

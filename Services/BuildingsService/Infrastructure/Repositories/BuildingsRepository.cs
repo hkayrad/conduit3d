@@ -39,7 +39,7 @@ public class BuildingsRepository(BuildingsContext context) : IBuildingsRepositor
                                             CancellationToken cancellationToken)
     {
         // ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson,
-        var sqlQuery = _dbSet.FromSql($@"SELECT 
+        var sqlQuery = _dbSet.FromSql($@"SELECT
                                         id,
                                         kodu,
                                         site_adi,
@@ -52,10 +52,10 @@ public class BuildingsRepository(BuildingsContext context) : IBuildingsRepositor
                                         searchable_text
                                     FROM buildings
                                     WHERE ST_Transform(geometry, 4326) && ST_MakeEnvelope(
-                                        {extent.MinX}, 
-                                        {extent.MinY}, 
+                                        {extent.MinX},
+                                        {extent.MinY},
                                         {extent.MaxX},
-                                        {extent.MaxY}, 
+                                        {extent.MaxY},
                                         4326
                                     )");
 
@@ -81,7 +81,7 @@ public class BuildingsRepository(BuildingsContext context) : IBuildingsRepositor
     public async Task<Building?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         // ST_AsGeoJSON(ST_Transform(geometry, 4326)) as geojson
-        var sqlQuery = _dbSet.FromSql($@"SELECT 
+        var sqlQuery = _dbSet.FromSql($@"SELECT
                                         id,
                                         kodu,
                                         site_adi,

@@ -1,6 +1,8 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-const initialState: Record<string, string> = {};
+const initialState: Record<string, string> = {
+	ARMATUR_COLOR: "#ff0000ff",
+};
 
 export const configSlice = createSlice({
 	name: "config",

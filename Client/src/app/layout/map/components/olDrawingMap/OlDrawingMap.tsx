@@ -1,27 +1,21 @@
 import "./style/olDrawingMap.scss";
-import { useEffect, useRef, useState } from "react";
-import OlMap from "ol/Map";
-import { Circle, Activity, Hexagon, Trash2, Save } from "lucide-react";
-import OlTileLayer from "ol/layer/Tile";
-import OlVectorLayer from "ol/layer/Vector";
-import OlOSM from "ol/source/OSM";
-import OlVectorSource from "ol/source/Vector";
-import OlView from "ol/View";
-import MapBrowserEvent from "ol/MapBrowserEvent";
-import { Draw, Modify, Snap } from "ol/interaction";
-import type { C3D_LayerViewState, Config } from "../../../../../lib/types";
+import { useRef, useState } from "react";
+
+import { AdrBinaApi } from "../../../../../lib/api/buildings";
+import { geometryToWkb } from "../../../../../lib/utils/geometry/geometryToWkb";
+import type { AdrBina } from "../../../../../lib/types";
 import InfoContent from "../../../../shared/infoContent/InfoContent";
-import type { Type } from "ol/geom/Geometry";
-import GeoJSON from "ol/format/GeoJSON";
-import { Style, Stroke, Fill, Circle as CircleStyle } from "ol/style";
-import { fromLonLat, toLonLat } from "ol/proj";
 import SaveFeatureModal from "./components/SaveFeatureModal";
+import type { C3D_LayerViewState, Config } from "../../../../../lib/types";
+import { useOlDrawingMap } from "./hooks/useOlDrawingMap";
+import DrawingControls from "./components/DrawingControls";
 
 type Props = {
   isVisible: boolean;
   hatLayerData: any[];
   direkLayerData: any[];
   aydDirekData: any[];
+  armaturLayerData: any[];
   yolLayerData: any[];
   adrBina: GeoJSON.FeatureCollection[];
   buildingBina: GeoJSON.FeatureCollection[];
@@ -38,124 +32,7 @@ type Props = {
     latitude: number;
     zoom: number;
   }) => void;
-};
-
-type DrawingMode = "Point" | "LineString" | "Polygon" | "None";
-
-type HoverInfo = {
-  x: number;
-  y: number;
-  properties: Record<string, any>;
-} | null;
-
-// Helper functions
-const generateRandomColor = () =>
-  `#${Math.floor(Math.random() * 16777215)
-    .toString(16)
-    .padStart(6, "0")}`;
-
-const normalizeGeoJSONData = (data: any) => {
-  if (!data) return null;
-
-  // If data is an array, wrap it in a FeatureCollection
-  if (Array.isArray(data)) {
-    if (data.length === 0) return null;
-    return {
-      type: "FeatureCollection",
-      features: data,
-    };
-  }
-
-  // If data already has a features property, use it as-is
-  if (data.features) {
-    if (data.features.length === 0) return null;
-    return data;
-  }
-
-  // Otherwise, assume it's already a valid GeoJSON object
-  return data;
-};
-
-const normalizeColor = (
-  color: string | [number, number, number, number],
-): string => {
-  if (Array.isArray(color)) {
-    // Convert [r, g, b, a] to rgba string
-    return `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3] / 255})`;
-  }
-  return color;
-};
-
-const createVectorLayer = (
-  data: any,
-  color: string | [number, number, number, number],
-  width: number = 2,
-  isPoint: boolean = false,
-): OlVectorLayer<OlVectorSource> | null => {
-  const geojsonData = normalizeGeoJSONData(data);
-  if (!geojsonData) return null;
-
-  const olColor = normalizeColor(color);
-
-  const vectorSource = new OlVectorSource({
-    features: new GeoJSON().readFeatures(geojsonData, {
-      dataProjection: "EPSG:4326",
-      featureProjection: "EPSG:3857",
-    }),
-  });
-
-  const style = isPoint
-    ? new Style({
-      image: new CircleStyle({
-        radius: 5,
-        fill: new Fill({ color: olColor }),
-        stroke: new Stroke({ color: "#fff", width: 1 }),
-      }),
-    })
-    : new Style({
-      stroke: new Stroke({
-        color: olColor,
-        width: width,
-      }),
-      fill: new Fill({
-        color: olColor,
-      }),
-    });
-
-  const vectorLayer = new OlVectorLayer({
-    source: vectorSource,
-    style: style,
-  });
-  vectorLayer.setProperties({ isDataLayer: true });
-  return vectorLayer;
-};
-
-const createBuildingLayer = (
-  data: any,
-  hexColor: string,
-): OlVectorLayer<OlVectorSource> | null => {
-  const layer = createVectorLayer(data, hexColor, 2);
-  if (!layer) return null;
-
-  // Darken the color for fill
-  const r = Math.floor(parseInt(hexColor.slice(1, 3), 16) * 0.7);
-  const g = Math.floor(parseInt(hexColor.slice(3, 5), 16) * 0.7);
-  const b = Math.floor(parseInt(hexColor.slice(5, 7), 16) * 0.7);
-  const darkenedColor = `rgba(${r}, ${g}, ${b}, 0.3)`;
-
-  // Override style for buildings with semi-transparent fill
-  layer.setStyle(
-    new Style({
-      stroke: new Stroke({
-        color: hexColor,
-        width: 2,
-      }),
-      fill: new Fill({
-        color: darkenedColor,
-      }),
-    }),
-  );
-  return layer;
+  onRefresh: () => void;
 };
 
 export default function OlDrawingMap(props: Props) {
@@ -164,6 +41,7 @@ export default function OlDrawingMap(props: Props) {
     hatLayerData,
     direkLayerData,
     aydDirekData,
+    armaturLayerData,
     yolLayerData,
     adrBina,
     buildingBina,
@@ -175,312 +53,118 @@ export default function OlDrawingMap(props: Props) {
   } = props;
 
   const olContainerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<OlMap | null>(null);
-  const sourceRef = useRef<OlVectorSource>(new OlVectorSource());
-  const [drawingMode, setDrawingMode] = useState<DrawingMode>("None");
-  const [hasFeatures, setHasFeatures] = useState(false);
-  const [hoverInfo, setHoverInfo] = useState<HoverInfo>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentGeometryType, setCurrentGeometryType] = useState<
-    "Point" | "LineString" | "Polygon" | "None"
-  >("None");
 
-  const viewStateRef = useRef(viewState);
-  const onViewStateChangeRef = useRef(onViewStateChange);
-
-  useEffect(() => {
-    viewStateRef.current = viewState;
-    onViewStateChangeRef.current = onViewStateChange;
-  }, [viewState, onViewStateChange]);
-
-  // Initialize OpenLayers map
-  useEffect(() => {
-    if (olContainerRef.current === null) return;
-
-    const vectorLayer = new OlVectorLayer({
-      source: sourceRef.current,
-      style: {
-        "fill-color": "rgba(255, 255, 255, 0.2)",
-        "stroke-color": "#ffcc33",
-        "stroke-width": 2,
-        "circle-radius": 7,
-        "circle-fill-color": "#ffcc33",
-      },
-    });
-
-    const map = new OlMap({
-      target: olContainerRef.current,
-      layers: [
-        new OlTileLayer({
-          source: new OlOSM({
-            // Performance optimizations
-            transition: 0, // Disable tile fade-in animation
-            cacheSize: 512, // Limit tile cache
-          }),
-          // Reduce render buffer to improve performance
-          properties: {
-            preload: 0,
-          },
-        }),
-        vectorLayer,
-      ],
-      view: new OlView({
-        center: fromLonLat([viewState.longitude, viewState.latitude]),
-        projection: "EPSG:3857",
-        zoom: viewState.zoom,
-        // Performance: disable smooth animations
-        enableRotation: false,
-      }),
-      // Performance: limit max tiles in viewport
-      maxTilesLoading: 8,
-    });
-
-    mapRef.current = map;
-
-    // Listen to source changes to update hasFeatures
-    const updateFeatureState = () => {
-      setHasFeatures(sourceRef.current.getFeatures().length > 0);
-    };
-
-    sourceRef.current.on(
-      ["addfeature", "removefeature", "clear"],
-      updateFeatureState,
-    );
-
-    // Handle view state changes
-    const handleMoveEnd = () => {
-      const view = map.getView();
-      const center = view.getCenter();
-      const zoom = view.getZoom();
-
-      if (center && zoom !== undefined) {
-        const [longitude, latitude] = toLonLat(center);
-        // Use the current global zoom from the ref to prevent syncing zoom changes
-        // from OpenLayers back to the global state.
-        onViewStateChangeRef.current({
-          longitude,
-          latitude,
-          zoom: viewStateRef.current.zoom,
-        });
-      }
-    };
-
-    map.on("moveend", handleMoveEnd);
-
-    return () => {
-      map.setTarget(undefined);
-      sourceRef.current.un(
-        ["addfeature", "removefeature", "clear"],
-        updateFeatureState,
-      );
-      map.un("moveend", handleMoveEnd);
-    };
-  }, []);
-
-  // Manage interactions based on drawingMode
-  useEffect(() => {
-    const map = mapRef.current;
-    if (!map) return;
-
-    // Remove existing interactions to avoid duplicates
-    map.getInteractions().forEach((interaction) => {
-      if (
-        interaction instanceof Draw ||
-        interaction instanceof Modify ||
-        interaction instanceof Snap
-      ) {
-        map.removeInteraction(interaction);
-      }
-    });
-
-    // Hover interaction handler
-    const handlePointerMove = (evt: MapBrowserEvent<any>) => {
-      if (evt.dragging) {
-        setHoverInfo(null);
-        return;
-      }
-
-      const pixel = map.getEventPixel(evt.originalEvent);
-      const feature = map.forEachFeatureAtPixel(pixel, (feature) => feature);
-
-      // Change cursor
-      const element = map.getTargetElement();
-      if (element) {
-        element.style.cursor = feature ? "pointer" : "";
-      }
-
-      if (feature) {
-        const properties = feature.getProperties();
-        // Filter internal properties and geometry
-        const filteredProps: Record<string, any> = {};
-        Object.keys(properties).forEach((key) => {
-          const value = properties[key];
-          if (
-            key !== "geometry" &&
-            !key.startsWith("ol_") &&
-            typeof value !== "object" &&
-            typeof value !== "function"
-          ) {
-            filteredProps[key] = value;
-          }
-        });
-
-        if (Object.keys(filteredProps).length > 0) {
-          setHoverInfo({
-            x: pixel[0],
-            y: pixel[1],
-            properties: filteredProps,
-          });
-        } else {
-          setHoverInfo(null);
-        }
-      } else {
-        setHoverInfo(null);
-      }
-    };
-
-    // Always add Modify and Snap
-    const modify = new Modify({ source: sourceRef.current });
-    map.addInteraction(modify);
-
-    if (drawingMode !== "None") {
-      const draw = new Draw({
-        source: sourceRef.current,
-        type: drawingMode as Type,
-      });
-
-      draw.on("drawstart", () => {
-        sourceRef.current.clear();
-      });
-
-      draw.on("drawend", (event) => {
-        const feature = event.feature;
-        const geometry = feature.getGeometry();
-        const type = geometry?.getType();
-
-        if (type === "Point" || type === "LineString" || type === "Polygon") {
-          setCurrentGeometryType(type);
-        }
-
-        setTimeout(() => {
-          setDrawingMode("None");
-        }, 0);
-      });
-
-      map.addInteraction(draw);
-
-      // Clear hover info when entering draw mode
-      setHoverInfo(null);
-    } else {
-      // Add hover listener only when NOT drawing
-      map.on("pointermove", handlePointerMove);
-    }
-
-    const snap = new Snap({ source: sourceRef.current });
-    map.addInteraction(snap);
-
-    return () => {
-      // Cleanup interactions on mode change or unmount
-      map.getInteractions().forEach((interaction) => {
-        if (
-          interaction instanceof Draw ||
-          interaction instanceof Modify ||
-          interaction instanceof Snap
-        ) {
-          map.removeInteraction(interaction);
-        }
-      });
-      // Cleanup listener
-      map.un("pointermove", handlePointerMove);
-    };
-  }, [drawingMode]);
-
-  // Render data layers
-  useEffect(() => {
-    const map = mapRef.current;
-    if (!map) return;
-
-    // Remove existing data layers (keep base layer and drawing layer)
-    const layersToRemove: any[] = [];
-    map.getLayers().forEach((layer) => {
-      const properties = layer.getProperties();
-      if (properties.isDataLayer) {
-        layersToRemove.push(layer);
-      }
-    });
-    layersToRemove.forEach((layer) => map.removeLayer(layer));
-
-    // Helper to add layers from grouped data
-    const addLayersFromGroups = (
-      groups: any[][],
-      width: number,
-      isPoint: boolean = false,
-    ) => {
-      groups.forEach((group) => {
-        group.forEach((layer: any) => {
-          if (layer.visibility) {
-            const color = layer.color || generateRandomColor();
-            const vectorLayer = createVectorLayer(
-              layer.data,
-              color,
-              width,
-              isPoint,
-            );
-            if (vectorLayer) map.addLayer(vectorLayer);
-          }
-        });
-      });
-    };
-
-    // Helper to add building layers
-    const addBuildingLayers = (
-      chunks: GeoJSON.FeatureCollection[],
-      configColor: string | undefined,
-    ) => {
-      chunks.forEach((chunk) => {
-        const hexColor = configColor || generateRandomColor();
-        const layer = createBuildingLayer(chunk, hexColor);
-        if (layer) map.addLayer(layer);
-      });
-    };
-
-    // Add layers in order (bottom to top)
-    if (yolLayerData) {
-      // 1. Roads (Yol)
-      addLayersFromGroups(yolLayerData, 4);
-
-      // 2. Buildings (Bina)
-      if (visibility.adrBina) {
-        addBuildingLayers(adrBina, config.ADR_BINA_COLOR);
-        addBuildingLayers(buildingBina, config.ADR_BINA_COLOR);
-      }
-      if (visibility.trafoBina) {
-        addBuildingLayers(trafoBina, config.TRAFO_BINA_COLOR);
-      }
-
-      // 3. Power Lines (Hat)
-      addLayersFromGroups(hatLayerData, 2);
-
-      // 4. Poles (Direk)
-      if (direkLayerData) {
-        addLayersFromGroups(direkLayerData, 2, true);
-      }
-
-      if (aydDirekData) {
-        addLayersFromGroups(aydDirekData, 2, true);
-      }
-    }
-  }, [
+  const {
+    drawingMode,
+    setDrawingMode,
+    hasFeatures,
+    hoverInfo,
+    currentGeometryType,
+    clearFeatures,
+    getModifiedFeatures,
+    selectedFeatures,
+  } = useOlDrawingMap({
+    olContainerRef,
+    viewState,
+    onViewStateChange,
     hatLayerData,
     direkLayerData,
     aydDirekData,
+    armaturLayerData,
     yolLayerData,
     adrBina,
     buildingBina,
     trafoBina,
     visibility,
     config,
-  ]);
+  });
+
+  const handleSave = () => {
+    const { modified, new: newFeatures } = getModifiedFeatures();
+    console.log("Modified Features:", modified.map(f => ({
+      id: f.get("id") || (f as any).ol_uid,
+      properties: f.getProperties(),
+      geometry: (f.getGeometry() as any)?.getCoordinates() // Simplified for logging
+    })));
+    console.log("New Features:", newFeatures.map(f => ({
+      properties: f.getProperties(),
+      geometry: (f.getGeometry() as any)?.getCoordinates()
+    })));
+
+    if (newFeatures.length > 0) {
+      // For now, we only handle the first new feature for the modal
+      // In a real app, we might want to handle multiple or loop through them
+      // But the modal likely only handles one at a time or we need a different UI
+      // Let's assume we just open the modal and when they save in the modal, we save the feature.
+      // But wait, the modal is "SaveFeatureModal". It probably takes the feature details.
+      // We need to pass the geometry to the modal or handle the save here if the modal just returns data.
+
+      // Actually, looking at SaveFeatureModal usage (which I haven't seen fully but I see it being rendered),
+      // it has an onSave prop.
+      // Let's check SaveFeatureModal.tsx to see what it does.
+      setIsModalOpen(true);
+    } else if (modified.length > 0) {
+      // Handle modified features update if needed (not requested yet, but good to note)
+      console.log("Saving modified features is not yet implemented on backend for update.");
+    }
+  };
+
+  const handleModalSave = async (_featureType: string, data: any) => {
+    const { new: newFeatures } = getModifiedFeatures();
+    if (newFeatures.length === 0) return;
+
+    const feature = newFeatures[0]; // Taking the first one for now
+    const geometry = feature.getGeometry();
+
+    if (!geometry) return;
+
+    const wkb = geometryToWkb(geometry);
+
+    console.log("Saving AdrBina - Raw Data:", data);
+
+    const newBuilding: Partial<AdrBina> = {
+      adi: data.adi || "",
+      siteAdi: data.site_adi || "",
+      binaKatSayisi: Number(data.bina_kat_sayisi || 0),
+      daireSayisi: Number(data.daire_sayisi || 0),
+      isyeriSayisi: Number(data.isyeri_sayisi || 0),
+      yukseklik: Number(data.yukseklik || 0),
+      kodu: data.kodu || "",
+      wkb: wkb as any
+    };
+
+    console.log("Saving AdrBina - Mapped Object:", newBuilding);
+
+    try {
+      await AdrBinaApi.create(newBuilding);
+      console.log("Building saved successfully");
+      setIsModalOpen(false);
+      setDrawingMode("None");
+      props.onRefresh();
+    } catch (error) {
+      console.error("Failed to save building", error);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (selectedFeatures.length === 0) return;
+
+    for (const feature of selectedFeatures) {
+      const properties = feature.getProperties();
+      const id = properties.id;
+      if (id) {
+        try {
+          await AdrBinaApi.delete(id);
+          console.log(`Deleted feature ${id}`);
+        } catch (error) {
+          console.error(`Failed to delete feature ${id}`, error);
+        }
+      }
+    }
+    setDrawingMode("None");
+    props.onRefresh();
+  };
 
   return (
     <div
@@ -488,67 +172,19 @@ export default function OlDrawingMap(props: Props) {
       className={!isVisible ? "openlayers-hidden" : ""}
       style={{ position: "relative", width: "100%", height: "100%" }}
     >
-      <div className="ol-drawing-map-controls">
-        <div className={`drawing-group ${hasFeatures ? "" : "hideBorder"}`}>
-          <button
-            onClick={() =>
-              setDrawingMode((prev) => (prev === "Point" ? "None" : "Point"))
-            }
-            className={drawingMode === "Point" ? "active" : ""}
-            title="Point"
-          >
-            <Circle size={20} />
-          </button>
-          <button
-            onClick={() =>
-              setDrawingMode((prev) =>
-                prev === "LineString" ? "None" : "LineString",
-              )
-            }
-            className={drawingMode === "LineString" ? "active" : ""}
-            title="LineString"
-          >
-            <Activity size={20} />
-          </button>
-          <button
-            onClick={() =>
-              setDrawingMode((prev) =>
-                prev === "Polygon" ? "None" : "Polygon",
-              )
-            }
-            className={drawingMode === "Polygon" ? "active" : ""}
-            title="Polygon"
-          >
-            <Hexagon size={20} />
-          </button>
-        </div>
-        <button
-          onClick={() => sourceRef.current.clear()}
-          className={`clear-btn ${hasFeatures ? "" : "hidden"}`}
-          title="Clear All"
-        >
-          <Trash2 size={20} />
-        </button>
-        <button
-          onClick={() => {
-            setIsModalOpen(true);
-          }}
-          className={`${hasFeatures ? "" : "hidden"}`}
-          title="Save"
-          disabled={!hasFeatures}
-        >
-          <Save size={20} />
-        </button>
-      </div>
+      <DrawingControls
+        drawingMode={drawingMode}
+        setDrawingMode={setDrawingMode}
+        hasFeatures={hasFeatures}
+        onClear={clearFeatures}
+        onSave={handleSave}
+        onDelete={handleDelete}
+        hasSelection={selectedFeatures.length > 0}
+      />
       <SaveFeatureModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onSave={(featureType, attributes) => {
-          console.log("Saving feature with type:", featureType);
-          console.log("Attributes:", attributes);
-          setIsModalOpen(false);
-          // TODO: Implement actual save logic
-        }}
+        onSave={handleModalSave}
         geometryType={currentGeometryType}
       />
       <div

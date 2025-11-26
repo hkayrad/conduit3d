@@ -25,6 +25,7 @@ export enum FeatureType {
 	LINE = "line",
 	REKORTMAN = "rekortman",
 	YOL = "road",
+	ARMATUR = "armatur",
 }
 
 export enum AdminModalType {
@@ -43,6 +44,7 @@ export enum ListDataType {
 	AgDirek = "AgDirek",
 	OgMusDirek = "OgMusDirek",
 	AydDirek = "AydDirek",
+	Armatur = "Armatur",
 }
 
 export enum C3D_MapLayers {
@@ -56,6 +58,7 @@ export enum C3D_MapLayers {
 	OgHat = "ogHat",
 	Rekortman = "rekortman",
 	AdrYol = "adrYol",
+	Armatur = "armatur",
 }
 
 export enum C3D_MapViewType {

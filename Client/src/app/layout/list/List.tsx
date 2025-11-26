@@ -1,4 +1,4 @@
-import "./style/list.css";
+import "./style/list.scss";
 import Table from "../../shared/table/Table";
 import React, { useCallback, useEffect, useMemo } from "react";
 import { useAppDispatch, useAppSelector, useList } from "../../../lib/hooks";
@@ -76,6 +76,7 @@ export default function List(): React.ReactNode {
           ListDataType.AgDirek,
           ListDataType.OgMusDirek,
           ListDataType.AydDirek,
+          ListDataType.Armatur,
         ],
       },
       {
@@ -98,6 +99,7 @@ export default function List(): React.ReactNode {
       [ListDataType.AgHat]: FeatureType.LINE,
       [ListDataType.OgHat]: FeatureType.LINE,
       [ListDataType.Rekortman]: FeatureType.REKORTMAN,
+      [ListDataType.Armatur]: FeatureType.ARMATUR,
     }),
     [],
   );
@@ -108,11 +110,11 @@ export default function List(): React.ReactNode {
       { id: "index", label: "#" },
       ...(features[0]
         ? Object.keys(features[0])
-            .map((k) => ({
-              id: k,
-              label: capitalizeFirstLetter(k),
-            }))
-            .filter((header) => header.id !== "wkb")
+          .map((k) => ({
+            id: k,
+            label: capitalizeFirstLetter(k),
+          }))
+          .filter((header) => header.id !== "wkb")
         : []),
       ...(features.length > 0 ? [{ id: "actions", label: "Actions" }] : []),
     ],

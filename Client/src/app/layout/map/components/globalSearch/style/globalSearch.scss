@@ -17,7 +17,7 @@
     z-index: 900;
     transition: all 0.3s ease;
 
-    &.hidden {
+    &.info-card-hidden {
         transform: translateY(150%);
     }
 

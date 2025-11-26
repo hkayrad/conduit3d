@@ -10,11 +10,12 @@ import {
   useYol,
   useHat,
   useDirek,
+  useArmatur,
   useMap,
 } from "../../../lib/hooks";
 import { CreateLayer, hexToRgba, Logger } from "../../../lib/utils";
 import { C3D_MapViewType } from "../../../lib/enums";
-
+import { CUBE_MESH } from "../../../lib/utils";
 import {
   AmbientLight,
   DirectionalLight,
@@ -123,7 +124,7 @@ export default function DeckglMap(): React.ReactNode {
           layout: {
             visibility:
               selectedViewType === C3D_MapViewType.Cartesian &&
-              visibility.basemap
+                visibility.basemap
                 ? "visible"
                 : "none",
           },
@@ -167,7 +168,7 @@ export default function DeckglMap(): React.ReactNode {
           layout: {
             visibility:
               selectedViewType === C3D_MapViewType.Cartesian &&
-              visibility.adrBina
+                visibility.adrBina
                 ? "visible"
                 : "none",
           },
@@ -212,6 +213,7 @@ export default function DeckglMap(): React.ReactNode {
     [],
   );
   const [trafoBina, setTrafoBina] = useState<GeoJSON.FeatureCollection[]>([]);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   // Layout and Resizing State
 
@@ -280,6 +282,8 @@ export default function DeckglMap(): React.ReactNode {
 
   const { yolLayerData, setAdrYol } = useYol();
 
+  const { armaturLayerData, setArmatur } = useArmatur(allPoles);
+
   // Map hook
   const {
     showFpsCounter,
@@ -303,8 +307,6 @@ export default function DeckglMap(): React.ReactNode {
     handleKeyPresses,
     flyTo,
   } = useMap();
-
-  useEffect(() => console.log(aydDirekFormatted), [aydDirekFormatted]);
 
   // Memoized widgets
   const widgets = useMemo(() => {
@@ -394,6 +396,20 @@ export default function DeckglMap(): React.ReactNode {
         ),
       ),
 
+      ...armaturLayerData.map((armatur) =>
+        CreateLayer.Armatur(
+          `${armatur.id}-layer`,
+          armatur.data,
+          armatur.color,
+          hexToRgba(config.HOVER_COLOR || "#ffffff") || COLORS.HOVER,
+          selectedViewType === C3D_MapViewType.Cartesian
+            ? armatur.visibility && cartesian.zoom >= 15
+            : armatur.visibility,
+          isWireframe,
+          selectedFeature,
+        ),
+      ),
+
       ...adrBina.map(
         (chunk, index) =>
           new GeoJsonLayer({
@@ -408,7 +424,7 @@ export default function DeckglMap(): React.ReactNode {
               return isSelected
                 ? hexToRgba(config.HOVER_COLOR || "#ffffff") || COLORS.HOVER
                 : hexToRgba(config.ADR_BINA_COLOR || "#ffffff") ||
-                    COLORS.ADR_BINA;
+                COLORS.ADR_BINA;
             },
             filled: true,
             extruded: true,
@@ -446,7 +462,7 @@ export default function DeckglMap(): React.ReactNode {
               return isSelected
                 ? hexToRgba(config.HOVER_COLOR || "#ffffff") || COLORS.HOVER
                 : hexToRgba(config.ADR_BINA_COLOR || "#ffffff") ||
-                    COLORS.ADR_BINA;
+                COLORS.ADR_BINA;
             },
             filled: true,
             extruded: true,
@@ -484,7 +500,7 @@ export default function DeckglMap(): React.ReactNode {
               return isSelected
                 ? hexToRgba(config.HOVER_COLOR) || COLORS.HOVER
                 : hexToRgba(config.TRAFO_BINA_COLOR || "#ffffff") ||
-                    COLORS.TRAFO_BINA;
+                COLORS.TRAFO_BINA;
             },
             pickable: !isWireframe,
             autoHighlight: true,
@@ -495,11 +511,13 @@ export default function DeckglMap(): React.ReactNode {
                 ? visibility.trafoBina && cartesian.zoom >= 15
                 : visibility.trafoBina,
             wireframe: isWireframe,
-            getScale: [6, 6, 6],
-            mesh: "/trafo.obj",
-            loaders: [OBJLoader],
+            getScale: isWireframe ? [3, 3, 3] : [10, 10, 10],
+            mesh: isWireframe ? CUBE_MESH : "/obj/trafo.obj",
+            loaders: isWireframe ? undefined : [OBJLoader],
             updateTriggers: {
               getColor: [selectedFeature, isWireframe],
+              getScale: [isWireframe],
+              getMesh: [isWireframe],
             },
           }),
         // new ColumnLayer({
@@ -559,6 +577,7 @@ export default function DeckglMap(): React.ReactNode {
       cartesian.zoom,
       selectedViewType,
       aydDirekFormatted,
+      armaturLayerData,
     ],
   );
 
@@ -681,6 +700,7 @@ export default function DeckglMap(): React.ReactNode {
             hatLayerData={hatLayerData}
             direkLayerData={direkLayerData}
             aydDirekData={[aydDirekFormatted]}
+            armaturLayerData={[armaturLayerData]}
             yolLayerData={yolLayerData}
             adrBina={adrBina}
             buildingBina={buildingBina}
@@ -694,6 +714,7 @@ export default function DeckglMap(): React.ReactNode {
                 ...newViewState,
               })
             }
+            onRefresh={() => setRefreshTrigger((prev) => prev + 1)}
           />
         )}
 
@@ -714,6 +735,8 @@ export default function DeckglMap(): React.ReactNode {
             setAgHat={setAgHat}
             setOgHat={setOgHat}
             setRekortman={setRekortman}
+            setArmatur={setArmatur}
+            refreshTrigger={refreshTrigger}
           />
           {/* Dynamically create the FeatureInfo components */}
           {activePopups.map((popup) => (

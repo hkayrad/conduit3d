@@ -87,6 +87,7 @@ const initialState: MapState = {
 		[C3D_MapLayers.OgHat]: true,
 		[C3D_MapLayers.Rekortman]: true,
 		[C3D_MapLayers.AdrYol]: true,
+		[C3D_MapLayers.Armatur]: true,
 	},
 	filters: {
 		[C3D_MapLayers.AgDirek]: {
