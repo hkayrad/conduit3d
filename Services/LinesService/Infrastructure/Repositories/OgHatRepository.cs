@@ -119,4 +119,64 @@ public class OgHatRepository(LinesContext context) : IOgHatRepository
     {
         return await _dbSet.Select(x => x.Cinsi).Distinct().ToListAsync(cancellationToken);
     }
+
+    public async Task<OgHat> AddAsync(OgHat entity, CancellationToken cancellationToken)
+    {
+        var sql = @"
+            INSERT INTO ""SBK_OGHAT"" (kodu, adi, cinsi, kesit, tipi, geometry)
+            VALUES (@p0, @p1, @p2, @p3, @p4, ST_Transform(ST_GeomFromWKB(@p5, 4326), 3857))
+            RETURNING id, kodu, adi, cinsi, kesit, tipi, ST_AsBinary(ST_Transform(geometry, 4326)) as wkb, searchable_text";
+
+        var result = await _context.Database.SqlQueryRaw<OgHat>(
+            sql,
+            entity.Kodu,
+            entity.Adi,
+            entity.Cinsi,
+            entity.Kesit,
+            entity.Tipi,
+            entity.Wkb
+        ).ToListAsync(cancellationToken);
+
+        return result.Single();
+    }
+
+    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
+    {
+        var sql = @"DELETE FROM ""SBK_OGHAT"" WHERE id = @p0";
+        var rowsAffected = await _context.Database.ExecuteSqlRawAsync(sql, new object[] { id }, cancellationToken);
+        return rowsAffected > 0;
+    }
+
+    public async Task<OgHat> UpdateAsync(OgHat entity, CancellationToken cancellationToken)
+    {
+        var sql = @"
+            UPDATE ""SBK_OGHAT""
+            SET
+                kodu = @p0,
+                adi = @p1,
+                cinsi = @p2,
+                kesit = @p3,
+                tipi = @p4,
+                geometry = ST_Transform(ST_GeomFromWKB(@p5, 4326), 3857)
+            WHERE id = @p6
+            RETURNING id, kodu, adi, cinsi, kesit, tipi, ST_AsBinary(ST_Transform(geometry, 4326)) as wkb, searchable_text";
+
+        var result = await _context.Database.SqlQueryRaw<OgHat>(
+            sql,
+            entity.Kodu,
+            entity.Adi,
+            entity.Cinsi,
+            entity.Kesit,
+            entity.Tipi,
+            entity.Wkb,
+            entity.Id
+        ).ToListAsync(cancellationToken);
+
+        if (!result.Any())
+        {
+            throw new KeyNotFoundException($"OgHat with ID {entity.Id} not found.");
+        }
+
+        return result.Single();
+    }
 }

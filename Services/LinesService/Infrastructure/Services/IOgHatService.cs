@@ -18,4 +18,7 @@ public interface IOgHatService : IGenericService<OgHat>
                                             Extent? extent,
                                             string? query,
                                             CancellationToken cancellationToken);
+    Task<Response<OgHat>> CreateAsync(OgHat entity, CancellationToken cancellationToken);
+    Task<Response<bool>> DeleteAsync(int id, CancellationToken cancellationToken);
+    Task<Response<OgHat>> UpdateAsync(OgHat entity, CancellationToken cancellationToken);
 }

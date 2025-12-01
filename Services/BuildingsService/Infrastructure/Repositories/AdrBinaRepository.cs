@@ -175,4 +175,45 @@ public class AdrBinaRepository(BuildingsContext context) : IAdrBinaRepository
         var rowsAffected = await _context.Database.ExecuteSqlRawAsync(sql, new object[] { id }, cancellationToken);
         return rowsAffected > 0;
     }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Updates an existing ADR_BINA entity using native SQL to handle geometry transformation and avoid updating searchable_text.
+    /// </remarks>
+    public async Task<AdrBina> UpdateAsync(AdrBina entity, CancellationToken cancellationToken)
+    {
+        var sql = @"
+            UPDATE ""ADR_BINA""
+            SET
+                kodu = {0},
+                site_adi = {1},
+                adi = {2},
+                bina_kat_sayisi = {3},
+                daire_sayisi = {4},
+                isyeri_sayisi = {5},
+                yukseklik = {6},
+                geometry = ST_Transform(ST_GeomFromWKB({7}, 4326), 3857)
+            WHERE id = {8}
+            RETURNING id";
+
+        var result = await _context.Database.SqlQueryRaw<int>(
+            sql,
+            entity.Kodu ?? (object)DBNull.Value,
+            entity.SiteAdi ?? (object)DBNull.Value,
+            entity.Adi ?? (object)DBNull.Value,
+            entity.BinaKatSayisi,
+            entity.DaireSayisi,
+            entity.IsyeriSayisi,
+            entity.Yukseklik,
+            entity.Wkb,
+            entity.Id
+        ).ToListAsync(cancellationToken);
+
+        if (!result.Any())
+        {
+            throw new KeyNotFoundException($"AdrBina with ID {entity.Id} not found.");
+        }
+
+        return entity;
+    }
 }

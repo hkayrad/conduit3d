@@ -18,4 +18,7 @@ public interface IAydDirekService : IGenericService<AydDirek>
                                             Extent? extent,
                                             string? query,
                                             CancellationToken cancellationToken);
+    Task<Response<AydDirek>> CreateAsync(AydDirek entity, CancellationToken cancellationToken);
+    Task<Response<bool>> DeleteAsync(int id, CancellationToken cancellationToken);
+    Task<Response<AydDirek>> UpdateAsync(AydDirek entity, CancellationToken cancellationToken);
 }

@@ -17,4 +17,7 @@ public interface ITrafoBinaService : IGenericService<TrafoBina>
                                             Extent? extent,
                                             string? query,
                                             CancellationToken cancellationToken);
+    Task<Response<TrafoBina>> CreateAsync(TrafoBina entity, CancellationToken cancellationToken);
+    Task<Response<bool>> DeleteAsync(int id, CancellationToken cancellationToken);
+    Task<Response<TrafoBina>> UpdateAsync(TrafoBina entity, CancellationToken cancellationToken);
 }

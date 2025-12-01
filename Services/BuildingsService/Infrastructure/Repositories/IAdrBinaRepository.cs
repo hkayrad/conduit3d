@@ -23,4 +23,12 @@ public interface IAdrBinaRepository : IGenericRepository<AdrBina>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>True if the entity was deleted, false otherwise.</returns>
     Task<bool> DeleteAsync(int id, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Updates an existing AdrBina entity.
+    /// </summary>
+    /// <param name="entity">The entity to update.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The updated entity.</returns>
+    Task<AdrBina> UpdateAsync(AdrBina entity, CancellationToken cancellationToken);
 }

@@ -105,4 +105,67 @@ public class AdrYolRepository(BuildingsContext context) : IAdrYolRepository
     {
         return await _dbSet.Select(x => x.Tipi).Distinct().ToListAsync(cancellationToken);
     }
+
+    public async Task<AdrYol> AddAsync(AdrYol entity, CancellationToken cancellationToken)
+    {
+        var sql = @"
+            INSERT INTO ""ADR_YOL"" (genislik, serit_sayisi, yapisi, tipi, kodu, adi, geometry)
+            VALUES (@p0, @p1, @p2, @p3, @p4, @p5, ST_Transform(ST_GeomFromWKB(@p6, 4326), 3857))
+            RETURNING id, genislik, serit_sayisi, yapisi, tipi, kodu, adi, ST_AsBinary(ST_Transform(geometry, 4326)) as wkb, searchable_text";
+
+        var result = await _context.Database.SqlQueryRaw<AdrYol>(
+            sql,
+            entity.Genislik,
+            entity.SeritSayisi,
+            entity.Yapisi,
+            entity.Tipi,
+            entity.Kodu,
+            entity.Adi,
+            entity.Wkb
+        ).ToListAsync(cancellationToken);
+
+        return result.Single();
+    }
+
+    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
+    {
+        var sql = @"DELETE FROM ""ADR_YOL"" WHERE id = @p0";
+        var rowsAffected = await _context.Database.ExecuteSqlRawAsync(sql, new object[] { id }, cancellationToken);
+        return rowsAffected > 0;
+    }
+
+    public async Task<AdrYol> UpdateAsync(AdrYol entity, CancellationToken cancellationToken)
+    {
+        var sql = @"
+            UPDATE ""ADR_YOL""
+            SET
+                genislik = @p0,
+                serit_sayisi = @p1,
+                yapisi = @p2,
+                tipi = @p3,
+                kodu = @p4,
+                adi = @p5,
+                geometry = ST_Transform(ST_GeomFromWKB(@p6, 4326), 3857)
+            WHERE id = @p7
+            RETURNING id, genislik, serit_sayisi, yapisi, tipi, kodu, adi, ST_AsBinary(ST_Transform(geometry, 4326)) as wkb, searchable_text";
+
+        var result = await _context.Database.SqlQueryRaw<AdrYol>(
+            sql,
+            entity.Genislik,
+            entity.SeritSayisi,
+            entity.Yapisi,
+            entity.Tipi,
+            entity.Kodu,
+            entity.Adi,
+            entity.Wkb,
+            entity.Id
+        ).ToListAsync(cancellationToken);
+
+        if (!result.Any())
+        {
+            throw new KeyNotFoundException($"AdrYol with ID {entity.Id} not found.");
+        }
+
+        return result.Single();
+    }
 }

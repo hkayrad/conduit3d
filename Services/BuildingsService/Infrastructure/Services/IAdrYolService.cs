@@ -15,4 +15,7 @@ public interface IAdrYolService : IGenericService<AdrYol>
                                                 Extent? extent,
                                                 string? query,
                                                 CancellationToken cancellationToken);
+    Task<Response<AdrYol>> CreateAsync(AdrYol entity, CancellationToken cancellationToken);
+    Task<Response<bool>> DeleteAsync(int id, CancellationToken cancellationToken);
+    Task<Response<AdrYol>> UpdateAsync(AdrYol entity, CancellationToken cancellationToken);
 }

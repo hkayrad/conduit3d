@@ -238,4 +238,65 @@ public class PostgresqlAgHatService(IUnitOfWork unitOfWork) : IAgHatService
             };
         }
     }
+
+    public async Task<Response<AgHat>> CreateAsync(AgHat entity, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var createdEntity = await _unitOfWork.AgHatRepository.AddAsync(entity, cancellationToken);
+            return Response<AgHat>.Success(createdEntity, LinesResources.GetString("lineCreated"));
+        }
+        catch (NpgsqlException ex)
+        {
+            return Response<AgHat>.DatabaseError(LinesResources.GetString("lineCreationFailed", ex.Message));
+        }
+        catch (Exception ex)
+        {
+            return Response<AgHat>.UnhandledError(LinesResources.GetString("lineCreationFailed", ex.Message));
+        }
+    }
+
+    public async Task<Response<bool>> DeleteAsync(int id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _unitOfWork.AgHatRepository.DeleteAsync(id, cancellationToken);
+            if (!result)
+                return Response<bool>.NotFound(LinesResources.GetString("lineNotFound", id));
+
+            return Response<bool>.Success(true, LinesResources.GetString("lineDeleted"));
+        }
+        catch (NpgsqlException ex)
+        {
+            return Response<bool>.DatabaseError(LinesResources.GetString("lineDeletionFailed", ex.Message));
+        }
+        catch (Exception ex)
+        {
+            return Response<bool>.UnhandledError(LinesResources.GetString("lineDeletionFailed", ex.Message));
+        }
+    }
+
+    public async Task<Response<AgHat>> UpdateAsync(AgHat entity, CancellationToken cancellationToken)
+    {
+        if (entity.Id <= 0)
+            return Response<AgHat>.ValidationError(LinesResources.GetString("invalidId"));
+
+        try
+        {
+            var updatedEntity = await _unitOfWork.AgHatRepository.UpdateAsync(entity, cancellationToken);
+            return Response<AgHat>.Success(updatedEntity, LinesResources.GetString("lineUpdated"));
+        }
+        catch (KeyNotFoundException)
+        {
+            return Response<AgHat>.NotFound(LinesResources.GetString("lineNotFound", entity.Id));
+        }
+        catch (NpgsqlException ex)
+        {
+            return Response<AgHat>.DatabaseError(LinesResources.GetString("lineUpdateFailed", ex.Message));
+        }
+        catch (Exception ex)
+        {
+            return Response<AgHat>.UnhandledError(LinesResources.GetString("lineUpdateFailed", ex.Message));
+        }
+    }
 }

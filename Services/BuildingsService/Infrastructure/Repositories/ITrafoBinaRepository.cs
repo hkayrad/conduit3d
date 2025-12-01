@@ -9,5 +9,7 @@ namespace BuildingsService.Infrastructure.Repositories;
 /// </summary>
 public interface ITrafoBinaRepository : IGenericRepository<TrafoBina>
 {
-
+    Task<TrafoBina> AddAsync(TrafoBina entity, CancellationToken cancellationToken);
+    Task<bool> DeleteAsync(int id, CancellationToken cancellationToken);
+    Task<TrafoBina> UpdateAsync(TrafoBina entity, CancellationToken cancellationToken);
 }

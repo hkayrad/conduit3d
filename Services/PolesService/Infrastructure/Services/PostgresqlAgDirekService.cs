@@ -240,4 +240,65 @@ public class PostgresqlAgDirekService(IUnitOfWork unitOfWork) : IAgDirekService
             };
         }
     }
+
+    public async Task<Response<AgDirek>> CreateAsync(AgDirek entity, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var createdEntity = await _unitOfWork.AgDirekRepository.AddAsync(entity, cancellationToken);
+            return Response<AgDirek>.Success(createdEntity, PolesResources.GetString("poleCreated"));
+        }
+        catch (NpgsqlException ex)
+        {
+            return Response<AgDirek>.DatabaseError(PolesResources.GetString("poleCreationFailed", ex.Message));
+        }
+        catch (Exception ex)
+        {
+            return Response<AgDirek>.UnhandledError(PolesResources.GetString("poleCreationFailed", ex.Message));
+        }
+    }
+
+    public async Task<Response<bool>> DeleteAsync(int id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _unitOfWork.AgDirekRepository.DeleteAsync(id, cancellationToken);
+            if (!result)
+                return Response<bool>.NotFound(PolesResources.GetString("poleNotFound", id));
+
+            return Response<bool>.Success(true, PolesResources.GetString("poleDeleted"));
+        }
+        catch (NpgsqlException ex)
+        {
+            return Response<bool>.DatabaseError(PolesResources.GetString("poleDeletionFailed", ex.Message));
+        }
+        catch (Exception ex)
+        {
+            return Response<bool>.UnhandledError(PolesResources.GetString("poleDeletionFailed", ex.Message));
+        }
+    }
+
+    public async Task<Response<AgDirek>> UpdateAsync(AgDirek entity, CancellationToken cancellationToken)
+    {
+        if (entity.Id <= 0)
+            return Response<AgDirek>.ValidationError(PolesResources.GetString("invalidId"));
+
+        try
+        {
+            var updatedEntity = await _unitOfWork.AgDirekRepository.UpdateAsync(entity, cancellationToken);
+            return Response<AgDirek>.Success(updatedEntity, PolesResources.GetString("poleUpdated"));
+        }
+        catch (KeyNotFoundException)
+        {
+            return Response<AgDirek>.NotFound(PolesResources.GetString("poleNotFound", entity.Id));
+        }
+        catch (NpgsqlException ex)
+        {
+            return Response<AgDirek>.DatabaseError(PolesResources.GetString("poleUpdateFailed", ex.Message));
+        }
+        catch (Exception ex)
+        {
+            return Response<AgDirek>.UnhandledError(PolesResources.GetString("poleUpdateFailed", ex.Message));
+        }
+    }
 }

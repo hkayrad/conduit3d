@@ -33,4 +33,12 @@ public interface IAdrBinaService : IGenericService<AdrBina>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A response indicating success or failure.</returns>
     Task<Response<bool>> DeleteAsync(int id, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Updates an existing AdrBina entity.
+    /// </summary>
+    /// <param name="entity">The entity to update.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The updated entity.</returns>
+    Task<Response<AdrBina>> UpdateAsync(AdrBina entity, CancellationToken cancellationToken);
 }

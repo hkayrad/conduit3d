@@ -18,5 +18,8 @@ public interface IAgHatService : IGenericService<AgHat>
                                             Extent? extent,
                                             string? query,
                                             CancellationToken cancellationToken);
+    Task<Response<AgHat>> CreateAsync(AgHat entity, CancellationToken cancellationToken);
+    Task<Response<bool>> DeleteAsync(int id, CancellationToken cancellationToken);
+    Task<Response<AgHat>> UpdateAsync(AgHat entity, CancellationToken cancellationToken);
 }
 
