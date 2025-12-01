@@ -16,19 +16,18 @@ export const handleDataFetch = async (
     if (selectedViewType !== C3D_MapViewType.FirstPerson && zoom < 15)
         return;
 
+    const newController = new AbortController();
+
     try {
-        // Prevent multiple concurrent fetches
-        if (isLoadingRef.current) return;
-
-        isLoadingRef.current = true;
-
         // Cancel any ongoing request
         if (abortControllerRef.current)
             abortControllerRef.current.abort();
 
         // Create new abort controller for this request
-        abortControllerRef.current = new AbortController();
-        const signal = abortControllerRef.current.signal;
+        abortControllerRef.current = newController;
+        const signal = newController.signal;
+
+        isLoadingRef.current = true;
 
         if (extent?.maxX == null || extent?.maxY == null || extent?.minX == null || extent?.minY == null) {
             isLoadingRef.current = false;
@@ -65,7 +64,11 @@ export const handleDataFetch = async (
             // Add a small delay to prevent blocking the main thread
             await sleep(DATA_FETCH_DELAY_MS);
         }
-        setData(allData);
+
+        // Only set data if not aborted
+        if (!signal.aborted) {
+            setData(allData);
+        }
     } catch (error) {
         if (abortControllerRef.current?.signal.aborted) {
             Logger.warn("Fetch was cancelled");
@@ -77,6 +80,9 @@ export const handleDataFetch = async (
             Logger.error("Error in fetch:", error);
         }
     } finally {
-        isLoadingRef.current = false;
+        // Only reset loading if this is still the active request
+        if (abortControllerRef.current === newController) {
+            isLoadingRef.current = false;
+        }
     }
 };

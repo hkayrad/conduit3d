@@ -70,6 +70,7 @@ export default function AdrBinaComponent(props: Readonly<Props>): null {
             properties: {
               id: rawData.id,
               dataType: FeatureType.BUILDING,
+              entityType: "AdrBina",
               adi: rawData.adi,
               kodu: rawData.kodu,
               siteAdi: rawData.siteAdi,

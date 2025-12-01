@@ -22,6 +22,22 @@
         padding: 8px;
         width: 100%;
         z-index: 3;
+        min-width: 0; // Allow shrinking for ellipsis
+        // Removed truncation from button as it is a flex container
+
+        .button-label {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+            display: block; // Ensure it behaves like a block for ellipsis
+
+            svg {
+                vertical-align: middle;
+                margin-right: 8px;
+                margin-bottom: 2px; // Slight adjustment for optical alignment
+            }
+        }
 
         &:hover {
             cursor: pointer;

@@ -32,7 +32,7 @@ import {
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Outlet, useLocation } from "react-router";
-import { selectMapState, setFocusedView } from "./mapSlice";
+import { selectCustomLayers, selectMapState, setFocusedView } from "./mapSlice";
 import { selectConfig } from "../../configSlice";
 import LayerControl from "./components/layerControl/LayerControl";
 import DataComponent from "./components/data/DataComponent";
@@ -66,6 +66,7 @@ export default function DeckglMap(): React.ReactNode {
     focusedView,
     basemapOpacity,
   } = useAppSelector(selectMapState);
+  const customLayers = useAppSelector(selectCustomLayers);
   const { cartesian, firstPerson } = viewState;
   const config = useAppSelector(selectConfig);
 
@@ -350,6 +351,15 @@ export default function DeckglMap(): React.ReactNode {
 
       CreateLayer.OsmTiles(visibility.basemap, basemapOpacity),
 
+      ...customLayers.map((layer) =>
+        CreateLayer.CustomRaster(
+          layer.id,
+          layer.url,
+          layer.visible,
+          layer.opacity,
+        ),
+      ),
+
       ...yolLayerData.flatMap((filteredYol) =>
         filteredYol.map((yol) =>
           CreateLayer.Yol(
@@ -559,6 +569,16 @@ export default function DeckglMap(): React.ReactNode {
         //   },
         // }),
       ),
+      // CreateLayer.Buildings(
+      //   "all_buildings-layer-deck",
+      //   "https://localhost/geoserver/buildings/gwc/service/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=buildings:all_buildings&STYLE=&TILEMATRIX=EPSG:900913:12&TILEMATRIXSET=EPSG:900913&FORMAT=application/vnd.mapbox-vector-tile&TILECOL=2513&TILEROW=1550",
+      //   // "https://localhost/geoserver/gwc/service/tms/1.0.0/buildings:all_buildings@EPSG:900913@pbf/{z}/{x}/{y}.pbf",
+      //   adrBinaColor,
+      //   hexToRgba(config.HOVER_COLOR || "#ffffff") || COLORS.HOVER,
+      //   selectedViewType === C3D_MapViewType.Cartesian && visibility.adrBina,
+      //   selectedFeature,
+      //   "tms"
+      // ),
     ],
     [
       visibility,
@@ -578,6 +598,8 @@ export default function DeckglMap(): React.ReactNode {
       selectedViewType,
       aydDirekFormatted,
       armaturLayerData,
+      customLayers,
+      adrBinaColor
     ],
   );
 
@@ -708,6 +730,7 @@ export default function DeckglMap(): React.ReactNode {
             visibility={visibility}
             config={config}
             viewState={mapViewState.cartesian}
+            customLayers={customLayers}
             onViewStateChange={(newViewState) =>
               handleViewStateChange(C3D_MapViewType.Cartesian, {
                 ...mapViewState.cartesian,

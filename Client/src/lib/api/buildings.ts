@@ -203,6 +203,36 @@ export class TrafoBinaApi {
 	}
 
 	/**
+	 * Create a new TrafoBina.
+	 * @param building The building data to create.
+	 * @returns A promise that resolves to the created TrafoBina.
+	 */
+	static async create(building: Partial<TrafoBina>) {
+		try {
+			const response = await instance.post<ApiResponse<TrafoBina>>("trafoBina", building);
+			return response.data;
+		} catch (error) {
+			Logger.error("Create TrafoBina error:", error);
+			throw error;
+		}
+	}
+
+	/**
+	 * Delete a TrafoBina by ID.
+	 * @param id The ID of the building to delete.
+	 * @returns A promise that resolves to true if deleted, false otherwise.
+	 */
+	static async delete(id: number): Promise<boolean> {
+		try {
+			const response = await instance.delete(`trafoBina/${id}`);
+			return response.data.isSuccess;
+		} catch (error) {
+			Logger.error("Delete TrafoBina error:", error);
+			throw error;
+		}
+	}
+
+	/**
 	 * Fetch the count of transformer stations.
 	 * @param query Optional search query to filter features.
 	 * @returns A promise that resolves to the count of transformer stations.
@@ -423,6 +453,36 @@ export class AdrYolApi {
 			return response.data;
 		} catch (error) {
 			Logger.error("Fetch AdrYol error:", error);
+			throw error;
+		}
+	}
+
+	/**
+	 * Create a new AdrYol.
+	 * @param yol The yol data to create.
+	 * @returns A promise that resolves to the created AdrYol.
+	 */
+	static async create(yol: Partial<AdrYol>) {
+		try {
+			const response = await instance.post<ApiResponse<AdrYol>>("adrYol", yol);
+			return response.data;
+		} catch (error) {
+			Logger.error("Create AdrYol error:", error);
+			throw error;
+		}
+	}
+
+	/**
+	 * Delete an AdrYol by ID.
+	 * @param id The ID of the yol to delete.
+	 * @returns A promise that resolves to true if deleted, false otherwise.
+	 */
+	static async delete(id: number): Promise<boolean> {
+		try {
+			const response = await instance.delete(`adrYol/${id}`);
+			return response.data.isSuccess;
+		} catch (error) {
+			Logger.error("Delete AdrYol error:", error);
 			throw error;
 		}
 	}

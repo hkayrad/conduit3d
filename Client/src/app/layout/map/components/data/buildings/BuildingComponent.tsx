@@ -18,6 +18,7 @@ type Props = {
   extent: Extent;
   zoom: number;
   selectedViewType: C3D_MapViewType;
+  refreshTrigger?: number;
 };
 
 /**
@@ -26,7 +27,7 @@ type Props = {
  * @param props - The props for the component
  */
 export default function BuildingComponent(props: Readonly<Props>): null {
-  const { setData, extent, zoom, selectedViewType } = props;
+  const { setData, extent, zoom, selectedViewType, refreshTrigger } = props;
   const abortControllerRef = useRef<AbortController | null>(null);
   const isLoadingRef = useRef<boolean>(false);
 
@@ -66,6 +67,7 @@ export default function BuildingComponent(props: Readonly<Props>): null {
             properties: {
               id: rawData.id,
               dataType: FeatureType.BUILDING,
+              entityType: "BuildingBina",
               adi: rawData.adi,
               kodu: rawData.kodu,
               siteAdi: rawData.siteAdi,
@@ -76,7 +78,7 @@ export default function BuildingComponent(props: Readonly<Props>): null {
               yukseklik:
                 rawData.yukseklik ||
                 (rawData.binaKatSayisi || DEFAULT_FLOOR_COUNT) *
-                  DEFAULT_FLOOR_HEIGHT,
+                DEFAULT_FLOOR_HEIGHT,
             },
           }),
         );
@@ -104,7 +106,7 @@ export default function BuildingComponent(props: Readonly<Props>): null {
       fetchNextChunk,
       setData,
     );
-  }, [extent, zoom, selectedViewType, fetchNextChunk, setData]);
+  }, [extent, zoom, selectedViewType, fetchNextChunk, setData, refreshTrigger]);
 
   return null;
 }

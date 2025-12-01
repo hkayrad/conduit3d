@@ -3,7 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../../lib/store";
 import type { FirstPersonViewState, MapViewState } from "deck.gl";
 import { C3D_MapViewType, C3D_MapLayers } from "../../../lib/enums";
-import type { C3D_LayerViewState } from "../../../lib/types";
+import type { C3D_LayerViewState, CustomLayer } from "../../../lib/types";
 
 export interface MapState {
 	isDataLoading: boolean;
@@ -63,7 +63,30 @@ export interface MapState {
 		longitude: number;
 		latitude: number;
 	};
+	customLayers: CustomLayer[];
 }
+
+const CUSTOM_LAYERS_KEY = "c3d_custom_layers";
+
+const loadCustomLayers = (): CustomLayer[] => {
+	if (typeof window === "undefined") return [];
+	try {
+		const stored = localStorage.getItem(CUSTOM_LAYERS_KEY);
+		return stored ? JSON.parse(stored) : [];
+	} catch (error) {
+		console.error("Failed to load custom layers from local storage:", error);
+		return [];
+	}
+};
+
+const saveCustomLayers = (layers: CustomLayer[]) => {
+	if (typeof window === "undefined") return;
+	try {
+		localStorage.setItem(CUSTOM_LAYERS_KEY, JSON.stringify(layers));
+	} catch (error) {
+		console.error("Failed to save custom layers to local storage:", error);
+	}
+};
 
 const initialState: MapState = {
 	isDataLoading: false,
@@ -149,6 +172,7 @@ const initialState: MapState = {
 		longitude: null!,
 		latitude: null!,
 	},
+	customLayers: loadCustomLayers(),
 };
 
 export const mapSlice = createSlice({
@@ -264,6 +288,34 @@ export const mapSlice = createSlice({
 			const { position } = action.payload;
 			state.lastRefreshPosition = position;
 		},
+		addCustomLayer: (state, action: PayloadAction<CustomLayer>) => {
+			state.customLayers.push(action.payload);
+			saveCustomLayers(state.customLayers);
+		},
+		removeCustomLayer: (state, action: PayloadAction<string>) => {
+			state.customLayers = state.customLayers.filter((layer) => layer.id !== action.payload);
+			saveCustomLayers(state.customLayers);
+		},
+		toggleCustomLayerVisibility: (state, action: PayloadAction<string>) => {
+			const layer = state.customLayers.find((l) => l.id === action.payload);
+			if (layer) {
+				layer.visible = !layer.visible;
+				saveCustomLayers(state.customLayers);
+			}
+		},
+		setCustomLayerOpacity: (state, action: PayloadAction<{ id: string; opacity: number }>) => {
+			const layer = state.customLayers.find((l) => l.id === action.payload.id);
+			if (layer) {
+				layer.opacity = action.payload.opacity;
+				saveCustomLayers(state.customLayers);
+			}
+		},
+		reorderCustomLayers: (state, action: PayloadAction<{ startIndex: number; endIndex: number }>) => {
+			const { startIndex, endIndex } = action.payload;
+			const [removed] = state.customLayers.splice(startIndex, 1);
+			state.customLayers.splice(endIndex, 0, removed);
+			saveCustomLayers(state.customLayers);
+		},
 	},
 });
 
@@ -290,6 +342,11 @@ export const {
 	setExtent,
 	setType,
 	setLastRefreshPosition,
+	addCustomLayer,
+	removeCustomLayer,
+	toggleCustomLayerVisibility,
+	setCustomLayerOpacity,
+	reorderCustomLayers,
 } = mapSlice.actions;
 
 export const selectMapState = (state: RootState) => state.map;
@@ -310,5 +367,6 @@ export const selectTypes = (state: RootState) => state.map.types;
 export const selectViewState = (state: RootState) => state.map.viewState;
 export const selectExtent = (state: RootState) => state.map.extent;
 export const selectLastRefreshPosition = (state: RootState) => state.map.lastRefreshPosition;
+export const selectCustomLayers = (state: RootState) => state.map.customLayers;
 
 export default mapSlice.reducer;

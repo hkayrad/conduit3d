@@ -52,6 +52,36 @@ export class AgHatApi {
 	}
 
 	/**
+	 * Create a new AgHat.
+	 * @param hat The hat data to create.
+	 * @returns A promise that resolves to the created AgHat.
+	 */
+	static async create(hat: Partial<Hat>) {
+		try {
+			const response = await instance.post<ApiResponse<Hat>>("agHat", hat);
+			return response.data;
+		} catch (error) {
+			Logger.error("Create AgHat error:", error);
+			throw error;
+		}
+	}
+
+	/**
+	 * Delete an AgHat by ID.
+	 * @param id The ID of the hat to delete.
+	 * @returns A promise that resolves to true if deleted, false otherwise.
+	 */
+	static async delete(id: number): Promise<boolean> {
+		try {
+			const response = await instance.delete(`agHat/${id}`);
+			return response.data.isSuccess;
+		} catch (error) {
+			Logger.error("Delete AgHat error:", error);
+			throw error;
+		}
+	}
+
+	/**
 	 * Fetch all AG Hat feature types.
 	 * @returns A promise that resolves to the list of AG Hat feature types.
 	 */
@@ -171,6 +201,36 @@ export class OgHatApi {
 	}
 
 	/**
+	 * Create a new OgHat.
+	 * @param hat The hat data to create.
+	 * @returns A promise that resolves to the created OgHat.
+	 */
+	static async create(hat: Partial<Hat>) {
+		try {
+			const response = await instance.post<ApiResponse<Hat>>("ogHat", hat);
+			return response.data;
+		} catch (error) {
+			Logger.error("Create OgHat error:", error);
+			throw error;
+		}
+	}
+
+	/**
+	 * Delete an OgHat by ID.
+	 * @param id The ID of the hat to delete.
+	 * @returns A promise that resolves to true if deleted, false otherwise.
+	 */
+	static async delete(id: number): Promise<boolean> {
+		try {
+			const response = await instance.delete(`ogHat/${id}`);
+			return response.data.isSuccess;
+		} catch (error) {
+			Logger.error("Delete OgHat error:", error);
+			throw error;
+		}
+	}
+
+	/**
 	 * Fetch all OG Hat feature types.
 	 * @returns A promise that resolves to the list of OG Hat feature types.
 	 */
@@ -226,6 +286,7 @@ export class OgHatApi {
 					ascending: ascending,
 					query: query,
 					...extent,
+					_t: Date.now(),
 				},
 				cancelToken: this._cancelTokens["fetchAllProto"].token,
 				headers: {
@@ -284,6 +345,36 @@ export class RekortmanApi {
 			return response.data;
 		} catch (error) {
 			Logger.error("Fetch Rekortman error:", error);
+			throw error;
+		}
+	}
+
+	/**
+	 * Create a new Rekortman.
+	 * @param rekortman The rekortman data to create.
+	 * @returns A promise that resolves to the created Rekortman.
+	 */
+	static async create(rekortman: Partial<Rekortman>) {
+		try {
+			const response = await instance.post<ApiResponse<Rekortman>>("rekortman", rekortman);
+			return response.data;
+		} catch (error) {
+			Logger.error("Create Rekortman error:", error);
+			throw error;
+		}
+	}
+
+	/**
+	 * Delete a Rekortman by ID.
+	 * @param id The ID of the rekortman to delete.
+	 * @returns A promise that resolves to true if deleted, false otherwise.
+	 */
+	static async delete(id: number): Promise<boolean> {
+		try {
+			const response = await instance.delete(`rekortman/${id}`);
+			return response.data.isSuccess;
+		} catch (error) {
+			Logger.error("Delete Rekortman error:", error);
 			throw error;
 		}
 	}

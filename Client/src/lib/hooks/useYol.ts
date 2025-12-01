@@ -23,7 +23,7 @@ export function useYol() {
 		return types.adrYol.map((type) => {
 			return {
 				id: `adr-yol-${type}`,
-				color: hexToRgba(config[`ADR_YOL_${type}_COLOR`]) || COLORS.ADR_YOL,
+				color: hexToRgba(config[`ADR_YOL_${type}_COLOR`] || "#ffffff") || COLORS.ADR_YOL,
 				visibility: visibility.adrYol && (filters.adrYol.tipi.includes(type) || filters.adrYol.tipi.length === 0),
 				cinsi: type,
 				data: filterFeature(combinedCollection, "tipi", type),

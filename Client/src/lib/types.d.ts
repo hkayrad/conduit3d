@@ -147,3 +147,12 @@ export type C3D_ViewState = {
 export type C3D_LayerViewState = {
     [key in C3D_MapLayers]: boolean
 }
+
+export type CustomLayer = {
+    id: string;
+    name: string;
+    url: string;
+    attribution?: string;
+    visible: boolean;
+    opacity: number;
+}

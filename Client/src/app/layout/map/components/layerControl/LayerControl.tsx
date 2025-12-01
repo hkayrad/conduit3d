@@ -10,17 +10,25 @@ import {
   Pencil,
   PenOff,
   PlugZap,
+  Plus,
+  Trash2,
   UtilityPole,
   Waypoints,
   Zap,
+  ArrowUp,
+  ArrowDown,
 } from "lucide-react";
 import {
+  removeCustomLayer,
+  selectCustomLayers,
   selectMapState,
   setFilter,
   setIsHoverInfoVisible,
   setIsLayerControlsOpen,
   setMapLayerVisibility,
   toggleBasemapOpacity,
+  toggleCustomLayerVisibility,
+  reorderCustomLayers,
   type MapState,
 } from "../../mapSlice";
 import { useAppDispatch, useAppSelector } from "../../../../../lib/hooks";
@@ -29,7 +37,8 @@ import LayerControlDropdown from "../../../../shared/layerControl/layerControlDr
 import LayerControlFilter from "../../../../shared/layerControl/layerControlFilter/LayerControlFilter";
 import SettingToggleButton from "../../../../shared/layerControl/settingToggleButton/SettingToggleButton";
 import { C3D_MapLayers, C3D_MapViewType } from "../../../../../lib/enums";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
+import AddLayerModal from "../modals/AddLayerModal";
 
 type Props = {
   isDrawOpen: boolean;
@@ -55,6 +64,9 @@ export default function LayerControl(props: Props): React.ReactNode {
     isStreetViewPinned,
     basemapOpacity,
   } = useAppSelector(selectMapState);
+  const customLayers = useAppSelector(selectCustomLayers);
+
+  const [isAddLayerModalOpen, setIsAddLayerModalOpen] = useState(false);
 
   const handleControlsToggle = useCallback(() => {
     dispatch(setIsLayerControlsOpen(!isLayerControlsOpen));
@@ -81,6 +93,10 @@ export default function LayerControl(props: Props): React.ReactNode {
 
   return (
     <>
+      <AddLayerModal
+        isOpen={isAddLayerModalOpen}
+        onClose={() => setIsAddLayerModalOpen(false)}
+      />
       <button
         id="layer-control-toggle"
         className={`shadow ${isLayerControlsOpen ? "open" : "closed"}`}
@@ -158,6 +174,84 @@ export default function LayerControl(props: Props): React.ReactNode {
             hideTitle="Transparent"
             showTitle="Opaque"
           />
+        </LayerControlSection>
+        <LayerControlSection title="custom layers">
+          {customLayers.map((layer, index) => (
+            <div
+              key={layer.id}
+              className="customLayers"
+            >
+              <SettingToggleButton
+                active={layer.visible}
+                toggle={() => dispatch(toggleCustomLayerVisibility(layer.id))}
+                hideLabel={
+                  <>
+                    <EyeClosed /> {layer.name}
+                  </>
+                }
+                showLabel={
+                  <>
+                    <Eye /> {layer.name}
+                  </>
+                }
+                hideTitle={`Hide ${layer.name}`}
+                showTitle={`Show ${layer.name}`}
+              />
+              <div style={{ display: "flex", gap: "4px" }}>
+                <button
+                  onClick={() => {
+                    if (index > 0) {
+                      dispatch(reorderCustomLayers({ startIndex: index, endIndex: index - 1 }));
+                    }
+                  }}
+                  className="reorderCustomLayer"
+                  title="Move Up"
+                  disabled={index === 0}
+                  style={{ opacity: index === 0 ? 0.5 : 1, cursor: index === 0 ? "default" : "pointer" }}
+                >
+                  <ArrowUp size={16} />
+                </button>
+                <button
+                  onClick={() => {
+                    if (index < customLayers.length - 1) {
+                      dispatch(reorderCustomLayers({ startIndex: index, endIndex: index + 1 }));
+                    }
+                  }}
+                  className="reorderCustomLayer"
+                  title="Move Down"
+                  disabled={index === customLayers.length - 1}
+                  style={{ opacity: index === customLayers.length - 1 ? 0.5 : 1, cursor: index === customLayers.length - 1 ? "default" : "pointer" }}
+                >
+                  <ArrowDown size={16} />
+                </button>
+                <button
+                  onClick={() => dispatch(removeCustomLayer(layer.id))}
+                  className="removeCustomLayer"
+                  title="Remove Layer"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            </div>
+          ))}
+          <button
+            onClick={() => setIsAddLayerModalOpen(true)}
+            style={{
+              width: "100%",
+              padding: "12px",
+              background: "#3B3E5A",
+              border: "none",
+              color: "#fff",
+              borderRadius: "8px",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+            }}
+          >
+            <Plus size={16} /> Add Layer
+          </button>
         </LayerControlSection>
         <LayerControlSection title="buildings">
           <LayerControlDropdown

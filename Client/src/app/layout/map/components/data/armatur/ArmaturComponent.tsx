@@ -17,6 +17,7 @@ type Props = {
     extent: Extent;
     zoom: number;
     selectedViewType: C3D_MapViewType;
+    refreshTrigger?: number;
 };
 
 /**
@@ -25,7 +26,7 @@ type Props = {
  * @param props - The props for the component
  */
 export default function ArmaturComponent(props: Readonly<Props>): null {
-    const { setData, extent, zoom, selectedViewType } = props;
+    const { setData, extent, zoom, selectedViewType, refreshTrigger } = props;
 
     const abortControllerRef = useRef<AbortController | null>(null);
     const isLoadingRef = useRef<boolean>(false);
@@ -65,6 +66,7 @@ export default function ArmaturComponent(props: Readonly<Props>): null {
                     properties: {
                         id: rawData.id,
                         dataType: FeatureType.ARMATUR,
+                        entityType: "Armatur",
                         kodu: rawData.kodu,
                         adi: rawData.adi,
                         marka: rawData.marka,
@@ -97,7 +99,7 @@ export default function ArmaturComponent(props: Readonly<Props>): null {
             fetchNextChunk,
             setData,
         );
-    }, [extent, zoom, selectedViewType, fetchNextChunk, setData]);
+    }, [extent, zoom, selectedViewType, fetchNextChunk, setData, refreshTrigger]);
 
     return null;
 }

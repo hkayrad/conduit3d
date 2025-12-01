@@ -4,6 +4,7 @@ import OlView from "ol/View";
 import OlTileLayer from "ol/layer/Tile";
 import OlVectorLayer from "ol/layer/Vector";
 import OlOSM from "ol/source/OSM";
+import OlXYZ from "ol/source/XYZ";
 import OlVectorSource from "ol/source/Vector";
 import { fromLonLat, toLonLat } from "ol/proj";
 import { Draw, Modify, Snap, Translate, Select } from "ol/interaction";
@@ -47,6 +48,7 @@ type UseOlDrawingMapProps = {
     trafoBina: GeoJSON.FeatureCollection[];
     visibility: C3D_LayerViewState;
     config: Config;
+    customLayers: any[];
 };
 
 export function useOlDrawingMap({
@@ -63,6 +65,7 @@ export function useOlDrawingMap({
     trafoBina,
     visibility,
     config,
+    customLayers,
 }: UseOlDrawingMapProps) {
     const mapRef = useRef<OlMap | null>(null);
     const sourceRef = useRef<OlVectorSource>(new OlVectorSource());
@@ -97,6 +100,7 @@ export function useOlDrawingMap({
                 "circle-fill-color": "#ffcc33",
             },
         });
+        vectorLayer.setZIndex(100);
         layerRef.current = vectorLayer;
 
         const map = new OlMap({
@@ -338,7 +342,7 @@ export function useOlDrawingMap({
                         if (layer.cinsi) {
                             if (layer.cinsi === HatCinsi.BARA) {
                                 lineDash = [10, 10];
-                            } else if (layer.cinsi !== HatCinsi.HAVAI) {
+                            } else if (layer.cinsi === HatCinsi.YERALTI) {
                                 lineDash = [20, 15];
                             }
                         }
@@ -350,7 +354,10 @@ export function useOlDrawingMap({
                             isPoint,
                             lineDash
                         );
-                        if (vectorLayer) map.addLayer(vectorLayer);
+                        if (vectorLayer) {
+                            vectorLayer.setZIndex(10);
+                            map.addLayer(vectorLayer);
+                        }
                     }
                 });
             });
@@ -363,18 +370,28 @@ export function useOlDrawingMap({
             chunks.forEach((chunk) => {
                 const hexColor = configColor || generateRandomColor();
                 const layer = createBuildingLayer(chunk, hexColor);
-                if (layer) map.addLayer(layer);
+                if (layer) {
+                    layer.setZIndex(10);
+                    map.addLayer(layer);
+                }
             });
         };
 
         if (yolLayerData) {
-            addLayersFromGroups(yolLayerData, 4);
+            addLayersFromGroups(yolLayerData, 2);
             if (visibility.adrBina) {
                 addBuildingLayers(adrBina, config.ADR_BINA_COLOR);
                 addBuildingLayers(buildingBina, config.ADR_BINA_COLOR);
             }
             if (visibility.trafoBina) {
-                addBuildingLayers(trafoBina, config.TRAFO_BINA_COLOR);
+                trafoBina.forEach((chunk) => {
+                    const hexColor = config.TRAFO_BINA_COLOR || generateRandomColor();
+                    const layer = createVectorLayer(chunk, hexColor, 2, true);
+                    if (layer) {
+                        layer.setZIndex(10);
+                        map.addLayer(layer);
+                    }
+                });
             }
             addLayersFromGroups(hatLayerData, 2);
             if (direkLayerData) addLayersFromGroups(direkLayerData, 2, true);
@@ -394,6 +411,39 @@ export function useOlDrawingMap({
         config,
         drawingMode,
     ]);
+
+    // Render Custom Layers
+    useEffect(() => {
+        const map = mapRef.current;
+        if (!map) return;
+
+        // Remove existing custom layers
+        const layersToRemove: any[] = [];
+        map.getLayers().forEach((layer) => {
+            const properties = layer.getProperties();
+            if (properties.isCustomLayer) {
+                layersToRemove.push(layer);
+            }
+        });
+        layersToRemove.forEach((layer) => map.removeLayer(layer));
+
+        if (customLayers) {
+            customLayers.forEach((layer) => {
+                if (layer.visible) {
+                    const tileLayer = new OlTileLayer({
+                        source: new OlXYZ({
+                            url: layer.url,
+                            attributions: layer.attribution,
+                        }),
+                        opacity: layer.opacity,
+                        properties: { isCustomLayer: true },
+                        zIndex: 1, // Ensure it's above basemap (0) but below data (10)
+                    });
+                    map.addLayer(tileLayer);
+                }
+            });
+        }
+    }, [customLayers]);
 
     const modifiedFeaturesRef = useRef<Map<any, any>>(new Map());
 

@@ -53,6 +53,36 @@ export class AgDirekApi {
 	}
 
 	/**
+	 * Create a new AgDirek.
+	 * @param direk The direk data to create.
+	 * @returns A promise that resolves to the created AgDirek.
+	 */
+	static async create(direk: Partial<Direk>) {
+		try {
+			const response = await instance.post<ApiResponse<Direk>>("agDirek", direk);
+			return response.data;
+		} catch (error) {
+			Logger.error("Create AgDirek error:", error);
+			throw error;
+		}
+	}
+
+	/**
+	 * Delete an AgDirek by ID.
+	 * @param id The ID of the direk to delete.
+	 * @returns A promise that resolves to true if deleted, false otherwise.
+	 */
+	static async delete(id: number): Promise<boolean> {
+		try {
+			const response = await instance.delete(`agDirek/${id}`);
+			return response.data.isSuccess;
+		} catch (error) {
+			Logger.error("Delete AgDirek error:", error);
+			throw error;
+		}
+	}
+
+	/**
 	 * Fetch all AG Direk feature types.
 	 * @returns A promise that resolves to the list of AG Direk feature types.
 	 */
@@ -171,6 +201,36 @@ export class OgMusDirekApi {
 	}
 
 	/**
+	 * Create a new OgMusDirek.
+	 * @param direk The direk data to create.
+	 * @returns A promise that resolves to the created OgMusDirek.
+	 */
+	static async create(direk: Partial<Direk>) {
+		try {
+			const response = await instance.post<ApiResponse<Direk>>("ogMusDirek", direk);
+			return response.data;
+		} catch (error) {
+			Logger.error("Create OgMusDirek error:", error);
+			throw error;
+		}
+	}
+
+	/**
+	 * Delete an OgMusDirek by ID.
+	 * @param id The ID of the direk to delete.
+	 * @returns A promise that resolves to true if deleted, false otherwise.
+	 */
+	static async delete(id: number): Promise<boolean> {
+		try {
+			const response = await instance.delete(`ogMusDirek/${id}`);
+			return response.data.isSuccess;
+		} catch (error) {
+			Logger.error("Delete OgMusDirek error:", error);
+			throw error;
+		}
+	}
+
+	/**
 	 * Fetch all OG Mus Direk feature types.
 	 * @returns A promise that resolves to the list of OG Mus Direk feature types.
 	 */
@@ -284,6 +344,36 @@ export class AydDirekApi {
 			return response.data;
 		} catch (error) {
 			Logger.error("Fetch AydDirek error:", error);
+			throw error;
+		}
+	}
+
+	/**
+	 * Create a new AydDirek.
+	 * @param direk The direk data to create.
+	 * @returns A promise that resolves to the created AydDirek.
+	 */
+	static async create(direk: Partial<Direk>) {
+		try {
+			const response = await instance.post<ApiResponse<Direk>>("aydDirek", direk);
+			return response.data;
+		} catch (error) {
+			Logger.error("Create AydDirek error:", error);
+			throw error;
+		}
+	}
+
+	/**
+	 * Delete an AydDirek by ID.
+	 * @param id The ID of the direk to delete.
+	 * @returns A promise that resolves to true if deleted, false otherwise.
+	 */
+	static async delete(id: number): Promise<boolean> {
+		try {
+			const response = await instance.delete(`aydDirek/${id}`);
+			return response.data.isSuccess;
+		} catch (error) {
+			Logger.error("Delete AydDirek error:", error);
 			throw error;
 		}
 	}

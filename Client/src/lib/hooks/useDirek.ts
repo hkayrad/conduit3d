@@ -30,7 +30,7 @@ export function useDirek() {
 			features: combinedFeatures,
 		};
 
-		return types.agDirek.map((type) => {
+		const layers = types.agDirek.map((type) => {
 			return {
 				id: `ag-direk-${type}`,
 				data: filterFeature(combinedCollection, "tipi", type),
@@ -38,6 +38,20 @@ export function useDirek() {
 				visibility: visibility.agDirek && (filters.agDirek.tipi.includes(type) || filters.agDirek.tipi.length === 0),
 			};
 		});
+
+		const knownTypes = new Set(types.agDirek);
+		const otherFeatures = combinedFeatures.filter((f) => !knownTypes.has(f.properties?.tipi));
+
+		if (otherFeatures.length > 0) {
+			layers.push({
+				id: `ag-direk-other`,
+				data: otherFeatures,
+				color: COLORS.AG_DIREK,
+				visibility: visibility.agDirek,
+			});
+		}
+
+		return layers;
 	}, [agDirek, visibility.agDirek, filters.agDirek.tipi, config, types.agDirek]);
 
 	/**
@@ -53,7 +67,7 @@ export function useDirek() {
 			features: combinedFeatures,
 		};
 
-		return types.ogMusDirek.map((type) => {
+		const layers = types.ogMusDirek.map((type) => {
 			return {
 				id: `og-mus-direk-${type}`,
 				data: filterFeature(combinedCollection, "tipi", type),
@@ -62,6 +76,20 @@ export function useDirek() {
 					visibility.ogMusDirek && (filters.ogMusDirek.tipi.includes(type) || filters.ogMusDirek.tipi.length === 0),
 			};
 		});
+
+		const knownTypes = new Set(types.ogMusDirek);
+		const otherFeatures = combinedFeatures.filter((f) => !knownTypes.has(f.properties?.tipi));
+
+		if (otherFeatures.length > 0) {
+			layers.push({
+				id: `og-mus-direk-other`,
+				data: otherFeatures,
+				color: COLORS.OG_MUS_DIREK,
+				visibility: visibility.ogMusDirek,
+			});
+		}
+
+		return layers;
 	}, [ogMusDirek, visibility.ogMusDirek, filters.ogMusDirek.tipi, config, types.ogMusDirek]);
 
 	/**
@@ -77,7 +105,7 @@ export function useDirek() {
 			features: combinedFeatures,
 		};
 
-		return types.aydDirek.map((type) => {
+		const layers = types.aydDirek.map((type) => {
 			return {
 				id: `ayd-direk-${type}`,
 				data: filterFeature(combinedCollection, "tipi", type),
@@ -85,6 +113,20 @@ export function useDirek() {
 				visibility: visibility.aydDirek && (filters.aydDirek.tipi.includes(type) || filters.aydDirek.tipi.length === 0),
 			};
 		});
+
+		const knownTypes = new Set(types.aydDirek);
+		const otherFeatures = combinedFeatures.filter((f) => !knownTypes.has(f.properties?.tipi));
+
+		if (otherFeatures.length > 0) {
+			layers.push({
+				id: `ayd-direk-other`,
+				data: otherFeatures,
+				color: COLORS.AYD_DIREK,
+				visibility: visibility.aydDirek,
+			});
+		}
+
+		return layers;
 	}, [aydDirek, visibility.aydDirek, filters.aydDirek.tipi, config, types.aydDirek]);
 
 	/**
