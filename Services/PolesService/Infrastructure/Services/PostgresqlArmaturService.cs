@@ -213,4 +213,65 @@ public class PostgresqlArmaturService(IUnitOfWork unitOfWork) : IArmaturService
             };
         }
     }
+
+    public async Task<Response<Armatur>> CreateAsync(Armatur entity, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var createdEntity = await _unitOfWork.ArmaturRepository.AddAsync(entity, cancellationToken);
+            return Response<Armatur>.Success(createdEntity, PolesResources.GetString("poleCreated"));
+        }
+        catch (NpgsqlException ex)
+        {
+            return Response<Armatur>.DatabaseError(PolesResources.GetString("poleCreationFailed", ex.Message));
+        }
+        catch (Exception ex)
+        {
+            return Response<Armatur>.UnhandledError(PolesResources.GetString("poleCreationFailed", ex.Message));
+        }
+    }
+
+    public async Task<Response<bool>> DeleteAsync(int id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _unitOfWork.ArmaturRepository.DeleteAsync(id, cancellationToken);
+            if (!result)
+                return Response<bool>.NotFound(PolesResources.GetString("poleNotFound", id));
+
+            return Response<bool>.Success(true, PolesResources.GetString("poleDeleted"));
+        }
+        catch (NpgsqlException ex)
+        {
+            return Response<bool>.DatabaseError(PolesResources.GetString("poleDeletionFailed", ex.Message));
+        }
+        catch (Exception ex)
+        {
+            return Response<bool>.UnhandledError(PolesResources.GetString("poleDeletionFailed", ex.Message));
+        }
+    }
+
+    public async Task<Response<Armatur>> UpdateAsync(Armatur entity, CancellationToken cancellationToken)
+    {
+        if (entity.Id <= 0)
+            return Response<Armatur>.ValidationError(PolesResources.GetString("invalidId"));
+
+        try
+        {
+            var updatedEntity = await _unitOfWork.ArmaturRepository.UpdateAsync(entity, cancellationToken);
+            return Response<Armatur>.Success(updatedEntity, PolesResources.GetString("poleUpdated"));
+        }
+        catch (KeyNotFoundException)
+        {
+            return Response<Armatur>.NotFound(PolesResources.GetString("poleNotFound", entity.Id));
+        }
+        catch (NpgsqlException ex)
+        {
+            return Response<Armatur>.DatabaseError(PolesResources.GetString("poleUpdateFailed", ex.Message));
+        }
+        catch (Exception ex)
+        {
+            return Response<Armatur>.UnhandledError(PolesResources.GetString("poleUpdateFailed", ex.Message));
+        }
+    }
 }

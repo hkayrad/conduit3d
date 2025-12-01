@@ -104,4 +104,54 @@ public class TrafoBinaRepository(BuildingsContext context) : ITrafoBinaRepositor
 
         return await sqlQuery.CountAsync(cancellationToken);
     }
+    public async Task<TrafoBina> AddAsync(TrafoBina entity, CancellationToken cancellationToken)
+    {
+        var sql = @"
+            INSERT INTO ""SBK_TRAFOBINATIP"" (adi, kodu, geometry)
+            VALUES (@p0, @p1, ST_Transform(ST_GeomFromWKB(@p2, 4326), 3857))
+            RETURNING id, adi, kodu, ST_AsBinary(ST_Transform(geometry, 4326)) as wkb, searchable_text";
+
+        var result = await _context.Database.SqlQueryRaw<TrafoBina>(
+            sql,
+            entity.Adi,
+            entity.Kodu,
+            entity.Wkb
+        ).ToListAsync(cancellationToken);
+
+        return result.Single();
+    }
+
+    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
+    {
+        var sql = @"DELETE FROM ""SBK_TRAFOBINATIP"" WHERE id = @p0";
+        var rowsAffected = await _context.Database.ExecuteSqlRawAsync(sql, new object[] { id }, cancellationToken);
+        return rowsAffected > 0;
+    }
+
+    public async Task<TrafoBina> UpdateAsync(TrafoBina entity, CancellationToken cancellationToken)
+    {
+        var sql = @"
+            UPDATE ""SBK_TRAFOBINATIP""
+            SET
+                adi = @p0,
+                kodu = @p1,
+                geometry = ST_Transform(ST_GeomFromWKB(@p2, 4326), 3857)
+            WHERE id = @p3
+            RETURNING id, adi, kodu, ST_AsBinary(ST_Transform(geometry, 4326)) as wkb, searchable_text";
+
+        var result = await _context.Database.SqlQueryRaw<TrafoBina>(
+            sql,
+            entity.Adi,
+            entity.Kodu,
+            entity.Wkb,
+            entity.Id
+        ).ToListAsync(cancellationToken);
+
+        if (!result.Any())
+        {
+            throw new KeyNotFoundException($"TrafoBina with ID {entity.Id} not found.");
+        }
+
+        return result.Single();
+    }
 }

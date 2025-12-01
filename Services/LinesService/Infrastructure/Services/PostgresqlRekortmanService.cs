@@ -237,4 +237,65 @@ public class PostgresqlRekortmanService(IUnitOfWork unitOfWork) : IRekortmanServ
             };
         }
     }
+
+    public async Task<Response<Rekortman>> CreateAsync(Rekortman entity, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var createdEntity = await _unitOfWork.RekortmanRepository.AddAsync(entity, cancellationToken);
+            return Response<Rekortman>.Success(createdEntity, LinesResources.GetString("lineCreated"));
+        }
+        catch (NpgsqlException ex)
+        {
+            return Response<Rekortman>.DatabaseError(LinesResources.GetString("lineCreationFailed", ex.Message));
+        }
+        catch (Exception ex)
+        {
+            return Response<Rekortman>.UnhandledError(LinesResources.GetString("lineCreationFailed", ex.Message));
+        }
+    }
+
+    public async Task<Response<bool>> DeleteAsync(int id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _unitOfWork.RekortmanRepository.DeleteAsync(id, cancellationToken);
+            if (!result)
+                return Response<bool>.NotFound(LinesResources.GetString("lineNotFound", id));
+
+            return Response<bool>.Success(true, LinesResources.GetString("lineDeleted"));
+        }
+        catch (NpgsqlException ex)
+        {
+            return Response<bool>.DatabaseError(LinesResources.GetString("lineDeletionFailed", ex.Message));
+        }
+        catch (Exception ex)
+        {
+            return Response<bool>.UnhandledError(LinesResources.GetString("lineDeletionFailed", ex.Message));
+        }
+    }
+
+    public async Task<Response<Rekortman>> UpdateAsync(Rekortman entity, CancellationToken cancellationToken)
+    {
+        if (entity.Id <= 0)
+            return Response<Rekortman>.ValidationError(LinesResources.GetString("invalidId"));
+
+        try
+        {
+            var updatedEntity = await _unitOfWork.RekortmanRepository.UpdateAsync(entity, cancellationToken);
+            return Response<Rekortman>.Success(updatedEntity, LinesResources.GetString("lineUpdated"));
+        }
+        catch (KeyNotFoundException)
+        {
+            return Response<Rekortman>.NotFound(LinesResources.GetString("lineNotFound", entity.Id));
+        }
+        catch (NpgsqlException ex)
+        {
+            return Response<Rekortman>.DatabaseError(LinesResources.GetString("lineUpdateFailed", ex.Message));
+        }
+        catch (Exception ex)
+        {
+            return Response<Rekortman>.UnhandledError(LinesResources.GetString("lineUpdateFailed", ex.Message));
+        }
+    }
 }

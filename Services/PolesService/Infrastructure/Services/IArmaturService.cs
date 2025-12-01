@@ -17,4 +17,7 @@ public interface IArmaturService : IGenericService<Armatur>
                                             Extent? extent,
                                             string? query,
                                             CancellationToken cancellationToken);
+    Task<Response<Armatur>> CreateAsync(Armatur entity, CancellationToken cancellationToken);
+    Task<Response<bool>> DeleteAsync(int id, CancellationToken cancellationToken);
+    Task<Response<Armatur>> UpdateAsync(Armatur entity, CancellationToken cancellationToken);
 }

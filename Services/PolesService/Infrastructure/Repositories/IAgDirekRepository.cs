@@ -10,4 +10,7 @@ namespace PolesService.Infrastructure.Repositories;
 public interface IAgDirekRepository : IGenericRepository<AgDirek>
 {
     public Task<List<string>> GetTipListAsync(CancellationToken cancellationToken);
+    Task<AgDirek> AddAsync(AgDirek entity, CancellationToken cancellationToken);
+    Task<bool> DeleteAsync(int id, CancellationToken cancellationToken);
+    Task<AgDirek> UpdateAsync(AgDirek entity, CancellationToken cancellationToken);
 }

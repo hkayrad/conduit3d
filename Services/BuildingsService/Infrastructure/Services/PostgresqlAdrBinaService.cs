@@ -263,4 +263,28 @@ public class PostgresqlAdrBinaService(IUnitOfWork unitOfWork) : IAdrBinaService
             return Response<bool>.UnhandledError(BuildingsResources.GetString("buildingDeletionFailed", ex.Message));
         }
     }
+    /// <inheritdoc />
+    public async Task<Response<AdrBina>> UpdateAsync(AdrBina entity, CancellationToken cancellationToken)
+    {
+        if (entity.Id <= 0)
+            return Response<AdrBina>.ValidationError(BuildingsResources.GetString("invalidId"));
+
+        try
+        {
+            var updatedEntity = await _unitOfWork.AdrBuildingsRepository.UpdateAsync(entity, cancellationToken);
+            return Response<AdrBina>.Success(updatedEntity, BuildingsResources.GetString("buildingUpdated"));
+        }
+        catch (KeyNotFoundException)
+        {
+            return Response<AdrBina>.NotFound(BuildingsResources.GetString("noBuildingFound", entity.Id));
+        }
+        catch (NpgsqlException ex)
+        {
+            return Response<AdrBina>.DatabaseError(BuildingsResources.GetString("buildingUpdateFailed", ex.Message));
+        }
+        catch (Exception ex)
+        {
+            return Response<AdrBina>.UnhandledError(BuildingsResources.GetString("buildingUpdateFailed", ex.Message));
+        }
+    }
 }

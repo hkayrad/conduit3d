@@ -123,4 +123,70 @@ public class AgDirekRepository(PolesContext context) : IAgDirekRepository
     {
         return await _dbSet.Select(x => x.Tipi).Distinct().ToListAsync(cancellationToken);
     }
+
+    public async Task<AgDirek> AddAsync(AgDirek entity, CancellationToken cancellationToken)
+    {
+        var sql = @"
+            INSERT INTO ""SBK_AGDIREK"" (kodu, adi, cinsi, tipi, direk_no, boy_ozellik, direk_boy_id, geometry)
+            VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, ST_Transform(ST_GeomFromWKB(@p7, 4326), 3857))
+            RETURNING id, kodu, adi, cinsi, tipi, direk_no, boy_ozellik, direk_boy_id, ST_AsBinary(ST_Transform(geometry, 4326)) as wkb, searchable_text";
+
+        var result = await _context.Database.SqlQueryRaw<AgDirek>(
+            sql,
+            entity.Kodu,
+            entity.Adi,
+            entity.Cinsi,
+            entity.Tipi,
+            entity.DirekNo,
+            entity.BoyOzellik,
+            entity.DirekBoyId,
+            entity.Wkb
+        ).ToListAsync(cancellationToken);
+
+        return result.Single();
+    }
+
+    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
+    {
+        var sql = @"DELETE FROM ""SBK_AGDIREK"" WHERE id = @p0";
+        var rowsAffected = await _context.Database.ExecuteSqlRawAsync(sql, new object[] { id }, cancellationToken);
+        return rowsAffected > 0;
+    }
+
+    public async Task<AgDirek> UpdateAsync(AgDirek entity, CancellationToken cancellationToken)
+    {
+        var sql = @"
+            UPDATE ""SBK_AGDIREK""
+            SET
+                kodu = @p0,
+                adi = @p1,
+                cinsi = @p2,
+                tipi = @p3,
+                direk_no = @p4,
+                boy_ozellik = @p5,
+                direk_boy_id = @p6,
+                geometry = ST_Transform(ST_GeomFromWKB(@p7, 4326), 3857)
+            WHERE id = @p8
+            RETURNING id, kodu, adi, cinsi, tipi, direk_no, boy_ozellik, direk_boy_id, ST_AsBinary(ST_Transform(geometry, 4326)) as wkb, searchable_text";
+
+        var result = await _context.Database.SqlQueryRaw<AgDirek>(
+            sql,
+            entity.Kodu,
+            entity.Adi,
+            entity.Cinsi,
+            entity.Tipi,
+            entity.DirekNo,
+            entity.BoyOzellik,
+            entity.DirekBoyId,
+            entity.Wkb,
+            entity.Id
+        ).ToListAsync(cancellationToken);
+
+        if (!result.Any())
+        {
+            throw new KeyNotFoundException($"AgDirek with ID {entity.Id} not found.");
+        }
+
+        return result.Single();
+    }
 }

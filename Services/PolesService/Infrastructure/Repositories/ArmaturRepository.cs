@@ -92,4 +92,55 @@ public class ArmaturRepository(PolesContext context) : IArmaturRepository
 
         return await sqlQuery.CountAsync(cancellationToken);
     }
+
+    public async Task<Armatur> AddAsync(Armatur entity, CancellationToken cancellationToken)
+    {
+        var sql = @"
+            INSERT INTO ""SBK_ARMATUR"" (bagli_tablo_id, bagli_tablo_kayit_id, geometry)
+            VALUES (@p0, @p1, ST_Transform(ST_GeomFromWKB(@p2, 4326), 3857))
+            RETURNING id, bagli_tablo_id, bagli_tablo_kayit_id, ST_AsBinary(ST_Transform(geometry, 4326)) as wkb";
+
+        var result = await _context.Database.SqlQueryRaw<Armatur>(
+            sql,
+            entity.BagliTabloId,
+            entity.BagliTabloKayitId,
+            entity.Wkb
+        ).ToListAsync(cancellationToken);
+
+        return result.Single();
+    }
+
+    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
+    {
+        var sql = @"DELETE FROM ""SBK_ARMATUR"" WHERE id = @p0";
+        var rowsAffected = await _context.Database.ExecuteSqlRawAsync(sql, new object[] { id }, cancellationToken);
+        return rowsAffected > 0;
+    }
+
+    public async Task<Armatur> UpdateAsync(Armatur entity, CancellationToken cancellationToken)
+    {
+        var sql = @"
+            UPDATE ""SBK_ARMATUR""
+            SET
+                bagli_tablo_id = @p0,
+                bagli_tablo_kayit_id = @p1,
+                geometry = ST_Transform(ST_GeomFromWKB(@p2, 4326), 3857)
+            WHERE id = @p3
+            RETURNING id, bagli_tablo_id, bagli_tablo_kayit_id, ST_AsBinary(ST_Transform(geometry, 4326)) as wkb";
+
+        var result = await _context.Database.SqlQueryRaw<Armatur>(
+            sql,
+            entity.BagliTabloId,
+            entity.BagliTabloKayitId,
+            entity.Wkb,
+            entity.Id
+        ).ToListAsync(cancellationToken);
+
+        if (!result.Any())
+        {
+            throw new KeyNotFoundException($"Armatur with ID {entity.Id} not found.");
+        }
+
+        return result.Single();
+    }
 }

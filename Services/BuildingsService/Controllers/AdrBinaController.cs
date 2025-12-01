@@ -177,5 +177,40 @@ namespace BuildingsService.Controllers
         {
             return await _adrBuildingsService.DeleteAsync(id, cancellationToken);
         }
+
+        /// <summary>
+        /// Updates an existing ADR building.
+        /// </summary>
+        /// <param name="id">The ID of the ADR building to update.</param>
+        /// <param name="dto">The updated ADR building data.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>The updated ADR building.</returns>
+        /// <response code="200">Returns the updated ADR building.</response>
+        /// <response code="400">Invalid parameters or ID mismatch.</response>
+        /// <response code="404">ADR building not found.</response>
+        /// <response code="500">Internal server error.</response>
+        [MapToApiVersion("1.0")]
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(Response<AdrBina>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Response<AdrBina>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Response<AdrBina>), StatusCodes.Status404NotFound)]
+        public async Task<Response<AdrBina>> UpdateAsync(int id, [FromBody] AdrBinaDto dto, CancellationToken cancellationToken)
+        {
+            var entity = new AdrBina
+            {
+                Id = id,
+                Kodu = dto.Kodu,
+                SiteAdi = dto.SiteAdi,
+                Adi = dto.Adi,
+                BinaKatSayisi = dto.BinaKatSayisi,
+                DaireSayisi = dto.DaireSayisi,
+                IsyeriSayisi = dto.IsyeriSayisi,
+                Yukseklik = dto.Yukseklik,
+                Wkb = dto.Wkb,
+                SearchableText = null! // Ignored by update logic
+            };
+
+            return await _adrBuildingsService.UpdateAsync(entity, cancellationToken);
+        }
     }
 }

@@ -18,4 +18,7 @@ public interface IRekortmanService : IGenericService<Rekortman>
                                             Extent? extent,
                                             string? query,
                                             CancellationToken cancellationToken);
+    Task<Response<Rekortman>> CreateAsync(Rekortman entity, CancellationToken cancellationToken);
+    Task<Response<bool>> DeleteAsync(int id, CancellationToken cancellationToken);
+    Task<Response<Rekortman>> UpdateAsync(Rekortman entity, CancellationToken cancellationToken);
 }

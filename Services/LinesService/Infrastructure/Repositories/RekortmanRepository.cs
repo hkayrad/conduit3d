@@ -117,4 +117,61 @@ public class RekortmanRepository(LinesContext context) : IRekortmanRepository
     {
         return await _dbSet.Select(x => x.Tipi).Distinct().ToListAsync(cancellationToken);
     }
+
+    public async Task<Rekortman> AddAsync(Rekortman entity, CancellationToken cancellationToken)
+    {
+        var sql = @"
+            INSERT INTO ""SBK_rEKORTMAN"" (kodu, adi, kesit, tipi, geometry)
+            VALUES (@p0, @p1, @p2, @p3, ST_Transform(ST_GeomFromWKB(@p4, 4326), 3857))
+            RETURNING id, kodu, adi, kesit, tipi, ST_AsBinary(ST_Transform(geometry, 4326)) as wkb, searchable_text";
+
+        var result = await _context.Database.SqlQueryRaw<Rekortman>(
+            sql,
+            entity.Kodu,
+            entity.Adi,
+            entity.Kesit,
+            entity.Tipi,
+            entity.Wkb
+        ).ToListAsync(cancellationToken);
+
+        return result.Single();
+    }
+
+    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
+    {
+        var sql = @"DELETE FROM ""SBK_rEKORTMAN"" WHERE id = @p0";
+        var rowsAffected = await _context.Database.ExecuteSqlRawAsync(sql, new object[] { id }, cancellationToken);
+        return rowsAffected > 0;
+    }
+
+    public async Task<Rekortman> UpdateAsync(Rekortman entity, CancellationToken cancellationToken)
+    {
+        var sql = @"
+            UPDATE ""SBK_rEKORTMAN""
+            SET
+                kodu = @p0,
+                adi = @p1,
+                kesit = @p2,
+                tipi = @p3,
+                geometry = ST_Transform(ST_GeomFromWKB(@p4, 4326), 3857)
+            WHERE id = @p5
+            RETURNING id, kodu, adi, kesit, tipi, ST_AsBinary(ST_Transform(geometry, 4326)) as wkb, searchable_text";
+
+        var result = await _context.Database.SqlQueryRaw<Rekortman>(
+            sql,
+            entity.Kodu,
+            entity.Adi,
+            entity.Kesit,
+            entity.Tipi,
+            entity.Wkb,
+            entity.Id
+        ).ToListAsync(cancellationToken);
+
+        if (!result.Any())
+        {
+            throw new KeyNotFoundException($"Rekortman with ID {entity.Id} not found.");
+        }
+
+        return result.Single();
+    }
 }

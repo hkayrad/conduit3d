@@ -214,4 +214,65 @@ public class PostgresqlTrafoBinaService(IUnitOfWork unitOfWork) : ITrafoBinaServ
             };
         }
     }
+
+    public async Task<Response<TrafoBina>> CreateAsync(TrafoBina entity, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var createdEntity = await _unitOfWork.TrafoBuildingsRepository.AddAsync(entity, cancellationToken);
+            return Response<TrafoBina>.Success(createdEntity, BuildingsResources.GetString("buildingCreated"));
+        }
+        catch (NpgsqlException ex)
+        {
+            return Response<TrafoBina>.DatabaseError(BuildingsResources.GetString("buildingCreationFailed", ex.Message));
+        }
+        catch (Exception ex)
+        {
+            return Response<TrafoBina>.UnhandledError(BuildingsResources.GetString("buildingCreationFailed", ex.Message));
+        }
+    }
+
+    public async Task<Response<bool>> DeleteAsync(int id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _unitOfWork.TrafoBuildingsRepository.DeleteAsync(id, cancellationToken);
+            if (!result)
+                return Response<bool>.NotFound(BuildingsResources.GetString("noBuildingFound", id));
+
+            return Response<bool>.Success(true, BuildingsResources.GetString("buildingDeleted"));
+        }
+        catch (NpgsqlException ex)
+        {
+            return Response<bool>.DatabaseError(BuildingsResources.GetString("buildingDeletionFailed", ex.Message));
+        }
+        catch (Exception ex)
+        {
+            return Response<bool>.UnhandledError(BuildingsResources.GetString("buildingDeletionFailed", ex.Message));
+        }
+    }
+
+    public async Task<Response<TrafoBina>> UpdateAsync(TrafoBina entity, CancellationToken cancellationToken)
+    {
+        if (entity.Id <= 0)
+            return Response<TrafoBina>.ValidationError(BuildingsResources.GetString("invalidId"));
+
+        try
+        {
+            var updatedEntity = await _unitOfWork.TrafoBuildingsRepository.UpdateAsync(entity, cancellationToken);
+            return Response<TrafoBina>.Success(updatedEntity, BuildingsResources.GetString("buildingUpdated"));
+        }
+        catch (KeyNotFoundException)
+        {
+            return Response<TrafoBina>.NotFound(BuildingsResources.GetString("noBuildingFound", entity.Id));
+        }
+        catch (NpgsqlException ex)
+        {
+            return Response<TrafoBina>.DatabaseError(BuildingsResources.GetString("buildingUpdateFailed", ex.Message));
+        }
+        catch (Exception ex)
+        {
+            return Response<TrafoBina>.UnhandledError(BuildingsResources.GetString("buildingUpdateFailed", ex.Message));
+        }
+    }
 }

@@ -235,4 +235,65 @@ public class PostgresqlAdrYolService(IUnitOfWork unitOfWork) : IAdrYolService
             };
         }
     }
+
+    public async Task<Response<AdrYol>> CreateAsync(AdrYol entity, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var createdEntity = await _unitOfWork.AdrYolRepository.AddAsync(entity, cancellationToken);
+            return Response<AdrYol>.Success(createdEntity, BuildingsResources.GetString("roadCreated"));
+        }
+        catch (NpgsqlException ex)
+        {
+            return Response<AdrYol>.DatabaseError(BuildingsResources.GetString("roadCreationFailed", ex.Message));
+        }
+        catch (Exception ex)
+        {
+            return Response<AdrYol>.UnhandledError(BuildingsResources.GetString("roadCreationFailed", ex.Message));
+        }
+    }
+
+    public async Task<Response<bool>> DeleteAsync(int id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _unitOfWork.AdrYolRepository.DeleteAsync(id, cancellationToken);
+            if (!result)
+                return Response<bool>.NotFound(BuildingsResources.GetString("noRoadFound", id));
+
+            return Response<bool>.Success(true, BuildingsResources.GetString("roadDeleted"));
+        }
+        catch (NpgsqlException ex)
+        {
+            return Response<bool>.DatabaseError(BuildingsResources.GetString("roadDeletionFailed", ex.Message));
+        }
+        catch (Exception ex)
+        {
+            return Response<bool>.UnhandledError(BuildingsResources.GetString("roadDeletionFailed", ex.Message));
+        }
+    }
+
+    public async Task<Response<AdrYol>> UpdateAsync(AdrYol entity, CancellationToken cancellationToken)
+    {
+        if (entity.Id <= 0)
+            return Response<AdrYol>.ValidationError(BuildingsResources.GetString("invalidRoadId"));
+
+        try
+        {
+            var updatedEntity = await _unitOfWork.AdrYolRepository.UpdateAsync(entity, cancellationToken);
+            return Response<AdrYol>.Success(updatedEntity, BuildingsResources.GetString("roadUpdated"));
+        }
+        catch (KeyNotFoundException)
+        {
+            return Response<AdrYol>.NotFound(BuildingsResources.GetString("noRoadFound", entity.Id));
+        }
+        catch (NpgsqlException ex)
+        {
+            return Response<AdrYol>.DatabaseError(BuildingsResources.GetString("roadUpdateFailed", ex.Message));
+        }
+        catch (Exception ex)
+        {
+            return Response<AdrYol>.UnhandledError(BuildingsResources.GetString("roadUpdateFailed", ex.Message));
+        }
+    }
 }

@@ -18,4 +18,7 @@ public interface IOgMusDirekService : IGenericService<OgMusDirek>
                                             Extent? extent,
                                             string? query,
                                             CancellationToken cancellationToken);
+    Task<Response<OgMusDirek>> CreateAsync(OgMusDirek entity, CancellationToken cancellationToken);
+    Task<Response<bool>> DeleteAsync(int id, CancellationToken cancellationToken);
+    Task<Response<OgMusDirek>> UpdateAsync(OgMusDirek entity, CancellationToken cancellationToken);
 }

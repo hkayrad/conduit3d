@@ -10,4 +10,7 @@ namespace LinesService.Infrastructure.Repositories;
 public interface IOgHatRepository : IGenericRepository<OgHat>
 {
     public Task<List<string>> GetTipListAsync(CancellationToken cancellationToken);
+    Task<OgHat> AddAsync(OgHat entity, CancellationToken cancellationToken);
+    Task<bool> DeleteAsync(int id, CancellationToken cancellationToken);
+    Task<OgHat> UpdateAsync(OgHat entity, CancellationToken cancellationToken);
 }

@@ -18,4 +18,7 @@ public interface IAgDirekService : IGenericService<AgDirek>
                                             Extent? extent,
                                             string? query,
                                             CancellationToken cancellationToken);
+    Task<Response<AgDirek>> CreateAsync(AgDirek entity, CancellationToken cancellationToken);
+    Task<Response<bool>> DeleteAsync(int id, CancellationToken cancellationToken);
+    Task<Response<AgDirek>> UpdateAsync(AgDirek entity, CancellationToken cancellationToken);
 }
