@@ -20,6 +20,7 @@ type Props = {
   extent: Extent;
   zoom: number;
   selectedViewType: C3D_MapViewType;
+  refreshTrigger?: number;
 };
 
 /**
@@ -28,7 +29,7 @@ type Props = {
  * @param props - The props for the component
  */
 export default function AgDirekComponent(props: Readonly<Props>): null {
-  const { setData, extent, zoom, selectedViewType } = props;
+  const { setData, extent, zoom, selectedViewType, refreshTrigger } = props;
 
   const dispatch = useAppDispatch();
 
@@ -73,6 +74,7 @@ export default function AgDirekComponent(props: Readonly<Props>): null {
           properties: {
             id: rawData.id,
             dataType: FeatureType.POLE,
+            entityType: "AgDirek",
             kodu: rawData.kodu,
             adi: rawData.adi,
             cinsi: rawData.cinsi,
@@ -119,7 +121,7 @@ export default function AgDirekComponent(props: Readonly<Props>): null {
       fetchNextChunk,
       setData,
     );
-  }, [extent, zoom, selectedViewType, fetchNextChunk, setData]);
+  }, [extent, zoom, selectedViewType, fetchNextChunk, setData, refreshTrigger]);
 
   useEffect(() => {
     handleAgDirekTypesFetch();

@@ -1,9 +1,12 @@
 import "./style/olDrawingMap.scss";
 import { useRef, useState } from "react";
 
-import { AdrBinaApi } from "../../../../../lib/api/buildings";
+import { AdrBinaApi, TrafoBinaApi, AdrYolApi } from "../../../../../lib/api/buildings";
+import { AgHatApi, OgHatApi, RekortmanApi } from "../../../../../lib/api/lines";
+import { AgDirekApi, OgMusDirekApi, AydDirekApi } from "../../../../../lib/api/poles";
+import { ArmaturApi } from "../../../../../lib/api/armatur";
 import { geometryToWkb } from "../../../../../lib/utils/geometry/geometryToWkb";
-import type { AdrBina } from "../../../../../lib/types";
+import type { AdrBina, AdrYol, Hat, Rekortman, Direk, Armatur, TrafoBina } from "../../../../../lib/types";
 import InfoContent from "../../../../shared/infoContent/InfoContent";
 import SaveFeatureModal from "./components/SaveFeatureModal";
 import type { C3D_LayerViewState, Config } from "../../../../../lib/types";
@@ -33,6 +36,7 @@ type Props = {
     zoom: number;
   }) => void;
   onRefresh: () => void;
+  customLayers: any[];
 };
 
 export default function OlDrawingMap(props: Props) {
@@ -50,6 +54,7 @@ export default function OlDrawingMap(props: Props) {
     config,
     viewState,
     onViewStateChange,
+    customLayers,
   } = props;
 
   const olContainerRef = useRef<HTMLDivElement>(null);
@@ -78,6 +83,7 @@ export default function OlDrawingMap(props: Props) {
     trafoBina,
     visibility,
     config,
+    customLayers,
   });
 
   const handleSave = () => {
@@ -93,24 +99,13 @@ export default function OlDrawingMap(props: Props) {
     })));
 
     if (newFeatures.length > 0) {
-      // For now, we only handle the first new feature for the modal
-      // In a real app, we might want to handle multiple or loop through them
-      // But the modal likely only handles one at a time or we need a different UI
-      // Let's assume we just open the modal and when they save in the modal, we save the feature.
-      // But wait, the modal is "SaveFeatureModal". It probably takes the feature details.
-      // We need to pass the geometry to the modal or handle the save here if the modal just returns data.
-
-      // Actually, looking at SaveFeatureModal usage (which I haven't seen fully but I see it being rendered),
-      // it has an onSave prop.
-      // Let's check SaveFeatureModal.tsx to see what it does.
       setIsModalOpen(true);
     } else if (modified.length > 0) {
-      // Handle modified features update if needed (not requested yet, but good to note)
       console.log("Saving modified features is not yet implemented on backend for update.");
     }
   };
 
-  const handleModalSave = async (_featureType: string, data: any) => {
+  const handleModalSave = async (featureType: string, data: any) => {
     const { new: newFeatures } = getModifiedFeatures();
     if (newFeatures.length === 0) return;
 
@@ -121,29 +116,137 @@ export default function OlDrawingMap(props: Props) {
 
     const wkb = geometryToWkb(geometry);
 
-    console.log("Saving AdrBina - Raw Data:", data);
-
-    const newBuilding: Partial<AdrBina> = {
-      adi: data.adi || "",
-      siteAdi: data.site_adi || "",
-      binaKatSayisi: Number(data.bina_kat_sayisi || 0),
-      daireSayisi: Number(data.daire_sayisi || 0),
-      isyeriSayisi: Number(data.isyeri_sayisi || 0),
-      yukseklik: Number(data.yukseklik || 0),
-      kodu: data.kodu || "",
-      wkb: wkb as any
-    };
-
-    console.log("Saving AdrBina - Mapped Object:", newBuilding);
+    console.log(`Saving ${featureType} - Raw Data:`, data);
 
     try {
-      await AdrBinaApi.create(newBuilding);
-      console.log("Building saved successfully");
+      switch (featureType) {
+        case "AdrBina":
+          const newBuilding: Partial<AdrBina> = {
+            adi: data.adi || "",
+            siteAdi: data.site_adi || "",
+            binaKatSayisi: Number(data.bina_kat_sayisi || 0),
+            daireSayisi: Number(data.daire_sayisi || 0),
+            isyeriSayisi: Number(data.isyeri_sayisi || 0),
+            yukseklik: Number(data.yukseklik || 0),
+            kodu: data.kodu || "",
+            wkb: wkb as any
+          };
+          await AdrBinaApi.create(newBuilding);
+          break;
+        case "TrafoBina":
+          const newTrafo: Partial<TrafoBina> = {
+            adi: data.adi || "",
+            kodu: data.kodu || "",
+            wkb: wkb as any
+          };
+          await TrafoBinaApi.create(newTrafo);
+          break;
+        case "AdrYol":
+          const newYol: Partial<AdrYol> = {
+            adi: data.adi || "",
+            kodu: data.kodu || "",
+            genislik: Number(data.genislik || 0),
+            seritSayisi: Number(data.serit_sayisi || 0),
+            yapisi: data.yapisi || "",
+            tipi: data.tipi || "",
+            wkb: wkb as any
+          };
+          await AdrYolApi.create(newYol);
+          break;
+        case "AgHat":
+          const newAgHat: Partial<Hat> = {
+            adi: data.adi || "",
+            kodu: data.kodu || "",
+            cinsi: data.cinsi || "",
+            kesit: data.kesit || "",
+            tipi: data.tipi || "",
+            wkb: wkb as any
+          };
+          await AgHatApi.create(newAgHat);
+          break;
+        case "OgHat":
+          const newOgHat: Partial<Hat> = {
+            adi: data.adi || "",
+            kodu: data.kodu || "",
+            cinsi: data.cinsi || "",
+            kesit: data.kesit || "",
+            tipi: data.tipi || "",
+            wkb: wkb as any
+          };
+          await OgHatApi.create(newOgHat);
+          break;
+        case "Rekortman":
+          const newRekortman: Partial<Rekortman> = {
+            adi: data.adi || "",
+            kodu: data.kodu || "",
+            kesit: data.kesit || "",
+            tipi: data.tipi || "",
+            wkb: wkb as any
+          };
+          await RekortmanApi.create(newRekortman);
+          break;
+        case "AgDirek":
+          const newAgDirek: Partial<Direk> = {
+            adi: data.adi || "",
+            kodu: data.kodu || "",
+            cinsi: data.cinsi || "",
+            tipi: data.tipi || "",
+            direkNo: data.direk_no || "",
+            boyOzellik: data.boy_ozellik || "",
+            direkBoyId: Number(data.direk_boy_id || 0),
+            wkb: wkb as any
+          };
+          await AgDirekApi.create(newAgDirek);
+          break;
+        case "OgMusDirek":
+          const newOgMusDirek: Partial<Direk> = {
+            adi: data.adi || "",
+            kodu: data.kodu || "",
+            cinsi: data.cinsi || "",
+            tipi: data.tipi || "",
+            direkNo: data.direk_no || "",
+            boyOzellik: data.boy_ozellik || "",
+            direkBoyId: Number(data.direk_boy_id || 0),
+            wkb: wkb as any
+          };
+          await OgMusDirekApi.create(newOgMusDirek);
+          break;
+        case "AydDirek":
+          const newAydDirek: Partial<Direk> = {
+            adi: data.adi || "",
+            kodu: data.kodu || "",
+            cinsi: data.cinsi || "",
+            tipi: data.tipi || "",
+            direkNo: data.direk_no || "",
+            boyOzellik: data.boy_ozellik || "",
+            direkBoyId: Number(data.direk_boy_id || 0),
+            wkb: wkb as any
+          };
+          await AydDirekApi.create(newAydDirek);
+          break;
+        case "Armatur":
+          // Armatur might need specific fields, but assuming generic for now based on modal
+          const newArmatur: Partial<Armatur> = {
+            // Armatur specific fields if any in modal, otherwise just wkb and relations
+            // Looking at SaveFeatureModal, Armatur is not explicitly listed in FEATURE_TYPES or FIELD_SCHEMAS
+            // If it's added later, we handle it here.
+            // For now, let's assume it might be treated as a point if added.
+            wkb: wkb as any
+          };
+          await ArmaturApi.create(newArmatur);
+          break;
+        default:
+          console.warn(`Unknown feature type: ${featureType}`);
+          return;
+      }
+
+      console.log(`${featureType} saved successfully`);
       setIsModalOpen(false);
       setDrawingMode("None");
+      clearFeatures();
       props.onRefresh();
     } catch (error) {
-      console.error("Failed to save building", error);
+      console.error(`Failed to save ${featureType}`, error);
     }
   };
 
@@ -153,12 +256,52 @@ export default function OlDrawingMap(props: Props) {
     for (const feature of selectedFeatures) {
       const properties = feature.getProperties();
       const id = properties.id;
+      const entityType = properties.entityType || properties.dataType; // Fallback to dataType if entityType missing
+
       if (id) {
         try {
-          await AdrBinaApi.delete(id);
-          console.log(`Deleted feature ${id}`);
+          switch (entityType) {
+            case "AdrBina":
+            case "building": // Fallback
+              await AdrBinaApi.delete(id);
+              break;
+            case "TrafoBina":
+            case "trafo": // Fallback
+              await TrafoBinaApi.delete(id);
+              break;
+            case "AdrYol":
+            case "road": // Fallback
+              await AdrYolApi.delete(id);
+              break;
+            case "AgHat":
+              await AgHatApi.delete(id);
+              break;
+            case "OgHat":
+              await OgHatApi.delete(id);
+              break;
+            case "Rekortman":
+              await RekortmanApi.delete(id);
+              break;
+            case "AgDirek":
+              await AgDirekApi.delete(id);
+              break;
+            case "OgMusDirek":
+              await OgMusDirekApi.delete(id);
+              break;
+            case "AydDirek":
+              await AydDirekApi.delete(id);
+              break;
+            case "Armatur":
+            case "armatur": // Fallback
+              await ArmaturApi.delete(id);
+              break;
+            default:
+              console.warn(`Unknown entity type for deletion: ${entityType}`);
+              continue;
+          }
+          console.log(`Deleted feature ${id} of type ${entityType}`);
         } catch (error) {
-          console.error(`Failed to delete feature ${id}`, error);
+          console.error(`Failed to delete feature ${id} of type ${entityType}`, error);
         }
       }
     }

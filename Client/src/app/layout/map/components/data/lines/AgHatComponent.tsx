@@ -24,6 +24,7 @@ type Props = {
   extent: Extent;
   zoom: number;
   selectedViewType: C3D_MapViewType;
+  refreshTrigger?: number;
 };
 
 /**
@@ -32,7 +33,7 @@ type Props = {
  * @param props - The props for the component
  */
 export default function AgHatComponent(props: Readonly<Props>): null {
-  const { setData, allPoles, extent, zoom, selectedViewType } = props;
+  const { setData, allPoles, extent, zoom, selectedViewType, refreshTrigger } = props;
 
   const dispatch = useAppDispatch();
 
@@ -77,6 +78,7 @@ export default function AgHatComponent(props: Readonly<Props>): null {
             properties: {
               id: rawData.id,
               dataType: FeatureType.LINE,
+              entityType: "AgHat",
               kodu: rawData.kodu,
               adi: rawData.adi,
               cinsi: rawData.cinsi,
@@ -132,7 +134,7 @@ export default function AgHatComponent(props: Readonly<Props>): null {
       fetchNextChunk,
       setData,
     );
-  }, [allPoles, extent, fetchNextChunk, setData, selectedViewType, zoom]);
+  }, [allPoles, extent, fetchNextChunk, setData, selectedViewType, zoom, refreshTrigger]);
 
   useEffect(() => {
     handleAgHatTypesFetch();

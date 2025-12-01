@@ -76,6 +76,7 @@ export default function DataComponent(props: Readonly<Props>): React.ReactNode {
         extent={extent}
         zoom={zoom}
         selectedViewType={selectedViewType}
+        refreshTrigger={props.refreshTrigger}
       />
       <AdrBinaComponent
         setData={setAdrBina}
@@ -89,12 +90,14 @@ export default function DataComponent(props: Readonly<Props>): React.ReactNode {
         extent={extent}
         zoom={zoom}
         selectedViewType={selectedViewType}
+        refreshTrigger={props.refreshTrigger}
       />
       <AdrYolComponent
         setData={setAdrYol}
         extent={extent}
         zoom={zoom}
         selectedViewType={selectedViewType}
+        refreshTrigger={props.refreshTrigger}
       />
 
       <AgDirekComponent
@@ -102,18 +105,21 @@ export default function DataComponent(props: Readonly<Props>): React.ReactNode {
         extent={extent}
         zoom={zoom}
         selectedViewType={selectedViewType}
+        refreshTrigger={props.refreshTrigger}
       />
       <OgMusDirekComponent
         setData={setOgMusDirek}
         extent={extent}
         zoom={zoom}
         selectedViewType={selectedViewType}
+        refreshTrigger={props.refreshTrigger}
       />
       <AydDirekComponent
         setData={setAydDirek}
         extent={extent}
         zoom={zoom}
         selectedViewType={selectedViewType}
+        refreshTrigger={props.refreshTrigger}
       />
 
       <AgHatComponent
@@ -122,6 +128,7 @@ export default function DataComponent(props: Readonly<Props>): React.ReactNode {
         extent={extent}
         zoom={zoom}
         selectedViewType={selectedViewType}
+        refreshTrigger={props.refreshTrigger}
       />
       <OgHatComponent
         setData={setOgHat}
@@ -129,6 +136,7 @@ export default function DataComponent(props: Readonly<Props>): React.ReactNode {
         extent={extent}
         zoom={zoom}
         selectedViewType={selectedViewType}
+        refreshTrigger={props.refreshTrigger}
       />
       <RekortmanComponent
         setData={setRekortman}
@@ -136,12 +144,14 @@ export default function DataComponent(props: Readonly<Props>): React.ReactNode {
         extent={extent}
         zoom={zoom}
         selectedViewType={selectedViewType}
+        refreshTrigger={props.refreshTrigger}
       />
       <ArmaturComponent
         setData={setArmatur}
         extent={extent}
         zoom={zoom}
         selectedViewType={selectedViewType}
+        refreshTrigger={props.refreshTrigger}
       />
     </>
   );

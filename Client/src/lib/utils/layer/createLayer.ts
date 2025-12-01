@@ -1,4 +1,5 @@
-import { BitmapLayer, ColumnLayer, PathLayer, SimpleMeshLayer, TileLayer } from "deck.gl";
+import { BitmapLayer, ColumnLayer, PathLayer, SimpleMeshLayer, TileLayer, MVTLayer } from "deck.gl";
+import { MVTLoader, TileJSONLoader } from "@loaders.gl/mvt";
 import { PathStyleExtension } from "@deck.gl/extensions";
 import { C3D_MapViewType, HatCinsi } from "../../enums";
 import { OBJLoader } from "@loaders.gl/obj";
@@ -54,6 +55,32 @@ export class CreateLayer {
 			// https://wiki.openstreetmap.org/wiki/Zoom_levels
 			minZoom: 16,
 			maxZoom: 18,
+			tileSize: 256,
+			visible: visibility,
+			opacity: opacity,
+			zoomOffset: devicePixelRatio === 1 ? -1 : 0,
+			renderSubLayers: (props) => {
+				const [[west, south], [east, north]] = props.tile.boundingBox;
+				const { data, ...otherProps } = props;
+
+				return [
+					new BitmapLayer(otherProps, {
+						image: data,
+						bounds: [west, south, east, north],
+					}),
+				];
+			},
+		});
+	}
+
+	static CustomRaster(id: string, url: string, visibility: boolean, opacity: number) {
+		return new TileLayer<ImageBitmap>({
+			data: [url],
+			id: `${id}-custom-layer`,
+			maxRequests: 20,
+			pickable: false,
+			minZoom: 0,
+			maxZoom: 19,
 			tileSize: 256,
 			visible: visibility,
 			opacity: opacity,
@@ -177,7 +204,7 @@ export class CreateLayer {
 		}
 
 		const mesh = id.includes("ag-direk") ? "/obj/lv.obj" : "/obj/mv.obj";
-		const scale = id.includes("ag-direk") ? .01 : .01; // Adjust scale if needed
+		const scale = id.includes("ag-direk") ? 0.01 : 0.01; // Adjust scale if needed
 		const rotation: [number, number, number] = id.includes("ag-direk") ? [0, -45, 0] : [0, 0, 0]; // Adjust rotation if needed
 
 		return new SimpleMeshLayer({
@@ -300,7 +327,7 @@ export class CreateLayer {
 			highlightColor: highlightColor,
 			mesh: wireframe ? OFFSET_CUBE_MESH : "/obj/armatur.obj",
 			loaders: wireframe ? undefined : [OBJLoader],
-			getScale: wireframe ? [1, 3.0, 0.3] : [.01, .01, .01], // Longer rectangular prism for wireframe, scaled obj otherwise
+			getScale: wireframe ? [1, 3.0, 0.3] : [0.01, 0.01, 0.01], // Longer rectangular prism for wireframe, scaled obj otherwise
 			getOrientation: wireframe ? [0, 315, 0] : [0, 45, 0], // Rotate 90 degrees in wireframe
 			visible: visibility,
 			wireframe: wireframe,
@@ -308,7 +335,65 @@ export class CreateLayer {
 				getColor: [selectedFeature, wireframe],
 				getPosition: [data],
 				getScale: [wireframe],
-				getMesh: [wireframe]
+				getMesh: [wireframe],
+			},
+		});
+	}
+	static Buildings(
+		id: string,
+		data: string | string[],
+		color: [number, number, number, number],
+		highlightColor: [number, number, number, number],
+		visibility: boolean,
+		selectedFeature: GeoJSON.Feature | null = null,
+		scheme: "xyz" | "tms" = "xyz",
+	) {
+		const isSelected = (d: any) => selectedFeature && d.properties?.id === selectedFeature.properties?.id;
+
+		return new MVTLayer({
+			id,
+			data,
+
+			minZoom: 0,
+			maxZoom: 16,
+			getFillColor: (d: any) => (isSelected(d) ? highlightColor : color),
+			getElevation: 12.5,
+			extruded: true,
+			filled: true,
+			pickable: true,
+			autoHighlight: true,
+			highlightColor,
+			visible: visibility,
+			loaders: [TileJSONLoader],
+			updateTriggers: {
+				getFillColor: [selectedFeature],
+			},
+			getTileData: async (tile: any) => {
+				const { x, y, z } = tile.index;
+				const urlTemplate = Array.isArray(data) ? data[0] : data;
+				const isTms = scheme === "tms" || urlTemplate.includes("/tms/");
+
+				// For TMS, flip the Y coordinate
+				const yPos = isTms ? (1 << z) - 1 - y : y;
+
+				console.log(`[DeckGL] Requesting tile: x=${x}, y=${y}, z=${z}, scheme=${scheme}, isTms=${isTms}, yPos=${yPos}`);
+
+				const url = urlTemplate
+					.replace("{x}", String(x))
+					.replace("{y}", String(yPos))
+					.replace("{z}", String(z));
+
+				try {
+					const response = await fetch(url);
+					if (!response.ok) {
+						console.warn(`Failed to fetch tile: ${url}`);
+						return null;
+					}
+					return response.arrayBuffer() as any;
+				} catch (error) {
+					console.warn(`Error fetching tile: ${url}`, error);
+					return null;
+				}
 			},
 		});
 	}

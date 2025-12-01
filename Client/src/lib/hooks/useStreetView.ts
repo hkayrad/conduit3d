@@ -24,6 +24,7 @@ export function useStreetView({ position, pov }: StreetViewOptions) {
 
 	const shouldIgnoreEventsRef = useRef(false);
 
+	// Initialize Street View ONLY ONCE
 	useEffect(() => {
 		let mounted = true;
 
@@ -40,7 +41,7 @@ export function useStreetView({ position, pov }: StreetViewOptions) {
 
 				await loader.importLibrary("streetView");
 
-				if (containerRef.current) {
+				if (containerRef.current && !streetViewRef.current) {
 					streetViewRef.current = new google.maps.StreetViewPanorama(containerRef.current, {
 						position,
 						pov: pov || { heading: 0, pitch: 0 },

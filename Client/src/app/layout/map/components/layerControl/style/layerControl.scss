@@ -20,7 +20,7 @@
     }
 
     &.open {
-        right: 21rem;
+        right: 29rem;
     }
 }
 
@@ -40,7 +40,7 @@
     transition: all 0.3s ease;
 
     &.open {
-        right: 21rem;
+        right: 29rem;
     }
 }
 
@@ -48,8 +48,8 @@
     z-index: 1000;
     position: absolute;
     top: 5rem;
-    right: -20rem;
-    width: 20rem;
+    right: -28rem;
+    width: 28rem;
     min-height: 6.125rem;
     transition: all 0.3s ease;
     background: global.$primary;
@@ -86,8 +86,40 @@
     &.pinned {
         max-height: calc(100vh - 5rem - 5.5rem - 25.5rem);
     }
+
+    .customLayers {
+        display: flex;
+        width: 100%;
+        gap: .5rem;
+
+        .layer-control-toggle-switch {
+            flex-grow: 1;
+            min-width: 0; // Allow shrinking for truncation
+        }
+
+        .reorderCustomLayer {
+            background: none;
+            color: global.$white;
+            border: none;
+
+        }
+
+        .removeCustomLayer {
+            background: global.$error;
+            color: global.$white;
+            border: none;
+            min-width: 2rem;
+            height: 2rem;
+            margin-top: .5rem;
+            display: flex;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
 }
 
-.street-view:hover ~ .layer-control-content {
+.street-view:hover~.layer-control-content {
     max-height: calc(100vh - 5rem - 5.5rem - 25.5rem);
 }
