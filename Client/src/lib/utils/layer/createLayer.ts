@@ -1,5 +1,5 @@
 import { BitmapLayer, ColumnLayer, PathLayer, SimpleMeshLayer, TileLayer, MVTLayer } from "deck.gl";
-import { MVTLoader, TileJSONLoader } from "@loaders.gl/mvt";
+import { TileJSONLoader } from "@loaders.gl/mvt";
 import { PathStyleExtension } from "@deck.gl/extensions";
 import { C3D_MapViewType, HatCinsi } from "../../enums";
 import { OBJLoader } from "@loaders.gl/obj";
@@ -41,7 +41,7 @@ export class CreateLayer {
 		);
 	}
 
-	static OsmTiles(visibility: boolean, opacity: number) {
+	static OsmTiles(visibility: boolean) {
 		return new TileLayer<ImageBitmap>({
 			// https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Tile_servers
 			data: ["https://c.tile.openstreetmap.org/{z}/{x}/{y}.png"],
@@ -57,7 +57,6 @@ export class CreateLayer {
 			maxZoom: 18,
 			tileSize: 256,
 			visible: visibility,
-			opacity: opacity,
 			zoomOffset: devicePixelRatio === 1 ? -1 : 0,
 			renderSubLayers: (props) => {
 				const [[west, south], [east, north]] = props.tile.boundingBox;
@@ -119,6 +118,7 @@ export class CreateLayer {
 		visibility: boolean,
 		type: string,
 		selectedFeature: GeoJSON.Feature | null = null,
+		flattenUnderground: boolean = false,
 	) {
 		const dashArray = type == HatCinsi.BARA ? [4, 2] : [10, 2];
 		const isSelected = (d: GeoJSON.Feature) => selectedFeature && d.properties?.id === selectedFeature.properties?.id;
@@ -143,11 +143,17 @@ export class CreateLayer {
 			return new PathLayer({
 				id: id,
 				data: data ?? [],
-				getPath: (d) => d.geometry.coordinates,
+				getPath: (d) => {
+					if (flattenUnderground) {
+						// @ts-ignore
+						return d.geometry.coordinates.map((coord) => [coord[0], coord[1], 0.1]);
+					}
+					return d.geometry.coordinates;
+				},
 				getColor: (d) => (isSelected(d) ? highlightColor : color),
 				getWidth: lineWidth,
 				pickable: true,
-				billboard: true,
+				billboard: !flattenUnderground,
 				autoHighlight: true,
 				highlightColor: highlightColor,
 				visible: visibility,
@@ -157,6 +163,7 @@ export class CreateLayer {
 				dashGapPickable: true,
 				updateTriggers: {
 					getColor: selectedFeature,
+					getPath: flattenUnderground,
 				},
 			});
 	}

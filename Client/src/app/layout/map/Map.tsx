@@ -64,7 +64,7 @@ export default function DeckglMap(): React.ReactNode {
     lastRefreshPosition,
     isWireframe,
     focusedView,
-    basemapOpacity,
+    isUndergroundLinesFlattened,
   } = useAppSelector(selectMapState);
   const customLayers = useAppSelector(selectCustomLayers);
   const { cartesian, firstPerson } = viewState;
@@ -330,6 +330,17 @@ export default function DeckglMap(): React.ReactNode {
       //   visibility.basemap,
       // ),
 
+      CreateLayer.OsmTiles(visibility.basemap),
+
+      ...customLayers.map((layer) =>
+        CreateLayer.CustomRaster(
+          layer.id,
+          layer.url,
+          layer.visible,
+          layer.opacity,
+        ),
+      ),
+
       ...hatLayerData.flatMap((filteredHat) =>
         filteredHat.map((hat) =>
           CreateLayer.Hat(
@@ -345,20 +356,12 @@ export default function DeckglMap(): React.ReactNode {
               : hat.visibility,
             hat.cinsi,
             selectedFeature,
+            isUndergroundLinesFlattened,
           ),
         ),
       ),
 
-      CreateLayer.OsmTiles(visibility.basemap, basemapOpacity),
 
-      ...customLayers.map((layer) =>
-        CreateLayer.CustomRaster(
-          layer.id,
-          layer.url,
-          layer.visible,
-          layer.opacity,
-        ),
-      ),
 
       ...yolLayerData.flatMap((filteredYol) =>
         filteredYol.map((yol) =>
@@ -593,13 +596,13 @@ export default function DeckglMap(): React.ReactNode {
       undergroundLineWidth,
       config,
       selectedFeature,
-      basemapOpacity,
       cartesian.zoom,
       selectedViewType,
       aydDirekFormatted,
       armaturLayerData,
       customLayers,
-      adrBinaColor
+      adrBinaColor,
+      isUndergroundLinesFlattened,
     ],
   );
 

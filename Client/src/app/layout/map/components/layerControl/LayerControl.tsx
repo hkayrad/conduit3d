@@ -2,8 +2,6 @@ import "./style/layerControl.scss";
 import {
   Building,
   ChevronRight,
-  Circle,
-  CircleDashed,
   Eye,
   EyeClosed,
   Layers2,
@@ -17,6 +15,7 @@ import {
   Zap,
   ArrowUp,
   ArrowDown,
+  Equal,
 } from "lucide-react";
 import {
   removeCustomLayer,
@@ -26,9 +25,10 @@ import {
   setIsHoverInfoVisible,
   setIsLayerControlsOpen,
   setMapLayerVisibility,
-  toggleBasemapOpacity,
   toggleCustomLayerVisibility,
   reorderCustomLayers,
+  toggleUndergroundLinesFlattened,
+  selectIsUndergroundLinesFlattened,
   type MapState,
 } from "../../mapSlice";
 import { useAppDispatch, useAppSelector } from "../../../../../lib/hooks";
@@ -62,8 +62,8 @@ export default function LayerControl(props: Props): React.ReactNode {
     selectedViewType,
     isStreetViewVisible,
     isStreetViewPinned,
-    basemapOpacity,
   } = useAppSelector(selectMapState);
+  const isUndergroundLinesFlattened = useAppSelector(selectIsUndergroundLinesFlattened);
   const customLayers = useAppSelector(selectCustomLayers);
 
   const [isAddLayerModalOpen, setIsAddLayerModalOpen] = useState(false);
@@ -155,24 +155,6 @@ export default function LayerControl(props: Props): React.ReactNode {
             }
             hideTitle="Hide Basemap"
             showTitle="Show Basemap"
-          />
-          <SettingToggleButton
-            active={basemapOpacity === 1}
-            toggle={() => dispatch(toggleBasemapOpacity())}
-            hideLabel={
-              <>
-                <CircleDashed />
-                <span style={{ fontSize: 14 }}>Transparent</span>
-              </>
-            }
-            showLabel={
-              <>
-                <Circle />
-                <span style={{ fontSize: 14 }}>Opaque</span>
-              </>
-            }
-            hideTitle="Transparent"
-            showTitle="Opaque"
           />
         </LayerControlSection>
         <LayerControlSection title="custom layers">
@@ -334,6 +316,22 @@ export default function LayerControl(props: Props): React.ReactNode {
           ></LayerControlDropdown>
         </LayerControlSection>
         <LayerControlSection title="lines">
+          <SettingToggleButton
+            active={isUndergroundLinesFlattened}
+            toggle={() => dispatch(toggleUndergroundLinesFlattened())}
+            hideLabel={
+              <>
+                <ArrowDown size={16} /> Restore Height
+              </>
+            }
+            showLabel={
+              <>
+                <Equal size={16} /> Flatten Underground
+              </>
+            }
+            hideTitle="Flatten Underground Lines to 0"
+            showTitle="Restore Underground Lines Height"
+          />
           <LayerControlDropdown
             icon={<PlugZap />}
             name="Ag Hat"

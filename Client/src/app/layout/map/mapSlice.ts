@@ -15,7 +15,6 @@ export interface MapState {
 	isWireframe: boolean;
 	selectedViewType: C3D_MapViewType;
 	visibility: C3D_LayerViewState;
-	basemapOpacity: number;
 	focusedView: "deckgl" | "streetview";
 	filters: {
 		[C3D_MapLayers.AgDirek]: {
@@ -64,6 +63,7 @@ export interface MapState {
 		latitude: number;
 	};
 	customLayers: CustomLayer[];
+	isUndergroundLinesFlattened: boolean;
 }
 
 const CUSTOM_LAYERS_KEY = "c3d_custom_layers";
@@ -96,9 +96,9 @@ const initialState: MapState = {
 	isStreetViewPinned: false,
 	isSettingsWindowOpen: false,
 	isWireframe: false,
+	isUndergroundLinesFlattened: false,
 	focusedView: "deckgl",
 	selectedViewType: C3D_MapViewType.Cartesian,
-	basemapOpacity: 1,
 	visibility: {
 		[C3D_MapLayers.Basemap]: true,
 		[C3D_MapLayers.AdrBina]: true,
@@ -218,11 +218,12 @@ export const mapSlice = createSlice({
 				state.visibility[layer] = visible;
 			}
 		},
-		setBasemapOpacity: (state, action: PayloadAction<number>) => {
-			state.basemapOpacity = action.payload;
-		},
+
 		toggleWireframe: (state) => {
 			state.isWireframe = !state.isWireframe;
+		},
+		toggleUndergroundLinesFlattened: (state) => {
+			state.isUndergroundLinesFlattened = !state.isUndergroundLinesFlattened;
 		},
 		toggleStreetView: (state) => {
 			state.isStreetViewVisible = !state.isStreetViewVisible;
@@ -244,9 +245,7 @@ export const mapSlice = createSlice({
 				state.visibility[layer] = !state.visibility[layer];
 			}
 		},
-		toggleBasemapOpacity: (state) => {
-			state.basemapOpacity = state.basemapOpacity === 1 ? 0.2 : 1;
-		},
+
 		setFilter: (
 			state,
 			action: PayloadAction<{
@@ -330,13 +329,12 @@ export const {
 	setIsWireframe,
 	setFocusedView,
 	setSelectedViewType,
-	setBasemapOpacity,
 	toggleWireframe,
+	toggleUndergroundLinesFlattened,
 	toggleStreetView,
 	toggleStreetViewPinned,
 	toggleSettingsWindow,
 	toggleMapLayerVisibility,
-	toggleBasemapOpacity,
 	setFilter,
 	setViewState,
 	setExtent,
@@ -357,10 +355,10 @@ export const selectIsHoverInfoVisible = (state: RootState) => state.map.isHoverI
 export const selectIsStreetViewVisible = (state: RootState) => state.map.isStreetViewVisible;
 export const selectIsStreetViewPinned = (state: RootState) => state.map.isStreetViewPinned;
 export const selectIsWireframe = (state: RootState) => state.map.isWireframe;
+export const selectIsUndergroundLinesFlattened = (state: RootState) => state.map.isUndergroundLinesFlattened;
 export const selectIsSettingsWindowOpen = (state: RootState) => state.map.isSettingsWindowOpen;
 export const selectSelectedViewType = (state: RootState) => state.map.selectedViewType;
 export const selectFocusedView = (state: RootState) => state.map.focusedView;
-export const selectBasemapOpacity = (state: RootState) => state.map.basemapOpacity;
 export const selectVisibility = (state: RootState) => state.map.visibility;
 export const selectFilters = (state: RootState) => state.map.filters;
 export const selectTypes = (state: RootState) => state.map.types;

@@ -27,8 +27,8 @@ import {
 	setLastRefreshPosition,
 	setSelectedViewType,
 	setViewState,
-	toggleBasemapOpacity,
 	toggleMapLayerVisibility,
+	toggleUndergroundLinesFlattened,
 	toggleSettingsWindow,
 	toggleStreetView,
 	toggleWireframe,
@@ -426,7 +426,7 @@ export function useMap() {
 				KeyC: () => dispatch(setSelectedViewType(C3D_MapViewType.Cartesian)),
 				KeyF: () => dispatch(setSelectedViewType(C3D_MapViewType.FirstPerson)),
 				KeyP: () => setShowFpsCounter((prev) => !prev),
-				Period: () => dispatch(toggleBasemapOpacity()),
+				Period: () => dispatch(toggleUndergroundLinesFlattened()),
 			};
 
 			const action = keyActions[e.code];

@@ -65,7 +65,7 @@ export default function ShortcutsInfo() {
             <kbd>Shift</kbd>
             <kbd>Period (.)</kbd>
           </span>{" "}
-          : Toggle Basemap Opacity
+          : Flatten Underground Lines
         </p>
         <p>
           <span>
