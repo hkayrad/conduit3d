@@ -120,6 +120,6 @@
     }
 }
 
-.street-view:hover~.layer-control-content {
+#deckgl-map:has(.street-view:hover)~.layer-control-content {
     max-height: calc(100vh - 5rem - 5.5rem - 25.5rem);
 }

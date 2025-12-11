@@ -1,4 +1,4 @@
-import "./style/streetView.css";
+import "./style/streetView.scss";
 import { useEffect, useMemo, useState, useRef } from "react"
 import { useAppDispatch, useAppSelector } from "../../../../../lib/hooks"
 import { selectFocusedView, selectIsStreetViewPinned, selectIsStreetViewVisible, selectSelectedViewType, selectViewState, toggleStreetView, toggleStreetViewPinned } from "../../mapSlice"
