@@ -1,0 +1,280 @@
+.add-geotiff-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--background-color-secondary, #2a2a2a);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  width: 450px;
+  max-height: 80vh;
+  overflow-y: auto;
+  color: var(--text-primary, #ffffff);
+}
+.add-geotiff-modal h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  border-bottom: 1px solid var(--border-color, #444);
+  padding-bottom: 10px;
+}
+.add-geotiff-modal .form-group {
+  margin-bottom: 15px;
+}
+.add-geotiff-modal .form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+  color: var(--text-secondary, #ccc);
+}
+.add-geotiff-modal .form-group input[type=text] {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color, #444);
+  background-color: var(--background-color, #1a1a1a);
+  color: var(--text-primary, #ffffff);
+  font-size: 0.9rem;
+}
+.add-geotiff-modal .form-group input[type=text]:focus {
+  outline: none;
+  border-color: var(--primary-color, #007bff);
+}
+.add-geotiff-modal .form-group select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color, #444);
+  background-color: var(--background-color, #1a1a1a);
+  color: var(--text-primary, #ffffff);
+  font-size: 0.9rem;
+}
+.add-geotiff-modal .form-group select:focus {
+  outline: none;
+  border-color: var(--primary-color, #007bff);
+}
+.add-geotiff-modal .form-group .help-text {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #888);
+  margin-top: 4px;
+}
+.add-geotiff-modal .file-input-wrapper {
+  position: relative;
+}
+.add-geotiff-modal .file-input-wrapper input[type=file] {
+  width: 100%;
+  padding: 10px;
+  border-radius: 4px;
+  border: 2px dashed var(--border-color, #444);
+  background-color: var(--background-color, #1a1a1a);
+  color: var(--text-primary, #ffffff);
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.add-geotiff-modal .file-input-wrapper input[type=file]:hover {
+  border-color: var(--primary-color, #007bff);
+}
+.add-geotiff-modal .file-input-wrapper input[type=file]:focus {
+  outline: none;
+  border-color: var(--primary-color, #007bff);
+}
+.add-geotiff-modal .warning-box {
+  background-color: rgba(255, 193, 7, 0.15);
+  border: 1px solid #ffc107;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+.add-geotiff-modal .warning-box .warning-title {
+  color: #ffc107;
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.add-geotiff-modal .warning-box .warning-text {
+  color: var(--text-secondary, #ccc);
+  font-size: 0.85rem;
+}
+.add-geotiff-modal .info-box {
+  background-color: rgba(23, 162, 184, 0.15);
+  border: 1px solid #17a2b8;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+.add-geotiff-modal .info-box .info-title {
+  color: #17a2b8;
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.add-geotiff-modal .info-box .info-text {
+  color: var(--text-secondary, #ccc);
+  font-size: 0.85rem;
+}
+.add-geotiff-modal .crs-warning-box {
+  background-color: rgba(255, 152, 0, 0.15);
+  border: 1px solid #ff9800;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+.add-geotiff-modal .crs-warning-box .warning-title {
+  color: #ff9800;
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+.add-geotiff-modal .crs-warning-box .warning-text {
+  color: var(--text-secondary, #ccc);
+  font-size: 0.85rem;
+}
+.add-geotiff-modal .progress-container {
+  margin-bottom: 15px;
+}
+.add-geotiff-modal .progress-container .progress-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+  color: var(--text-secondary, #ccc);
+}
+.add-geotiff-modal .progress-container .progress-bar-wrapper {
+  width: 100%;
+  height: 8px;
+  background-color: var(--background-color, #1a1a1a);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.add-geotiff-modal .progress-container .progress-bar-wrapper .progress-bar {
+  height: 100%;
+  background-color: var(--primary-color, #007bff);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+.add-geotiff-modal .progress-container .progress-message {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #888);
+  margin-top: 4px;
+}
+.add-geotiff-modal .metadata-section {
+  background-color: var(--background-color, #1a1a1a);
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 15px;
+}
+.add-geotiff-modal .metadata-section h3 {
+  font-size: 0.9rem;
+  margin: 0 0 10px 0;
+  color: var(--text-primary, #fff);
+}
+.add-geotiff-modal .metadata-section .metadata-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 12px;
+  font-size: 0.85rem;
+}
+.add-geotiff-modal .metadata-section .metadata-grid .metadata-label {
+  color: var(--text-secondary, #888);
+}
+.add-geotiff-modal .metadata-section .metadata-grid .metadata-value {
+  color: var(--text-primary, #fff);
+}
+.add-geotiff-modal .band-mapping-section {
+  background-color: var(--background-color, #1a1a1a);
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 15px;
+}
+.add-geotiff-modal .band-mapping-section h3 {
+  font-size: 0.9rem;
+  margin: 0 0 10px 0;
+  color: var(--text-primary, #fff);
+}
+.add-geotiff-modal .band-mapping-section .band-mode-toggle {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.add-geotiff-modal .band-mapping-section .band-mode-toggle button {
+  flex: 1;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color, #444);
+  background-color: transparent;
+  color: var(--text-secondary, #ccc);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.add-geotiff-modal .band-mapping-section .band-mode-toggle button.active {
+  background-color: var(--primary-color, #007bff);
+  border-color: var(--primary-color, #007bff);
+  color: white;
+}
+.add-geotiff-modal .band-mapping-section .band-mode-toggle button:hover:not(.active) {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.add-geotiff-modal .band-mapping-section .band-selectors {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.add-geotiff-modal .band-mapping-section .band-selectors.grayscale {
+  grid-template-columns: 1fr;
+}
+.add-geotiff-modal .band-mapping-section .band-selectors .band-selector label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-secondary, #888);
+  margin-bottom: 4px;
+}
+.add-geotiff-modal .band-mapping-section .band-selectors .band-selector select {
+  width: 100%;
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color, #444);
+  background-color: var(--background-color-secondary, #2a2a2a);
+  color: var(--text-primary, #fff);
+  font-size: 0.85rem;
+}
+.add-geotiff-modal .modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+.add-geotiff-modal .modal-actions button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+.add-geotiff-modal .modal-actions button.cancel-btn {
+  background-color: transparent;
+  color: var(--text-secondary, #ccc);
+  border: 1px solid var(--border-color, #444);
+}
+.add-geotiff-modal .modal-actions button.cancel-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.add-geotiff-modal .modal-actions button.add-btn {
+  background-color: var(--primary-color, #007bff);
+  color: white;
+}
+.add-geotiff-modal .modal-actions button.add-btn:hover {
+  background-color: var(--primary-color-dark, #0056b3);
+}
+.add-geotiff-modal .modal-actions button.add-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}/*# sourceMappingURL=addGeoTiffModal.css.map */

@@ -13,9 +13,18 @@ export default defineConfig({
 				global: false,
 			},
 			// Only include specific polyfills you need
-			include: ["buffer", "process"],
+			include: ["buffer", "process", "stream", "path", "util"],
 		}),
 	],
+	worker: {
+		format: "es",
+	},
+	build: {
+		rollupOptions: {
+			// Ensure child_process and other Node.js modules are externalized in browser build
+			external: ["child_process", "fs", "net", "tls", "http", "https"],
+		},
+	},
 	server: {
 		https: {
 			key: "localhost.key",

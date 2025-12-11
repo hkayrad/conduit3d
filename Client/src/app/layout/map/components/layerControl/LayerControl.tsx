@@ -16,6 +16,7 @@ import {
   ArrowUp,
   ArrowDown,
   Equal,
+  FileImage,
 } from "lucide-react";
 import {
   removeCustomLayer,
@@ -29,6 +30,9 @@ import {
   reorderCustomLayers,
   toggleUndergroundLinesFlattened,
   selectIsUndergroundLinesFlattened,
+  selectGeoTiffLayers,
+  removeGeoTiffLayer,
+  toggleGeoTiffLayerVisibility,
   type MapState,
 } from "../../mapSlice";
 import { useAppDispatch, useAppSelector } from "../../../../../lib/hooks";
@@ -39,6 +43,7 @@ import SettingToggleButton from "../../../../shared/layerControl/settingToggleBu
 import { C3D_MapLayers, C3D_MapViewType } from "../../../../../lib/enums";
 import { useCallback, useState } from "react";
 import AddLayerModal from "../modals/AddLayerModal";
+import AddGeoTiffModal from "../modals/AddGeoTiffModal";
 
 type Props = {
   isDrawOpen: boolean;
@@ -65,8 +70,10 @@ export default function LayerControl(props: Props): React.ReactNode {
   } = useAppSelector(selectMapState);
   const isUndergroundLinesFlattened = useAppSelector(selectIsUndergroundLinesFlattened);
   const customLayers = useAppSelector(selectCustomLayers);
+  const geoTiffLayers = useAppSelector(selectGeoTiffLayers);
 
   const [isAddLayerModalOpen, setIsAddLayerModalOpen] = useState(false);
+  const [isAddGeoTiffModalOpen, setIsAddGeoTiffModalOpen] = useState(false);
 
   const handleControlsToggle = useCallback(() => {
     dispatch(setIsLayerControlsOpen(!isLayerControlsOpen));
@@ -96,6 +103,10 @@ export default function LayerControl(props: Props): React.ReactNode {
       <AddLayerModal
         isOpen={isAddLayerModalOpen}
         onClose={() => setIsAddLayerModalOpen(false)}
+      />
+      <AddGeoTiffModal
+        isOpen={isAddGeoTiffModalOpen}
+        onClose={() => setIsAddGeoTiffModalOpen(false)}
       />
       <button
         id="layer-control-toggle"
@@ -233,6 +244,58 @@ export default function LayerControl(props: Props): React.ReactNode {
             }}
           >
             <Plus size={16} /> Add Layer
+          </button>
+        </LayerControlSection>
+        <LayerControlSection title="geotiff layers">
+          {geoTiffLayers.map((layer) => (
+            <div
+              key={layer.id}
+              className="customLayers"
+            >
+              <SettingToggleButton
+                active={layer.visible}
+                toggle={() => dispatch(toggleGeoTiffLayerVisibility(layer.id))}
+                hideLabel={
+                  <>
+                    <EyeClosed /> {layer.name}
+                  </>
+                }
+                showLabel={
+                  <>
+                    <Eye /> {layer.name}
+                  </>
+                }
+                hideTitle={`Hide ${layer.name}`}
+                showTitle={`Show ${layer.name}`}
+              />
+              <div style={{ display: "flex", gap: "4px" }}>
+                <button
+                  onClick={() => dispatch(removeGeoTiffLayer(layer.id))}
+                  className="removeCustomLayer"
+                  title="Remove Layer"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            </div>
+          ))}
+          <button
+            onClick={() => setIsAddGeoTiffModalOpen(true)}
+            style={{
+              width: "100%",
+              padding: "12px",
+              background: "#3B3E5A",
+              border: "none",
+              color: "#fff",
+              borderRadius: "8px",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+            }}
+          >
+            <FileImage size={16} /> Add GeoTiff
           </button>
         </LayerControlSection>
         <LayerControlSection title="buildings">

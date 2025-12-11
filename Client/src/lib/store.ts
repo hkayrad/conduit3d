@@ -49,6 +49,15 @@ export const store = configureStore({
 		list: listSlice.reducer,
 	},
 	preloadedState: preloadedUserState,
+	middleware: (getDefaultMiddleware) =>
+		getDefaultMiddleware({
+			serializableCheck: {
+				// Ignore non-serializable values in GeoTiff layer paths
+				// ImageData objects cannot be serialized but are needed for rendering
+				ignoredActions: ["map/addGeoTiffLayer"],
+				ignoredPaths: ["map.geoTiffLayers"],
+			},
+		}),
 });
 
 store.subscribe(() => {

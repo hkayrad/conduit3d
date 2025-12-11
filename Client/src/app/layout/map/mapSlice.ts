@@ -3,7 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../../lib/store";
 import type { FirstPersonViewState, MapViewState } from "deck.gl";
 import { C3D_MapViewType, C3D_MapLayers } from "../../../lib/enums";
-import type { C3D_LayerViewState, CustomLayer } from "../../../lib/types";
+import type { C3D_LayerViewState, CustomLayer, GeoTiffLayer } from "../../../lib/types";
 
 export interface MapState {
 	isDataLoading: boolean;
@@ -63,6 +63,7 @@ export interface MapState {
 		latitude: number;
 	};
 	customLayers: CustomLayer[];
+	geoTiffLayers: GeoTiffLayer[];
 	isUndergroundLinesFlattened: boolean;
 }
 
@@ -173,6 +174,7 @@ const initialState: MapState = {
 		latitude: null!,
 	},
 	customLayers: loadCustomLayers(),
+	geoTiffLayers: [], // Session-only, no persistence
 };
 
 export const mapSlice = createSlice({
@@ -315,6 +317,25 @@ export const mapSlice = createSlice({
 			state.customLayers.splice(endIndex, 0, removed);
 			saveCustomLayers(state.customLayers);
 		},
+		// GeoTiff layer actions (session-only, no persistence)
+		addGeoTiffLayer: (state, action: PayloadAction<GeoTiffLayer>) => {
+			state.geoTiffLayers.push(action.payload);
+		},
+		removeGeoTiffLayer: (state, action: PayloadAction<string>) => {
+			state.geoTiffLayers = state.geoTiffLayers.filter((layer) => layer.id !== action.payload);
+		},
+		toggleGeoTiffLayerVisibility: (state, action: PayloadAction<string>) => {
+			const layer = state.geoTiffLayers.find((l) => l.id === action.payload);
+			if (layer) {
+				layer.visible = !layer.visible;
+			}
+		},
+		setGeoTiffLayerOpacity: (state, action: PayloadAction<{ id: string; opacity: number }>) => {
+			const layer = state.geoTiffLayers.find((l) => l.id === action.payload.id);
+			if (layer) {
+				layer.opacity = action.payload.opacity;
+			}
+		},
 	},
 });
 
@@ -345,6 +366,10 @@ export const {
 	toggleCustomLayerVisibility,
 	setCustomLayerOpacity,
 	reorderCustomLayers,
+	addGeoTiffLayer,
+	removeGeoTiffLayer,
+	toggleGeoTiffLayerVisibility,
+	setGeoTiffLayerOpacity,
 } = mapSlice.actions;
 
 export const selectMapState = (state: RootState) => state.map;
@@ -366,5 +391,6 @@ export const selectViewState = (state: RootState) => state.map.viewState;
 export const selectExtent = (state: RootState) => state.map.extent;
 export const selectLastRefreshPosition = (state: RootState) => state.map.lastRefreshPosition;
 export const selectCustomLayers = (state: RootState) => state.map.customLayers;
+export const selectGeoTiffLayers = (state: RootState) => state.map.geoTiffLayers;
 
 export default mapSlice.reducer;

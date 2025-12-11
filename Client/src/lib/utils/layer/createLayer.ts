@@ -99,6 +99,32 @@ export class CreateLayer {
 	}
 
 	/**
+	 * Create a GeoTiff layer from parsed GeoTiff data
+	 * @param id The layer ID
+	 * @param imageData The decoded image data (ImageData or ImageBitmap)
+	 * @param bounds The georeferenced bounds [west, south, east, north] in WGS84
+	 * @param visibility Whether the layer should be visible
+	 * @param opacity Layer opacity (0-1)
+	 * @returns A BitmapLayer instance
+	 */
+	static GeoTiff(
+		id: string,
+		imageData: ImageBitmap | ImageData,
+		bounds: [number, number, number, number],
+		visibility: boolean,
+		opacity: number,
+	) {
+		return new BitmapLayer({
+			id: `${id}-geotiff-layer`,
+			image: imageData,
+			bounds: bounds,
+			visible: visibility,
+			opacity: opacity,
+			pickable: false,
+		});
+	}
+
+	/**
 	 * Create a path layer for the specified hat feature.
 	 * @param id The layer ID.
 	 * @param data The feature data.

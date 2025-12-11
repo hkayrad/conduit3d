@@ -156,3 +156,32 @@ export type CustomLayer = {
     visible: boolean;
     opacity: number;
 }
+
+export type BandMapping = {
+    mode: 'rgb' | 'grayscale';
+    // For RGB mode: which bands to use for R, G, B channels (0-indexed)
+    redBand?: number;
+    greenBand?: number;
+    blueBand?: number;
+    // For grayscale mode: which band to display
+    grayBand?: number;
+}
+
+export type GeoTiffLayer = {
+    id: string;
+    name: string;
+    // Bounds in WGS84 [west, south, east, north]
+    bounds: [number, number, number, number];
+    visible: boolean;
+    opacity: number;
+    // The decoded image data as ImageData or ImageBitmap
+    imageData: ImageBitmap | ImageData;
+    // Original CRS from GeoTiff metadata (EPSG code or null if unknown)
+    sourceCRS: string | null;
+    // File size in bytes for RAM warning
+    fileSize: number;
+    // Number of bands in the GeoTiff
+    bandCount: number;
+    // Band mapping configuration for rendering
+    bandMapping: BandMapping;
+}

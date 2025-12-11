@@ -6,3 +6,4 @@ export * from "./data";
 export * from "./logger";
 export * from "./sleep";
 export * from "./auth";
+export * from "./projection";

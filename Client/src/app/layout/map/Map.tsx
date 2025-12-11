@@ -32,7 +32,7 @@ import {
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Outlet, useLocation } from "react-router";
-import { selectCustomLayers, selectMapState, setFocusedView } from "./mapSlice";
+import { selectCustomLayers, selectMapState, setFocusedView, selectGeoTiffLayers } from "./mapSlice";
 import { selectConfig } from "../../configSlice";
 import LayerControl from "./components/layerControl/LayerControl";
 import DataComponent from "./components/data/DataComponent";
@@ -67,6 +67,7 @@ export default function DeckglMap(): React.ReactNode {
     isUndergroundLinesFlattened,
   } = useAppSelector(selectMapState);
   const customLayers = useAppSelector(selectCustomLayers);
+  const geoTiffLayers = useAppSelector(selectGeoTiffLayers);
   const { cartesian, firstPerson } = viewState;
   const config = useAppSelector(selectConfig);
 
@@ -341,6 +342,16 @@ export default function DeckglMap(): React.ReactNode {
         ),
       ),
 
+      ...geoTiffLayers.map((layer) =>
+        CreateLayer.GeoTiff(
+          layer.id,
+          layer.imageData,
+          layer.bounds,
+          layer.visible,
+          layer.opacity,
+        ),
+      ),
+
       ...hatLayerData.flatMap((filteredHat) =>
         filteredHat.map((hat) =>
           CreateLayer.Hat(
@@ -601,6 +612,7 @@ export default function DeckglMap(): React.ReactNode {
       aydDirekFormatted,
       armaturLayerData,
       customLayers,
+      geoTiffLayers,
       adrBinaColor,
       isUndergroundLinesFlattened,
     ],
