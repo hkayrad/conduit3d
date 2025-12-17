@@ -16,7 +16,10 @@ import {
     createBuildingLayer,
 } from "../../../../../../lib/utils/ol";
 import { HatCinsi } from "../../../../../../lib/enums";
-import type { C3D_LayerViewState, Config } from "../../../../../../lib/types";
+import type { C3D_LayerViewState, Config, GeoTiffLayer } from "../../../../../../lib/types";
+import OlImageLayer from "ol/layer/Image";
+import Static from "ol/source/ImageStatic";
+
 
 export type DrawingMode = "Point" | "LineString" | "Polygon" | "Move" | "Edit" | "None";
 
@@ -49,6 +52,7 @@ type UseOlDrawingMapProps = {
     visibility: C3D_LayerViewState;
     config: Config;
     customLayers: any[];
+    geoTiffLayers: GeoTiffLayer[];
 };
 
 export function useOlDrawingMap({
@@ -66,6 +70,7 @@ export function useOlDrawingMap({
     visibility,
     config,
     customLayers,
+    geoTiffLayers,
 }: UseOlDrawingMapProps) {
     const mapRef = useRef<OlMap | null>(null);
     const sourceRef = useRef<OlVectorSource>(new OlVectorSource());
@@ -444,6 +449,121 @@ export function useOlDrawingMap({
             });
         }
     }, [customLayers]);
+
+    // Render GeoTiff Layers (Raster)
+    // Ref to store active layers and their object URLs: Map<layerId, { layer: OlImageLayer, url: string }>
+    const activeLayersRef = useRef<Map<string, { layer: OlImageLayer<Static>; url: string }>>(new Map());
+
+    useEffect(() => {
+        const map = mapRef.current;
+        if (!map) return;
+
+        // 1. Identify layers to remove (active layers that are no longer in geoTiffLayers)
+        const currentLayerIds = new Set(geoTiffLayers?.map(l => l.id) || []);
+        const layersToRemove: string[] = [];
+
+        activeLayersRef.current.forEach((_, key) => {
+            if (!currentLayerIds.has(key)) {
+                layersToRemove.push(key);
+            }
+        });
+
+        // Remove layers and revoke URLs
+        layersToRemove.forEach(id => {
+            const entry = activeLayersRef.current.get(id);
+            if (entry) {
+                map.removeLayer(entry.layer);
+                URL.revokeObjectURL(entry.url);
+                activeLayersRef.current.delete(id);
+            }
+        });
+
+        // 2. Add or Update layers
+        if (geoTiffLayers) {
+            geoTiffLayers.forEach(layer => {
+                if (!layer.visible || !layer.imageData) {
+                    // If layer is hidden or has no data, ensure it's removed from map if it existed
+                    const entry = activeLayersRef.current.get(layer.id);
+                    if (entry) {
+                        map.removeLayer(entry.layer);
+                        // We keep the URL valid in case it becomes visible again to avoid regenerating?
+                        // Or we can just hide the layer.
+                        // Better UX: Just set visible false on the OL layer.
+                        entry.layer.setVisible(false);
+                    }
+                    return;
+                }
+
+                const entry = activeLayersRef.current.get(layer.id);
+
+                if (entry) {
+                    // Update existing layer
+                    const imageLayer = entry.layer;
+
+                    // Update properties if changed
+                    if (imageLayer.getOpacity() !== layer.opacity) {
+                        imageLayer.setOpacity(layer.opacity);
+                    }
+                    if (imageLayer.getVisible() !== layer.visible) {
+                        imageLayer.setVisible(layer.visible);
+                    }
+                    // Ensure it's on the map (in case it was re-added or something)
+                    // (Usually unnecessary if we don't remove it, but good safety)
+                } else {
+                    // Create new layer
+                    const canvas = document.createElement("canvas");
+                    canvas.width = layer.imageData.width;
+                    canvas.height = layer.imageData.height;
+                    const ctx = canvas.getContext("2d");
+                    if (ctx) {
+                        ctx.putImageData(layer.imageData as ImageData, 0, 0);
+
+                        canvas.toBlob((blob) => {
+                            if (blob) {
+                                // Double check if layer is still needed (async race condition)
+                                const isStillCurrent = geoTiffLayers.some(l => l.id === layer.id);
+                                if (!isStillCurrent) return;
+
+                                const newUrl = URL.createObjectURL(blob);
+
+                                // Transform extent from WGS84 to EPSG:3857
+                                const extent = layer.bounds;
+                                const min = fromLonLat([extent[0], extent[1]]);
+                                const max = fromLonLat([extent[2], extent[3]]);
+                                const projectedExtent = [min[0], min[1], max[0], max[1]];
+
+                                const imageLayer = new OlImageLayer({
+                                    source: new Static({
+                                        url: newUrl,
+                                        imageExtent: projectedExtent,
+                                        projection: "EPSG:3857"
+                                    }),
+                                    opacity: layer.opacity,
+                                    visible: layer.visible,
+                                    properties: { isGeoTiffLayer: true, layerId: layer.id },
+                                    zIndex: 2,
+                                });
+
+                                map.addLayer(imageLayer);
+                                activeLayersRef.current.set(layer.id, { layer: imageLayer, url: newUrl });
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    }, [geoTiffLayers]);
+
+    // Cleanup on unmount
+    useEffect(() => {
+        return () => {
+            activeLayersRef.current.forEach((entry) => {
+                // We can't easily remove from map here if mapRef is null, but map is being destroyed anyway
+                URL.revokeObjectURL(entry.url);
+            });
+            activeLayersRef.current.clear();
+        };
+    }, []);
 
     const modifiedFeaturesRef = useRef<Map<any, any>>(new Map());
 

@@ -9,7 +9,7 @@ import { geometryToWkb } from "../../../../../lib/utils/geometry/geometryToWkb";
 import type { AdrBina, AdrYol, Hat, Rekortman, Direk, Armatur, TrafoBina } from "../../../../../lib/types";
 import InfoContent from "../../../../shared/infoContent/InfoContent";
 import SaveFeatureModal from "./components/SaveFeatureModal";
-import type { C3D_LayerViewState, Config } from "../../../../../lib/types";
+import type { C3D_LayerViewState, Config, GeoTiffLayer } from "../../../../../lib/types";
 import { useOlDrawingMap } from "./hooks/useOlDrawingMap";
 import DrawingControls from "./components/DrawingControls";
 
@@ -37,6 +37,7 @@ type Props = {
   }) => void;
   onRefresh: () => void;
   customLayers: any[];
+  geoTiffLayers: GeoTiffLayer[];
 };
 
 export default function OlDrawingMap(props: Props) {
@@ -55,6 +56,7 @@ export default function OlDrawingMap(props: Props) {
     viewState,
     onViewStateChange,
     customLayers,
+    geoTiffLayers,
   } = props;
 
   const olContainerRef = useRef<HTMLDivElement>(null);
@@ -84,6 +86,7 @@ export default function OlDrawingMap(props: Props) {
     visibility,
     config,
     customLayers,
+    geoTiffLayers,
   });
 
   const handleSave = () => {

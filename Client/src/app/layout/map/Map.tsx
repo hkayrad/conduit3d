@@ -746,6 +746,7 @@ export default function DeckglMap(): React.ReactNode {
             config={config}
             viewState={mapViewState.cartesian}
             customLayers={customLayers}
+            geoTiffLayers={geoTiffLayers}
             onViewStateChange={(newViewState) =>
               handleViewStateChange(C3D_MapViewType.Cartesian, {
                 ...mapViewState.cartesian,
