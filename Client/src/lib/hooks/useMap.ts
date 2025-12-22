@@ -32,6 +32,7 @@ import {
 	toggleSettingsWindow,
 	toggleStreetView,
 	toggleWireframe,
+	toggleLayerControls,
 } from "../../app/layout/map/mapSlice";
 import { convertDeckGLToLatLonWithOffset, flyToFeature } from "../utils";
 
@@ -410,6 +411,9 @@ export function useMap() {
 			} else if (e.code === "Comma") {
 				e.preventDefault();
 				dispatch(toggleSettingsWindow());
+			} else if (e.code === "KeyB") {
+				e.preventDefault();
+				dispatch(toggleLayerControls());
 			}
 		},
 		[searchInputRef, dispatch],

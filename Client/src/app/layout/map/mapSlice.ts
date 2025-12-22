@@ -297,6 +297,9 @@ export const mapSlice = createSlice({
 			state.customLayers = state.customLayers.filter((layer) => layer.id !== action.payload);
 			saveCustomLayers(state.customLayers);
 		},
+		toggleLayerControls: (state) => {
+			state.isLayerControlsOpen = !state.isLayerControlsOpen;
+		},
 		toggleCustomLayerVisibility: (state, action: PayloadAction<string>) => {
 			const layer = state.customLayers.find((l) => l.id === action.payload);
 			if (layer) {
@@ -350,6 +353,7 @@ export const {
 	setIsWireframe,
 	setFocusedView,
 	setSelectedViewType,
+	toggleLayerControls,
 	toggleWireframe,
 	toggleUndergroundLinesFlattened,
 	toggleStreetView,

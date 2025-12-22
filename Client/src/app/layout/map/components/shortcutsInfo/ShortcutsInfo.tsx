@@ -31,6 +31,13 @@ export default function ShortcutsInfo() {
           </span>{" "}
           : Close Popup Windows
         </p>
+        <p>
+          <span>
+            <kbd>Ctrl</kbd>
+            <kbd>B</kbd>
+          </span>{" "}
+          : Toggle Layer Controls
+        </p>
         {user?.userRole === "admin" && (
           <p data-testid="show-admin-settings">
             <span>
