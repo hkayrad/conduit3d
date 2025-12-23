@@ -45,6 +45,21 @@ public class TestDataGenerator
         };
     }
 
+    public static Armatur GenerateArmatur(
+        int id = 1,
+        int bagliTabloId = 1,
+        int bagliTabloKayitId = 1,
+        byte[] wkb = null!)
+    {
+        return new Armatur
+        {
+            Id = id,
+            BagliTabloId = bagliTabloId,
+            BagliTabloKayitId = bagliTabloKayitId,
+            Wkb = wkb ?? [1, 2, 3, 4, 5]
+        };
+    }
+
     public static List<AgDirek> GenerateAgDirekList(int count)
     {
         var list = new List<AgDirek>();
@@ -71,6 +86,16 @@ public class TestDataGenerator
         for (int i = 1; i <= count; i++)
         {
             list.Add(GenerateOgMusDirek(id: i, adi: $"Test Pole {i}"));
+        }
+        return list;
+    }
+
+    public static List<Armatur> GenerateArmaturList(int count)
+    {
+        var list = new List<Armatur>();
+        for (int i = 1; i <= count; i++)
+        {
+            list.Add(GenerateArmatur(id: i, bagliTabloId: i, bagliTabloKayitId: i));
         }
         return list;
     }

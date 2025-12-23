@@ -476,4 +476,216 @@ public class PostgresqlTrafoBinaServiceTests
     }
 
     #endregion
+
+    #region CreateAsync Tests
+
+    [Fact]
+    public async Task CreateAsync_WithValidEntity_ReturnsSuccessResponse()
+    {
+        // Arrange
+        var entity = TestDataGenerator.GenerateTrafoBina(id: 1);
+        _mockTrafoBinaRepository.Setup(r => r.AddAsync(entity, It.IsAny<CancellationToken>())).ReturnsAsync(entity);
+
+        // Act
+        var result = await _trafoBinaService.CreateAsync(entity, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Data.Should().BeEquivalentTo(entity);
+        result.Message.Should().Be(BuildingsResources.GetString("buildingCreated"));
+    }
+
+    [Fact]
+    public async Task CreateAsync_OnNpgsqlException_ReturnsDatabaseError()
+    {
+        // Arrange
+        var entity = TestDataGenerator.GenerateTrafoBina(id: 1);
+        var exceptionMessage = "DB error";
+        _mockTrafoBinaRepository.Setup(r => r.AddAsync(entity, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new NpgsqlException(exceptionMessage));
+
+        // Act
+        var result = await _trafoBinaService.CreateAsync(entity, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        result.Message.Should().Be(BuildingsResources.GetString("buildingCreationFailed", exceptionMessage));
+    }
+
+    [Fact]
+    public async Task CreateAsync_OnGenericException_ReturnsUnhandledError()
+    {
+        // Arrange
+        var entity = TestDataGenerator.GenerateTrafoBina(id: 1);
+        var exceptionMessage = "Generic error";
+        _mockTrafoBinaRepository.Setup(r => r.AddAsync(entity, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new Exception(exceptionMessage));
+
+        // Act
+        var result = await _trafoBinaService.CreateAsync(entity, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        result.Message.Should().Be(BuildingsResources.GetString("buildingCreationFailed", exceptionMessage));
+    }
+
+    #endregion
+
+    #region UpdateAsync Tests
+
+    [Fact]
+    public async Task UpdateAsync_WithValidEntity_ReturnsSuccessResponse()
+    {
+        // Arrange
+        var entity = TestDataGenerator.GenerateTrafoBina(id: 1);
+        _mockTrafoBinaRepository.Setup(r => r.UpdateAsync(entity, It.IsAny<CancellationToken>())).ReturnsAsync(entity);
+
+        // Act
+        var result = await _trafoBinaService.UpdateAsync(entity, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Data.Should().BeEquivalentTo(entity);
+        result.Message.Should().Be(BuildingsResources.GetString("buildingUpdated"));
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithInvalidId_ReturnsValidationError()
+    {
+        // Arrange
+        var entity = TestDataGenerator.GenerateTrafoBina(id: 0);
+
+        // Act
+        var result = await _trafoBinaService.UpdateAsync(entity, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        result.Message.Should().Be(BuildingsResources.GetString("invalidId"));
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WhenEntityNotFound_ReturnsNotFound()
+    {
+        // Arrange
+        var entity = TestDataGenerator.GenerateTrafoBina(id: 99);
+        _mockTrafoBinaRepository.Setup(r => r.UpdateAsync(entity, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new KeyNotFoundException());
+
+        // Act
+        var result = await _trafoBinaService.UpdateAsync(entity, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        result.Message.Should().Be(BuildingsResources.GetString("noBuildingFound", 99));
+    }
+
+    [Fact]
+    public async Task UpdateAsync_OnNpgsqlException_ReturnsDatabaseError()
+    {
+        // Arrange
+        var entity = TestDataGenerator.GenerateTrafoBina(id: 1);
+        var exceptionMessage = "DB error";
+        _mockTrafoBinaRepository.Setup(r => r.UpdateAsync(entity, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new NpgsqlException(exceptionMessage));
+
+        // Act
+        var result = await _trafoBinaService.UpdateAsync(entity, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        result.Message.Should().Be(BuildingsResources.GetString("buildingUpdateFailed", exceptionMessage));
+    }
+
+    [Fact]
+    public async Task UpdateAsync_OnGenericException_ReturnsUnhandledError()
+    {
+        // Arrange
+        var entity = TestDataGenerator.GenerateTrafoBina(id: 1);
+        var exceptionMessage = "Generic error";
+        _mockTrafoBinaRepository.Setup(r => r.UpdateAsync(entity, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new Exception(exceptionMessage));
+
+        // Act
+        var result = await _trafoBinaService.UpdateAsync(entity, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        result.Message.Should().Be(BuildingsResources.GetString("buildingUpdateFailed", exceptionMessage));
+    }
+
+    #endregion
+
+    #region DeleteAsync Tests
+
+    [Fact]
+    public async Task DeleteAsync_WithValidId_ReturnsSuccessResponse()
+    {
+        // Arrange
+        _mockTrafoBinaRepository.Setup(r => r.DeleteAsync(1, It.IsAny<CancellationToken>())).ReturnsAsync(true);
+
+        // Act
+        var result = await _trafoBinaService.DeleteAsync(1, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Data.Should().BeTrue();
+        result.Message.Should().Be(BuildingsResources.GetString("buildingDeleted"));
+    }
+
+    [Fact]
+    public async Task DeleteAsync_WhenIdNotFound_ReturnsNotFound()
+    {
+        // Arrange
+        _mockTrafoBinaRepository.Setup(r => r.DeleteAsync(99, It.IsAny<CancellationToken>())).ReturnsAsync(false);
+
+        // Act
+        var result = await _trafoBinaService.DeleteAsync(99, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        result.Message.Should().Be(BuildingsResources.GetString("noBuildingFound", 99));
+    }
+
+    [Fact]
+    public async Task DeleteAsync_OnNpgsqlException_ReturnsDatabaseError()
+    {
+        // Arrange
+        var exceptionMessage = "DB error";
+        _mockTrafoBinaRepository.Setup(r => r.DeleteAsync(1, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new NpgsqlException(exceptionMessage));
+
+        // Act
+        var result = await _trafoBinaService.DeleteAsync(1, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        result.Message.Should().Be(BuildingsResources.GetString("buildingDeletionFailed", exceptionMessage));
+    }
+
+    [Fact]
+    public async Task DeleteAsync_OnGenericException_ReturnsUnhandledError()
+    {
+        // Arrange
+        var exceptionMessage = "Generic error";
+        _mockTrafoBinaRepository.Setup(r => r.DeleteAsync(1, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new Exception(exceptionMessage));
+
+        // Act
+        var result = await _trafoBinaService.DeleteAsync(1, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        result.Message.Should().Be(BuildingsResources.GetString("buildingDeletionFailed", exceptionMessage));
+    }
+
+    #endregion
 }

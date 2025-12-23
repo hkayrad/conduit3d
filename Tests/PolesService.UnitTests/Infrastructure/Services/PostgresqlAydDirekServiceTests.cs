@@ -559,4 +559,216 @@ public class PostgresqlAydDirekServiceTests
     }
 
     #endregion
+
+    #region CreateAsync Tests
+
+    [Fact]
+    public async Task CreateAsync_WithValidEntity_ReturnsSuccessResponse()
+    {
+        // Arrange
+        var entity = TestDataGenerator.GenerateAydDirek(id: 1);
+        _mockAydDirekRepository.Setup(r => r.AddAsync(entity, It.IsAny<CancellationToken>())).ReturnsAsync(entity);
+
+        // Act
+        var result = await _aydDirekService.CreateAsync(entity, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Data.Should().BeEquivalentTo(entity);
+        result.Message.Should().Be(PolesResources.GetString("poleCreated"));
+    }
+
+    [Fact]
+    public async Task CreateAsync_OnNpgsqlException_ReturnsDatabaseError()
+    {
+        // Arrange
+        var entity = TestDataGenerator.GenerateAydDirek(id: 1);
+        var exceptionMessage = "DB error";
+        _mockAydDirekRepository.Setup(r => r.AddAsync(entity, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new NpgsqlException(exceptionMessage));
+
+        // Act
+        var result = await _aydDirekService.CreateAsync(entity, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        result.Message.Should().Be(PolesResources.GetString("poleCreationFailed", exceptionMessage));
+    }
+
+    [Fact]
+    public async Task CreateAsync_OnGenericException_ReturnsUnhandledError()
+    {
+        // Arrange
+        var entity = TestDataGenerator.GenerateAydDirek(id: 1);
+        var exceptionMessage = "Generic error";
+        _mockAydDirekRepository.Setup(r => r.AddAsync(entity, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new Exception(exceptionMessage));
+
+        // Act
+        var result = await _aydDirekService.CreateAsync(entity, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        result.Message.Should().Be(PolesResources.GetString("poleCreationFailed", exceptionMessage));
+    }
+
+    #endregion
+
+    #region UpdateAsync Tests
+
+    [Fact]
+    public async Task UpdateAsync_WithValidEntity_ReturnsSuccessResponse()
+    {
+        // Arrange
+        var entity = TestDataGenerator.GenerateAydDirek(id: 1);
+        _mockAydDirekRepository.Setup(r => r.UpdateAsync(entity, It.IsAny<CancellationToken>())).ReturnsAsync(entity);
+
+        // Act
+        var result = await _aydDirekService.UpdateAsync(entity, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Data.Should().BeEquivalentTo(entity);
+        result.Message.Should().Be(PolesResources.GetString("poleUpdated"));
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithInvalidId_ReturnsValidationError()
+    {
+        // Arrange
+        var entity = TestDataGenerator.GenerateAydDirek(id: 0);
+
+        // Act
+        var result = await _aydDirekService.UpdateAsync(entity, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        result.Message.Should().Be(PolesResources.GetString("invalidId"));
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WhenEntityNotFound_ReturnsNotFound()
+    {
+        // Arrange
+        var entity = TestDataGenerator.GenerateAydDirek(id: 99);
+        _mockAydDirekRepository.Setup(r => r.UpdateAsync(entity, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new KeyNotFoundException());
+
+        // Act
+        var result = await _aydDirekService.UpdateAsync(entity, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        result.Message.Should().Be(PolesResources.GetString("poleNotFound", 99));
+    }
+
+    [Fact]
+    public async Task UpdateAsync_OnNpgsqlException_ReturnsDatabaseError()
+    {
+        // Arrange
+        var entity = TestDataGenerator.GenerateAydDirek(id: 1);
+        var exceptionMessage = "DB error";
+        _mockAydDirekRepository.Setup(r => r.UpdateAsync(entity, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new NpgsqlException(exceptionMessage));
+
+        // Act
+        var result = await _aydDirekService.UpdateAsync(entity, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        result.Message.Should().Be(PolesResources.GetString("poleUpdateFailed", exceptionMessage));
+    }
+
+    [Fact]
+    public async Task UpdateAsync_OnGenericException_ReturnsUnhandledError()
+    {
+        // Arrange
+        var entity = TestDataGenerator.GenerateAydDirek(id: 1);
+        var exceptionMessage = "Generic error";
+        _mockAydDirekRepository.Setup(r => r.UpdateAsync(entity, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new Exception(exceptionMessage));
+
+        // Act
+        var result = await _aydDirekService.UpdateAsync(entity, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        result.Message.Should().Be(PolesResources.GetString("poleUpdateFailed", exceptionMessage));
+    }
+
+    #endregion
+
+    #region DeleteAsync Tests
+
+    [Fact]
+    public async Task DeleteAsync_WithValidId_ReturnsSuccessResponse()
+    {
+        // Arrange
+        _mockAydDirekRepository.Setup(r => r.DeleteAsync(1, It.IsAny<CancellationToken>())).ReturnsAsync(true);
+
+        // Act
+        var result = await _aydDirekService.DeleteAsync(1, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Data.Should().BeTrue();
+        result.Message.Should().Be(PolesResources.GetString("poleDeleted"));
+    }
+
+    [Fact]
+    public async Task DeleteAsync_WhenIdNotFound_ReturnsNotFound()
+    {
+        // Arrange
+        _mockAydDirekRepository.Setup(r => r.DeleteAsync(99, It.IsAny<CancellationToken>())).ReturnsAsync(false);
+
+        // Act
+        var result = await _aydDirekService.DeleteAsync(99, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        result.Message.Should().Be(PolesResources.GetString("poleNotFound", 99));
+    }
+
+    [Fact]
+    public async Task DeleteAsync_OnNpgsqlException_ReturnsDatabaseError()
+    {
+        // Arrange
+        var exceptionMessage = "DB error";
+        _mockAydDirekRepository.Setup(r => r.DeleteAsync(1, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new NpgsqlException(exceptionMessage));
+
+        // Act
+        var result = await _aydDirekService.DeleteAsync(1, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        result.Message.Should().Be(PolesResources.GetString("poleDeletionFailed", exceptionMessage));
+    }
+
+    [Fact]
+    public async Task DeleteAsync_OnGenericException_ReturnsUnhandledError()
+    {
+        // Arrange
+        var exceptionMessage = "Generic error";
+        _mockAydDirekRepository.Setup(r => r.DeleteAsync(1, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new Exception(exceptionMessage));
+
+        // Act
+        var result = await _aydDirekService.DeleteAsync(1, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        result.Message.Should().Be(PolesResources.GetString("poleDeletionFailed", exceptionMessage));
+    }
+
+    #endregion
 }

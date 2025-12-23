@@ -543,4 +543,216 @@ public class PostgresqlAgHatServiceTests
     }
 
     #endregion
+
+    #region CreateAsync Tests
+
+    [Fact]
+    public async Task CreateAsync_WithValidEntity_ReturnsSuccessResponse()
+    {
+        // Arrange
+        var entity = TestDataGenerator.GenerateAgHat(id: 1);
+        _mockAgHatRepository.Setup(r => r.AddAsync(entity, It.IsAny<CancellationToken>())).ReturnsAsync(entity);
+
+        // Act
+        var result = await _agHatService.CreateAsync(entity, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Data.Should().BeEquivalentTo(entity);
+        result.Message.Should().Be(LinesResources.GetString("lineCreated"));
+    }
+
+    [Fact]
+    public async Task CreateAsync_OnNpgsqlException_ReturnsDatabaseError()
+    {
+        // Arrange
+        var entity = TestDataGenerator.GenerateAgHat(id: 1);
+        var exceptionMessage = "DB error";
+        _mockAgHatRepository.Setup(r => r.AddAsync(entity, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new NpgsqlException(exceptionMessage));
+
+        // Act
+        var result = await _agHatService.CreateAsync(entity, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        result.Message.Should().Be(LinesResources.GetString("lineCreationFailed", exceptionMessage));
+    }
+
+    [Fact]
+    public async Task CreateAsync_OnGenericException_ReturnsUnhandledError()
+    {
+        // Arrange
+        var entity = TestDataGenerator.GenerateAgHat(id: 1);
+        var exceptionMessage = "Generic error";
+        _mockAgHatRepository.Setup(r => r.AddAsync(entity, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new Exception(exceptionMessage));
+
+        // Act
+        var result = await _agHatService.CreateAsync(entity, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        result.Message.Should().Be(LinesResources.GetString("lineCreationFailed", exceptionMessage));
+    }
+
+    #endregion
+
+    #region UpdateAsync Tests
+
+    [Fact]
+    public async Task UpdateAsync_WithValidEntity_ReturnsSuccessResponse()
+    {
+        // Arrange
+        var entity = TestDataGenerator.GenerateAgHat(id: 1);
+        _mockAgHatRepository.Setup(r => r.UpdateAsync(entity, It.IsAny<CancellationToken>())).ReturnsAsync(entity);
+
+        // Act
+        var result = await _agHatService.UpdateAsync(entity, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Data.Should().BeEquivalentTo(entity);
+        result.Message.Should().Be(LinesResources.GetString("lineUpdated"));
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithInvalidId_ReturnsValidationError()
+    {
+        // Arrange
+        var entity = TestDataGenerator.GenerateAgHat(id: 0);
+
+        // Act
+        var result = await _agHatService.UpdateAsync(entity, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        result.Message.Should().Be(LinesResources.GetString("invalidId"));
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WhenEntityNotFound_ReturnsNotFound()
+    {
+        // Arrange
+        var entity = TestDataGenerator.GenerateAgHat(id: 99);
+        _mockAgHatRepository.Setup(r => r.UpdateAsync(entity, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new KeyNotFoundException());
+
+        // Act
+        var result = await _agHatService.UpdateAsync(entity, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        result.Message.Should().Be(LinesResources.GetString("lineNotFound", 99));
+    }
+
+    [Fact]
+    public async Task UpdateAsync_OnNpgsqlException_ReturnsDatabaseError()
+    {
+        // Arrange
+        var entity = TestDataGenerator.GenerateAgHat(id: 1);
+        var exceptionMessage = "DB error";
+        _mockAgHatRepository.Setup(r => r.UpdateAsync(entity, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new NpgsqlException(exceptionMessage));
+
+        // Act
+        var result = await _agHatService.UpdateAsync(entity, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        result.Message.Should().Be(LinesResources.GetString("lineUpdateFailed", exceptionMessage));
+    }
+
+    [Fact]
+    public async Task UpdateAsync_OnGenericException_ReturnsUnhandledError()
+    {
+        // Arrange
+        var entity = TestDataGenerator.GenerateAgHat(id: 1);
+        var exceptionMessage = "Generic error";
+        _mockAgHatRepository.Setup(r => r.UpdateAsync(entity, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new Exception(exceptionMessage));
+
+        // Act
+        var result = await _agHatService.UpdateAsync(entity, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        result.Message.Should().Be(LinesResources.GetString("lineUpdateFailed", exceptionMessage));
+    }
+
+    #endregion
+
+    #region DeleteAsync Tests
+
+    [Fact]
+    public async Task DeleteAsync_WithValidId_ReturnsSuccessResponse()
+    {
+        // Arrange
+        _mockAgHatRepository.Setup(r => r.DeleteAsync(1, It.IsAny<CancellationToken>())).ReturnsAsync(true);
+
+        // Act
+        var result = await _agHatService.DeleteAsync(1, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Data.Should().BeTrue();
+        result.Message.Should().Be(LinesResources.GetString("lineDeleted"));
+    }
+
+    [Fact]
+    public async Task DeleteAsync_WhenIdNotFound_ReturnsNotFound()
+    {
+        // Arrange
+        _mockAgHatRepository.Setup(r => r.DeleteAsync(99, It.IsAny<CancellationToken>())).ReturnsAsync(false);
+
+        // Act
+        var result = await _agHatService.DeleteAsync(99, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        result.Message.Should().Be(LinesResources.GetString("lineNotFound", 99));
+    }
+
+    [Fact]
+    public async Task DeleteAsync_OnNpgsqlException_ReturnsDatabaseError()
+    {
+        // Arrange
+        var exceptionMessage = "DB error";
+        _mockAgHatRepository.Setup(r => r.DeleteAsync(1, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new NpgsqlException(exceptionMessage));
+
+        // Act
+        var result = await _agHatService.DeleteAsync(1, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        result.Message.Should().Be(LinesResources.GetString("lineDeletionFailed", exceptionMessage));
+    }
+
+    [Fact]
+    public async Task DeleteAsync_OnGenericException_ReturnsUnhandledError()
+    {
+        // Arrange
+        var exceptionMessage = "Generic error";
+        _mockAgHatRepository.Setup(r => r.DeleteAsync(1, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new Exception(exceptionMessage));
+
+        // Act
+        var result = await _agHatService.DeleteAsync(1, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        result.Message.Should().Be(LinesResources.GetString("lineDeletionFailed", exceptionMessage));
+    }
+
+    #endregion
 }

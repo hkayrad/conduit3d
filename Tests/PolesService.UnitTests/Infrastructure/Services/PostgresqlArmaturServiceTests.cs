@@ -18,25 +18,25 @@ using Xunit;
 
 namespace PolesService.UnitTests.Infrastructure.Services;
 
-public class PostgresqlOgMusDirekServiceTests
+public class PostgresqlArmaturServiceTests
 {
     private readonly Mock<IUnitOfWork> _mockUnitOfWork;
-    private readonly Mock<IOgMusDirekRepository> _mockOgMusDirekRepository;
-    private readonly PostgresqlOgMusDirekService _ogMusDirekService;
+    private readonly Mock<IArmaturRepository> _mockArmaturRepository;
+    private readonly PostgresqlArmaturService _armaturService;
 
-    public PostgresqlOgMusDirekServiceTests()
+    public PostgresqlArmaturServiceTests()
     {
         _mockUnitOfWork = new Mock<IUnitOfWork>();
-        _mockOgMusDirekRepository = new Mock<IOgMusDirekRepository>(MockBehavior.Strict);
-        _mockUnitOfWork.Setup(uow => uow.OgMusDirekRepository).Returns(_mockOgMusDirekRepository.Object);
-        _ogMusDirekService = new PostgresqlOgMusDirekService(_mockUnitOfWork.Object);
+        _mockArmaturRepository = new Mock<IArmaturRepository>(MockBehavior.Strict);
+        _mockUnitOfWork.Setup(uow => uow.ArmaturRepository).Returns(_mockArmaturRepository.Object);
+        _armaturService = new PostgresqlArmaturService(_mockUnitOfWork.Object);
     }
 
     [Fact]
     public void Constructor_WithNullUnitOfWork_ThrowsArgumentNullException()
     {
         // Act
-        Action act = () => new PostgresqlOgMusDirekService(null!);
+        Action act = () => new PostgresqlArmaturService(null!);
 
         // Assert
         act.Should().Throw<ArgumentNullException>().WithParameterName("unitOfWork");
@@ -48,12 +48,12 @@ public class PostgresqlOgMusDirekServiceTests
     public async Task GetAllAsync_WithValidParameters_ReturnsSuccessResponse()
     {
         // Arrange
-        var poles = TestDataGenerator.GenerateOgMusDirekList(3);
-        _mockOgMusDirekRepository.Setup(r => r.GetAllAsync(1, 10, "Id", true, It.IsAny<Extent>(), null, It.IsAny<CancellationToken>()))
+        var poles = TestDataGenerator.GenerateArmaturList(3);
+        _mockArmaturRepository.Setup(r => r.GetAllAsync(1, 10, "Id", true, It.IsAny<Extent>(), null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(poles);
 
         // Act
-        var result = await _ogMusDirekService.GetAllAsync(1, 10, "Id", true, null, null, CancellationToken.None);
+        var result = await _armaturService.GetAllAsync(1, 10, "Id", true, null, null, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -68,7 +68,7 @@ public class PostgresqlOgMusDirekServiceTests
     public async Task GetAllAsync_WithInvalidPageSize_ReturnsValidationError(int pageSize)
     {
         // Act
-        var result = await _ogMusDirekService.GetAllAsync(1, pageSize, "Id", true, null, null, CancellationToken.None);
+        var result = await _armaturService.GetAllAsync(1, pageSize, "Id", true, null, null, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -80,7 +80,7 @@ public class PostgresqlOgMusDirekServiceTests
     public async Task GetAllAsync_WithInvalidPageNumber_ReturnsValidationError()
     {
         // Act
-        var result = await _ogMusDirekService.GetAllAsync(0, 10, "Id", true, null, null, CancellationToken.None);
+        var result = await _armaturService.GetAllAsync(0, 10, "Id", true, null, null, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -92,7 +92,7 @@ public class PostgresqlOgMusDirekServiceTests
     public async Task GetAllAsync_WithInvalidSortBy_ReturnsValidationError()
     {
         // Act
-        var result = await _ogMusDirekService.GetAllAsync(1, 10, "InvalidColumn", true, null, null, CancellationToken.None);
+        var result = await _armaturService.GetAllAsync(1, 10, "InvalidColumn", true, null, null, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -107,7 +107,7 @@ public class PostgresqlOgMusDirekServiceTests
         var invalidExtent = TestDataGenerator.GenerateExtent(minX: 1, maxX: 0, minY: -90, maxY: 90);
 
         // Act
-        var result = await _ogMusDirekService.GetAllAsync(1, 10, "Id", true, invalidExtent, null, CancellationToken.None);
+        var result = await _armaturService.GetAllAsync(1, 10, "Id", true, invalidExtent, null, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -119,11 +119,11 @@ public class PostgresqlOgMusDirekServiceTests
     public async Task GetAllAsync_WhenNoPolesFound_ReturnsNotFound()
     {
         // Arrange
-        _mockOgMusDirekRepository.Setup(r => r.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<Extent>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+        _mockArmaturRepository.Setup(r => r.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<Extent>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
         // Act
-        var result = await _ogMusDirekService.GetAllAsync(1, 10, "Id", true, null, null, CancellationToken.None);
+        var result = await _armaturService.GetAllAsync(1, 10, "Id", true, null, null, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -132,14 +132,14 @@ public class PostgresqlOgMusDirekServiceTests
     }
 
     [Fact]
-    public async Task GetAllAsync_WhenPolesAreNull_ReturnsNotFound()
+    public async Task GetAllAsync_WhenPolesIsNull_ReturnsNotFound()
     {
         // Arrange
-        _mockOgMusDirekRepository.Setup(r => r.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<Extent>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((List<OgMusDirek>)null!);
+        _mockArmaturRepository.Setup(r => r.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<Extent>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((List<Armatur>)null!);
 
         // Act
-        var result = await _ogMusDirekService.GetAllAsync(1, 10, "Id", true, null, null, CancellationToken.None);
+        var result = await _armaturService.GetAllAsync(1, 10, "Id", true, null, null, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -152,11 +152,11 @@ public class PostgresqlOgMusDirekServiceTests
     {
         // Arrange
         var exceptionMessage = "DB connection failed";
-        _mockOgMusDirekRepository.Setup(r => r.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<Extent>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+        _mockArmaturRepository.Setup(r => r.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<Extent>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new NpgsqlException(exceptionMessage));
 
         // Act
-        var result = await _ogMusDirekService.GetAllAsync(1, 10, "Id", true, null, null, CancellationToken.None);
+        var result = await _armaturService.GetAllAsync(1, 10, "Id", true, null, null, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -165,15 +165,15 @@ public class PostgresqlOgMusDirekServiceTests
     }
 
     [Fact]
-    public async Task GetAllAsync_OnGenericException_ReturnsUnhandledError()
+    public async Task GetAllAsync_OnGenericException_ReturnsInternalServerError()
     {
         // Arrange
         var exceptionMessage = "Something went wrong";
-        _mockOgMusDirekRepository.Setup(r => r.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<Extent>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+        _mockArmaturRepository.Setup(r => r.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<Extent>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new Exception(exceptionMessage));
 
         // Act
-        var result = await _ogMusDirekService.GetAllAsync(1, 10, "Id", true, null, null, CancellationToken.None);
+        var result = await _armaturService.GetAllAsync(1, 10, "Id", true, null, null, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -189,11 +189,11 @@ public class PostgresqlOgMusDirekServiceTests
     public async Task GetByIdAsync_WithValidId_ReturnsSuccessResponse()
     {
         // Arrange
-        var pole = TestDataGenerator.GenerateOgMusDirek(id: 1, adi: "Test Pole 1");
-        _mockOgMusDirekRepository.Setup(r => r.GetByIdAsync(1, It.IsAny<CancellationToken>())).ReturnsAsync(pole);
+        var pole = TestDataGenerator.GenerateArmatur(id: 1);
+        _mockArmaturRepository.Setup(r => r.GetByIdAsync(1, It.IsAny<CancellationToken>())).ReturnsAsync(pole);
 
         // Act
-        var result = await _ogMusDirekService.GetByIdAsync(1, CancellationToken.None);
+        var result = await _armaturService.GetByIdAsync(1, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -205,7 +205,7 @@ public class PostgresqlOgMusDirekServiceTests
     public async Task GetByIdAsync_WithInvalidId_ReturnsValidationError()
     {
         // Act
-        var result = await _ogMusDirekService.GetByIdAsync(0, CancellationToken.None);
+        var result = await _armaturService.GetByIdAsync(0, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -217,10 +217,10 @@ public class PostgresqlOgMusDirekServiceTests
     public async Task GetByIdAsync_WhenPoleNotFound_ReturnsNotFound()
     {
         // Arrange
-        _mockOgMusDirekRepository.Setup(r => r.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync((OgMusDirek)null!);
+        _mockArmaturRepository.Setup(r => r.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync((Armatur)null!);
 
         // Act
-        var result = await _ogMusDirekService.GetByIdAsync(99, CancellationToken.None);
+        var result = await _armaturService.GetByIdAsync(99, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -233,11 +233,11 @@ public class PostgresqlOgMusDirekServiceTests
     {
         // Arrange
         var exceptionMessage = "DB error";
-        _mockOgMusDirekRepository.Setup(r => r.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+        _mockArmaturRepository.Setup(r => r.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new NpgsqlException(exceptionMessage));
 
         // Act
-        var result = await _ogMusDirekService.GetByIdAsync(1, CancellationToken.None);
+        var result = await _armaturService.GetByIdAsync(1, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -246,15 +246,15 @@ public class PostgresqlOgMusDirekServiceTests
     }
 
     [Fact]
-    public async Task GetByIdAsync_OnException_ReturnsUnhandledError()
+    public async Task GetByIdAsync_OnGenericException_ReturnsInternalServerError()
     {
         // Arrange
         var exceptionMessage = "Something went wrong";
-        _mockOgMusDirekRepository.Setup(r => r.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+        _mockArmaturRepository.Setup(r => r.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new Exception(exceptionMessage));
 
         // Act
-        var result = await _ogMusDirekService.GetByIdAsync(1, CancellationToken.None);
+        var result = await _armaturService.GetByIdAsync(1, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -270,11 +270,11 @@ public class PostgresqlOgMusDirekServiceTests
     public async Task GetCountAsync_WithValidParameters_ReturnsSuccessResponse()
     {
         // Arrange
-        _mockOgMusDirekRepository.Setup(r => r.GetCountAsync(It.IsAny<Extent>(), null, It.IsAny<CancellationToken>()))
+        _mockArmaturRepository.Setup(r => r.GetCountAsync(It.IsAny<Extent>(), null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(123);
 
         // Act
-        var result = await _ogMusDirekService.GetCountAsync(null, null, CancellationToken.None);
+        var result = await _armaturService.GetCountAsync(null, null, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -289,7 +289,7 @@ public class PostgresqlOgMusDirekServiceTests
         var invalidExtent = TestDataGenerator.GenerateExtent(minX: 1, maxX: 0, minY: -90, maxY: 90);
 
         // Act
-        var result = await _ogMusDirekService.GetCountAsync(invalidExtent, null, CancellationToken.None);
+        var result = await _armaturService.GetCountAsync(invalidExtent, null, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -302,11 +302,11 @@ public class PostgresqlOgMusDirekServiceTests
     {
         // Arrange
         var exceptionMessage = "DB error";
-        _mockOgMusDirekRepository.Setup(r => r.GetCountAsync(It.IsAny<Extent>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+        _mockArmaturRepository.Setup(r => r.GetCountAsync(It.IsAny<Extent>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new NpgsqlException(exceptionMessage));
 
         // Act
-        var result = await _ogMusDirekService.GetCountAsync(null, null, CancellationToken.None);
+        var result = await _armaturService.GetCountAsync(null, null, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -315,104 +315,20 @@ public class PostgresqlOgMusDirekServiceTests
     }
 
     [Fact]
-    public async Task GetCountAsync_OnException_ReturnsUnhandledError()
+    public async Task GetCountAsync_OnGenericException_ReturnsInternalServerError()
     {
         // Arrange
         var exceptionMessage = "Something went wrong";
-        _mockOgMusDirekRepository.Setup(r => r.GetCountAsync(It.IsAny<Extent>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+        _mockArmaturRepository.Setup(r => r.GetCountAsync(It.IsAny<Extent>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new Exception(exceptionMessage));
 
         // Act
-        var result = await _ogMusDirekService.GetCountAsync(null, null, CancellationToken.None);
+        var result = await _armaturService.GetCountAsync(null, null, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
         result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
         result.Message.Should().Be(PolesResources.GetString("poleCountRetrievalFailed", exceptionMessage));
-    }
-
-    #endregion
-
-    #region GetTipListAsync Tests
-
-    [Fact]
-    public async Task GetTipListAsync_WhenTipsExist_ReturnsSuccessResponse()
-    {
-        // Arrange
-        var tipList = TestDataGenerator.GenerateTipList(3);
-        _mockOgMusDirekRepository.Setup(r => r.GetTipListAsync(It.IsAny<CancellationToken>())).ReturnsAsync(tipList);
-
-        // Act
-        var result = await _ogMusDirekService.GetTipListAsync(CancellationToken.None);
-
-        // Assert
-        result.IsSuccess.Should().BeTrue();
-        result.Data.Should().BeEquivalentTo(tipList);
-        result.Message.Should().Be(PolesResources.GetString("tipListRetrieved"));
-    }
-
-    [Fact]
-    public async Task GetTipListAsync_WhenNoTipsFound_ReturnsNotFound()
-    {
-        // Arrange
-        _mockOgMusDirekRepository.Setup(r => r.GetTipListAsync(It.IsAny<CancellationToken>())).ReturnsAsync([]);
-
-        // Act
-        var result = await _ogMusDirekService.GetTipListAsync(CancellationToken.None);
-
-        // Assert
-        result.IsSuccess.Should().BeFalse();
-        result.StatusCode.Should().Be(HttpStatusCode.NotFound);
-        result.Message.Should().Be(PolesResources.GetString("noTipFound"));
-    }
-
-    [Fact]
-    public async Task GetTipListAsync_WhenTipsAreNull_ReturnsNotFound()
-    {
-        // Arrange
-        _mockOgMusDirekRepository.Setup(r => r.GetTipListAsync(It.IsAny<CancellationToken>())).ReturnsAsync((List<string>)null!);
-
-        // Act
-        var result = await _ogMusDirekService.GetTipListAsync(CancellationToken.None);
-
-        // Assert
-        result.IsSuccess.Should().BeFalse();
-        result.StatusCode.Should().Be(HttpStatusCode.NotFound);
-        result.Message.Should().Be(PolesResources.GetString("noTipFound"));
-    }
-
-    [Fact]
-    public async Task GetTipListAsync_OnNpgsqlException_ReturnsDatabaseError()
-    {
-        // Arrange
-        var exceptionMessage = "DB error";
-        _mockOgMusDirekRepository.Setup(r => r.GetTipListAsync(It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new NpgsqlException(exceptionMessage));
-
-        // Act
-        var result = await _ogMusDirekService.GetTipListAsync(CancellationToken.None);
-
-        // Assert
-        result.IsSuccess.Should().BeFalse();
-        result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
-        result.Message.Should().Be(PolesResources.GetString("tipListRetrievalFailed", exceptionMessage));
-    }
-
-    [Fact]
-    public async Task GetTipListAsync_OnException_ReturnsUnhandledError()
-    {
-        // Arrange
-        var exceptionMessage = "Generic error";
-        _mockOgMusDirekRepository.Setup(r => r.GetTipListAsync(It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new Exception(exceptionMessage));
-
-        // Act
-        var result = await _ogMusDirekService.GetTipListAsync(CancellationToken.None);
-
-        // Assert
-        result.IsSuccess.Should().BeFalse();
-        result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
-        result.Message.Should().Be(PolesResources.GetString("tipListRetrievalFailed", exceptionMessage));
     }
 
     #endregion
@@ -423,29 +339,31 @@ public class PostgresqlOgMusDirekServiceTests
     public async Task GetAllAsProtobufAsync_WithValidParameters_ReturnsSuccessResponse()
     {
         // Arrange
-        var poles = TestDataGenerator.GenerateOgMusDirekList(1);
-        poles[0].Adi = "Test Line 1";
-        _mockOgMusDirekRepository.Setup(r => r.GetAllAsync(1, 10, "Id", true, It.IsAny<Extent>(), null, It.IsAny<CancellationToken>()))
+        var poles = TestDataGenerator.GenerateArmaturList(1);
+        _mockArmaturRepository.Setup(r => r.GetAllAsync(1, 10, "Id", true, It.IsAny<Extent>(), null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(poles);
 
         // Act
-        var result = await _ogMusDirekService.GetAllAsProtobufAsync(1, 10, "Id", true, null, null, CancellationToken.None);
+        var result = await _armaturService.GetAllAsProtobufAsync(1, 10, "Id", true, null, null, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.StatusCode.Should().Be((int)HttpStatusCode.OK);
         result.Message.Should().Be(PolesResources.GetString("polesRetrieved"));
         result.Data.Should().HaveCount(1);
-        result.Data.First().Id.Should().Be(1);
-        result.Data.First().Adi.Should().Be("Test Line 1");
-        result.Data.First().Wkb.Should().Be(Convert.ToBase64String(poles.First().Wkb));
+        var protoPole = result.Data.First();
+        var originalPole = poles.First();
+        protoPole.Id.Should().Be(originalPole.Id);
+        protoPole.BagliTabloId.Should().Be(originalPole.BagliTabloId);
+        protoPole.BagliTabloKayitId.Should().Be(originalPole.BagliTabloKayitId);
+        protoPole.Wkb.Should().Be(Convert.ToBase64String(originalPole.Wkb));
     }
 
     [Fact]
     public async Task GetAllAsProtobufAsync_WithInvalidPageSize_ReturnsBadRequest()
     {
         // Act
-        var result = await _ogMusDirekService.GetAllAsProtobufAsync(1, 0, "Id", true, null, null, CancellationToken.None);
+        var result = await _armaturService.GetAllAsProtobufAsync(1, 0, "Id", true, null, null, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -457,7 +375,7 @@ public class PostgresqlOgMusDirekServiceTests
     public async Task GetAllAsProtobufAsync_WithInvalidPageNumber_ReturnsBadRequest()
     {
         // Act
-        var result = await _ogMusDirekService.GetAllAsProtobufAsync(0, 10, "Id", true, null, null, CancellationToken.None);
+        var result = await _armaturService.GetAllAsProtobufAsync(0, 10, "Id", true, null, null, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -469,7 +387,7 @@ public class PostgresqlOgMusDirekServiceTests
     public async Task GetAllAsProtobufAsync_WithInvalidSortBy_ReturnsBadRequest()
     {
         // Act
-        var result = await _ogMusDirekService.GetAllAsProtobufAsync(1, 10, "InvalidColumn", true, null, null, CancellationToken.None);
+        var result = await _armaturService.GetAllAsProtobufAsync(1, 10, "InvalidColumn", true, null, null, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -484,7 +402,7 @@ public class PostgresqlOgMusDirekServiceTests
         var invalidExtent = TestDataGenerator.GenerateExtent(minX: 1, maxX: 0, minY: -90, maxY: 90);
 
         // Act
-        var result = await _ogMusDirekService.GetAllAsProtobufAsync(1, 10, "Id", true, invalidExtent, null, CancellationToken.None);
+        var result = await _armaturService.GetAllAsProtobufAsync(1, 10, "Id", true, invalidExtent, null, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -496,11 +414,11 @@ public class PostgresqlOgMusDirekServiceTests
     public async Task GetAllAsProtobufAsync_WhenNoPolesFound_ReturnsNotFound()
     {
         // Arrange
-        _mockOgMusDirekRepository.Setup(r => r.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<Extent>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+        _mockArmaturRepository.Setup(r => r.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<Extent>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
         // Act
-        var result = await _ogMusDirekService.GetAllAsProtobufAsync(1, 10, "Id", true, null, null, CancellationToken.None);
+        var result = await _armaturService.GetAllAsProtobufAsync(1, 10, "Id", true, null, null, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -512,11 +430,11 @@ public class PostgresqlOgMusDirekServiceTests
     public async Task GetAllAsProtobufAsync_WhenPolesIsNull_ReturnsNotFound()
     {
         // Arrange
-        _mockOgMusDirekRepository.Setup(r => r.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<Extent>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((List<OgMusDirek>)null!);
+        _mockArmaturRepository.Setup(r => r.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<Extent>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((List<Armatur>)null!);
 
         // Act
-        var result = await _ogMusDirekService.GetAllAsProtobufAsync(1, 10, "Id", true, null, null, CancellationToken.None);
+        var result = await _armaturService.GetAllAsProtobufAsync(1, 10, "Id", true, null, null, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -529,11 +447,11 @@ public class PostgresqlOgMusDirekServiceTests
     {
         // Arrange
         var exceptionMessage = "DB connection failed";
-        _mockOgMusDirekRepository.Setup(r => r.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<Extent>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+        _mockArmaturRepository.Setup(r => r.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<Extent>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new NpgsqlException(exceptionMessage));
 
         // Act
-        var result = await _ogMusDirekService.GetAllAsProtobufAsync(1, 10, "Id", true, null, null, CancellationToken.None);
+        var result = await _armaturService.GetAllAsProtobufAsync(1, 10, "Id", true, null, null, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -546,11 +464,11 @@ public class PostgresqlOgMusDirekServiceTests
     {
         // Arrange
         var exceptionMessage = "Something went wrong";
-        _mockOgMusDirekRepository.Setup(r => r.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<Extent>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+        _mockArmaturRepository.Setup(r => r.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<Extent>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new Exception(exceptionMessage));
 
         // Act
-        var result = await _ogMusDirekService.GetAllAsProtobufAsync(1, 10, "Id", true, null, null, CancellationToken.None);
+        var result = await _armaturService.GetAllAsProtobufAsync(1, 10, "Id", true, null, null, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -566,11 +484,11 @@ public class PostgresqlOgMusDirekServiceTests
     public async Task CreateAsync_WithValidEntity_ReturnsSuccessResponse()
     {
         // Arrange
-        var entity = TestDataGenerator.GenerateOgMusDirek(id: 1);
-        _mockOgMusDirekRepository.Setup(r => r.AddAsync(entity, It.IsAny<CancellationToken>())).ReturnsAsync(entity);
+        var entity = TestDataGenerator.GenerateArmatur(id: 1);
+        _mockArmaturRepository.Setup(r => r.AddAsync(entity, It.IsAny<CancellationToken>())).ReturnsAsync(entity);
 
         // Act
-        var result = await _ogMusDirekService.CreateAsync(entity, CancellationToken.None);
+        var result = await _armaturService.CreateAsync(entity, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -582,13 +500,13 @@ public class PostgresqlOgMusDirekServiceTests
     public async Task CreateAsync_OnNpgsqlException_ReturnsDatabaseError()
     {
         // Arrange
-        var entity = TestDataGenerator.GenerateOgMusDirek(id: 1);
+        var entity = TestDataGenerator.GenerateArmatur(id: 1);
         var exceptionMessage = "DB error";
-        _mockOgMusDirekRepository.Setup(r => r.AddAsync(entity, It.IsAny<CancellationToken>()))
+        _mockArmaturRepository.Setup(r => r.AddAsync(entity, It.IsAny<CancellationToken>()))
             .ThrowsAsync(new NpgsqlException(exceptionMessage));
 
         // Act
-        var result = await _ogMusDirekService.CreateAsync(entity, CancellationToken.None);
+        var result = await _armaturService.CreateAsync(entity, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -600,13 +518,13 @@ public class PostgresqlOgMusDirekServiceTests
     public async Task CreateAsync_OnGenericException_ReturnsUnhandledError()
     {
         // Arrange
-        var entity = TestDataGenerator.GenerateOgMusDirek(id: 1);
+        var entity = TestDataGenerator.GenerateArmatur(id: 1);
         var exceptionMessage = "Generic error";
-        _mockOgMusDirekRepository.Setup(r => r.AddAsync(entity, It.IsAny<CancellationToken>()))
+        _mockArmaturRepository.Setup(r => r.AddAsync(entity, It.IsAny<CancellationToken>()))
             .ThrowsAsync(new Exception(exceptionMessage));
 
         // Act
-        var result = await _ogMusDirekService.CreateAsync(entity, CancellationToken.None);
+        var result = await _armaturService.CreateAsync(entity, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -622,11 +540,11 @@ public class PostgresqlOgMusDirekServiceTests
     public async Task UpdateAsync_WithValidEntity_ReturnsSuccessResponse()
     {
         // Arrange
-        var entity = TestDataGenerator.GenerateOgMusDirek(id: 1);
-        _mockOgMusDirekRepository.Setup(r => r.UpdateAsync(entity, It.IsAny<CancellationToken>())).ReturnsAsync(entity);
+        var entity = TestDataGenerator.GenerateArmatur(id: 1);
+        _mockArmaturRepository.Setup(r => r.UpdateAsync(entity, It.IsAny<CancellationToken>())).ReturnsAsync(entity);
 
         // Act
-        var result = await _ogMusDirekService.UpdateAsync(entity, CancellationToken.None);
+        var result = await _armaturService.UpdateAsync(entity, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -638,10 +556,10 @@ public class PostgresqlOgMusDirekServiceTests
     public async Task UpdateAsync_WithInvalidId_ReturnsValidationError()
     {
         // Arrange
-        var entity = TestDataGenerator.GenerateOgMusDirek(id: 0);
+        var entity = TestDataGenerator.GenerateArmatur(id: 0);
 
         // Act
-        var result = await _ogMusDirekService.UpdateAsync(entity, CancellationToken.None);
+        var result = await _armaturService.UpdateAsync(entity, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -653,12 +571,12 @@ public class PostgresqlOgMusDirekServiceTests
     public async Task UpdateAsync_WhenEntityNotFound_ReturnsNotFound()
     {
         // Arrange
-        var entity = TestDataGenerator.GenerateOgMusDirek(id: 99);
-        _mockOgMusDirekRepository.Setup(r => r.UpdateAsync(entity, It.IsAny<CancellationToken>()))
+        var entity = TestDataGenerator.GenerateArmatur(id: 99);
+        _mockArmaturRepository.Setup(r => r.UpdateAsync(entity, It.IsAny<CancellationToken>()))
             .ThrowsAsync(new KeyNotFoundException());
 
         // Act
-        var result = await _ogMusDirekService.UpdateAsync(entity, CancellationToken.None);
+        var result = await _armaturService.UpdateAsync(entity, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -670,13 +588,13 @@ public class PostgresqlOgMusDirekServiceTests
     public async Task UpdateAsync_OnNpgsqlException_ReturnsDatabaseError()
     {
         // Arrange
-        var entity = TestDataGenerator.GenerateOgMusDirek(id: 1);
+        var entity = TestDataGenerator.GenerateArmatur(id: 1);
         var exceptionMessage = "DB error";
-        _mockOgMusDirekRepository.Setup(r => r.UpdateAsync(entity, It.IsAny<CancellationToken>()))
+        _mockArmaturRepository.Setup(r => r.UpdateAsync(entity, It.IsAny<CancellationToken>()))
             .ThrowsAsync(new NpgsqlException(exceptionMessage));
 
         // Act
-        var result = await _ogMusDirekService.UpdateAsync(entity, CancellationToken.None);
+        var result = await _armaturService.UpdateAsync(entity, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -688,13 +606,13 @@ public class PostgresqlOgMusDirekServiceTests
     public async Task UpdateAsync_OnGenericException_ReturnsUnhandledError()
     {
         // Arrange
-        var entity = TestDataGenerator.GenerateOgMusDirek(id: 1);
+        var entity = TestDataGenerator.GenerateArmatur(id: 1);
         var exceptionMessage = "Generic error";
-        _mockOgMusDirekRepository.Setup(r => r.UpdateAsync(entity, It.IsAny<CancellationToken>()))
+        _mockArmaturRepository.Setup(r => r.UpdateAsync(entity, It.IsAny<CancellationToken>()))
             .ThrowsAsync(new Exception(exceptionMessage));
 
         // Act
-        var result = await _ogMusDirekService.UpdateAsync(entity, CancellationToken.None);
+        var result = await _armaturService.UpdateAsync(entity, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -710,10 +628,10 @@ public class PostgresqlOgMusDirekServiceTests
     public async Task DeleteAsync_WithValidId_ReturnsSuccessResponse()
     {
         // Arrange
-        _mockOgMusDirekRepository.Setup(r => r.DeleteAsync(1, It.IsAny<CancellationToken>())).ReturnsAsync(true);
+        _mockArmaturRepository.Setup(r => r.DeleteAsync(1, It.IsAny<CancellationToken>())).ReturnsAsync(true);
 
         // Act
-        var result = await _ogMusDirekService.DeleteAsync(1, CancellationToken.None);
+        var result = await _armaturService.DeleteAsync(1, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -725,10 +643,10 @@ public class PostgresqlOgMusDirekServiceTests
     public async Task DeleteAsync_WhenIdNotFound_ReturnsNotFound()
     {
         // Arrange
-        _mockOgMusDirekRepository.Setup(r => r.DeleteAsync(99, It.IsAny<CancellationToken>())).ReturnsAsync(false);
+        _mockArmaturRepository.Setup(r => r.DeleteAsync(99, It.IsAny<CancellationToken>())).ReturnsAsync(false);
 
         // Act
-        var result = await _ogMusDirekService.DeleteAsync(99, CancellationToken.None);
+        var result = await _armaturService.DeleteAsync(99, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -741,11 +659,11 @@ public class PostgresqlOgMusDirekServiceTests
     {
         // Arrange
         var exceptionMessage = "DB error";
-        _mockOgMusDirekRepository.Setup(r => r.DeleteAsync(1, It.IsAny<CancellationToken>()))
+        _mockArmaturRepository.Setup(r => r.DeleteAsync(1, It.IsAny<CancellationToken>()))
             .ThrowsAsync(new NpgsqlException(exceptionMessage));
 
         // Act
-        var result = await _ogMusDirekService.DeleteAsync(1, CancellationToken.None);
+        var result = await _armaturService.DeleteAsync(1, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -758,11 +676,11 @@ public class PostgresqlOgMusDirekServiceTests
     {
         // Arrange
         var exceptionMessage = "Generic error";
-        _mockOgMusDirekRepository.Setup(r => r.DeleteAsync(1, It.IsAny<CancellationToken>()))
+        _mockArmaturRepository.Setup(r => r.DeleteAsync(1, It.IsAny<CancellationToken>()))
             .ThrowsAsync(new Exception(exceptionMessage));
 
         // Act
-        var result = await _ogMusDirekService.DeleteAsync(1, CancellationToken.None);
+        var result = await _armaturService.DeleteAsync(1, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
