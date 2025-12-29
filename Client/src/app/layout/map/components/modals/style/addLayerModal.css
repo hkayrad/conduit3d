@@ -1,0 +1,143 @@
+@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Lexend", sans-serif;
+  font-size: 16px;
+}
+*::-webkit-scrollbar {
+  width: 0.5rem;
+}
+*::-webkit-scrollbar-track {
+  background: none;
+}
+*::-webkit-scrollbar-thumb {
+  background: #4b4e73;
+}
+
+.lucide {
+  width: 1rem;
+  height: 1rem;
+}
+
+.error-fg {
+  color: #d32f2f !important;
+}
+
+.warning-fg {
+  color: #ffc107 !important;
+}
+
+.success-fg {
+  color: #4caf50 !important;
+}
+
+.white-fg {
+  color: #ffffff !important;
+}
+
+.error-bg {
+  background: #d32f2f !important;
+}
+
+.warning-bg {
+  background: #ffc107 !important;
+}
+
+.success-bg {
+  background: #4caf50 !important;
+}
+
+.white-bg {
+  background: #ffffff !important;
+}
+
+.shadow {
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.15);
+}
+
+kbd {
+  background: #ffffff;
+  color: #2b2d42;
+  padding: 0.0625rem 0.25rem;
+  border-radius: 0.25rem;
+  white-space: nowrap;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 10000 !important;
+}
+
+.add-layer-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10001 !important;
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  max-width: 31.125rem;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.add-layer-modal h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+.add-layer-modal .form-group {
+  margin-bottom: 1rem;
+}
+.add-layer-modal .form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.add-layer-modal .form-group input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid rgba(75, 78, 115, 0.25);
+  background: #ffffff;
+  border-radius: 0.25rem;
+}
+.add-layer-modal .form-group input:focus {
+  border-color: #2b2d42;
+  background: #f8f8f8;
+  outline: none;
+}
+.add-layer-modal .form-group .help-text {
+  font-size: 0.875rem;
+  color: #7d8488;
+  margin-top: 0.25rem;
+}
+.add-layer-modal .modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+.add-layer-modal .modal-actions button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+.add-layer-modal .modal-actions button.cancel-btn {
+  background-color: #d32f2f;
+  color: #ffffff;
+}
+.add-layer-modal .modal-actions button.add-btn {
+  background-color: #4caf50;
+  color: #ffffff;
+}
+.add-layer-modal .modal-actions button.add-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}/*# sourceMappingURL=addLayerModal.css.map */

@@ -1,278 +1,352 @@
+@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Lexend", sans-serif;
+  font-size: 16px;
+}
+*::-webkit-scrollbar {
+  width: 0.5rem;
+}
+*::-webkit-scrollbar-track {
+  background: none;
+}
+*::-webkit-scrollbar-thumb {
+  background: #4b4e73;
+}
+
+.lucide {
+  width: 1rem;
+  height: 1rem;
+}
+
+.error-fg {
+  color: #d32f2f !important;
+}
+
+.warning-fg {
+  color: #ffc107 !important;
+}
+
+.success-fg {
+  color: #4caf50 !important;
+}
+
+.white-fg {
+  color: #ffffff !important;
+}
+
+.error-bg {
+  background: #d32f2f !important;
+}
+
+.warning-bg {
+  background: #ffc107 !important;
+}
+
+.success-bg {
+  background: #4caf50 !important;
+}
+
+.white-bg {
+  background: #ffffff !important;
+}
+
+.shadow {
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.15);
+}
+
+kbd {
+  background: #ffffff;
+  color: #2b2d42;
+  padding: 0.0625rem 0.25rem;
+  border-radius: 0.25rem;
+  white-space: nowrap;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 10000 !important;
+}
+
 .add-geotiff-modal {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: var(--background-color-secondary, #2a2a2a);
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  z-index: 1000;
-  width: 450px;
-  max-height: 80vh;
+  z-index: 10001 !important;
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  max-width: 35rem;
+  width: 90%;
+  max-height: 90vh;
   overflow-y: auto;
-  color: var(--text-primary, #ffffff);
 }
 .add-geotiff-modal h2 {
-  margin-top: 0;
-  margin-bottom: 20px;
-  font-size: 1.2rem;
-  border-bottom: 1px solid var(--border-color, #444);
-  padding-bottom: 10px;
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
 }
 .add-geotiff-modal .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 1rem;
 }
 .add-geotiff-modal .form-group label {
   display: block;
-  margin-bottom: 5px;
-  font-size: 0.9rem;
-  color: var(--text-secondary, #ccc);
+  margin-bottom: 0.5rem;
 }
 .add-geotiff-modal .form-group input[type=text] {
   width: 100%;
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid var(--border-color, #444);
-  background-color: var(--background-color, #1a1a1a);
-  color: var(--text-primary, #ffffff);
-  font-size: 0.9rem;
+  padding: 0.5rem;
+  border: 1px solid rgba(75, 78, 115, 0.25);
+  background: #ffffff;
+  border-radius: 0.25rem;
 }
 .add-geotiff-modal .form-group input[type=text]:focus {
+  border-color: #2b2d42;
+  background: #f8f8f8;
   outline: none;
-  border-color: var(--primary-color, #007bff);
 }
 .add-geotiff-modal .form-group select {
   width: 100%;
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid var(--border-color, #444);
-  background-color: var(--background-color, #1a1a1a);
-  color: var(--text-primary, #ffffff);
-  font-size: 0.9rem;
+  padding: 0.5rem;
+  border: 1px solid rgba(75, 78, 115, 0.25);
+  background: #ffffff;
+  border-radius: 0.25rem;
 }
 .add-geotiff-modal .form-group select:focus {
+  border-color: #2b2d42;
+  background: #f8f8f8;
   outline: none;
-  border-color: var(--primary-color, #007bff);
 }
 .add-geotiff-modal .form-group .help-text {
-  font-size: 0.8rem;
-  color: var(--text-secondary, #888);
-  margin-top: 4px;
+  font-size: 0.875rem;
+  color: #7d8488;
+  margin-top: 0.25rem;
 }
 .add-geotiff-modal .file-input-wrapper {
   position: relative;
 }
 .add-geotiff-modal .file-input-wrapper input[type=file] {
   width: 100%;
-  padding: 10px;
-  border-radius: 4px;
-  border: 2px dashed var(--border-color, #444);
-  background-color: var(--background-color, #1a1a1a);
-  color: var(--text-primary, #ffffff);
+  padding: 0.625rem;
+  border-radius: 0.25rem;
+  border: 2px dashed rgba(75, 78, 115, 0.25);
+  background: #f8f8f8;
   cursor: pointer;
   transition: border-color 0.2s;
 }
 .add-geotiff-modal .file-input-wrapper input[type=file]:hover {
-  border-color: var(--primary-color, #007bff);
+  border-color: #2b2d42;
 }
 .add-geotiff-modal .file-input-wrapper input[type=file]:focus {
   outline: none;
-  border-color: var(--primary-color, #007bff);
+  border-color: #2b2d42;
 }
 .add-geotiff-modal .warning-box {
-  background-color: rgba(255, 193, 7, 0.15);
+  background-color: rgba(255, 193, 7, 0.1);
   border: 1px solid #ffc107;
-  border-radius: 4px;
-  padding: 10px;
-  margin-bottom: 15px;
+  border-radius: 0.25rem;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
 }
 .add-geotiff-modal .warning-box .warning-title {
   color: #ffc107;
-  font-weight: bold;
-  font-size: 0.9rem;
-  margin-bottom: 4px;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 0.5rem;
 }
 .add-geotiff-modal .warning-box .warning-text {
-  color: var(--text-secondary, #ccc);
-  font-size: 0.85rem;
+  color: #2b2d42;
+  font-size: 0.875rem;
 }
 .add-geotiff-modal .info-box {
-  background-color: rgba(23, 162, 184, 0.15);
-  border: 1px solid #17a2b8;
-  border-radius: 4px;
-  padding: 10px;
-  margin-bottom: 15px;
+  background-color: rgba(76, 175, 80, 0.1);
+  border: 1px solid #4caf50;
+  border-radius: 0.25rem;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
 }
 .add-geotiff-modal .info-box .info-title {
-  color: #17a2b8;
-  font-weight: bold;
-  font-size: 0.9rem;
-  margin-bottom: 4px;
+  color: #4caf50;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 0.5rem;
 }
 .add-geotiff-modal .info-box .info-text {
-  color: var(--text-secondary, #ccc);
-  font-size: 0.85rem;
+  color: #2b2d42;
+  font-size: 0.875rem;
 }
 .add-geotiff-modal .crs-warning-box {
-  background-color: rgba(255, 152, 0, 0.15);
-  border: 1px solid #ff9800;
-  border-radius: 4px;
-  padding: 10px;
-  margin-bottom: 15px;
+  background-color: rgba(255, 193, 7, 0.1);
+  border: 1px solid #ffc107;
+  border-radius: 0.25rem;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
 }
 .add-geotiff-modal .crs-warning-box .warning-title {
-  color: #ff9800;
-  font-weight: bold;
-  font-size: 0.9rem;
-  margin-bottom: 4px;
+  color: #ffc107;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 .add-geotiff-modal .crs-warning-box .warning-text {
-  color: var(--text-secondary, #ccc);
-  font-size: 0.85rem;
+  color: #2b2d42;
+  font-size: 0.875rem;
 }
 .add-geotiff-modal .progress-container {
-  margin-bottom: 15px;
+  margin-bottom: 1rem;
 }
 .add-geotiff-modal .progress-container .progress-header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 6px;
-  font-size: 0.85rem;
-  color: var(--text-secondary, #ccc);
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  color: #7d8488;
 }
 .add-geotiff-modal .progress-container .progress-bar-wrapper {
   width: 100%;
-  height: 8px;
-  background-color: var(--background-color, #1a1a1a);
-  border-radius: 4px;
+  height: 0.5rem;
+  background-color: #f8f8f8;
+  border-radius: 0.25rem;
   overflow: hidden;
+  border: 1px solid rgba(75, 78, 115, 0.25);
 }
 .add-geotiff-modal .progress-container .progress-bar-wrapper .progress-bar {
   height: 100%;
-  background-color: var(--primary-color, #007bff);
-  border-radius: 4px;
+  background-color: #4caf50;
+  border-radius: 0.25rem;
   transition: width 0.3s ease;
 }
 .add-geotiff-modal .progress-container .progress-message {
-  font-size: 0.8rem;
-  color: var(--text-secondary, #888);
-  margin-top: 4px;
+  font-size: 0.875rem;
+  color: #7d8488;
+  margin-top: 0.25rem;
 }
 .add-geotiff-modal .metadata-section {
-  background-color: var(--background-color, #1a1a1a);
-  border-radius: 4px;
-  padding: 12px;
-  margin-bottom: 15px;
+  background-color: #f8f8f8;
+  border-radius: 0.25rem;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(75, 78, 115, 0.25);
 }
 .add-geotiff-modal .metadata-section h3 {
-  font-size: 0.9rem;
-  margin: 0 0 10px 0;
-  color: var(--text-primary, #fff);
+  font-size: 1rem;
+  margin: 0 0 0.625rem 0;
+  color: #2b2d42;
 }
 .add-geotiff-modal .metadata-section .metadata-grid {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 6px 12px;
-  font-size: 0.85rem;
+  gap: 0.5rem 0.75rem;
+  font-size: 0.875rem;
 }
 .add-geotiff-modal .metadata-section .metadata-grid .metadata-label {
-  color: var(--text-secondary, #888);
+  color: #7d8488;
+  font-weight: 500;
 }
 .add-geotiff-modal .metadata-section .metadata-grid .metadata-value {
-  color: var(--text-primary, #fff);
+  color: #2b2d42;
 }
 .add-geotiff-modal .band-mapping-section {
-  background-color: var(--background-color, #1a1a1a);
-  border-radius: 4px;
-  padding: 12px;
-  margin-bottom: 15px;
+  background-color: #f8f8f8;
+  border-radius: 0.25rem;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(75, 78, 115, 0.25);
 }
 .add-geotiff-modal .band-mapping-section h3 {
-  font-size: 0.9rem;
-  margin: 0 0 10px 0;
-  color: var(--text-primary, #fff);
+  font-size: 1rem;
+  margin: 0 0 0.625rem 0;
+  color: #2b2d42;
 }
 .add-geotiff-modal .band-mapping-section .band-mode-toggle {
   display: flex;
-  gap: 10px;
-  margin-bottom: 12px;
+  gap: 0.625rem;
+  margin-bottom: 0.75rem;
 }
 .add-geotiff-modal .band-mapping-section .band-mode-toggle button {
   flex: 1;
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid var(--border-color, #444);
-  background-color: transparent;
-  color: var(--text-secondary, #ccc);
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  border: 1px solid rgba(75, 78, 115, 0.25);
+  background-color: #ffffff;
+  color: #2b2d42;
   cursor: pointer;
   transition: all 0.2s;
 }
 .add-geotiff-modal .band-mapping-section .band-mode-toggle button.active {
-  background-color: var(--primary-color, #007bff);
-  border-color: var(--primary-color, #007bff);
-  color: white;
+  background-color: #2b2d42;
+  border-color: #2b2d42;
+  color: #ffffff;
 }
 .add-geotiff-modal .band-mapping-section .band-mode-toggle button:hover:not(.active) {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: #f8f8f8;
+}
+.add-geotiff-modal .band-mapping-section .band-mode-toggle button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 .add-geotiff-modal .band-mapping-section .band-selectors {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  gap: 0.625rem;
 }
 .add-geotiff-modal .band-mapping-section .band-selectors.grayscale {
   grid-template-columns: 1fr;
 }
 .add-geotiff-modal .band-mapping-section .band-selectors .band-selector label {
   display: block;
-  font-size: 0.8rem;
-  color: var(--text-secondary, #888);
-  margin-bottom: 4px;
+  font-size: 0.875rem;
+  color: #7d8488;
+  margin-bottom: 0.25rem;
 }
 .add-geotiff-modal .band-mapping-section .band-selectors .band-selector select {
   width: 100%;
-  padding: 6px;
-  border-radius: 4px;
-  border: 1px solid var(--border-color, #444);
-  background-color: var(--background-color-secondary, #2a2a2a);
-  color: var(--text-primary, #fff);
-  font-size: 0.85rem;
+  padding: 0.375rem;
+  border-radius: 0.25rem;
+  border: 1px solid rgba(75, 78, 115, 0.25);
+  background-color: #ffffff;
+  color: #2b2d42;
+  font-size: 0.875rem;
+}
+.add-geotiff-modal .band-mapping-section .band-selectors .band-selector select:focus {
+  border-color: #2b2d42;
+  background: #f8f8f8;
+  outline: none;
 }
 .add-geotiff-modal .modal-actions {
   display: flex;
+  gap: 1rem;
   justify-content: flex-end;
-  gap: 10px;
-  margin-top: 20px;
+  margin-top: 1.5rem;
 }
 .add-geotiff-modal .modal-actions button {
-  padding: 8px 16px;
-  border-radius: 4px;
+  padding: 0.5rem 1rem;
   border: none;
+  border-radius: 0.5rem;
   cursor: pointer;
-  font-size: 0.9rem;
-  transition: background-color 0.2s;
 }
 .add-geotiff-modal .modal-actions button.cancel-btn {
-  background-color: transparent;
-  color: var(--text-secondary, #ccc);
-  border: 1px solid var(--border-color, #444);
-}
-.add-geotiff-modal .modal-actions button.cancel-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: #d32f2f;
+  color: #ffffff;
 }
 .add-geotiff-modal .modal-actions button.add-btn {
-  background-color: var(--primary-color, #007bff);
-  color: white;
-}
-.add-geotiff-modal .modal-actions button.add-btn:hover {
-  background-color: var(--primary-color-dark, #0056b3);
+  background-color: #4caf50;
+  color: #ffffff;
 }
 .add-geotiff-modal .modal-actions button.add-btn:disabled {
   opacity: 0.5;
