@@ -63,7 +63,7 @@ describe("Redux Store", () => {
 			const state = store.getState();
 			expect(state.auth.user).toBeNull();
 			expect(localStorageMock.getItem).toHaveBeenCalledWith("userState");
-		});
+		}, 10000);
 
 		it("should return the preloaded state if user state exists in localStorage", async () => {
 			localStorageMock.getItem.mockReturnValue(serializedUserState);

@@ -54,9 +54,8 @@ vi.mock('../../../src/lib/utils', () => ({
         if (hex === '#00FF00') return 'rgba(0,255,0,1)';
         if (hex === '#ADD8E6') return 'rgba(173,216,230,1)';
         if (hex === '#0000FF') return 'rgba(0,0,255,1)';
-        // Simulate a default or fallback for unknown hex values
-        if (hex === undefined) return 'rgba(100,100,100,1)'; // Matches COLORS mock
-        return 'rgba(0,0,0,1)'; // Generic fallback for other hexes
+        if (hex === '#ffffff') return null;
+        return null;
     }),
 }));
 
@@ -276,7 +275,7 @@ describe('useHat', () => {
 
         const [agHatFormatted] = result.current.hatLayerData;
         expect(agHatFormatted[0].color).toBe(constants.COLORS.AG_HAT);
-        expect(utils.hexToRgba).toHaveBeenCalledWith(undefined);
+        expect(utils.hexToRgba).toHaveBeenCalledWith('#ffffff');
     });
 
     describe('visibility logic for agHat', () => {

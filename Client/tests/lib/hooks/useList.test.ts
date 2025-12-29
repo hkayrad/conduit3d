@@ -45,6 +45,10 @@ vi.mock('../../../src/lib/api', () => ({
     AgHatApi: {},
     OgHatApi: {},
     RekortmanApi: {},
+    ArmaturApi: {
+        fetchAll: vi.fn(),
+        fetchCount: vi.fn(),
+    },
 }));
 
 vi.mock('../../../src/lib/utils', () => ({

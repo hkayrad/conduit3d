@@ -50,8 +50,8 @@ vi.mock('../../../src/lib/utils', () => ({
         if (hex === '#FF0000') return 'rgba(255,0,0,1)';
         if (hex === '#00FF00') return 'rgba(0,255,0,1)';
         if (hex === '#0000FF') return 'rgba(0,0,255,1)';
-        if (hex === undefined) return 'rgba(100,100,100,1)';
-        return 'rgba(0,0,0,1)';
+        if (hex === '#ffffff') return null;
+        return null;
     }),
 }));
 
@@ -76,39 +76,33 @@ describe('useDirek', () => {
     it('should return initial empty data and setter functions', () => {
         const { result } = renderHook(() => useDirek());
 
-        expect(result.current.direkLayerData).toEqual([[
-            {
-                "color": "rgba(255,0,0,1)",
-                "data": {
-                    "features": [],
-                    "type": "FeatureCollection",
-                },
-                "id": "ag-direk-AG_TYPE_A",
-                "visibility": true,
-            },
-        ],
-        [
-            {
-                "color": "rgba(0,255,0,1)",
-                "data": {
-                    "features": [],
-                    "type": "FeatureCollection",
-                },
-                "id": "og-mus-direk-OG_TYPE_B",
-                "visibility": true,
-            },
-        ],
-        [
-            {
-                "color": "rgba(0,0,255,1)",
-                "data": {
-                    "features": [],
-                    "type": "FeatureCollection",
-                },
-                "id": "ayd-direk-AYD_TYPE_C",
-                "visibility": true,
-            },
-        ]]);
+        const [agDirekLayer, ogMusDirekLayer] = result.current.direkLayerData;
+        const aydDirekLayer = result.current.aydDirekFormatted;
+        
+        expect(agDirekLayer).toHaveLength(1);
+        expect(agDirekLayer[0]).toMatchObject({
+            id: 'ag-direk-AG_TYPE_A',
+            color: 'rgba(255,0,0,1)',
+            visibility: true,
+        });
+        expect(agDirekLayer[0].data.features).toEqual([]);
+        
+        expect(ogMusDirekLayer).toHaveLength(1);
+        expect(ogMusDirekLayer[0]).toMatchObject({
+            id: 'og-mus-direk-OG_TYPE_B',
+            color: 'rgba(0,255,0,1)',
+            visibility: true,
+        });
+        expect(ogMusDirekLayer[0].data.features).toEqual([]);
+        
+        expect(aydDirekLayer).toHaveLength(1);
+        expect(aydDirekLayer[0]).toMatchObject({
+            id: 'ayd-direk-AYD_TYPE_C',
+            color: 'rgba(0,0,255,1)',
+            visibility: true,
+        });
+        expect(aydDirekLayer[0].data.features).toEqual([]);
+        
         expect(result.current.allPoles).toEqual([]);
         expect(typeof result.current.setAgDirek).toBe('function');
         expect(typeof result.current.setOgMusDirek).toBe('function');
@@ -173,7 +167,7 @@ describe('useDirek', () => {
             result.current.setAydDirek(mockAydDirek);
         });
 
-        const [, , aydDirekFormatted] = result.current.direkLayerData;
+        const aydDirekFormatted = result.current.aydDirekFormatted;
 
         expect(aydDirekFormatted).toHaveLength(1);
         expect(aydDirekFormatted[0]).toEqual({
@@ -228,7 +222,7 @@ describe('useDirek', () => {
 
         const [agDirekFormatted] = result.current.direkLayerData;
         expect(agDirekFormatted[0].color).toBe(constants.COLORS.AG_DIREK);
-        expect(utils.hexToRgba).toHaveBeenCalledWith(undefined);
+        expect(utils.hexToRgba).toHaveBeenCalledWith('#ffffff');
     });
 
     describe('visibility logic for agDirek', () => {

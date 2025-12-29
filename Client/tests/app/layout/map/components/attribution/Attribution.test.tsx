@@ -1,6 +1,10 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { Provider } from "react-redux";
+import configureStore from "redux-mock-store";
 import Attribution from "../../../../../../src/app/layout/map/components/attribution/Attribution";
+
+const mockStore = configureStore([]);
 
 // Mock the InfoIcon component from lucide-react
 vi.mock("lucide-react", () => ({
@@ -8,8 +12,18 @@ vi.mock("lucide-react", () => ({
 }));
 
 describe("Attribution Component", () => {
+    const store = mockStore({
+        map: {
+            customLayers: []
+        }
+    });
+
     it("should render the attribution links and info icon", () => {
-        render(<Attribution />);
+        render(
+            <Provider store={store}>
+                <Attribution />
+            </Provider>
+        );
 
         // Check for the MapLibre link
         const mapLibreLink = screen.getByText("MapLibre");
@@ -27,7 +41,11 @@ describe("Attribution Component", () => {
     });
 
     it("links should have correct target and rel attributes", () => {
-        render(<Attribution />);
+        render(
+            <Provider store={store}>
+                <Attribution />
+            </Provider>
+        );
 
         const links = screen.getAllByRole('link');
         links.forEach(link => {

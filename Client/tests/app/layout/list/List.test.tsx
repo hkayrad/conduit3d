@@ -42,14 +42,14 @@ vi.mock("../../../../src/lib/utils/geometry/wkbToGeometry", () => ({
 // Improved Table mock: expose setQuery to window for test access
 vi.mock("../../../../src/app/shared/table/Table", () => ({
   __esModule: true,
-  default: (props) => {
+  default: (props: any) => {
     // Attach setQuery to window for test access
     window.__tableSetQuery = props.setQuery;
     return (
       <div data-testid="table">
-        {props.data.rows.map((row, rowIndex) => (
+        {props.data.rows.map((row: any, rowIndex: any) => (
           <div key={rowIndex} role="row">
-            {row.map((cell, cellIndex) => (
+            {row.map((cell: any, cellIndex: any) => (
               <div key={cellIndex} role="cell">
                 {cell}
               </div>
@@ -63,7 +63,7 @@ vi.mock("../../../../src/app/shared/table/Table", () => ({
 
 const mockStore = configureStore([]);
 
-const TestWrapper = ({ store, children }) => (
+const TestWrapper = ({ store, children }: { store: any; children: any }) => (
   <Provider store={store}>
     <MemoryRouter>
       <Routes>
@@ -76,7 +76,7 @@ const TestWrapper = ({ store, children }) => (
 );
 
 describe("List Component", () => {
-  let store;
+  let store: any;
   let useAppSelector;
   let useList;
 
@@ -97,9 +97,9 @@ describe("List Component", () => {
       query: "",
     };
 
-    useAppSelector.mockReturnValue(listState);
+    (useAppSelector as any).mockReturnValue(listState);
 
-    useList.mockReturnValue({
+    (useList as any).mockReturnValue({
       features: [
         {
           id: 1,

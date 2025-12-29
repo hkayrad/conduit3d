@@ -1,6 +1,6 @@
 import { describe, test, expect, vi, beforeEach, Mock } from 'vitest';
 import { lineStringToSegments } from '../../../../src/lib/utils/geometry/lineStringToSegments';
-import { HatCinsi } from '../../../../src/lib/enums';
+import { HatCinsi, HatTipi } from '../../../../src/lib/enums';
 import * as utils from '../../../../src/lib/utils';
 
 // Mock the findClosestPoleHeight function to isolate the test
@@ -24,8 +24,8 @@ describe('lineStringToSegments', () => {
 	});
 
 	test('should return an empty array if the input feature is null or undefined', () => {
-		expect(lineStringToSegments(null, HatCinsi.HAVAI, mockPoles)).toEqual([]);
-		expect(lineStringToSegments(undefined, HatCinsi.HAVAI, mockPoles)).toEqual([]);
+		expect(lineStringToSegments(null, HatCinsi.HAVAI, HatTipi.HAVAI, mockPoles)).toEqual([]);
+		expect(lineStringToSegments(undefined, HatCinsi.HAVAI, HatTipi.HAVAI, mockPoles)).toEqual([]);
 	});
 
 	test('should return an empty array for a LineString with less than 2 coordinates', () => {
@@ -37,7 +37,7 @@ describe('lineStringToSegments', () => {
 			},
 			properties: { name: 'short line' }
 		};
-		expect(lineStringToSegments(featureWithOnePoint, HatCinsi.HAVAI, mockPoles)).toEqual([]);
+		expect(lineStringToSegments(featureWithOnePoint, HatCinsi.HAVAI, HatTipi.HAVAI, mockPoles)).toEqual([]);
 	});
 
 	describe('when featureType is HatCinsi.HAVAI', () => {
@@ -62,7 +62,7 @@ describe('lineStringToSegments', () => {
 				return 0;
 			});
 
-			const segments = lineStringToSegments(feature, HatCinsi.HAVAI, mockPoles);
+			const segments = lineStringToSegments(feature, HatCinsi.HAVAI, HatTipi.HAVAI, mockPoles);
 
 			expect(segments).toHaveLength(2);
 			expect(mockFindClosestPoleHeight).toHaveBeenCalledTimes(4);
@@ -81,7 +81,7 @@ describe('lineStringToSegments', () => {
 			mockFindClosestPoleHeight.mockReturnValue(10);
 			const offset = 5;
 
-			const segments = lineStringToSegments(feature, HatCinsi.HAVAI, mockPoles, offset);
+			const segments = lineStringToSegments(feature, HatCinsi.HAVAI, HatTipi.HAVAI, mockPoles, offset);
 
 			expect(segments).toHaveLength(2);
 			expect(segments[0].geometry.coordinates[0][2]).toBe(15); // 10 + 5
@@ -103,21 +103,21 @@ describe('lineStringToSegments', () => {
 		};
 
 		test('should create segments with a height of 0', () => {
-			const segments = lineStringToSegments(feature, HatCinsi.BARA, mockPoles);
+			const segments = lineStringToSegments(feature, HatCinsi.BARA, HatTipi.BARA, mockPoles);
 
 			expect(segments).toHaveLength(1);
 			expect(mockFindClosestPoleHeight).not.toHaveBeenCalled();
 			expect(segments[0].geometry.coordinates).toEqual([
-				[10, 20, 0],
-				[30, 40, 0]
+				[10, 20, 0.1],
+				[30, 40, 0.1]
 			]);
 			expect(segments[0].properties).toEqual({ name: 'ground line' });
 		});
 
 		test('should ignore the offset', () => {
-			const segments = lineStringToSegments(feature, HatCinsi.BARA, mockPoles, 100);
-			expect(segments[0].geometry.coordinates[0][2]).toBe(0);
-			expect(segments[0].geometry.coordinates[1][2]).toBe(0);
+			const segments = lineStringToSegments(feature, HatCinsi.BARA, HatTipi.BARA, mockPoles, 100);
+			expect(segments[0].geometry.coordinates[0][2]).toBe(0.1);
+			expect(segments[0].geometry.coordinates[1][2]).toBe(0.1);
 		});
 	});
 });

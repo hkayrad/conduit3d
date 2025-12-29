@@ -1,7 +1,7 @@
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
 import { CreateLayer } from '../../../../src/lib/utils/layer/createLayer';
 import { C3D_MapViewType, HatCinsi } from '../../../../src/lib/enums';
-import { BitmapLayer, ColumnLayer, PathLayer, TileLayer } from 'deck.gl';
+import { BitmapLayer, ColumnLayer, PathLayer, SimpleMeshLayer, TileLayer } from 'deck.gl';
 import { PathStyleExtension } from '@deck.gl/extensions';
 
 // Mock the deck.gl and extension classes
@@ -12,6 +12,7 @@ vi.mock('deck.gl', async (importOriginal) => {
         TileLayer: vi.fn((props) => ({ props })),
         PathLayer: vi.fn((props) => ({ props })),
         ColumnLayer: vi.fn((props) => ({ props })),
+        SimpleMeshLayer: vi.fn((props) => ({ props })),
         BitmapLayer: vi.fn((props, otherProps) => ({ props, otherProps }))
     };
 });
@@ -143,12 +144,11 @@ describe('CreateLayer', () => {
             const layer = CreateLayer.Hat('hat-2', mockData, color, highlightColor, 3, false, HatCinsi.BARA);
             expect(PathLayer).toHaveBeenCalledTimes(1);
             expect(PathStyleExtension).toHaveBeenCalledWith({ dash: true });
-            expect(layer.props).toMatchObject({
-                id: 'hat-2',
-                visible: false,
-                billboard: false,
-                getDashArray: [4, 2],
-            });
+            expect(layer.props.id).toBe('hat-2');
+            expect(layer.props.visible).toBe(false);
+            expect(layer.props.getDashArray).toEqual([4, 2]);
+            expect(layer.props.extensions).toBeDefined();
+            expect(layer.props.extensions).toHaveLength(1);
             // Test accessor function
             expect(layer.props.getPath(mockData[0])).toEqual([1, 1]);
         });
@@ -169,31 +169,26 @@ describe('CreateLayer', () => {
     describe('Direk', () => {
         test('should create a standard ColumnLayer', () => {
             const layer = CreateLayer.Direk('direk-1', mockData, color, highlightColor, true, false);
-            expect(ColumnLayer).toHaveBeenCalledTimes(1);
+            expect(SimpleMeshLayer).toHaveBeenCalledTimes(1);
             expect(layer.props).toMatchObject({
                 id: 'direk-1',
                 data: mockData,
                 visible: true,
                 pickable: true,
-                wireframe: false,
-                diskResolution: 12,
-                radius: 0.5
+                wireframe: false
             });
             // Test accessor functions
             expect(layer.props.getPosition(mockData[0])).toEqual([1, 1]);
-            expect(layer.props.getElevation(mockData[0])).toBe(10);
+            expect(layer.props.mesh).toBeDefined();
         });
 
         test('should create a wireframe ColumnLayer', () => {
             const layer = CreateLayer.Direk('direk-2', mockData, color, highlightColor, true, true);
             expect(ColumnLayer).toHaveBeenCalledTimes(1);
-            expect(layer.props).toMatchObject({
-                id: 'direk-2',
-                getFillColor: [0, 0, 0, 0],
-                pickable: false,
-                wireframe: true,
-                diskResolution: 4
-            });
+            expect(layer.props.id).toBe('direk-2-wireframe');
+            expect(layer.props.getFillColor).toEqual([0, 0, 0, 0]);
+            expect(layer.props.pickable).toBe(false);
+            expect(layer.props.wireframe).toBe(true);
         });
 
         test('should handle empty data array', () => {

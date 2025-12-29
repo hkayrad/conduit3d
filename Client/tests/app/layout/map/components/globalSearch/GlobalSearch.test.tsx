@@ -11,6 +11,7 @@ vi.mock("lucide-react", () => ({
   Search: () => <div data-testid="search-icon" />,
   UtilityPole: () => <div data-testid="pole-icon" />,
   Waypoints: () => <div data-testid="waypoint-icon" />,
+  LampDesk: () => <div data-testid="lamp-icon" />,
 }));
 
 const mockUseSearch = vi.fn();
@@ -48,9 +49,9 @@ describe("GlobalSearch Component", () => {
 
   it("should render the search bar and hidden info card", () => {
     render(<GlobalSearch flyTo={mockFlyTo} searchInputRef={searchInputRef} />);
-    expect(screen.getByPlaceholderText("Search for a feature")).toBeDefined();
+    expect(screen.getByPlaceholderText("Search for a feature")).toBeTruthy();
     const infoCard = screen.getAllByText(/Press/)[0].closest(".info-card");
-    expect(infoCard?.classList.contains("hidden")).toBe(true);
+    expect(infoCard?.classList.contains("info-card-hidden")).toBe(true);
   });
 
   it("should show results when user types and after a delay", () => {
@@ -111,12 +112,8 @@ describe("GlobalSearch Component", () => {
       <GlobalSearch flyTo={mockFlyTo} searchInputRef={searchInputRef} />,
     );
     const input = screen.getByPlaceholderText("Search for a feature");
-    expect(
-      screen
-        .getAllByText(/Press/)[0]
-        .closest(".info-card")
-        ?.classList.contains("hidden"),
-    ).toBe(true);
+    const infoCard = screen.getAllByText(/Press/)[0].closest(".info-card");
+    expect(infoCard?.classList.contains("info-card-hidden")).toBe(true);
 
     // 2. Setup the mock for the next render to have isFocused: true
     mockUseSearch.mockReturnValue({
@@ -137,11 +134,7 @@ describe("GlobalSearch Component", () => {
     );
 
     // 5. Assert the DOM has updated as a result
-    expect(
-      screen
-        .getAllByText(/Press/)[0]
-        .closest(".info-card")
-        ?.classList.contains("hidden"),
-    ).toBe(false);
+    const infoCardFocused = screen.getAllByText(/Press/)[0].closest(".info-card");
+    expect(infoCardFocused?.classList.contains("info-card-hidden")).toBe(false);
   });
 });

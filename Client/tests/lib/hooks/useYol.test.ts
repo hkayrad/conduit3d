@@ -38,9 +38,8 @@ vi.mock('../../../src/lib/utils', () => ({
     hexToRgba: vi.fn((hex) => {
         if (hex === '#FF0000') return 'rgba(255,0,0,1)';
         if (hex === '#00FF00') return 'rgba(0,255,0,1)';
-        // Simulate a default or fallback for unknown hex values
-        if (hex === undefined) return 'rgba(100,100,100,1)'; // Matches COLORS.ADR_YOL mock
-        return 'rgba(0,0,0,1)'; // Generic fallback for other hexes
+        if (hex === '#ffffff') return null;
+        return null;
     }),
 }));
 
@@ -173,7 +172,7 @@ describe('useYol', () => {
         });
 
         expect(result.current.yolLayerData[0][0].color).toBe(constants.COLORS.ADR_YOL);
-        expect(utils.hexToRgba).toHaveBeenCalledWith(undefined); // It will be called with undefined if config value is missing
+        expect(utils.hexToRgba).toHaveBeenCalledWith('#ffffff'); // It will be called with '#ffffff' as fallback
     });
 
     describe('visibility logic', () => {

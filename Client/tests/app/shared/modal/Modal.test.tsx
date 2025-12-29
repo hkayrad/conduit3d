@@ -29,8 +29,8 @@ describe('Modal Component', () => {
 
         const childElement = screen.getByTestId(childTestId);
 
-        // The direct parent should be the .modal div
-        expect(childElement.parentElement?.className).toBe('modal');
+        // The direct parent should be the .modal div (may have trailing space)
+        expect(childElement.parentElement?.className.trim()).toBe('modal');
 
         // The grandparent should be the .modal-overlay div
         expect(childElement.parentElement?.parentElement?.className).toBe('modal-overlay');

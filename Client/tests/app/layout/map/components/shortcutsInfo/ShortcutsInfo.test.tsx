@@ -47,7 +47,7 @@ describe("ShortcutsInfo Component", () => {
       </TestWrapper>,
     );
 
-    expect(getPanel().classList.contains("hidden")).toBe(true);
+    expect(getPanel().classList.contains("shortcuts-hidden")).toBe(true);
   });
 
   it("should become visible on hover and hidden on mouse leave", () => {
@@ -61,10 +61,10 @@ describe("ShortcutsInfo Component", () => {
     const iconButton = screen.getByTestId("keyboard-icon");
 
     fireEvent.mouseEnter(iconButton);
-    expect(getPanel().classList.contains("hidden")).toBe(false);
+    expect(getPanel().classList.contains("shortcuts-hidden")).toBe(false);
 
     fireEvent.mouseLeave(iconButton);
-    expect(getPanel().classList.contains("hidden")).toBe(true);
+    expect(getPanel().classList.contains("shortcuts-hidden")).toBe(true);
   });
 
   it("should toggle visibility on click", () => {
@@ -78,10 +78,10 @@ describe("ShortcutsInfo Component", () => {
     const iconButton = screen.getByTestId("keyboard-icon");
 
     fireEvent.click(iconButton);
-    expect(getPanel().classList.contains("hidden")).toBe(false);
+    expect(getPanel().classList.contains("shortcuts-hidden")).toBe(false);
 
     fireEvent.click(iconButton);
-    expect(getPanel().classList.contains("hidden")).toBe(true);
+    expect(getPanel().classList.contains("shortcuts-hidden")).toBe(true);
   });
 
   it("should remain visible on mouse leave if toggled on", () => {
