@@ -267,4 +267,111 @@ public class OgHatRepositoryTests : IAsyncLifetime
             types.First().Should().Be("Test Cinsi 3");
         }
     }
+
+    [Fact]
+    public async Task AddAsync_WithValidEntity_ShouldAddToDatabase()
+    {
+        using (var scope = _serviceProvider.CreateScope())
+        {
+            var repository = scope.ServiceProvider.GetRequiredService<IOgHatRepository>();
+
+            var newLine = new OgHat
+            {
+                Id = 0,
+                Kodu = "OGHAT-004",
+                Adi = "Test OG Hat 4",
+                Cinsi = "Test Cinsi",
+                Kesit = "150",
+                Tipi = "T4",
+                Wkb = new byte[] { 1, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 16, 64 }
+            };
+
+            // Act
+            var result = await repository.AddAsync(newLine, CancellationToken.None);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Id.Should().BeGreaterThan(0);
+            result.Kodu.Should().Be("OGHAT-004");
+            result.Adi.Should().Be("Test OG Hat 4");
+        }
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithValidEntity_ShouldUpdateInDatabase()
+    {
+        using (var scope = _serviceProvider.CreateScope())
+        {
+            var repository = scope.ServiceProvider.GetRequiredService<IOgHatRepository>();
+
+            var existingLine = await repository.GetByIdAsync(1, CancellationToken.None);
+            existingLine!.Adi = "Updated OG Hat Name";
+            existingLine.Kesit = "250";
+
+            // Act
+            var result = await repository.UpdateAsync(existingLine, CancellationToken.None);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Adi.Should().Be("Updated OG Hat Name");
+            result.Kesit.Should().Be("250");
+        }
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithNonExistentEntity_ShouldThrowException()
+    {
+        using (var scope = _serviceProvider.CreateScope())
+        {
+            var repository = scope.ServiceProvider.GetRequiredService<IOgHatRepository>();
+
+            var nonExistentLine = new OgHat
+            {
+                Id = 999,
+                Kodu = "OGHAT-999",
+                Adi = "Non-existent Line",
+                Cinsi = "Test",
+                Kesit = "150",
+                Tipi = "TST",
+                Wkb = new byte[] { 1, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 16, 64 }
+            };
+
+            // Act & Assert
+            await repository.Invoking(r => r.UpdateAsync(nonExistentLine, CancellationToken.None))
+                .Should().ThrowAsync<KeyNotFoundException>();
+        }
+    }
+
+    [Fact]
+    public async Task DeleteAsync_WithValidId_ShouldRemoveFromDatabase()
+    {
+        using (var scope = _serviceProvider.CreateScope())
+        {
+            var repository = scope.ServiceProvider.GetRequiredService<IOgHatRepository>();
+
+            // Act
+            var result = await repository.DeleteAsync(2, CancellationToken.None);
+
+            // Assert
+            result.Should().BeTrue();
+
+            var deletedLine = await repository.GetByIdAsync(2, CancellationToken.None);
+            deletedLine.Should().BeNull();
+        }
+    }
+
+    [Fact]
+    public async Task DeleteAsync_WithNonExistentId_ShouldReturnFalse()
+    {
+        using (var scope = _serviceProvider.CreateScope())
+        {
+            var repository = scope.ServiceProvider.GetRequiredService<IOgHatRepository>();
+
+            // Act
+            var result = await repository.DeleteAsync(999, CancellationToken.None);
+
+            // Assert
+            result.Should().BeFalse();
+        }
+    }
 }

@@ -243,4 +243,99 @@ public class RekortmanRepositoryTests : IAsyncLifetime
         types.Should().Contain("Test Tipi 2");
         types.Should().Contain("Test Tipi 3");
     }
+
+    [Fact]
+    public async Task AddAsync_WithValidEntity_ShouldAddToDatabase()
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IRekortmanRepository>();
+
+        var newLine = new Rekortman
+        {
+            Id = 0,
+            Kodu = "REK-004",
+            Adi = "Test Rekortman 4",
+            Kesit = "2x10",
+            Tipi = "Test Tipi",
+            Wkb = new byte[] { 1, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 16, 64 }
+        };
+
+        // Act
+        var result = await repository.AddAsync(newLine, CancellationToken.None);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Id.Should().BeGreaterThan(0);
+        result.Kodu.Should().Be("REK-004");
+        result.Adi.Should().Be("Test Rekortman 4");
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithValidEntity_ShouldUpdateInDatabase()
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IRekortmanRepository>();
+
+        var existingLine = await repository.GetByIdAsync(1, CancellationToken.None);
+        existingLine!.Adi = "Updated Rekortman Name";
+        existingLine.Kesit = "3x16";
+
+        // Act
+        var result = await repository.UpdateAsync(existingLine, CancellationToken.None);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Adi.Should().Be("Updated Rekortman Name");
+        result.Kesit.Should().Be("3x16");
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithNonExistentEntity_ShouldThrowException()
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IRekortmanRepository>();
+
+        var nonExistentLine = new Rekortman
+        {
+            Id = 999,
+            Kodu = "REK-999",
+            Adi = "Non-existent Line",
+            Kesit = "2x10",
+            Tipi = "Test",
+            Wkb = new byte[] { 1, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 16, 64 }
+        };
+
+        // Act & Assert
+        await repository.Invoking(r => r.UpdateAsync(nonExistentLine, CancellationToken.None))
+            .Should().ThrowAsync<KeyNotFoundException>();
+    }
+
+    [Fact]
+    public async Task DeleteAsync_WithValidId_ShouldRemoveFromDatabase()
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IRekortmanRepository>();
+
+        // Act
+        var result = await repository.DeleteAsync(2, CancellationToken.None);
+
+        // Assert
+        result.Should().BeTrue();
+
+        var deletedLine = await repository.GetByIdAsync(2, CancellationToken.None);
+        deletedLine.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task DeleteAsync_WithNonExistentId_ShouldReturnFalse()
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IRekortmanRepository>();
+
+        // Act
+        var result = await repository.DeleteAsync(999, CancellationToken.None);
+
+        // Assert
+        result.Should().BeFalse();
+    }
 }

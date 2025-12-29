@@ -255,4 +255,105 @@ public class OgMusDirekRepositoryTests : IAsyncLifetime
         types.Should().HaveCount(3);
         types.Should().Contain(["Tip 1", "Tip 2", "Tip 3"]);
     }
+
+    [Fact]
+    public async Task AddAsync_WithValidEntity_ShouldAddToDatabase()
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IOgMusDirekRepository>();
+
+        var newPole = new OgMusDirek
+        {
+            Id = 0,
+            Kodu = "OGMUSDIREK-004",
+            Adi = "Test OG Mus Direk 4",
+            Cinsi = "Demir",
+            Tipi = "Test Tipi",
+            DirekNo = "DN-004",
+            BoyOzellik = "Test",
+            DirekBoyId = 12.5,
+            Wkb = new byte[] { 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 16, 64 }
+        };
+
+        // Act
+        var result = await repository.AddAsync(newPole, CancellationToken.None);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Id.Should().BeGreaterThan(0);
+        result.Kodu.Should().Be("OGMUSDIREK-004");
+        result.Adi.Should().Be("Test OG Mus Direk 4");
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithValidEntity_ShouldUpdateInDatabase()
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IOgMusDirekRepository>();
+
+        var existingPole = await repository.GetByIdAsync(1, CancellationToken.None);
+        existingPole!.Adi = "Updated OG Mus Direk Name";
+        existingPole.DirekBoyId = 15.5;
+
+        // Act
+        var result = await repository.UpdateAsync(existingPole, CancellationToken.None);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Adi.Should().Be("Updated OG Mus Direk Name");
+        result.DirekBoyId.Should().Be(15.5);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithNonExistentEntity_ShouldThrowException()
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IOgMusDirekRepository>();
+
+        var nonExistentPole = new OgMusDirek
+        {
+            Id = 999,
+            Kodu = "OGMUSDIREK-999",
+            Adi = "Non-existent Pole",
+            Cinsi = "Test",
+            Tipi = "Test",
+            DirekNo = "DN-999",
+            BoyOzellik = "Test",
+            DirekBoyId = 12.5,
+            Wkb = new byte[] { 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 16, 64 }
+        };
+
+        // Act & Assert
+        await repository.Invoking(r => r.UpdateAsync(nonExistentPole, CancellationToken.None))
+            .Should().ThrowAsync<KeyNotFoundException>();
+    }
+
+    [Fact]
+    public async Task DeleteAsync_WithValidId_ShouldRemoveFromDatabase()
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IOgMusDirekRepository>();
+
+        // Act
+        var result = await repository.DeleteAsync(2, CancellationToken.None);
+
+        // Assert
+        result.Should().BeTrue();
+
+        var deletedPole = await repository.GetByIdAsync(2, CancellationToken.None);
+        deletedPole.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task DeleteAsync_WithNonExistentId_ShouldReturnFalse()
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IOgMusDirekRepository>();
+
+        // Act
+        var result = await repository.DeleteAsync(999, CancellationToken.None);
+
+        // Assert
+        result.Should().BeFalse();
+    }
 }

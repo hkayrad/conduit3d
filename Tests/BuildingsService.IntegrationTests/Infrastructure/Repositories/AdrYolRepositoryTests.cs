@@ -253,4 +253,103 @@ public class AdrYolRepositoryTests : IAsyncLifetime
         types.Should().HaveCount(2);
         types.Should().Contain(["Cadde", "Sokak"]);
     }
+
+    [Fact]
+    public async Task AddAsync_WithValidEntity_ShouldAddToDatabase()
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IAdrYolRepository>();
+
+        var newYol = new AdrYol
+        {
+            Id = 0,
+            Kodu = "YOL-004",
+            Adi = "Test Yolu",
+            Tipi = "Test Tipi",
+            Yapisi = "Test Yapısı",
+            Genislik = 10.5,
+            SeritSayisi = 2,
+            Wkb = new byte[] { 1, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 16, 64 }
+        };
+
+        // Act
+        var result = await repository.AddAsync(newYol, CancellationToken.None);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Id.Should().BeGreaterThan(0);
+        result.Kodu.Should().Be("YOL-004");
+        result.Adi.Should().Be("Test Yolu");
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithValidEntity_ShouldUpdateInDatabase()
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IAdrYolRepository>();
+
+        var existingYol = await repository.GetByIdAsync(1, CancellationToken.None);
+        existingYol!.Adi = "Updated Yol Name";
+        existingYol.Genislik = 15.5;
+
+        // Act
+        var result = await repository.UpdateAsync(existingYol, CancellationToken.None);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Adi.Should().Be("Updated Yol Name");
+        result.Genislik.Should().Be(15.5);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithNonExistentEntity_ShouldThrowException()
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IAdrYolRepository>();
+
+        var nonExistentYol = new AdrYol
+        {
+            Id = 999,
+            Kodu = "YOL-999",
+            Adi = "Non-existent Yol",
+            Tipi = "Test",
+            Yapisi = "Test",
+            Genislik = 10,
+            SeritSayisi = 2,
+            Wkb = new byte[] { 1, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 16, 64 }
+        };
+
+        // Act & Assert
+        await repository.Invoking(r => r.UpdateAsync(nonExistentYol, CancellationToken.None))
+            .Should().ThrowAsync<KeyNotFoundException>();
+    }
+
+    [Fact]
+    public async Task DeleteAsync_WithValidId_ShouldRemoveFromDatabase()
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IAdrYolRepository>();
+
+        // Act
+        var result = await repository.DeleteAsync(2, CancellationToken.None);
+
+        // Assert
+        result.Should().BeTrue();
+
+        var deletedYol = await repository.GetByIdAsync(2, CancellationToken.None);
+        deletedYol.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task DeleteAsync_WithNonExistentId_ShouldReturnFalse()
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IAdrYolRepository>();
+
+        // Act
+        var result = await repository.DeleteAsync(999, CancellationToken.None);
+
+        // Assert
+        result.Should().BeFalse();
+    }
 }

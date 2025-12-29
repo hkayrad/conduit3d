@@ -2,32 +2,32 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BuildingsService.Domain;
-using BuildingsService.Infrastructure.Data;
-using BuildingsService.Infrastructure.Repositories;
 using Conduit3D.Common.Domain;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using PolesService.Domain;
+using PolesService.Infrastructure.Data;
+using PolesService.Infrastructure.Repositories;
 using Testcontainers.PostgreSql;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace BuildingsService.IntegrationTests.Infrastructure.Repositories;
+namespace PolesService.IntegrationTests.Infrastructure.Repositories;
 
-public class TrafoBinaRepositoryTests : IAsyncLifetime
+public class ArmaturRepositoryTests : IAsyncLifetime
 {
     private readonly ITestOutputHelper _output;
     private readonly PostgreSqlContainer _postgresContainer;
     private IServiceProvider _serviceProvider = null!;
 
-    public TrafoBinaRepositoryTests(ITestOutputHelper output)
+    public ArmaturRepositoryTests(ITestOutputHelper output)
     {
         _output = output;
 
         _postgresContainer = new PostgreSqlBuilder()
             .WithImage("postgis/postgis:17-master") // Using PostGIS image for geometry support
-            .WithDatabase("conduit3d_buildings_test")
+            .WithDatabase("conduit3d_poles_test")
             .WithUsername("test")
             .WithPassword("test")
             .Build();
@@ -40,70 +40,52 @@ public class TrafoBinaRepositoryTests : IAsyncLifetime
 
         var services = new ServiceCollection();
 
-        services.AddDbContext<BuildingsContext>(options =>
+        services.AddDbContext<PolesContext>(options =>
         {
             options.UseNpgsql(_postgresContainer.GetConnectionString(), o => o.UseNetTopologySuite());
             options.EnableSensitiveDataLogging();
             options.LogTo(message => _output.WriteLine(message));
         }, ServiceLifetime.Scoped);
 
-        services.AddScoped<ITrafoBinaRepository, TrafoBinaRepository>();
+        services.AddScoped<IArmaturRepository, ArmaturRepository>();
 
         _serviceProvider = services.BuildServiceProvider();
 
         try
         {
             using var scope = _serviceProvider.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<BuildingsContext>();
+            var context = scope.ServiceProvider.GetRequiredService<PolesContext>();
 
             await context.Database.ExecuteSqlRawAsync("SELECT 1");
 
-            await context.Database.ExecuteSqlRawAsync(@"DROP TABLE IF EXISTS ""SBK_TRAFOBINATIP"" CASCADE;");
+            await context.Database.ExecuteSqlRawAsync(@"DROP TABLE IF EXISTS ""SBK_ARMATUR"" CASCADE;");
 
             await context.Database.ExecuteSqlRawAsync(@"
-                CREATE OR REPLACE FUNCTION generate_searchable_text_trafo_bina(
-                    id_val INT, 
-                    kodu_val TEXT,
-                    adi_val TEXT
-                )
-                RETURNS tsvector
-                AS $$
-                SELECT to_tsvector('simple', 
-                    coalesce(cast(id_val as text), '') || ' ' ||
-                    coalesce(kodu_val, '') || ' ' ||
-                    coalesce(adi_val, '')
-                );
-                $$ LANGUAGE SQL IMMUTABLE;
-            ");
-
-            await context.Database.ExecuteSqlRawAsync(@"
-                CREATE TABLE IF NOT EXISTS public.""SBK_TRAFOBINATIP"" (
+                CREATE TABLE IF NOT EXISTS public.""SBK_ARMATUR"" (
                     id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
-                    geometry geometry(Point,3857),
-                    adi character varying(100) COLLATE pg_catalog.default,
-                    kodu character varying(100) COLLATE pg_catalog.default,
-                    CONSTRAINT ""SBK_TRAFOBINATIP_pkey"" PRIMARY KEY (id)
+                    bagli_tablo_id integer NOT NULL,
+                    bagli_tablo_kayit_id integer NOT NULL,
+                    geometry geometry(Point, 3857),
+                    CONSTRAINT ""SBK_ARMATUR_pkey"" PRIMARY KEY (id)
                 )
             ");
 
-            await context.Database.ExecuteSqlRawAsync(@"
-                ALTER TABLE ""SBK_TRAFOBINATIP"" ADD COLUMN searchable_text tsvector GENERATED ALWAYS AS (
-                    generate_searchable_text_trafo_bina(id, kodu, adi)
-                ) STORED;
-            ");
-
-            _output.WriteLine("SBK_TRAFOBINATIP table created");
+            _output.WriteLine("SBK_ARMATUR table created");
 
             var canConnect = await context.Database.CanConnectAsync();
             _output.WriteLine($"Can connect to database: {canConnect}");
 
             await context.Database.ExecuteSqlRawAsync(@"
-                INSERT INTO ""SBK_TRAFOBINATIP""(geometry, adi, kodu)
-                VALUES (ST_GeomFromText('POINT(4595828 4851338)', 3857), 'Trafo Binası 1', 'TRAFO-001');
+                INSERT INTO ""SBK_ARMATUR""(bagli_tablo_id, bagli_tablo_kayit_id, geometry)
+                VALUES (1, 101, ST_SetSRID(ST_MakePoint(1.0, 2.0), 3857));
             ");
             await context.Database.ExecuteSqlRawAsync(@"
-                INSERT INTO ""SBK_TRAFOBINATIP""(geometry, adi, kodu)
-                VALUES (ST_GeomFromText('POINT(4595928 4851438)', 3857), 'Trafo Binası 2', 'TRAFO-002');
+                INSERT INTO ""SBK_ARMATUR""(bagli_tablo_id, bagli_tablo_kayit_id, geometry)
+                VALUES (1, 102, ST_SetSRID(ST_MakePoint(1.0, 3.0), 3857));
+            ");
+            await context.Database.ExecuteSqlRawAsync(@"
+                INSERT INTO ""SBK_ARMATUR""(bagli_tablo_id, bagli_tablo_kayit_id, geometry)
+                VALUES (2, 201, ST_SetSRID(ST_MakePoint(4.0, 1.0), 3857));
             ");
         }
         catch (Exception ex)
@@ -116,14 +98,18 @@ public class TrafoBinaRepositoryTests : IAsyncLifetime
 
     public async Task DisposeAsync()
     {
+        if (_serviceProvider is IDisposable disposable)
+        {
+            disposable.Dispose();
+        }
         await _postgresContainer.DisposeAsync();
     }
 
     [Fact]
-    public async Task GetByIdAsync_WhenExists_ShouldReturnEntityWithWkb()
+    public async Task GetByIdAsync_WhenExists_ShouldReturnArmatur()
     {
         using var scope = _serviceProvider.CreateScope();
-        var repository = scope.ServiceProvider.GetRequiredService<ITrafoBinaRepository>();
+        var repository = scope.ServiceProvider.GetRequiredService<IArmaturRepository>();
 
         // Act
         var result = await repository.GetByIdAsync(1, CancellationToken.None);
@@ -131,6 +117,8 @@ public class TrafoBinaRepositoryTests : IAsyncLifetime
         // Assert
         result.Should().NotBeNull();
         result!.Id.Should().Be(1);
+        result.BagliTabloId.Should().Be(1);
+        result.BagliTabloKayitId.Should().Be(101);
         result.Wkb.Should().NotBeNull();
     }
 
@@ -138,7 +126,7 @@ public class TrafoBinaRepositoryTests : IAsyncLifetime
     public async Task GetByIdAsync_WhenNotExists_ShouldReturnNull()
     {
         using var scope = _serviceProvider.CreateScope();
-        var repository = scope.ServiceProvider.GetRequiredService<ITrafoBinaRepository>();
+        var repository = scope.ServiceProvider.GetRequiredService<IArmaturRepository>();
 
         // Act
         var result = await repository.GetByIdAsync(999, CancellationToken.None);
@@ -148,10 +136,10 @@ public class TrafoBinaRepositoryTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task GetAllAsync_ShouldReturnAllEntitiesWithWkb()
+    public async Task GetAllAsync_ShouldReturnAllArmaturWithWkb()
     {
         using var scope = _serviceProvider.CreateScope();
-        var repository = scope.ServiceProvider.GetRequiredService<ITrafoBinaRepository>();
+        var repository = scope.ServiceProvider.GetRequiredService<IArmaturRepository>();
         var extent = new Extent { MinX = -180, MinY = -90, MaxX = 180, MaxY = 90 };
 
         // Act
@@ -159,113 +147,115 @@ public class TrafoBinaRepositoryTests : IAsyncLifetime
 
         // Assert
         results.Should().NotBeNull();
-        results.Should().HaveCount(2);
+        results.Should().HaveCount(3);
         results.All(r => r.Wkb != null).Should().BeTrue();
     }
 
     [Fact]
-    public async Task GetAllAsync_WithSearchText_ShouldReturnFilteredEntities()
+    public async Task GetAllAsync_WithPagination_ShouldReturnPagedResults()
     {
         using var scope = _serviceProvider.CreateScope();
-        var repository = scope.ServiceProvider.GetRequiredService<ITrafoBinaRepository>();
+        var repository = scope.ServiceProvider.GetRequiredService<IArmaturRepository>();
         var extent = new Extent { MinX = -180, MinY = -90, MaxX = 180, MaxY = 90 };
 
         // Act
-        var results = await repository.GetAllAsync(1, 10, "Id", true, extent, "Trafo Binası 2", CancellationToken.None);
+        var results = await repository.GetAllAsync(1, 2, "Id", true, extent, null, CancellationToken.None);
 
         // Assert
         results.Should().NotBeNull();
-        results.Should().HaveCount(1);
-        results.First().Adi.Should().Be("Trafo Binası 2");
+        results.Should().HaveCount(2);
+        results.First().Id.Should().Be(1);
+    }
+
+    [Fact]
+    public async Task GetAllAsync_WithSorting_ShouldReturnSortedEntities()
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IArmaturRepository>();
+        var extent = new Extent { MinX = -180, MinY = -90, MaxX = 180, MaxY = 90 };
+
+        // Act
+        var results = await repository.GetAllAsync(1, 10, "Id", false, extent, null, CancellationToken.None);
+
+        // Assert
+        results.Should().NotBeNull();
+        results.Should().HaveCount(3);
+        results.Should().BeInDescendingOrder(r => r.Id);
     }
 
     [Fact]
     public async Task GetCountAsync_ShouldReturnCorrectCount()
     {
         using var scope = _serviceProvider.CreateScope();
-        var repository = scope.ServiceProvider.GetRequiredService<ITrafoBinaRepository>();
+        var repository = scope.ServiceProvider.GetRequiredService<IArmaturRepository>();
         var extent = new Extent { MinX = -180, MinY = -90, MaxX = 180, MaxY = 90 };
 
         // Act
         var count = await repository.GetCountAsync(extent, null, CancellationToken.None);
 
         // Assert
-        count.Should().Be(2);
-    }
-
-    [Fact]
-    public async Task GetCountAsync_WithSearchText_ShouldReturnFilteredCount()
-    {
-        using var scope = _serviceProvider.CreateScope();
-        var repository = scope.ServiceProvider.GetRequiredService<ITrafoBinaRepository>();
-        var extent = new Extent { MinX = -180, MinY = -90, MaxX = 180, MaxY = 90 };
-
-        // Act
-        var count = await repository.GetCountAsync(extent, "TRAFO-001", CancellationToken.None);
-
-        // Assert
-        count.Should().Be(1);
+        count.Should().Be(3);
     }
 
     [Fact]
     public async Task AddAsync_WithValidEntity_ShouldAddToDatabase()
     {
         using var scope = _serviceProvider.CreateScope();
-        var repository = scope.ServiceProvider.GetRequiredService<ITrafoBinaRepository>();
+        var repository = scope.ServiceProvider.GetRequiredService<IArmaturRepository>();
 
-        var newTrafoBina = new TrafoBina
+        var newArmatur = new Armatur
         {
             Id = 0,
-            Kodu = "TRAFO-004",
-            Adi = "Test Trafo",
+            BagliTabloId = 3,
+            BagliTabloKayitId = 301,
             Wkb = new byte[] { 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 16, 64 }
         };
 
         // Act
-        var result = await repository.AddAsync(newTrafoBina, CancellationToken.None);
+        var result = await repository.AddAsync(newArmatur, CancellationToken.None);
 
         // Assert
         result.Should().NotBeNull();
         result.Id.Should().BeGreaterThan(0);
-        result.Kodu.Should().Be("TRAFO-004");
-        result.Adi.Should().Be("Test Trafo");
+        result.BagliTabloId.Should().Be(3);
+        result.BagliTabloKayitId.Should().Be(301);
     }
 
     [Fact]
     public async Task UpdateAsync_WithValidEntity_ShouldUpdateInDatabase()
     {
         using var scope = _serviceProvider.CreateScope();
-        var repository = scope.ServiceProvider.GetRequiredService<ITrafoBinaRepository>();
+        var repository = scope.ServiceProvider.GetRequiredService<IArmaturRepository>();
 
-        var existingTrafoBina = await repository.GetByIdAsync(1, CancellationToken.None);
-        existingTrafoBina!.Adi = "Updated Trafo Name";
-        existingTrafoBina.Kodu = "TRAFO-001-UPDATED";
+        var existingArmatur = await repository.GetByIdAsync(1, CancellationToken.None);
+        existingArmatur!.BagliTabloId = 5;
+        existingArmatur.BagliTabloKayitId = 501;
 
         // Act
-        var result = await repository.UpdateAsync(existingTrafoBina, CancellationToken.None);
+        var result = await repository.UpdateAsync(existingArmatur, CancellationToken.None);
 
         // Assert
         result.Should().NotBeNull();
-        result.Adi.Should().Be("Updated Trafo Name");
-        result.Kodu.Should().Be("TRAFO-001-UPDATED");
+        result.BagliTabloId.Should().Be(5);
+        result.BagliTabloKayitId.Should().Be(501);
     }
 
     [Fact]
     public async Task UpdateAsync_WithNonExistentEntity_ShouldThrowException()
     {
         using var scope = _serviceProvider.CreateScope();
-        var repository = scope.ServiceProvider.GetRequiredService<ITrafoBinaRepository>();
+        var repository = scope.ServiceProvider.GetRequiredService<IArmaturRepository>();
 
-        var nonExistentTrafoBina = new TrafoBina
+        var nonExistentArmatur = new Armatur
         {
             Id = 999,
-            Kodu = "TRAFO-999",
-            Adi = "Non-existent Trafo",
+            BagliTabloId = 5,
+            BagliTabloKayitId = 501,
             Wkb = new byte[] { 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 16, 64 }
         };
 
         // Act & Assert
-        await repository.Invoking(r => r.UpdateAsync(nonExistentTrafoBina, CancellationToken.None))
+        await repository.Invoking(r => r.UpdateAsync(nonExistentArmatur, CancellationToken.None))
             .Should().ThrowAsync<KeyNotFoundException>();
     }
 
@@ -273,7 +263,7 @@ public class TrafoBinaRepositoryTests : IAsyncLifetime
     public async Task DeleteAsync_WithValidId_ShouldRemoveFromDatabase()
     {
         using var scope = _serviceProvider.CreateScope();
-        var repository = scope.ServiceProvider.GetRequiredService<ITrafoBinaRepository>();
+        var repository = scope.ServiceProvider.GetRequiredService<IArmaturRepository>();
 
         // Act
         var result = await repository.DeleteAsync(2, CancellationToken.None);
@@ -281,15 +271,15 @@ public class TrafoBinaRepositoryTests : IAsyncLifetime
         // Assert
         result.Should().BeTrue();
 
-        var deletedTrafoBina = await repository.GetByIdAsync(2, CancellationToken.None);
-        deletedTrafoBina.Should().BeNull();
+        var deletedArmatur = await repository.GetByIdAsync(2, CancellationToken.None);
+        deletedArmatur.Should().BeNull();
     }
 
     [Fact]
     public async Task DeleteAsync_WithNonExistentId_ShouldReturnFalse()
     {
         using var scope = _serviceProvider.CreateScope();
-        var repository = scope.ServiceProvider.GetRequiredService<ITrafoBinaRepository>();
+        var repository = scope.ServiceProvider.GetRequiredService<IArmaturRepository>();
 
         // Act
         var result = await repository.DeleteAsync(999, CancellationToken.None);

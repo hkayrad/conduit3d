@@ -237,4 +237,135 @@ public class AdrBinaRepositoryTests : IAsyncLifetime
         // Assert
         count.Should().Be(1);
     }
+
+    [Fact]
+    public async Task AddAsync_WithValidEntity_ShouldAddAndReturnEntity()
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IAdrBinaRepository>();
+        var context = scope.ServiceProvider.GetRequiredService<BuildingsContext>();
+
+        // Arrange
+        var newBuilding = new AdrBina
+        {
+            Id = 0,
+            Kodu = "BINA-003",
+            SiteAdi = "Site C",
+            Adi = "Bina 3",
+            BinaKatSayisi = 7,
+            DaireSayisi = 14,
+            IsyeriSayisi = 3,
+            Yukseklik = 21,
+            Wkb = new byte[] { 1, 3, 0, 0, 0, 1, 0, 0, 0, 5, 0, 0, 0, 
+                0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64,
+                0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 0, 64,
+                0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 16, 64,
+                0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 16, 64,
+                0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64 }
+        };
+
+        // Act
+        var result = await repository.AddAsync(newBuilding, CancellationToken.None);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Id.Should().BeGreaterThan(0);
+        result.Kodu.Should().Be("BINA-003");
+        result.Adi.Should().Be("Bina 3");
+
+        // Verify it was added to database
+        var retrievedBuilding = await repository.GetByIdAsync(result.Id, CancellationToken.None);
+        retrievedBuilding.Should().NotBeNull();
+        retrievedBuilding!.Kodu.Should().Be("BINA-003");
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithValidEntity_ShouldUpdateAndReturnEntity()
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IAdrBinaRepository>();
+
+        // Arrange
+        var existingBuilding = await repository.GetByIdAsync(1, CancellationToken.None);
+        existingBuilding.Should().NotBeNull();
+        
+        existingBuilding!.Kodu = "BINA-001-UPDATED";
+        existingBuilding.Adi = "Bina 1 Updated";
+        existingBuilding.BinaKatSayisi = 10;
+
+        // Act
+        var result = await repository.UpdateAsync(existingBuilding, CancellationToken.None);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Id.Should().Be(1);
+        result.Kodu.Should().Be("BINA-001-UPDATED");
+        result.Adi.Should().Be("Bina 1 Updated");
+        result.BinaKatSayisi.Should().Be(10);
+
+        // Verify it was updated in database
+        var retrievedBuilding = await repository.GetByIdAsync(1, CancellationToken.None);
+        retrievedBuilding.Should().NotBeNull();
+        retrievedBuilding!.Kodu.Should().Be("BINA-001-UPDATED");
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithNonExistingId_ShouldThrowKeyNotFoundException()
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IAdrBinaRepository>();
+
+        // Arrange
+        var nonExistingBuilding = new AdrBina
+        {
+            Id = 999,
+            Kodu = "BINA-999",
+            SiteAdi = "Site X",
+            Adi = "Bina X",
+            BinaKatSayisi = 1,
+            DaireSayisi = 1,
+            IsyeriSayisi = 1,
+            Yukseklik = 3,
+            Wkb = new byte[] { 1, 3, 0, 0, 0, 1, 0, 0, 0, 5, 0, 0, 0, 
+                0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64,
+                0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 0, 64,
+                0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 16, 64,
+                0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 16, 64,
+                0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64 }
+        };
+
+        // Act & Assert
+        await Assert.ThrowsAsync<KeyNotFoundException>(() => 
+            repository.UpdateAsync(nonExistingBuilding, CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task DeleteAsync_WithValidId_ShouldDeleteAndReturnTrue()
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IAdrBinaRepository>();
+
+        // Act
+        var result = await repository.DeleteAsync(2, CancellationToken.None);
+
+        // Assert
+        result.Should().BeTrue();
+
+        // Verify it was deleted from database
+        var deletedBuilding = await repository.GetByIdAsync(2, CancellationToken.None);
+        deletedBuilding.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task DeleteAsync_WithNonExistingId_ShouldReturnFalse()
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IAdrBinaRepository>();
+
+        // Act
+        var result = await repository.DeleteAsync(999, CancellationToken.None);
+
+        // Assert
+        result.Should().BeFalse();
+    }
 }

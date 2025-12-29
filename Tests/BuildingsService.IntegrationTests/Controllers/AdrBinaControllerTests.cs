@@ -246,4 +246,138 @@ public class AdrBinaControllerTests : IClassFixture<WebApplicationFactory<Progra
         pbfResponse.Data.Should().HaveCount(2);
         pbfResponse.Data.First().Id.Should().Be(1);
     }
+
+    [Fact]
+    public async Task CreateAsync_WithValidData_ReturnsCreatedBuilding()
+    {
+        // Arrange
+        var newBuilding = new
+        {
+            Kodu = "BINA-003",
+            SiteAdi = "Site C",
+            Adi = "Bina 3",
+            BinaKatSayisi = 6.0,
+            DaireSayisi = 12.0,
+            IsyeriSayisi = 3.0,
+            Yukseklik = 18.0,
+            Wkb = Convert.ToBase64String(new byte[] { 1, 3, 0, 0, 0, 1, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64 })
+        };
+
+        // Act
+        var response = await _client.PostAsJsonAsync("/api/v1/AdrBina", newBuilding);
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+        var content = await response.Content.ReadFromJsonAsync<Response<AdrBina>>(_jsonOptions);
+
+        content.Should().NotBeNull();
+        content!.IsSuccess.Should().BeTrue();
+        content.Data.Should().NotBeNull();
+        content.Data!.Kodu.Should().Be("BINA-003");
+        content.Data.Adi.Should().Be("Bina 3");
+        content.Data.Id.Should().BeGreaterThan(0);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithValidData_ReturnsUpdatedBuilding()
+    {
+        // Arrange
+        const int existingId = 1;
+        var updateBuilding = new
+        {
+            Id = existingId,
+            Kodu = "BINA-001-UPDATED",
+            SiteAdi = "Site A Updated",
+            Adi = "Bina 1 Updated",
+            BinaKatSayisi = 6.0,
+            DaireSayisi = 12.0,
+            IsyeriSayisi = 3.0,
+            Yukseklik = 18.0,
+            Wkb = Convert.ToBase64String(new byte[] { 1, 3, 0, 0, 0, 1, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64 })
+        };
+
+        // Act
+        var response = await _client.PutAsJsonAsync($"/api/v1/AdrBina/{existingId}", updateBuilding);
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+        var content = await response.Content.ReadFromJsonAsync<Response<AdrBina>>(_jsonOptions);
+
+        content.Should().NotBeNull();
+        content!.IsSuccess.Should().BeTrue();
+        content.Data.Should().NotBeNull();
+        content.Data!.Kodu.Should().Be("BINA-001-UPDATED");
+        content.Data.Adi.Should().Be("Bina 1 Updated");
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithNonExistingId_ReturnsNotFound()
+    {
+        // Arrange
+        const int nonExistingId = 999;
+        var updateBuilding = new
+        {
+            Id = nonExistingId,
+            Kodu = "BINA-999",
+            SiteAdi = "Site X",
+            Adi = "Bina X",
+            BinaKatSayisi = 1.0,
+            DaireSayisi = 1.0,
+            IsyeriSayisi = 1.0,
+            Yukseklik = 3.0,
+            Wkb = Convert.ToBase64String(new byte[] { 1, 3, 0, 0, 0, 1, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64 })
+        };
+
+        // Act
+        var response = await _client.PutAsJsonAsync($"/api/v1/AdrBina/{nonExistingId}", updateBuilding);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var content = await response.Content.ReadFromJsonAsync<Response<AdrBina>>(_jsonOptions);
+
+        content.Should().NotBeNull();
+        content!.IsSuccess.Should().BeFalse();
+        content.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task DeleteAsync_WithValidId_ReturnsSuccess()
+    {
+        // Arrange
+        const int existingId = 2;
+
+        // Act
+        var response = await _client.DeleteAsync($"/api/v1/AdrBina/{existingId}");
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+        var content = await response.Content.ReadFromJsonAsync<Response<bool>>(_jsonOptions);
+
+        content.Should().NotBeNull();
+        content!.IsSuccess.Should().BeTrue();
+        content.Data.Should().BeTrue();
+
+        // Verify it's actually deleted
+        var getResponse = await _client.GetAsync($"/api/v1/AdrBina/{existingId}");
+        var getContent = await getResponse.Content.ReadFromJsonAsync<Response<AdrBina>>(_jsonOptions);
+        getContent!.IsSuccess.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task DeleteAsync_WithNonExistingId_ReturnsNotFound()
+    {
+        // Arrange
+        const int nonExistingId = 999;
+
+        // Act
+        var response = await _client.DeleteAsync($"/api/v1/AdrBina/{nonExistingId}");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var content = await response.Content.ReadFromJsonAsync<Response<bool>>(_jsonOptions);
+
+        content.Should().NotBeNull();
+        content!.IsSuccess.Should().BeFalse();
+        content.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
 }

@@ -261,4 +261,77 @@ public class RekortmanControllerTests : IClassFixture<WebApplicationFactory<Prog
         pbfResponse.Data.Should().HaveCount(3);
         pbfResponse.Data.First().Id.Should().Be(1);
     }
+
+    [Fact]
+    public async Task CreateAsync_WithValidData_ReturnsCreatedLine()
+    {
+        // Arrange
+        var newLine = new
+        {
+            Kodu = "REK-004",
+            Adi = "Rekortman 4",
+            Cinsi = "Havai",
+            Kesit = "2x10",
+            Tipi = "Test Tipi 2",
+            Wkb = Convert.ToBase64String(new byte[] { 1, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 16, 64 })
+        };
+
+        // Act
+        var response = await _client.PostAsJsonAsync("/api/v1/Rekortman", newLine);
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+        var content = await response.Content.ReadFromJsonAsync<Response<Rekortman>>(_jsonOptions);
+
+        content.Should().NotBeNull();
+        content!.IsSuccess.Should().BeTrue();
+        content.Data.Should().NotBeNull();
+        content.Data!.Kodu.Should().Be("REK-004");
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithValidData_ReturnsUpdatedLine()
+    {
+        // Arrange
+        const int existingId = 1;
+        var updateLine = new
+        {
+            Id = existingId,
+            Kodu = "REK-001-UPDATED",
+            Adi = "Rekortman 1 Updated",
+            Cinsi = "Updated",
+            Kesit = "Updated",
+            Tipi = "Updated Tipi",
+            Wkb = Convert.ToBase64String(new byte[] { 1, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 16, 64 })
+        };
+
+        // Act
+        var response = await _client.PutAsJsonAsync($"/api/v1/Rekortman/{existingId}", updateLine);
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+        var content = await response.Content.ReadFromJsonAsync<Response<Rekortman>>(_jsonOptions);
+
+        content.Should().NotBeNull();
+        content!.IsSuccess.Should().BeTrue();
+        content.Data!.Kodu.Should().Be("REK-001-UPDATED");
+    }
+
+    [Fact]
+    public async Task DeleteAsync_WithValidId_ReturnsSuccess()
+    {
+        // Arrange
+        const int existingId = 2;
+
+        // Act
+        var response = await _client.DeleteAsync($"/api/v1/Rekortman/{existingId}");
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+        var content = await response.Content.ReadFromJsonAsync<Response<bool>>(_jsonOptions);
+
+        content.Should().NotBeNull();
+        content!.IsSuccess.Should().BeTrue();
+        content.Data.Should().BeTrue();
+    }
 }

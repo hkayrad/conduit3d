@@ -264,4 +264,111 @@ public class AgHatRepositoryTests : IAsyncLifetime
             types.First().Should().Be("Test Cinsi 3");
         }
     }
+
+    [Fact]
+    public async Task AddAsync_WithValidEntity_ShouldAddToDatabase()
+    {
+        using (var scope = _serviceProvider.CreateScope())
+        {
+            var repository = scope.ServiceProvider.GetRequiredService<IAgHatRepository>();
+
+            var newLine = new AgHat
+            {
+                Id = 0,
+                Kodu = "AGHAT-004",
+                Adi = "Test AG Hat 4",
+                Cinsi = "Test Cinsi",
+                Kesit = "50",
+                Tipi = "Test Tipi",
+                Wkb = new byte[] { 1, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 16, 64 }
+            };
+
+            // Act
+            var result = await repository.AddAsync(newLine, CancellationToken.None);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Id.Should().BeGreaterThan(0);
+            result.Kodu.Should().Be("AGHAT-004");
+            result.Adi.Should().Be("Test AG Hat 4");
+        }
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithValidEntity_ShouldUpdateInDatabase()
+    {
+        using (var scope = _serviceProvider.CreateScope())
+        {
+            var repository = scope.ServiceProvider.GetRequiredService<IAgHatRepository>();
+
+            var existingLine = await repository.GetByIdAsync(1, CancellationToken.None);
+            existingLine!.Adi = "Updated AG Hat Name";
+            existingLine.Kesit = "150";
+
+            // Act
+            var result = await repository.UpdateAsync(existingLine, CancellationToken.None);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Adi.Should().Be("Updated AG Hat Name");
+            result.Kesit.Should().Be("150");
+        }
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithNonExistentEntity_ShouldThrowException()
+    {
+        using (var scope = _serviceProvider.CreateScope())
+        {
+            var repository = scope.ServiceProvider.GetRequiredService<IAgHatRepository>();
+
+            var nonExistentLine = new AgHat
+            {
+                Id = 999,
+                Kodu = "AGHAT-999",
+                Adi = "Non-existent Line",
+                Cinsi = "Test",
+                Kesit = "50",
+                Tipi = "Test",
+                Wkb = new byte[] { 1, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 16, 64 }
+            };
+
+            // Act & Assert
+            await repository.Invoking(r => r.UpdateAsync(nonExistentLine, CancellationToken.None))
+                .Should().ThrowAsync<KeyNotFoundException>();
+        }
+    }
+
+    [Fact]
+    public async Task DeleteAsync_WithValidId_ShouldRemoveFromDatabase()
+    {
+        using (var scope = _serviceProvider.CreateScope())
+        {
+            var repository = scope.ServiceProvider.GetRequiredService<IAgHatRepository>();
+
+            // Act
+            var result = await repository.DeleteAsync(2, CancellationToken.None);
+
+            // Assert
+            result.Should().BeTrue();
+
+            var deletedLine = await repository.GetByIdAsync(2, CancellationToken.None);
+            deletedLine.Should().BeNull();
+        }
+    }
+
+    [Fact]
+    public async Task DeleteAsync_WithNonExistentId_ShouldReturnFalse()
+    {
+        using (var scope = _serviceProvider.CreateScope())
+        {
+            var repository = scope.ServiceProvider.GetRequiredService<IAgHatRepository>();
+
+            // Act
+            var result = await repository.DeleteAsync(999, CancellationToken.None);
+
+            // Assert
+            result.Should().BeFalse();
+        }
+    }
 }

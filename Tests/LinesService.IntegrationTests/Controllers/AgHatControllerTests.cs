@@ -265,4 +265,79 @@ public class AgHatControllerTests : IClassFixture<WebApplicationFactory<Program>
         pbfResponse.Data.Should().HaveCount(3);
         pbfResponse.Data.First().Id.Should().Be(1);
     }
+
+    [Fact]
+    public async Task CreateAsync_WithValidData_ReturnsCreatedLine()
+    {
+        // Arrange
+        var newLine = new
+        {
+            Kodu = "HAT-004",
+            Adi = "Hat 4",
+            Cinsi = "Havai",
+            Kesit = "4x50",
+            Tipi = "Tip D",
+            Wkb = Convert.ToBase64String(new byte[] { 1, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 16, 64 })
+        };
+
+        // Act
+        var response = await _client.PostAsJsonAsync("/api/v1/AgHat", newLine);
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+        var content = await response.Content.ReadFromJsonAsync<Response<AgHat>>(_jsonOptions);
+
+        content.Should().NotBeNull();
+        content!.IsSuccess.Should().BeTrue();
+        content.Data.Should().NotBeNull();
+        content.Data!.Kodu.Should().Be("HAT-004");
+        content.Data.Id.Should().BeGreaterThan(0);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithValidData_ReturnsUpdatedLine()
+    {
+        // Arrange
+        const int existingId = 1;
+        var updateLine = new
+        {
+            Id = existingId,
+            Kodu = "HAT-001-UPDATED",
+            Adi = "Hat 1 Updated",
+            Cinsi = "Havai Updated",
+            Kesit = "4x50 Updated",
+            Tipi = "Tip A Updated",
+            Wkb = Convert.ToBase64String(new byte[] { 1, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 16, 64 })
+        };
+
+        // Act
+        var response = await _client.PutAsJsonAsync($"/api/v1/AgHat/{existingId}", updateLine);
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+        var content = await response.Content.ReadFromJsonAsync<Response<AgHat>>(_jsonOptions);
+
+        content.Should().NotBeNull();
+        content!.IsSuccess.Should().BeTrue();
+        content.Data.Should().NotBeNull();
+        content.Data!.Kodu.Should().Be("HAT-001-UPDATED");
+    }
+
+    [Fact]
+    public async Task DeleteAsync_WithValidId_ReturnsSuccess()
+    {
+        // Arrange
+        const int existingId = 2;
+
+        // Act
+        var response = await _client.DeleteAsync($"/api/v1/AgHat/{existingId}");
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+        var content = await response.Content.ReadFromJsonAsync<Response<bool>>(_jsonOptions);
+
+        content.Should().NotBeNull();
+        content!.IsSuccess.Should().BeTrue();
+        content.Data.Should().BeTrue();
+    }
 }

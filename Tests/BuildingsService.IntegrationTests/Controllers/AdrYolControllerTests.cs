@@ -263,4 +263,81 @@ public class AdrYolControllerTests : IClassFixture<WebApplicationFactory<Program
         pbfResponse.Data.Should().HaveCount(3);
         pbfResponse.Data.First().Id.Should().Be(1);
     }
+
+    [Fact]
+    public async Task CreateAsync_WithValidData_ReturnsCreatedRoad()
+    {
+        // Arrange
+        var newRoad = new
+        {
+            Genislik = 15.0,
+            SeritSayisi = 4.0,
+            Yapisi = "Asfalt",
+            Tipi = "Bulvar",
+            Kodu = "YOL-004",
+            Adi = "Yol 4",
+            Wkb = Convert.ToBase64String(new byte[] { 1, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 16, 64 })
+        };
+
+        // Act
+        var response = await _client.PostAsJsonAsync("/api/v1/AdrYol", newRoad);
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+        var content = await response.Content.ReadFromJsonAsync<Response<AdrYol>>(_jsonOptions);
+
+        content.Should().NotBeNull();
+        content!.IsSuccess.Should().BeTrue();
+        content.Data.Should().NotBeNull();
+        content.Data!.Kodu.Should().Be("YOL-004");
+        content.Data.Id.Should().BeGreaterThan(0);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithValidData_ReturnsUpdatedRoad()
+    {
+        // Arrange
+        const int existingId = 1;
+        var updateRoad = new
+        {
+            Id = existingId,
+            Genislik = 20.0,
+            SeritSayisi = 4.0,
+            Yapisi = "Asfalt Updated",
+            Tipi = "Cadde Updated",
+            Kodu = "YOL-001-UPDATED",
+            Adi = "Yol 1 Updated",
+            Wkb = Convert.ToBase64String(new byte[] { 1, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 16, 64, 0, 0, 0, 0, 0, 0, 16, 64 })
+        };
+
+        // Act
+        var response = await _client.PutAsJsonAsync($"/api/v1/AdrYol/{existingId}", updateRoad);
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+        var content = await response.Content.ReadFromJsonAsync<Response<AdrYol>>(_jsonOptions);
+
+        content.Should().NotBeNull();
+        content!.IsSuccess.Should().BeTrue();
+        content.Data.Should().NotBeNull();
+        content.Data!.Kodu.Should().Be("YOL-001-UPDATED");
+    }
+
+    [Fact]
+    public async Task DeleteAsync_WithValidId_ReturnsSuccess()
+    {
+        // Arrange
+        const int existingId = 2;
+
+        // Act
+        var response = await _client.DeleteAsync($"/api/v1/AdrYol/{existingId}");
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+        var content = await response.Content.ReadFromJsonAsync<Response<bool>>(_jsonOptions);
+
+        content.Should().NotBeNull();
+        content!.IsSuccess.Should().BeTrue();
+        content.Data.Should().BeTrue();
+    }
 }
