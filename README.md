@@ -5,11 +5,11 @@
 
 A microservices-based platform for managing geospatial electrical infrastructure data. Built with modern .NET technologies, React, and PostgreSQL/PostGIS for scalable 3D visualization and data management.
 
-## 🚀 Overview
+## Overview
 
 Conduit3D is a modular platform designed for electrical utility companies to manage and visualize their infrastructure assets including buildings, electrical poles, power lines, and related geospatial data through an interactive 3D interface.
 
-## 🏗️ Architecture
+## Architecture
 
 ### Microservices
 
@@ -28,15 +28,19 @@ Conduit3D is a modular platform designed for electrical utility companies to man
 - **[Common](Common/)** - Shared domain models and utilities
 - **[TileService](TileService/)** - Map tile serving for geospatial visualization
 
-## 🔧 Tech Stack
+## Tech Stack
 
 ### Backend Services
 
 - **ASP.NET Core 8.0** - Web API framework
 - **Entity Framework Core** - ORM with PostgreSQL provider
-- **PostgreSQL/PostGIS** - Spatial database for geospatial data
+- **PostgreSQL 17 / PostGIS** - Spatial database for geospatial data
+- **NetTopologySuite** - .NET spatial library for geometry operations
+- **Protobuf (protobuf-net)** - Binary serialization for efficient data transfer
 - **JWT Authentication** - Secure token-based authentication
 - **Swagger/OpenAPI** - API documentation
+- **xUnit, Moq, FluentAssertions** - Testing frameworks
+- **Testcontainers** - Docker-based integration testing
 
 ### Frontend [(Dependency List)](Client/package.json)
 
@@ -44,7 +48,10 @@ Conduit3D is a modular platform designed for electrical utility companies to man
 - **TypeScript** - Type-safe development
 - **Vite** - Fast build tool and development server
 - **Redux Toolkit** - State management
-- **Deck.gl** - Interactive geospatial visualization
+- **OpenLayers** - Interactive map visualization
+- **Deck.gl** - 3D geospatial visualization
+- **Vitest** - Unit and component testing
+- **GeoTIFF.js** - Client-side GeoTIFF processing
 
 ### Infrastructure
 
@@ -52,7 +59,7 @@ Conduit3D is a modular platform designed for electrical utility companies to man
 - **Caddy** - Modern web server and reverse proxy
 - **PostGIS** - Spatial database extensions
 
-## 🚦 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -93,7 +100,7 @@ Conduit3D is a modular platform designed for electrical utility companies to man
      - Lines: https://\<domain>/api/docs/lines/swagger
      - Poles: https://\<domain>/api/docs/poles/swagger
 
-## 📋 API Endpoints
+## API Endpoints
 
 ### Authentication (`/api/v1/auth`)
 
@@ -108,12 +115,17 @@ Conduit3D is a modular platform designed for electrical utility companies to man
 ### Buildings
 
 > Address Buildings (`/api/v1/adrBina`) <br/>
-> Transformer Buildings (`/api/v1/trafoBina`) <br/>
-> General Buildings (`/api/v1/buildings`)
+> Address Roads (`/api/v1/adrYol`) <br/>
+> Transformer Buildings (`/api/v1/trafoBina`)
 
 - `GET /` - List buildings (paginated)
 - `GET /{id}` - Get building details
-- `GET /count` - Get building count
+- `GET /count` - Get building count within extent
+- `GET /types` - Get distinct building types (where applicable)
+- `GET /pbf` - Get buildings as protobuf
+- `POST /` - Create new building
+- `PUT /{id}` - Update building
+- `DELETE /{id}` - Delete building
 
 ### Lines
 
@@ -123,21 +135,30 @@ Conduit3D is a modular platform designed for electrical utility companies to man
 
 - `GET /` - List lines (paginated)
 - `GET /{id}` - Get line details
-- `GET /count` - Get line count
-- `GET /types` - Get line types
+- `GET /count` - Get line count within extent
+- `GET /types` - Get distinct line types
+- `GET /pbf` - Get lines as protobuf
+- `POST /` - Create new line
+- `PUT /{id}` - Update line
+- `DELETE /{id}` - Delete line
 
 ### Poles
 
 > Low Voltage Poles (`/api/v1/agDirek`) <br/>
 > Medium Voltage Poles (`/api/v1/ogMusDirek`) <br/>
-> Lighting Poles (`/api/v1/aydDirek`)
+> Lighting Poles (`/api/v1/aydDirek`) <br/>
+> Fixtures (`/api/v1/armatur`)
 
 - `GET /` - List poles (paginated)
 - `GET /{id}` - Get pole details
-- `GET /count` - Get pole count
-- `GET /types` - Get pole types
+- `GET /count` - Get pole count within extent
+- `GET /types` - Get distinct pole types (not available for fixtures)
+- `GET /pbf` - Get poles as protobuf
+- `POST /` - Create new pole
+- `PUT /{id}` - Update pole
+- `DELETE /{id}` - Delete pole
 
-## 🔧 Development
+## Development
 
 ### Local Development Setup
 
@@ -192,7 +213,7 @@ Conduit3D is a modular platform designed for electrical utility companies to man
 | `VITE_API_URL`            | API url to use in client     |
 | `VITE_TILE_SERVER_URL`    | Tile server to use in client |
 
-## 🗺️ Key Features
+## Key Features
 
 ### 3D Geospatial Visualization
 
@@ -218,7 +239,7 @@ Conduit3D is a modular platform designed for electrical utility companies to man
 - Docker containerization
 - API Gateway
 
-## 🐳 Docker Services
+## Docker Services
 
 ```yaml
 # Database Services
@@ -234,12 +255,40 @@ Conduit3D is a modular platform designed for electrical utility companies to man
 - poles_service
 - client
 - tile_server
-- api_gateway
-```
+The project includes comprehensive test coverage with both unit and integration tests.
 
-## 🧪 Testing
+### Running Tests
 
 ```bash
+# Use the analysis script for interactive testing
+chmod +x ./analyze.sh
+./analyze.sh
+# Select the service and test type (unit/integration)
+
+# Or run tests directly
+dotnet test Tests/BuildingsService.UnitTests/
+dotnet test Tests/BuildingsService.IntegrationTests/
+dotnet test Tests/LinesService.UnitTests/
+dotnet test Tests/LinesService.IntegrationTests/
+dotnet test Tests/PolesService.UnitTests/
+dotnet test Tests/PolesService.IntegrationTests/
+dotnet test Tests/UserService.UnitTests/
+dotnet test Tests/UserService.IntegrationTests/
+
+# Frontend tests
+cd Client
+npm run test           # Run all tests
+npm run test:unit      # Unit tests
+npm run test:component # Component tests
+```
+
+### Test Coverage
+
+- **Unit Tests**: Service layer business logic
+- **Integration Tests**: Controller and repository integration with PostgreSQL/PostGIS
+- **Frontend Tests**: Component and unit tests with Vitest
+
+Test results are automatically generated in the `Coverage/` directory.bash
 chmod +X ./analyze.sh
 ./analyze.sh
 
