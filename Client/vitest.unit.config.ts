@@ -7,6 +7,15 @@ export default defineConfig({
         coverage: {
             reporter: ['text', 'lcov'],
             reportOnFailure: true,
+            exclude: [
+                '**/node_modules/**',
+                '**/dist/**',
+                '**/*.test.*',
+                '**/*.config.*',
+                '**/coverage/**',
+                '**/utils/protos/**',
+                '**/workers/**',
+            ],
         },
         name: 'Unit Tests',
         environment: 'jsdom',
