@@ -13,9 +13,8 @@ import {
   useArmatur,
   useMap,
 } from "../../../lib/hooks";
-import { CreateLayer, hexToRgba, Logger } from "../../../lib/utils";
+import { CreateLayer, hexToRgba, Logger, CUBE_MESH } from "../../../lib/utils";
 import { C3D_MapViewType } from "../../../lib/enums";
-import { CUBE_MESH } from "../../../lib/utils";
 import {
   AmbientLight,
   DirectionalLight,
@@ -51,12 +50,25 @@ import OlDrawingMap from "./components/olDrawingMap/OlDrawingMap";
 import { OBJLoader } from "@loaders.gl/obj";
 
 /**
- * DeckglMap component renders the Deck.gl map with various layers and controls.
+ * DeckglMap component serves as the main map visualization engine for the application.
+ *
+ * It integrates:
+ * - **Deck.gl** for high-performance WebGL layer rendering (GeoJSON, Icon, Mesh, etc.)
+ * - **MapLibre GL** for the base map rendering (not directly rendered but referenced)
+ * - **Redux** for global state management of map layers and view states
+ * - **Custom Hooks** for handling specific layer data (useHat, useDirek, etc.)
+ *
+ * Features:
+ * - Supports both Cartesian (2D) and FirstPerson (3D) views
+ * - Renders complex infrastructure data: Buildings, Power Lines (HAT), Poles (DIREK), Roads (YOL)
+ * - Manages user interactions: Selection, Hover, FlyTo
+ * - Dynamic Layer control visibility and styling
+ *
  * @component
- * @returns The rendered component
+ * @returns The rendered Deck.gl map wrapper with all sub-components (popups, controls)
  */
 export default function DeckglMap(): React.ReactNode {
-  // Redux State
+  // Redux State - Selectors for map configuration and visibility
   const {
     visibility,
     selectedViewType,

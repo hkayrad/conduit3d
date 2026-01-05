@@ -1,8 +1,8 @@
-# AuthService
+# UserService
 
 An authentication and authorization microservice built with ASP.NET Core for the Conduit3D platform. This service provides comprehensive user management capabilities with JWT-based authentication.
 
-## 🚀 Features
+## Features
 
 - **User Authentication** - Secure login with JWT tokens
 - **User Management** - Full CRUD operations for user accounts
@@ -13,7 +13,7 @@ An authentication and authorization microservice built with ASP.NET Core for the
 - **Swagger Documentation** - Interactive API documentation
 - **Docker Support** - Containerized deployment ready
 
-## 📋 API Endpoints
+## API Endpoints
 
 ### Authentication
 - `POST /api/auth/login` - Authenticate user and receive JWT token
@@ -28,7 +28,7 @@ An authentication and authorization microservice built with ASP.NET Core for the
 ### Statistics
 - `GET /api/auth/count` - Get user statistics and counts
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Variables
 
@@ -46,10 +46,10 @@ An authentication and authorization microservice built with ASP.NET Core for the
 Host=localhost;Database=auth_db;Username=auth_user;Password=your_password
 ```
 
-## 🏗️ Architecture
+## Architecture
 
 ```
-AuthService/
+UserService/
 ├── Controllers/        # API controllers
 ├── Domain/             # Domain entities
 ├── Infrastructure/     # Data access layer
@@ -63,7 +63,7 @@ AuthService/
 └── Resources/          # Localization resources
 ```
 
-## 🔗 Dependencies
+## Dependencies
 
 ### Core Dependencies
 - **ASP.NET Core 8.0** - Web framework
@@ -78,7 +78,7 @@ AuthService/
 ### Additional Tools
 - **Common** - Shared utilities and models
 
-## 🚦 Getting Started
+## Getting Started
 
 1. **Prerequisites**
    - .NET 8.0 SDK
@@ -148,7 +148,7 @@ AuthService/
 5. **Access API Documentation**
    - Navigate to `https://<domain>/api/docs/auth/swagger` for interactive API docs
 
-## 🐳 Docker Deployment
+## Docker Deployment
 
 ### Build Image
 ```bash
@@ -167,7 +167,7 @@ docker run -d \
   conduit3d-auth:latest
 ```
 
-## 🔐 Security Features
+## Security Features
 
 - **JWT Token Authentication** - Secure stateless authentication
 - **Input Validation** - Request validation
@@ -190,6 +190,6 @@ The service includes built-in health checks and logging:
 - Metrics endpoint: `/metrics`
 - Structured logging with Serilog -->
 
-## 📄 License
+## License
 
 This project is part of the Conduit3D platform.

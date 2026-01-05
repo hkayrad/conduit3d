@@ -51,9 +51,17 @@ type Props = {
 };
 
 /**
- * LayerControl component manages the visibility and settings of map layers.
+ * LayerControl component manages the visibility, ordering, and settings of map layers.
+ * 
+ * Features:
+ * - Toggle visibility of Base, Custom, and Data layers
+ * - Reorder Custom layers
+ * - Add new Custom (Tile) and GeoTiff layers
+ * - Filter data layers by type
+ * - Toggle global settings (Hover Info, Underground Flattening)
+ * 
  * @component
- * @returns The rendered component
+ * @returns The rendered LayerControl component
  */
 export default function LayerControl(props: Props): React.ReactNode {
   const { isDrawOpen, onDrawClick } = props;
@@ -75,14 +83,24 @@ export default function LayerControl(props: Props): React.ReactNode {
   const [isAddLayerModalOpen, setIsAddLayerModalOpen] = useState(false);
   const [isAddGeoTiffModalOpen, setIsAddGeoTiffModalOpen] = useState(false);
 
+  /**
+   * Toggles the open/closed state of the layer control panel.
+   */
   const handleControlsToggle = useCallback(() => {
     dispatch(setIsLayerControlsOpen(!isLayerControlsOpen));
   }, [dispatch, isLayerControlsOpen]);
 
+  /**
+   * Toggles the visibility of the hover info tooltip on the map.
+   */
   const handleHoverInfoToggle = useCallback(() => {
     dispatch(setIsHoverInfoVisible(!isHoverInfoVisible));
   }, [dispatch, isHoverInfoVisible]);
 
+  /**
+   * Toggles the visibility of a specific map layer.
+   * @param layer - The key of the layer in the visibility state
+   */
   const handleLayerToggle = useCallback(
     (layer: keyof MapState["visibility"]) => {
       const isVisible = visibility[layer];
@@ -91,6 +109,11 @@ export default function LayerControl(props: Props): React.ReactNode {
     [dispatch, visibility],
   );
 
+  /**
+   * Updates the filter for a specific data layer.
+   * @param newFilters - Array of selected filter values
+   * @param filterKey - The key of the filter in the filters state
+   */
   const handleFilterToggle = useCallback(
     (newFilters: string[], filterKey: keyof MapState["filters"]) => {
       dispatch(setFilter({ filter: filterKey, tipi: newFilters }));

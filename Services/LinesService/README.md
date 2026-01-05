@@ -2,7 +2,7 @@
 
 An electrical line data management microservice built with ASP.NET Core for the Conduit3D platform. This service provides geospatial electrical line data retrieval and management capabilities with PostGIS integration.
 
-## 🚀 Features
+## Features
 
 - **Electrical Line Data Management** - Electrical line information retrieval
 - **Geospatial Support** - PostGIS integration for spatial data operations
@@ -12,24 +12,24 @@ An electrical line data management microservice built with ASP.NET Core for the 
 - **Swagger Documentation** - Interactive API documentation
 - **Docker Support** - Containerized deployment ready
 
-## 📋 API Endpoints
+## API Endpoints
 
 ### AgHat (Low Voltage Lines)
-- `GET /api/lines/agHat` - Get paginated list of low voltage lines
-- `GET /api/lines/agHat/{id}` - Get specific low voltage line by ID
-- `GET /api/lines/agHat/count` - Get low voltage line statistics and counts
+- `GET /api/v1/agHat` - Get paginated list of low voltage lines
+- `GET /api/v1/agHat/{id}` - Get specific low voltage line by ID
+- `GET /api/v1/agHat/count` - Get low voltage line statistics and counts
 
 ### OgHat (Medium Voltage Lines)
-- `GET /api/lines/ogHat` - Get paginated list of medium voltage lines
-- `GET /api/lines/ogHat/{id}` - Get specific medium voltage line by ID
-- `GET /api/lines/ogHat/count` - Get medium voltage line statistics and counts
+- `GET /api/v1/ogHat` - Get paginated list of medium voltage lines
+- `GET /api/v1/ogHat/{id}` - Get specific medium voltage line by ID
+- `GET /api/v1/ogHat/count` - Get medium voltage line statistics and counts
 
 ### Rekortman (Service Lines)
-- `GET /api/lines/rekortman` - Get paginated list of service lines
-- `GET /api/lines/rekortman/{id}` - Get specific service line by ID
-- `GET /api/lines/rekortman/count` - Get service line statistics and counts
+- `GET /api/v1/rekortman` - Get paginated list of service lines
+- `GET /api/v1/rekortman/{id}` - Get specific service line by ID
+- `GET /api/v1/rekortman/count` - Get service line statistics and counts
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Variables
 
@@ -43,7 +43,7 @@ An electrical line data management microservice built with ASP.NET Core for the 
 Host=localhost;Database=lines_db;Username=lines_user;Password=your_password
 ```
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 LinesService/
@@ -59,7 +59,7 @@ LinesService/
 └── Resources/          # Localization resources
 ```
 
-## 🔗 Dependencies
+## Dependencies
 
 ### Core Dependencies
 - **ASP.NET Core 8.0** - Web framework
@@ -79,7 +79,7 @@ LinesService/
 ### Additional Tools
 - **Common** - Shared utilities and models
 
-## 🚦 Getting Started
+## Getting Started
 
 1. **Prerequisites**
    - .NET 8.0 SDK
@@ -90,7 +90,6 @@ LinesService/
    > Create PostgreSQL database with PostGIS extension
    ```sql
    CREATE DATABASE <db_name>;
-   \c <db_name>;
    CREATE EXTENSION postgis;
    ```
 
@@ -227,7 +226,7 @@ LinesService/
 5. **Access API Documentation**
    - Navigate to `https://<domain>/api/docs/lines/swagger` for interactive API docs
 
-## 🐳 Docker Deployment
+## Docker Deployment
 
 ### Build Image
 ```bash
@@ -242,7 +241,7 @@ docker run -d \
   conduit3d-lines:latest
 ```
 
-## ⚡ Electrical Line Types
+## Electrical Line Types
 
 ### AgHat (Low Voltage Lines)
 Low voltage electrical distribution lines typically operating at 400V or below.
@@ -253,7 +252,7 @@ Medium voltage electrical distribution lines typically operating between 1kV and
 ### Rekortman (Service Lines)
 Service connection lines connecting individual consumers to the distribution network.
 
-## 🗺️ Geospatial Features
+## Geospatial Features
 
 - **PostGIS Integration** - Advanced spatial data operations
 - **Line Geometry Support** - LineString and MultiLineString handling
@@ -269,14 +268,8 @@ dotnet test
 # Run with coverage
 dotnet test --collect:"XPlat Code Coverage"
 ```
+ -->
 
-## 📊 Monitoring
-
-The service includes built-in health checks and logging:
-- Health endpoint: `/health`
-- Metrics endpoint: `/metrics`
-- Structured logging for electrical network operations -->
-
-## 📄 License
+## License
 
 This project is part of the Conduit3D platform.

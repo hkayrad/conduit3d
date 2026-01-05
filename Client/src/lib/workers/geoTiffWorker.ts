@@ -1,6 +1,12 @@
 /**
  * Web Worker for parsing GeoTiff files
- * Handles large files (>1GB) without blocking the main thread
+ * Handles large files (>1GB) without blocking the main thread.
+ * 
+ * This worker supports:
+ * - Parsing standard and COG GeoTIFFs
+ * - Extracting CRS (Coordinate Reference System) from GeoKeys
+ * - Handling large images via window sampling (resampling)
+ * - Automatic normalization of raster values to 8-bit RGBA
  */
 
 import { fromArrayBuffer, GeoTIFF, GeoTIFFImage } from "geotiff";
@@ -34,7 +40,10 @@ export interface GeoTiffWorkerError {
 export type GeoTiffWorkerResponse = GeoTiffWorkerProgress | GeoTiffWorkerResult | GeoTiffWorkerError;
 
 /**
- * Extract EPSG code from GeoTiff GeoKeys
+ * Extract EPSG code from GeoTiff GeoKeys.
+ * 
+ * @param image - The GeoTIFF image containing GeoKeys
+ * @returns The EPSG string (e.g. "EPSG:4326") or null if not found/supported
  */
 function extractCRS(image: GeoTIFFImage): string | null {
 	try {
@@ -68,7 +77,10 @@ function extractCRS(image: GeoTIFFImage): string | null {
 }
 
 /**
- * Extract bounds from GeoTiff image
+ * Extract bounds from GeoTiff image.
+ * 
+ * @param image - The GeoTIFF image
+ * @returns Bounding box as [minX, minY, maxX, maxY]
  */
 function extractBounds(image: GeoTIFFImage): [number, number, number, number] {
 	const bbox = image.getBoundingBox();
@@ -77,8 +89,12 @@ function extractBounds(image: GeoTIFFImage): [number, number, number, number] {
 }
 
 /**
- * Normalize raster values to 0-255 range for display
- * Uses iterative min/max to avoid stack overflow with large arrays
+ * Normalize raster values to 0-255 range for display.
+ * Uses iterative min/max finding to avoid stack overflow with large arrays.
+ * 
+ * @param values - Raw raster values
+ * @param noDataValue - Value representing no data (transparency)
+ * @returns 8-bit unsigned integer array suitable for ImageData
  */
 function normalizeToUint8(values: ArrayLike<number>, noDataValue?: number): Uint8ClampedArray {
 	const length = values.length;
@@ -148,7 +164,7 @@ function calculateOutputDimensions(width: number, height: number): { width: numb
  */
 async function findLargestImage(tiff: GeoTIFF): Promise<GeoTIFFImage> {
 	const imageCount = await tiff.getImageCount();
-	
+
 	let largestImage = await tiff.getImage(0);
 	let largestPixels = largestImage.getWidth() * largestImage.getHeight();
 
@@ -156,7 +172,7 @@ async function findLargestImage(tiff: GeoTIFF): Promise<GeoTIFFImage> {
 		try {
 			const img = await tiff.getImage(i);
 			const pixels = img.getWidth() * img.getHeight();
-			
+
 			if (pixels > largestPixels) {
 				largestImage = img;
 				largestPixels = pixels;
@@ -175,7 +191,7 @@ async function findLargestImage(tiff: GeoTIFF): Promise<GeoTIFFImage> {
  */
 async function findBestImage(tiff: GeoTIFF, targetWidth: number, targetHeight: number): Promise<GeoTIFFImage> {
 	const imageCount = await tiff.getImageCount();
-	
+
 	// If only one image, return it
 	if (imageCount === 1) {
 		return tiff.getImage(0);
@@ -266,11 +282,11 @@ async function parseGeoTiff(
 	// For images without overviews, geotiff.js needs to decode the full image
 	const maxSafePixels = 400_000_000 / bandCount; // ~400MB budget divided by bands
 	const sourcePixels = sourceWidth * sourceHeight;
-	
+
 	let rasters;
 	let actualOutputWidth = outputWidth;
 	let actualOutputHeight = outputHeight;
-	
+
 	if (sourcePixels > maxSafePixels) {
 		// Image is too large - try to read using window sampling
 		// This reads every Nth pixel in both directions
@@ -283,11 +299,11 @@ async function parseGeoTiff(
 		// Calculate step size to sample the image
 		const stepX = Math.ceil(sourceWidth / outputWidth);
 		const stepY = Math.ceil(sourceHeight / outputHeight);
-		
+
 		// Adjust output dimensions based on actual sampling
 		actualOutputWidth = Math.ceil(sourceWidth / stepX);
 		actualOutputHeight = Math.ceil(sourceHeight / stepY);
-		
+
 		// Check if even the sampled read would be too large
 		const sampledSourcePixels = actualOutputWidth * actualOutputHeight;
 		if (sampledSourcePixels * bandCount > 400_000_000) {
@@ -318,10 +334,10 @@ async function parseGeoTiff(
 			);
 		}
 	} else {
-		postProgress({ 
-			type: "progress", 
-			percent: 25, 
-			message: `Reading from ${sourceWidth}x${sourceHeight} source...` 
+		postProgress({
+			type: "progress",
+			percent: 25,
+			message: `Reading from ${sourceWidth}x${sourceHeight} source...`
 		});
 
 		postProgress({ type: "progress", percent: 30, message: "Reading raster data..." });
@@ -416,4 +432,4 @@ self.onmessage = async (event: MessageEvent<GeoTiffWorkerMessage>) => {
 	}
 };
 
-export {};
+export { };

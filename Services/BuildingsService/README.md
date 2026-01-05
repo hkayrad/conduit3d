@@ -2,7 +2,7 @@
 
 A building data management microservice built with ASP.NET Core for the Conduit3D platform. This service provides geospatial building data retrieval and management capabilities with PostGIS integration.
 
-## 🚀 Features
+## Features
 
 - **Building Data Management** - Building information retrieval
 - **Geospatial Support** - PostGIS integration for spatial data operations
@@ -12,24 +12,24 @@ A building data management microservice built with ASP.NET Core for the Conduit3
 - **Swagger Documentation** - Interactive API documentation
 - **Docker Support** - Containerized deployment ready
 
-## 📋 API Endpoints
+## API Endpoints
 
 ### AdrBina (Address Buildings)
-- `GET /api/buildings/adrBina` - Get paginated list of address buildings
-- `GET /api/buildings/adrBina/{id}` - Get specific address building by ID
-- `GET /api/buildings/adrBina/count` - Get address building statistics and counts
+- `GET /api/v1/adrBina` - Get paginated list of address buildings
+- `GET /api/v1/adrBina/{id}` - Get specific address building by ID
+- `GET /api/v1/adrBina/count` - Get address building statistics and counts
 
 ### TrafoBina (Transformer Buildings)
-- `GET /api/buildings/trafoBina` - Get paginated list of transformer buildings
-- `GET /api/buildings/trafoBina/{id}` - Get specific transformer building by ID
-- `GET /api/buildings/trafoBina/count` - Get transformer building statistics and counts
+- `GET /api/v1/trafoBina` - Get paginated list of transformer buildings
+- `GET /api/v1/trafoBina/{id}` - Get specific transformer building by ID
+- `GET /api/v1/trafoBina/count` - Get transformer building statistics and counts
 
 ### General Buildings
-- `GET /api/buildings/buildings` - Get paginated list of general buildings
-- `GET /api/buildings/buildings/{id}` - Get specific general building by ID
-- `GET /api/buildings/buildings/count` - Get general building statistics and counts
+- `GET /api/v1/buildings` - Get paginated list of general buildings
+- `GET /api/v1/buildings/{id}` - Get specific general building by ID
+- `GET /api/v1/buildings/count` - Get general building statistics and counts
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Variables
 
@@ -43,7 +43,7 @@ A building data management microservice built with ASP.NET Core for the Conduit3
 Host=localhost;Database=buildings_db;Username=buildings_user;Password=your_password
 ```
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 BuildingsService/
@@ -59,7 +59,7 @@ BuildingsService/
 └── Resources/          # Localization resources
 ```
 
-## 🔗 Dependencies
+## Dependencies
 
 ### Core Dependencies
 - **ASP.NET Core 8.0** - Web framework
@@ -79,7 +79,7 @@ BuildingsService/
 ### Additional Tools
 - **Common** - Shared utilities and models
 
-## 🚦 Getting Started
+## Getting Started
 
 1. **Prerequisites**
    - .NET 8.0 SDK
@@ -229,7 +229,7 @@ BuildingsService/
 5. **Access API Documentation**
    - Navigate to `https://<domain>/api/docs/buildings/swagger` for interactive API docs
 
-## 🐳 Docker Deployment
+## Docker Deployment
 
 ### Build Image
 ```bash
@@ -244,7 +244,7 @@ docker run -d \
   conduit3d-buildings:latest
 ```
 
-## 🗺️ Geospatial Features
+## Geospatial Features
 
 - **PostGIS Integration** - Advanced spatial data operations
 - **Geometry Support** - Point, polygon, and complex geometry handling
@@ -260,7 +260,7 @@ dotnet test
 dotnet test --collect:"XPlat Code Coverage"
 ``` -->
 
-## 📊 Data Models
+## Data Models
 
 ### AdrBina (Address Buildings)
 Buildings with address information and spatial coordinates.
@@ -272,6 +272,6 @@ Buildings housing electrical transformers with technical specifications.
 Standard building entities with basic structural information.
 > ! Will be removed !
 
-## 📄 License
+## License
 
 This project is part of the Conduit3D platform.

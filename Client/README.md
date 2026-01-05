@@ -2,7 +2,7 @@
 
 A React-based web application built with TypeScript and Vite for the Conduit3D platform. This client provides an interactive 3D geospatial interface for electrical infrastructure management and visualization.
 
-## 🚀 Features
+## Features
 
 - **3D Geospatial Visualization** - Interactive 3D maps for electrical infrastructure
 - **CRUD Data Integration** - Connection to microservices for buildings, poles, and lines
@@ -12,7 +12,7 @@ A React-based web application built with TypeScript and Vite for the Conduit3D p
 - **Performance Optimized** - Fast builds with Vite and Hot Module Replacement (HMR)
 - **Type Safety** - Full TypeScript support for enhanced development experience
 
-## 🔧 Tech Stack
+## Tech Stack
 
 ### Core Technologies
 - **React 19** - Modern React with hooks and concurrent features
@@ -33,7 +33,7 @@ A React-based web application built with TypeScript and Vite for the Conduit3D p
 - **TypeScript Config** - Strict type checking
 - **Vite DevTools** - Development optimization
 
-## 🏗️ Project Structure
+## Project Structure
 
 ```
 Client/
@@ -60,7 +60,7 @@ Client/
 └── vite.config.ts        # Vite configuration
 ```
 
-## 🚦 Getting Started
+## Getting Started
 
 ### Prerequisites
 - **Node.js** (v20 or higher)
@@ -110,7 +110,7 @@ npm i -g serve
 serve -s dist
 ```
 
-## 🐳 Docker Deployment
+## Docker Deployment
 
 ### Build Image
 ```bash
@@ -125,7 +125,7 @@ docker run -d \
   conduit3d-client:latest
 ```
 
-## 🔧 Development
+## Development
 
 ### Available Scripts
 
@@ -162,7 +162,7 @@ export default tseslint.config([
 ])
 ```
 
-## 🗺️ Key Features
+## Key Features
 
 ### 3D Map Integration
 - Interactive 3D geospatial visualization
@@ -179,7 +179,7 @@ export default tseslint.config([
 - Electrical pole and line visualization
 - Feature information panels with detailed data
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Run unit tests
@@ -192,24 +192,24 @@ npm run test:coverage
 npm run test:e2e
 ```
 
-## 📊 Performance
+## Performance
 
 - **Fast Development** - Vite's instant HMR for rapid development
 - **Optimized Builds** - Tree shaking and code splitting
 - **Modern Bundling** - ES modules and dynamic imports
 - **Asset Optimization** - Automatic image and asset optimization
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes
 4. Add tests for new functionality
-5. Run linting and type checking (`npm run lint && npm run type-check`)
+5. Run linting (`npm run lint`)
 6. Commit your changes (`git commit -m 'Add amazing feature'`)
 7. Push to the branch (`git push origin feature/amazing-feature`)
 8. Open a Pull Request
 
-## 📄 License
+## License
 
 This project is part

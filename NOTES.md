@@ -1,12 +1,12 @@
 # TODO
 
-- [] raster veri acma
+- [x] raster veri acma
 - [x] armaturleri goster, tablo gelicek
 - [x] openlayers kullanarak cizim
 - [x] featurelari yerin altindan gormeye de izin ver
 - [x] highlight on gotos
 
-- [] implement saving after moving
+- [x] implement saving after moving
 - [x] implement remaning feature saving
 
 ##### Armatur icin
@@ -256,62 +256,8 @@ ALTER TABLE "SBK_OGHAT" ADD COLUMN searchable_text tsvector GENERATED ALWAYS AS 
 ) STORED;
 
 -- Create GIN index for fast text search
-create INDEX idx_og_hat_searchablesce(cast(id_val as text), '') || ' ' ||
-    coalesce(kodu_val, '') || ' ' ||
-    coalesce(adi_val, '') || ' ' ||
-	coalesce(cinsi_val, '') || ' ' ||
-	coalesce(tipi_val, '') || ' ' ||
-	coalesce(direk_no_val, '') || ' ' ||
-	coalesce(boy_ozellik_val, '') || ' ' ||
-	coalesce(cast(direk_boy_id_val as text), '')
-);
-$$ LANGUAGE SQL IMMUTABLE;
-
--- Add the generated column to the adr_bina table
-ALTER TABLE "SBK_OGMUSDIREK" ADD COLUMN searchable_text tsvector GENERATED ALWAYS AS (
-    generate_searchable_text_og_mus_direk(id, kodu, adi, cinsi, tipi, direk_no, boy_ozellik, direk_boy_id)
-) STORED;
-
--- Create GIN index for fast text search
-create INDEX idx_ogmusdirek_searchable_text ON "SBK_OGMUSDIREK" USING GIN(searchable_text);
+create INDEX idx_og_hat_searchable_text ON "SBK_OGHAT" USING GIN(searchable_text);
 ```
-
-- AydDirek
-
-````sql
-CREATE OR REPLACE FUNCTION generate_searchable_text_ayd_direk(
-    id_val INT,
-    kodu_val TEXT,
-    adi_val TEXT,
-    cinsi_val TEXT,
-    tipi_val TEXT,
-    direk_no_val TEXT,
-    boy_ozellik_val TEXT,
-    direk_boy_id_val FLOAT8
-)
-RETURNS tsvector
-AS $$
-SELECT to_tsvector('simple',
-    coalesce(cast(id_val as text), '') || ' ' ||
-    coalesce(kodu_val, '') || ' ' ||
-    coalesce(adi_val, '') || ' ' ||
-	coalesce(cinsi_val, '') || ' ' ||
-	coalesce(tipi_val, '') || ' ' ||
-	coalesce(direk_no_val, '') || ' ' ||
-	coalesce(boy_ozellik_val, '') || ' ' ||
-	coalesce(cast(direk_boy_id_val as text), '')
-);
-$$ LANGUAGE SQL IMMUTABLE;
-
--- Add the generated column to the adr_bina table
-ALTER TABLE "SBK_AYDDIREK" ADD COLUMN searchable_text tsvector GENERATED ALWAYS AS (
-    generate_searchable_text_ayd_direk(id, kodu, adi, cinsi, tipi, direk_no, boy_ozellik, direk_boy_id)
-) STORED;
-
--- Create GIN index for fast text search
-create INDEX idx_ayddirek_searchable_text ON "SBK_AYDDIREK" USING GIN(searchable_text);
-```le_text ON "SBK_OGHAT" USING GIN(searchable_text);
-````
 
 - Rekortman
 
@@ -377,76 +323,4 @@ ALTER TABLE "SBK_AGDIREK" ADD COLUMN searchable_text tsvector GENERATED ALWAYS A
 
 -- Create GIN index for fast text search
 create INDEX idx_agdirek_searchable_text ON "SBK_AGDIREK" USING GIN(searchable_text);
-```
-
-- OgMusDirek
-
-```sql
-CREATE OR REPLACE FUNCTION generate_searchable_text_og_mus_direk(
-    id_val INT,
-    kodu_val TEXT,
-    adi_val TEXT,
-    cinsi_val TEXT,
-    tipi_val TEXT,
-    direk_no_val TEXT,
-    boy_ozellik_val TEXT,
-    direk_boy_id_val FLOAT8
-)
-RETURNS tsvector
-AS $$
-SELECT to_tsvector('simple',
-    coalesce(cast(id_val as text), '') || ' ' ||
-    coalesce(kodu_val, '') || ' ' ||
-    coalesce(adi_val, '') || ' ' ||
-	coalesce(cinsi_val, '') || ' ' ||
-	coalesce(tipi_val, '') || ' ' ||
-	coalesce(direk_no_val, '') || ' ' ||
-	coalesce(boy_ozellik_val, '') || ' ' ||
-	coalesce(cast(direk_boy_id_val as text), '')
-);
-$$ LANGUAGE SQL IMMUTABLE;
-
--- Add the generated column to the adr_bina table
-ALTER TABLE "SBK_OGMUSDIREK" ADD COLUMN searchable_text tsvector GENERATED ALWAYS AS (
-    generate_searchable_text_og_mus_direk(id, kodu, adi, cinsi, tipi, direk_no, boy_ozellik, direk_boy_id)
-) STORED;
-
--- Create GIN index for fast text search
-create INDEX idx_ogmusdirek_searchable_text ON "SBK_OGMUSDIREK" USING GIN(searchable_text);
-```
-
-- AydDirek
-
-```sql
-CREATE OR REPLACE FUNCTION generate_searchable_text_ayd_direk(
-    id_val INT,
-    kodu_val TEXT,
-    adi_val TEXT,
-    cinsi_val TEXT,
-    tipi_val TEXT,
-    direk_no_val TEXT,
-    boy_ozellik_val TEXT,
-    direk_boy_id_val FLOAT8
-)
-RETURNS tsvector
-AS $$
-SELECT to_tsvector('simple',
-    coalesce(cast(id_val as text), '') || ' ' ||
-    coalesce(kodu_val, '') || ' ' ||
-    coalesce(adi_val, '') || ' ' ||
-	coalesce(cinsi_val, '') || ' ' ||
-	coalesce(tipi_val, '') || ' ' ||
-	coalesce(direk_no_val, '') || ' ' ||
-	coalesce(boy_ozellik_val, '') || ' ' ||
-	coalesce(cast(direk_boy_id_val as text), '')
-);
-$$ LANGUAGE SQL IMMUTABLE;
-
--- Add the generated column to the adr_bina table
-ALTER TABLE "SBK_AYDDIREK" ADD COLUMN searchable_text tsvector GENERATED ALWAYS AS (
-    generate_searchable_text_ayd_direk(id, kodu, adi, cinsi, tipi, direk_no, boy_ozellik, direk_boy_id)
-) STORED;
-
--- Create GIN index for fast text search
-create INDEX idx_ayddirek_searchable_text ON "SBK_AYDDIREK" USING GIN(searchable_text);
 ```

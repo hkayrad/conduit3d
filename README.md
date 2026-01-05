@@ -13,7 +13,7 @@ Conduit3D is a modular platform designed for electrical utility companies to man
 
 ### Microservices
 
-- **[AuthService](Services/AuthService/)** - User authentication and authorization with JWT
+- **[UserService](Services/UserService/)** - User authentication and authorization with JWT
 - **[BuildingsService](Services/BuildingsService/)** - Building data management with PostGIS
 - **[LinesService](Services/LinesService/)** - Electrical line infrastructure management
 - **[PolesService](Services/PolesService/)** - Electrical pole infrastructure management
@@ -166,7 +166,7 @@ Conduit3D is a modular platform designed for electrical utility companies to man
 
    ```bash
    # Start databases only
-   docker compose up auth_database buildings_database lines_database poles_database -d
+   docker compose up user_database buildings_database lines_database poles_database -d
 
    # Run services locally
    cd Services/AuthService
@@ -198,9 +198,9 @@ Conduit3D is a modular platform designed for electrical utility companies to man
 | `JWT_SECRET`              | JWT Secret for signing       |
 | `JWT_SECRET_BASE64`       | JWT Secret in BASE64         |
 | `JWT_EXPIRATION_TIME_HRS` | JWT Expiration Time in hours |
-| `AUTH_DB_NAME`            | Auth database name           |
-| `AUTH_DB_USER`            | Auth database user           |
-| `AUTH_DB_PASS`            | Auth database password       |
+| `USER_DB_NAME`            | User database name           |
+| `USER_DB_USER`            | User database user           |
+| `USER_DB_PASS`            | User database password       |
 | `BUILDINGS_DB_NAME`       | Buildings database name      |
 | `BUILDINGS_DB_USER`       | Buildings database user      |
 | `BUILDINGS_DB_PASS`       | Buildings database password  |
@@ -243,18 +243,24 @@ Conduit3D is a modular platform designed for electrical utility companies to man
 
 ```yaml
 # Database Services
-- auth_database (PostgreSQL)
+- user_database (PostgreSQL)
 - buildings_database (PostGIS)
 - lines_database (PostGIS)
 - poles_database (PostGIS)
 
 # Application Services
-- auth_service
+- user_service
 - buildings_service
 - lines_service
 - poles_service
 - client
 - tile_server
+- geoserver
+- api_gateway
+```
+
+## Testing
+
 The project includes comprehensive test coverage with both unit and integration tests.
 
 ### Running Tests
@@ -278,8 +284,6 @@ dotnet test Tests/UserService.IntegrationTests/
 # Frontend tests
 cd Client
 npm run test           # Run all tests
-npm run test:unit      # Unit tests
-npm run test:component # Component tests
 ```
 
 ### Test Coverage
@@ -288,12 +292,7 @@ npm run test:component # Component tests
 - **Integration Tests**: Controller and repository integration with PostgreSQL/PostGIS
 - **Frontend Tests**: Component and unit tests with Vitest
 
-Test results are automatically generated in the `Coverage/` directory.bash
-chmod +X ./analyze.sh
-./analyze.sh
-
-# Select what you want to test.
-```
+Test results are automatically generated in the `Coverage/` directory.
 
 <!-- ## 📊 Monitoring & Health Checks
 
@@ -301,7 +300,7 @@ chmod +X ./analyze.sh
 - Centralized logging through Docker
 - Performance metrics and monitoring capabilities -->
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -311,7 +310,7 @@ chmod +X ./analyze.sh
 6. Push to the branch (`git push origin feature/amazing-feature`)
 7. Open a Pull Request
 
-## 🔒 Security
+## Security
 
 - JWT-based authentication at gateway level
 - Role-based authorization in services
@@ -319,6 +318,6 @@ chmod +X ./analyze.sh
 - HTTPS enforcement through Caddy
 - Input validation
 
-## 📄 License
+## License
 
 This project is proprietary software. All rights reserved.

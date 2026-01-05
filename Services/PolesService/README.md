@@ -2,7 +2,7 @@
 
 A comprehensive electrical pole data management microservice built with ASP.NET Core for the Conduit3D platform. This service provides geospatial electrical pole data retrieval and management capabilities with PostGIS integration.
 
-## 🚀 Features
+## Features
 
 - **Electrical Pole Data Management** - Comprehensive electrical pole information retrieval
 - **Geospatial Support** - PostGIS integration for spatial data operations
@@ -12,24 +12,24 @@ A comprehensive electrical pole data management microservice built with ASP.NET 
 - **Swagger Documentation** - Interactive API documentation
 - **Docker Support** - Containerized deployment ready
 
-## 📋 API Endpoints
+## API Endpoints
 
 ### AgDirek (Low Voltage Poles)
-- `GET /api/poles/agDirek` - Get paginated list of low voltage poles
-- `GET /api/poles/agDirek/{id}` - Get specific low voltage pole by ID
-- `GET /api/poles/agDirek/count` - Get low voltage pole statistics and counts
+- `GET /api/v1/agDirek` - Get paginated list of low voltage poles
+- `GET /api/v1/agDirek/{id}` - Get specific low voltage pole by ID
+- `GET /api/v1/agDirek/count` - Get low voltage pole statistics and counts
 
 ### OgMusDirek (Medium Voltage Poles)
-- `GET /api/poles/ogMusDirek` - Get paginated list of medium voltage poles
-- `GET /api/poles/ogMusDirek/{id}` - Get specific medium voltage pole by ID
-- `GET /api/poles/ogMusDirek/count` - Get medium voltage pole statistics and counts
+- `GET /api/v1/ogMusDirek` - Get paginated list of medium voltage poles
+- `GET /api/v1/ogMusDirek/{id}` - Get specific medium voltage pole by ID
+- `GET /api/v1/ogMusDirek/count` - Get medium voltage pole statistics and counts
 
 ### AydDirek (Lighting Poles)
-- `GET /api/poles/aydDirek` - Get paginated list of lighting poles
-- `GET /api/poles/aydDirek/{id}` - Get specific lighting pole by ID
-- `GET /api/poles/aydDirek/count` - Get lighting pole statistics and counts
+- `GET /api/v1/aydDirek` - Get paginated list of lighting poles
+- `GET /api/v1/aydDirek/{id}` - Get specific lighting pole by ID
+- `GET /api/v1/aydDirek/count` - Get lighting pole statistics and counts
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Variables
 
@@ -43,7 +43,7 @@ A comprehensive electrical pole data management microservice built with ASP.NET 
 Host=localhost;Database=poles_db;Username=poles_user;Password=your_password
 ```
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 PolesService/
@@ -59,7 +59,7 @@ PolesService/
 └── Resources/          # Localization resources
 ```
 
-## 🔗 Dependencies
+## Dependencies
 
 ### Core Dependencies
 - **ASP.NET Core 8.0** - Web framework
@@ -79,7 +79,7 @@ PolesService/
 ### Additional Tools
 - **Common** - Shared utilities and models
 
-## 🚦 Getting Started
+## Getting Started
 
 1. **Prerequisites**
    - .NET 8.0 SDK
@@ -241,7 +241,7 @@ PolesService/
 5. **Access API Documentation**
    - Navigate to `https://<domain>/api/docs/poles/swagger` for interactive API docs
 
-## 🐳 Docker Deployment
+## Docker Deployment
 
 ### Build Image
 ```bash
@@ -256,7 +256,7 @@ docker run -d \
   conduit3d-poles:latest
 ```
 
-## ⚡ Electrical Pole Types
+## Electrical Pole Types
 
 ### AgDirek (Low Voltage Poles)
 Low voltage electrical distribution poles supporting lines operating at 400V or below.
@@ -267,7 +267,7 @@ Medium voltage electrical distribution poles supporting lines operating between 
 ### AydDirek (Lighting Poles)
 Street lighting poles and infrastructure supporting public illumination systems.
 
-## 🗺️ Geospatial Features
+## Geospatial Features
 
 - **PostGIS Integration** - Advanced spatial data operations
 - **Point Geometry Support** - Precise pole location handling
@@ -291,6 +291,6 @@ The service includes built-in health checks and logging:
 - Metrics endpoint: `/metrics`
 - Structured logging for electrical infrastructure operations -->
 
-## 📄 License
+## License
 
 This project is part of the

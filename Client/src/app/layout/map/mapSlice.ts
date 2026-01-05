@@ -5,17 +5,32 @@ import type { FirstPersonViewState, MapViewState } from "deck.gl";
 import { C3D_MapViewType, C3D_MapLayers } from "../../../lib/enums";
 import type { C3D_LayerViewState, CustomLayer, GeoTiffLayer } from "../../../lib/types";
 
+/**
+ * Represents the global state of the Map application.
+ * Manages visibility, view states, selections, and configuration for the 3D map environment.
+ */
 export interface MapState {
+	/** Indicates if map data is currently being fetched or processed */
 	isDataLoading: boolean;
+	/** Visibility state of the Layer Control panel */
 	isLayerControlsOpen: boolean;
+	/** Visibility state of the Hover Info tooltip */
 	isHoverInfoVisible: boolean;
+	/** Visibility state of the Street View component */
 	isStreetViewVisible: boolean;
+	/** Locks the Street View component to screen */
 	isStreetViewPinned: boolean;
+	/** Visibility state of the Settings window */
 	isSettingsWindowOpen: boolean;
+	/** Toggles wireframe rendering mode for 3D objects */
 	isWireframe: boolean;
+	/** Current active view mode: Cartesian (2D/3D Map) or FirstPerson (Walk mode) */
 	selectedViewType: C3D_MapViewType;
+	/** Visibility flags for individual map layers */
 	visibility: C3D_LayerViewState;
+	/** Currently focused interaction element */
 	focusedView: "deckgl" | "streetview";
+	/** Active filters for data layers (e.g., filtering poles by type) */
 	filters: {
 		[C3D_MapLayers.AgDirek]: {
 			tipi: string[];
@@ -39,6 +54,7 @@ export interface MapState {
 			tipi: string[];
 		};
 	};
+	/** Available unique types for each data layer, used for populating filter options */
 	types: {
 		[C3D_MapLayers.AgDirek]: string[];
 		[C3D_MapLayers.OgMusDirek]: string[];
@@ -48,22 +64,28 @@ export interface MapState {
 		[C3D_MapLayers.Rekortman]: string[];
 		[C3D_MapLayers.AdrYol]: string[];
 	};
+	/** Camera view states for different view modes */
 	viewState: {
 		[C3D_MapViewType.Cartesian]: MapViewState;
 		[C3D_MapViewType.FirstPerson]: FirstPersonViewState;
 	};
+	/** Current visible extent of the map */
 	extent: {
 		minX: number;
 		minY: number;
 		maxX: number;
 		maxY: number;
 	};
+	/** The camera position when data was last refreshed */
 	lastRefreshPosition: {
 		longitude: number;
 		latitude: number;
 	};
+	/** User-added custom raster layers (persisted) */
 	customLayers: CustomLayer[];
+	/** User-added GeoTIFF layers (session only) */
 	geoTiffLayers: GeoTiffLayer[];
+	/** Flattens underground power lines to the ground level (Z=0) */
 	isUndergroundLinesFlattened: boolean;
 }
 

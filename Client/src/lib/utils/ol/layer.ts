@@ -5,6 +5,16 @@ import { Style, Stroke, Fill, Circle as CircleStyle } from "ol/style";
 import { normalizeGeoJSONData } from "./data";
 import { normalizeColor } from "./color";
 
+/**
+ * Creates an OpenLayers VectorLayer from various data formats (GeoJSON object, string, or feature array).
+ * 
+ * @param data - The input data (GeoJSON object, JSON string, or array of features)
+ * @param color - The color for the layer styling (hex string or RGBA array)
+ * @param width - Stroke width for lines (default: 2)
+ * @param isPoint - Whether to style features as points (circles) or lines/polygons
+ * @param lineDash - Optional line dash pattern [dash, gap]
+ * @returns An OpenLayers VectorLayer configured with the source and style, or null if data is invalid
+ */
 export const createVectorLayer = (
     data: any,
     color: string | [number, number, number, number],
@@ -51,6 +61,13 @@ export const createVectorLayer = (
     return vectorLayer;
 };
 
+/**
+ * Creates a specialized OpenLayers VectorLayer for buildings with a semi-transparent fill.
+ * 
+ * @param data - The building data (GeoJSON)
+ * @param hexColor - The base color for the building stroke (hex string)
+ * @returns An OpenLayers VectorLayer with building specific styling, or null if data is invalid
+ */
 export const createBuildingLayer = (
     data: any,
     hexColor: string,

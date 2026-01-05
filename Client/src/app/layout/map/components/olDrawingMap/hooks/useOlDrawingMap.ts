@@ -29,32 +29,63 @@ export type HoverInfo = {
     properties: Record<string, any>;
 } | null;
 
+/**
+ * Props for the useOlDrawingMap hook.
+ */
 type UseOlDrawingMapProps = {
+    /** Reference to the div element where the map will be rendered */
     olContainerRef: React.RefObject<HTMLDivElement | null>;
+    /** Current view state of the map (coordinates, zoom) */
     viewState: {
         longitude: number;
         latitude: number;
         zoom: number;
     };
+    /** Callback triggered when the map view changes */
     onViewStateChange: (viewState: {
         longitude: number;
         latitude: number;
         zoom: number;
     }) => void;
+    /** Data for the electrical lines layer */
     hatLayerData: any[];
+    /** Data for the electrical poles layer */
     direkLayerData: any[];
+    /** Data for the lighting poles layer */
     aydDirekData: any[];
+    /** Data for the fixtures layer */
     armaturLayerData: any[];
+    /** Data for the road layer */
     yolLayerData: any[];
+    /** GeoJSON data for address buildings */
     adrBina: GeoJSON.FeatureCollection[];
+    /** GeoJSON data for general buildings */
     buildingBina: GeoJSON.FeatureCollection[];
+    /** GeoJSON data for transformer buildings */
     trafoBina: GeoJSON.FeatureCollection[];
+    /** Visibility state for various layers */
     visibility: C3D_LayerViewState;
+    /** Application configuration */
     config: Config;
+    /** Custom tile layers to be added to the map */
     customLayers: any[];
+    /** GeoTiff layers to be rendered on the map */
     geoTiffLayers: GeoTiffLayer[];
 };
 
+/**
+ * Custom hook to initialize and manage an OpenLayers map instance with drawing and data visualization capabilities.
+ * 
+ * This hook handles:
+ * - Map initialization and lifecycle
+ * - Layer management (Vector, Tile, Image)
+ * - Interaction handling (Draw, Modify, Snap, Select)
+ * - View state synchronization
+ * - GeoTiff layer rendering via ObjectURLs
+ * 
+ * @param props - Configuration props for the map
+ * @returns Object containing map state and control functions
+ */
 export function useOlDrawingMap({
     olContainerRef,
     viewState,

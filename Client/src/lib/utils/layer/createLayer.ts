@@ -171,8 +171,7 @@ export class CreateLayer {
 				data: data ?? [],
 				getPath: (d) => {
 					if (flattenUnderground) {
-						// @ts-ignore
-						return d.geometry.coordinates.map((coord) => [coord[0], coord[1], 0.1]);
+						return d.geometry.coordinates.map((coord: any) => [coord[0], coord[1], 0.1]);
 					}
 					return d.geometry.coordinates;
 				},
@@ -237,7 +236,7 @@ export class CreateLayer {
 		}
 
 		const mesh = id.includes("ag-direk") ? "/obj/lv.obj" : "/obj/mv.obj";
-		const scale = id.includes("ag-direk") ? 0.01 : 0.01; // Adjust scale if needed
+		const scale = 0.01; // Adjust scale if needed
 		const rotation: [number, number, number] = id.includes("ag-direk") ? [0, -45, 0] : [0, 0, 0]; // Adjust rotation if needed
 
 		return new SimpleMeshLayer({
